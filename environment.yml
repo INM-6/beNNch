@@ -1,0 +1,5 @@
+name: jube
+channels:
+  - defaults
+prefix: /home/terhorst/miniconda3/envs/jube
+
