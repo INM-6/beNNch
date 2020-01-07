@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jube>
+
+  <parameterset name="nest">
+    <parameter name="nest_version" type="string">NEST</parameter>
+    <parameter name="nest_branch" type="string">master</parameter>
+  </parameterset>
+
+  <parameterset name="nest_2_14">
+    <parameter name="nest_version" type="string">NEST-2.14</parameter>
+    <parameter name="nest_branch" type="string">master</parameter>
+  </parameterset>
+
+  <parameterset name="nest_2_16">
+    <parameter name="nest_version" type="string">NEST-2.16</parameter>
+    <parameter name="nest_branch" type="string">master</parameter>
+  </parameterset>
+
+  <parameterset name="nest_2_16_1">
+    <parameter name="nest_version" type="string">NEST-2.16.1</parameter>
+    <parameter name="nest_branch" type="string">new_container</parameter>
+  </parameterset>
+
+  <parameterset name="nest_2_18">
+    <parameter name="nest_version" type="string">NEST-2.18</parameter>
+    <parameter name="nest_branch" type="string">new_container</parameter>
+  </parameterset>
+
+  <parameterset name="nest_master">
+    <parameter name="nest_version" type="string">NEST-master</parameter>
+    <parameter name="nest_branch" type="string">master</parameter>
+  </parameterset>
+
+  <parameterset name="nest_master_update">
+    <parameter name="nest_version" type="string">NEST-master-update</parameter>
+    <parameter name="nest_branch" type="string">master</parameter>
+  </parameterset>
+
+  <parameterset name="nest_BV">
+    <parameter name="nest_version" type="string">NEST-BV</parameter>
+    <parameter name="nest_branch" type="string">master</parameter>
+  </parameterset>
+
+  <parameterset name="nest_conn_sort">
+    <parameter name="nest_version" type="string">NEST-conn-sort</parameter>
+    <parameter name="nest_branch" type="string">master</parameter>
+  </parameterset>
+
+  <parameterset name="nest_me5g">
+    <parameter name="nest_version" type="string">NEST-me5g</parameter>
+    <parameter name="nest_branch" type="string">master</parameter>
+  </parameterset>
+
+  <parameterset name="nest_f104c6d">
+    <parameter name="nest_version" type="string">NEST-f104c6d</parameter>
+    <parameter name="nest_branch" type="string">master</parameter>
+  </parameterset>
+
+  <parameterset name="nest_6b26ff5">
+    <parameter name="nest_version" type="string">NEST-6b26ff5</parameter>
+    <parameter name="nest_branch" type="string">master</parameter>
+  </parameterset>
+
+  <parameterset name="nest_master_lcid">
+    <parameter name="nest_version" type="string">NEST-master_lcid</parameter>
+  </parameterset>
+
+  <parameterset name="nest_bisect">
+    <parameter name="nest_version" type="string">NEST-bisect</parameter>
+  </parameterset>
+
+  <parameterset name="nest_91b3fa7">
+    <parameter name="nest_version" type="string">NEST-91b3fa7</parameter>
+    <parameter name="nest_branch" type="string">master</parameter>
+  </parameterset>
+
+  <parameterset name="nest_dq">
+    <parameter name="nest_version" type="string">NEST-DQ</parameter>
+    <parameter name="nest_branch" type="string">master-deque</parameter>
+  </parameterset>
+
+  <parameterset name="nest_sq">
+    <parameter name="nest_version" type="string">NEST-SQ</parameter>
+    <parameter name="nest_branch" type="string">new_container</parameter>
+  </parameterset>
+
+  <parameterset name="nest_db70dcc1edb">
+    <parameter name="nest_version" type="string">NEST-db70dcc1edb</parameter>
+    <parameter name="nest_branch" type="string">new_container</parameter>
+  </parameterset>
+
+  <parameterset name="nest_3">
+    <parameter name="nest_version" type="string">NEST-3</parameter>
+    <parameter name="nest_branch" type="string">nest-3</parameter>
+  </parameterset>
+
+  <parameterset name="nest_5g">
+    <parameter name="nest_version" type="string">NEST-5G</parameter>
+    <parameter name="nest_branch" type="string">5g</parameter>
+  </parameterset>  
+
+  <parameterset name="jemalloc">
+    <parameter name="jemalloc_version" type="string">jemalloc-5.0.1</parameter>
+    <parameter name="jemalloc_configure_flags" type="string"></parameter>
+  </parameterset>
+
+  <parameterset name="temalloc">
+    <parameter name="temalloc_version" type="string">gperftools-2.7</parameter>
+    <parameter name="temalloc_configure_flags" type="string"></parameter>
+  </parameterset>
+
+  <parameterset name="nest_base_O3">
+    <!-- build nest with minimal dependencies -->
+    <parameter name="nest_config" type="string">base_O3</parameter>
+    <parameter name="nest_cmake_defs" type="string">\
+      $NEST_SRC_DIR \
+      -DCMAKE_INSTALL_PREFIX:PATH=$NEST_INSTALL_DIR \
+      -Dwith-optimize="-O3" \
+      -Dwith-debug=-g \
+      -Dwith-mpi=ON \
+      -Dwith-gsl=OFF \
+      -Dwith-python=OFF \
+      -Dwith-readline=OFF
+    </parameter>
+  </parameterset>
+
+  <parameterset name="nest_base_O3_nompi">
+    <!-- build nest with minimal dependencies -->
+    <parameter name="nest_config" type="string">base_O3_nompi</parameter>
+    <parameter name="nest_cmake_defs" type="string">\
+      $NEST_SRC_DIR \
+      -DCMAKE_INSTALL_PREFIX:PATH=$NEST_INSTALL_DIR \
+      -Dwith-optimize="-O3" \
+      -Dwith-debug=-g \
+      -Dwith-mpi=OFF \
+      -Dwith-gsl=OFF \
+      -Dwith-python=OFF \
+      -Dwith-readline=OFF
+    </parameter>
+  </parameterset>
+
+  <parameterset name="nest_base_O3_KO1">
+    <!-- build nest with minimal dependencies -->
+    <parameter name="nest_config" type="string">base_O3_KO1</parameter>
+    <parameter name="nest_cmake_defs" type="string">\
+      $NEST_SRC_DIR \
+      -DCMAKE_INSTALL_PREFIX:PATH=$NEST_INSTALL_DIR \
+      -Dwith-optimize="-O3" \
+      -Dwith-debug=-g \
+      -Dwith-mpi=ON \
+      -Dwith-gsl=OFF \
+      -Dwith-python=OFF \
+      -Dwith-readline=OFF \
+      -Dconnector_cutoff=1
+    </parameter>
+  </parameterset>
+
+  <parameterset name="nest_base_O3_KO2">
+    <!-- build nest with minimal dependencies -->
+    <parameter name="nest_config" type="string">base_O3_KO2</parameter>
+    <parameter name="nest_cmake_defs" type="string">\
+      $NEST_SRC_DIR \
+      -DCMAKE_INSTALL_PREFIX:PATH=$NEST_INSTALL_DIR \
+      -Dwith-optimize="-O3" \
+      -Dwith-debug=-g \
+      -Dwith-mpi=ON \
+      -Dwith-gsl=OFF \
+      -Dwith-python=OFF \
+      -Dwith-readline=OFF \
+      -Dconnector_cutoff=2
+    </parameter>
+  </parameterset>
+
+  <parameterset name="nest_base_O2">
+    <!-- build nest with minimal dependencies -->
+    <parameter name="nest_config" type="string">base_O2</parameter>
+    <parameter name="nest_cmake_defs" type="string">\
+      $NEST_SRC_DIR \
+      -DCMAKE_INSTALL_PREFIX:PATH=$NEST_INSTALL_DIR \
+      -Dwith-optimize="-O2" \
+      -Dwith-debug=-g \
+      -Dwith-mpi=ON \
+      -Dwith-gsl=OFF \
+      -Dwith-python=OFF \
+      -Dwith-readline=OFF
+    </parameter>
+  </parameterset>
+
+  <parameterset name="nest_base_O2_nog">
+    <!-- build nest with minimal dependencies -->
+    <parameter name="nest_config" type="string">base_O2_nog</parameter>
+    <parameter name="nest_cmake_defs" type="string">\
+      $NEST_SRC_DIR \
+      -DCMAKE_INSTALL_PREFIX:PATH=$NEST_INSTALL_DIR \
+      -Dwith-optimize="-O2" \
+      -Dwith-mpi=ON \
+      -Dwith-gsl=OFF \
+      -Dwith-python=OFF \
+      -Dwith-readline=OFF
+    </parameter>
+  </parameterset>
+  
+  <parameterset name="nest_base_O3_strict">
+    <!-- build nest with minimal dependencies, strict IEEE754 conformance -->
+    <parameter name="nest_config" type="string">base_O3_strict</parameter>
+    <parameter name="nest_cmake_defs" type="string">\
+      $NEST_SRC_DIR \
+      -DCMAKE_INSTALL_PREFIX:PATH=$NEST_INSTALL_DIR \
+      -Dwith-optimize="-O3 -fp-model strict" \
+      -Dwith-debug=-g \
+      -Dwith-mpi=ON \
+      -Dwith-gsl=OFF \
+      -Dwith-python=OFF \
+      -Dwith-readline=OFF \
+      -DCMAKE_C_COMPILER=$mpicc_exec \
+      -DCMAKE_CXX_COMPILER=$mpicxx_exec 
+    </parameter>
+  </parameterset>
+
+  <parameterset name="nest_base_O3_strict_static">
+    <!-- build nest with minimal dependencies, strict IEEE754 conformance -->
+    <parameter name="nest_config" type="string">base_O3_strict</parameter>
+    <parameter name="nest_cmake_defs" type="string">\
+      $NEST_SRC_DIR \
+      -DCMAKE_INSTALL_PREFIX:PATH=$NEST_INSTALL_DIR \
+      -Dstatic-libraries=ON \
+      -Dwith-optimize="-O3 -fp-model strict" \
+      -Dwith-debug=-g \
+      -Dwith-mpi=ON \
+      -Dwith-gsl=OFF \
+      -Dwith-python=OFF \
+      -Dwith-readline=OFF \
+      -DCMAKE_C_COMPILER=$mpicc_exec \
+      -DCMAKE_CXX_COMPILER=$mpicxx_exec 
+    </parameter>
+  </parameterset>
+
+  <parameterset name="nest_base_O3_strict_nompi">
+    <!-- build nest with minimal dependencies, strict IEEE754 conformance -->
+    <parameter name="nest_config" type="string">base_O3_strict</parameter>
+    <parameter name="nest_cmake_defs" type="string">\
+      $NEST_SRC_DIR \
+      -DCMAKE_INSTALL_PREFIX:PATH=$NEST_INSTALL_DIR \
+      -Dwith-optimize="-O3 -fp-model strict" \
+      -Dwith-debug=-g \
+      -Dwith-mpi=OFF \
+      -Dwith-gsl=OFF \
+      -Dwith-python=OFF \
+      -Dwith-readline=OFF \
+      -DCMAKE_C_COMPILER=$mpicc_exec \
+      -DCMAKE_CXX_COMPILER=$mpicxx_exec 
+    </parameter>
+  </parameterset>
+
+  <parameterset name="nest_gsl_O3_strict">
+    <!-- build nest with GNU Science Library, strict IEEE754 conformance -->
+    <parameter name="nest_config" type="string">gsl_O3_strict</parameter>
+    <parameter name="nest_cmake_defs" type="string">\
+      $NEST_SRC_DIR \
+      -DCMAKE_INSTALL_PREFIX:PATH=$NEST_INSTALL_DIR \
+      -Dwith-optimize="-O3 -fp-model strict" \
+      -Dwith-debug=-g \
+      -Dwith-mpi=ON \
+      -Dwith-gsl=ON \
+      -Dwith-python=OFF \
+      -Dwith-readline=OFF
+    </parameter>
+  </parameterset>
+  
+  <parameterset name="nest_py_O3_strict">
+    <!-- build nest with python, strict IEEE754 conformance -->
+    <parameter name="nest_config" type="string">py_O3_strict</parameter>
+    <parameter name="nest_cmake_defs" type="string">\
+      $NEST_SRC_DIR \
+      -DCMAKE_INSTALL_PREFIX:PATH=$NEST_INSTALL_DIR \
+      -Dwith-optimize="-O3 -fp-model strict" \
+      -Dwith-debug=-g \
+      -Dwith-mpi=ON \
+      -Dwith-gsl=ON \
+      -Dwith-python=3 \
+      -Dwith-readline=OFF \
+      -DCMAKE_C_COMPILER=$mpicc_exec \
+      -DCMAKE_CXX_COMPILER=$mpicxx_exec
+    </parameter>
+  </parameterset>
+
+  <parameterset name="nest_py_O3_strict_static">
+    <!-- build nest with python, strict IEEE754 conformance -->
+    <parameter name="nest_config" type="string">py_O3_strict</parameter>
+    <parameter name="nest_cmake_defs" type="string">\
+      $NEST_SRC_DIR \
+      -DCMAKE_INSTALL_PREFIX:PATH=$NEST_INSTALL_DIR \
+      -Dstatic-libraries=ON \
+      -Dwith-optimize="-O3 -fp-model strict" \
+      -Dwith-debug=-g \
+      -Dwith-mpi=ON \
+      -Dwith-gsl=ON \
+      -Dwith-python=3 \
+      -Dwith-readline=OFF \
+      -DCMAKE_C_COMPILER=$mpicc_exec \
+      -DCMAKE_CXX_COMPILER=$mpicxx_exec
+    </parameter>
+  </parameterset>
+
+</jube>
+

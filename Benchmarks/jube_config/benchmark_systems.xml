@@ -1,0 +1,129 @@
+<jube>
+
+  <parameterset name="hpc_benchmark">
+    <parameter name="benchmark_system_name" type="string">
+      hpc_benchmark
+    </parameter>
+    <parameter name="slifile" type="string">
+      ${bench_home}/benchmark_scripts/${benchmark_system_name}.sli
+    </parameter>
+  </parameterset>
+
+    <parameterset name="hpc_benchmark_3">
+    <parameter name="benchmark_system_name" type="string">
+      hpc_benchmark_nest3
+    </parameter>
+    <parameter name="slifile" type="string">
+      ${bench_home}/benchmark_scripts/${benchmark_system_name}.sli
+    </parameter>
+  </parameterset>
+  
+  <parameterset name="4x4_mesocircuit">
+    <parameter name="benchmark_system_name" type="string">
+      mesocircuit
+    </parameter>
+    <parameter name="slifile" type="string">
+      ${bench_model}/4x4mm2LFP/mesocircuit/${benchmark_system_name}.sli
+    </parameter>
+  </parameterset>
+
+  <parameterset name="4x4_mesocircuit_3">
+    <parameter name="benchmark_system_name" type="string">
+      mesocircuit_nest3
+    </parameter>
+    <parameter name="slifile" type="string">
+      ${bench_model}/4x4mm2LFP/mesocircuit/${benchmark_system_name}.sli
+    </parameter>
+  </parameterset>
+  
+  <parameterset name="MAM_benchmark">
+    <parameter name="benchmark_system_name" type="string">
+      run_example_simulate
+    </parameter>
+    <parameter name="pythonfile" type="string">
+      ${bench_model}/multi-area-model/${benchmark_system_name}.py
+    </parameter>
+  </parameterset>
+
+  <parameterset name="hpc_benchmark_rule">
+    <parameter name="benchmark_system_name" type="string">
+      hpc_benchmark_rule
+    </parameter>
+    <parameter name="slifile" type="string">
+      ${bench_home}/benchmark_scripts/${benchmark_system_name}.sli
+    </parameter>
+  </parameterset>
+
+  <parameterset name="hpc_synapse_benchmark">
+    <parameter name="benchmark_system_name" type="string">
+      hpc_population_comp_benchmark
+    </parameter>
+    <parameter name="slifile" type="string">
+      ${bench_home}/benchmark_scripts/${benchmark_system_name}.sli
+    </parameter>
+  </parameterset>
+
+  <parameterset name="population_blocks">
+    <parameter name="benchmark_system_name" type="string">
+      population_blocks
+    </parameter>
+    <parameter name="slifile" type="string">
+      ${bench_home}/benchmark_scripts/${benchmark_system_name}.sli
+    </parameter>
+  </parameterset>
+
+  <parameterset name="population_model">
+    <parameter name="benchmark_system_name" type="string">
+      population_model
+    </parameter>
+    <parameter name="pythonfile" type="string">
+      ${bench_home}/benchmark_scripts/${benchmark_system_name}.py
+    </parameter>
+  </parameterset>
+
+  <parameterset name="population_model_3">
+    <parameter name="benchmark_system_name" type="string">
+      population_model_nest3
+    </parameter>
+    <parameter name="pythonfile" type="string">
+      ${bench_home}/benchmark_scripts/${benchmark_system_name}.py
+    </parameter>
+  </parameterset>
+
+  <parameterset name="hpc_benchmark_split">
+    <parameter name="benchmark_system_name" type="string">
+      hpc_benchmark_split
+    </parameter>
+    <parameter name="slifile" type="string">
+      ${bench_home}/benchmark_scripts/${benchmark_system_name}.sli
+    </parameter>
+  </parameterset>
+
+  <parameterset name="hpc_mam_benchmark_jari">
+    <parameter name="benchmark_system_name" type="string">
+      hpc_mam_benchmark_jari
+    </parameter>
+    <parameter name="slifile" type="string">
+      ${bench_home}/benchmark_scripts/${benchmark_system_name}.sli
+    </parameter>
+  </parameterset>
+
+  <parameterset name="topology_benchmark">
+    <parameter name="benchmark_system_name" type="string">
+      topology_benchmark
+    </parameter>
+    <parameter name="pythonfile" type="string">
+      ${bench_model}/TopologyConnect/${benchmark_system_name}.py
+    </parameter>
+  </parameterset>
+
+  <parameterset name="topology_benchmark_3">
+    <parameter name="benchmark_system_name" type="string">
+      topology_benchmark_nest3
+    </parameter>
+    <parameter name="pythonfile" type="string">
+      ${bench_model}/TopologyConnect/${benchmark_system_name}.py
+    </parameter>
+  </parameterset>
+
+</jube>

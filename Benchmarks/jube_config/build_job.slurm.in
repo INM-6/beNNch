@@ -1,0 +1,15 @@
+#!/bin/bash
+#SBATCH --partition=#PARTITION#
+#SBATCH --job-name=#JOB_NAME#
+#SBATCH -o #OUTPATH#
+#SBATCH -e #ERRPATH#
+#SBATCH --nodes=#NODES#
+#SBATCH --ntasks-per-node=#NTASKS_PER_NODE#
+#SBATCH --time=#TIME#
+#SBATCH --exclusive
+
+echo $PATH
+
+#COMMANDS#
+
+touch #READY#

@@ -1,0 +1,423 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jube>
+
+    <!-- Load jobfile -->
+    <fileset name="files">
+      <copy>../jube_config/${job_file}.in</copy>
+    </fileset>
+    
+    <!-- Substitute jobfile -->
+    <substituteset name="sub_bench_job">
+      <iofile in="${job_file}.in" out="$job_file" />
+      <sub source="#PARTITION#" dest="$partition" />
+      <sub source="#NODES#" dest="$nodes" />
+      <sub source="#NTASKS#" dest="$num_tasks" />
+      <sub source="#NTASKS_PER_NODE#" dest="$ppn" />
+      <sub source="#CPUS_PER_TASK#" dest="$cpus_per_task" />
+      <sub source="#TIME#" dest="$walltime" />
+      <sub source="#ERRPATH#" dest="$err_file" />
+      <sub source="#OUTPATH#" dest="$out_file" />
+      <sub source="#COMMANDS#" dest="$exec" />
+      <sub source="#READY#" dest="$ready_file" />
+      <sub source="#JOB_NAME#" dest="$job_name" />
+    </substituteset> 
+
+    <parameterset name="bench_base">
+      <parameter name="submit_cmd">sbatch</parameter>
+      <parameter name="job_file">job.slurm</parameter>
+      <parameter name="nodes" type="int">$NUMBER_OF_NODES</parameter>
+      <parameter name="ppn" type="int">$TASKS_PER_NODE</parameter>
+      <parameter name="num_tasks" type="int" mode="python">$TASKS_PER_NODE*$NUMBER_OF_NODES</parameter>
+      <parameter name="cpus_per_task" type="int">$THREADS_PER_TASK</parameter>
+      <parameter name="totVPs" type="int" mode="python">$THREADS_PER_TASK*$TASKS_PER_NODE*$NUMBER_OF_NODES</parameter>
+      <parameter name="walltime">00:30:00</parameter>
+      <parameter name="ready_file">ready</parameter>
+      <parameter name="err_file">stderr</parameter>
+      <parameter name="out_file">stdout</parameter>
+    </parameterset>
+
+    <parameterset name="bench_base_daint">
+      <parameter name="submit_cmd">sbatch</parameter>
+      <!-- Special slurm in-file with multithreading and large memory -->
+      <parameter name="job_file">job.daint.slurm</parameter>
+      <parameter name="nodes" type="int">$NUMBER_OF_NODES</parameter>
+      <parameter name="ppn" type="int">$TASKS_PER_NODE</parameter>
+      <parameter name="num_tasks" type="int" mode="python">$TASKS_PER_NODE*$NUMBER_OF_NODES</parameter>
+      <parameter name="cpus_per_task" type="int">$THREADS_PER_TASK</parameter>
+      <parameter name="totVPs" type="int" mode="python">$THREADS_PER_TASK*$TASKS_PER_NODE*$NUMBER_OF_NODES</parameter>
+      <parameter name="walltime">01:00:00</parameter>
+      <parameter name="ready_file">ready</parameter>
+      <parameter name="err_file">stderr</parameter>
+      <parameter name="out_file">stdout</parameter>
+    </parameterset>
+
+    <!-- In contrast to bench_base, fix #VPs and #Threads, compute
+	 TASK_PER_NODE -->
+    <parameterset name="bench_base_vp">
+      <parameter name="submit_cmd">sbatch</parameter>
+      <parameter name="job_file">job.slurm</parameter>
+      <parameter name="nodes" type="int">$NUMBER_OF_NODES</parameter>
+      <parameter name="num_tasks" type="int" mode="python">${NUM_VPS} // ${THREADS_PER_TASK}</parameter>
+      <parameter name="ppn" type="int" mode="python">${num_tasks} // ${NUMBER_OF_NODES}</parameter>
+      
+      <!-- next is alias to make result table template work -->
+      <parameter name="TASKS_PER_NODE" type="int">${ppn}</parameter>
+      <parameter name="cpus_per_task" type="int">$THREADS_PER_TASK</parameter>
+      <parameter name="totVPs" type="int" mode="python">$NUM_VPS</parameter>
+      <parameter name="walltime">00:30:00</parameter>
+      <parameter name="ready_file">ready</parameter>
+      <parameter name="err_file">stderr</parameter>
+      <parameter name="out_file">stdout</parameter>
+    </parameterset>
+
+    <parameterset name="bench_base_vp_daint">
+      <parameter name="submit_cmd">sbatch</parameter>
+      <parameter name="job_file">job.daint.slurm</parameter>
+      <parameter name="nodes" type="int">$NUMBER_OF_NODES</parameter>
+      <parameter name="num_tasks" type="int" mode="python">${NUM_VPS} // ${THREADS_PER_TASK}</parameter>
+      <parameter name="ppn" type="int" mode="python">${num_tasks} // ${NUMBER_OF_NODES}</parameter>
+      
+      <!-- next is alias to make result table template work -->
+      <parameter name="TASKS_PER_NODE" type="int">${ppn}</parameter>
+      <parameter name="cpus_per_task" type="int">$THREADS_PER_TASK</parameter>
+      <parameter name="totVPs" type="int" mode="python">$NUM_VPS</parameter>
+      <parameter name="walltime">01:30:00</parameter>
+      <parameter name="ready_file">ready</parameter>
+      <parameter name="err_file">stderr</parameter>
+      <parameter name="out_file">stdout</parameter>
+    </parameterset>
+
+    <parameterset name="bench_nest">
+      <parameter name="job_name" type="string">bench-${nest_version}-${system_name}-${nest_config}</parameter>      
+      <parameter name="exec">
+        module purge;
+        module load $modules; 
+        source ${NEST_INSTALL_DIR}/bin/nest_vars.sh;
+        export OMP_NUM_THREADS=$THREADS_PER_TASK
+        srun ${JEMALLOC_INSTALL_DIR}/bin/jemalloc.sh ${NEST_INSTALL_DIR}/bin/nest ${slifile}  --userargs=${SCALE}_${totVPs}_${SIMTIME}_${NUM_REC}_${PLASTIC}_${D_MIN}_${D_MAX}
+      </parameter>
+    </parameterset>
+
+    <parameterset name="bench_nest_boost">
+      <parameter name="job_name" type="string">bench-${nest_version}-${system_name}-${nest_config}</parameter>      
+      <parameter name="exec">
+        module swap $swap_modules
+        module load $modules
+        module load $boost_module
+        module load $gsl_module
+
+        source ${NEST_INSTALL_DIR}/bin/nest_vars.sh;
+        export OMP_NUM_THREADS=$THREADS_PER_TASK
+        srun ${JEMALLOC_INSTALL_DIR}/bin/jemalloc.sh ${NEST_INSTALL_DIR}/bin/nest ${slifile}  --userargs=${SCALE}_${totVPs}_${SIMTIME}_${NUM_REC}_${PLASTIC}_${D_MIN}_${D_MAX}
+      </parameter>
+    </parameterset>
+
+    <parameterset name="bench_nest_mpirun">
+      <parameter name="job_name" type="string">bench-${nest_version}-${system_name}-${nest_config}</parameter>      
+      <parameter name="exec">
+        module purge;
+        module load $modules; 
+        source ${NEST_INSTALL_DIR}/bin/nest_vars.sh;
+        export OMP_NUM_THREADS=$THREADS_PER_TASK
+        mpirun -np ${num_tasks} ${JEMALLOC_INSTALL_DIR}/bin/jemalloc.sh ${NEST_INSTALL_DIR}/bin/nest ${slifile}  --userargs=${SCALE}_${totVPs}_${SIMTIME}_${NUM_REC}_${PLASTIC}_${D_MIN}_${D_MAX}
+      </parameter>
+    </parameterset>
+    
+    <parameterset name="bench_nest_meso_mpirun">
+      <parameter name="job_name" type="string">bench-${nest_version}-${system_name}-${nest_config}</parameter>      
+      <parameter name="exec">
+        rm -rf ${mesocircuit_home}/parameters/${NUM_VPS}-${SCALE}
+        module purge;
+        module load $python2_module; 
+        export OMP_NUM_THREADS=$THREADS_PER_TASK
+        mpirun -np 1 python ${bench_model}/4x4mm2LFP/mesocircuit/parameterspace_control.py ${SCALE} ${NUM_VPS} ${SIMTIME} ${TRANSIENT}
+        
+        module purge;
+        module load $modules; 
+        source ${NEST_INSTALL_DIR}/bin/nest_vars.sh;
+        mpirun -np ${num_tasks} ${JEMALLOC_INSTALL_DIR}/bin/jemalloc.sh ${NEST_INSTALL_DIR}/bin/nest ${bench_model}/4x4mm2LFP/mesocircuit/parameters/${NUM_VPS}-${SCALE}/acd429db3b9ab17b5f5391184e500dc6.sli ${slifile} 
+      </parameter>
+    </parameterset>
+
+    <parameterset name="bench_nest_meso_srun">
+      <parameter name="job_name" type="string">bench-${nest_version}-${system_name}-${nest_config}</parameter>      
+      <parameter name="exec">
+        rm -rf ${mesocircuit_home}/parameters/${NUM_VPS}-${SCALE}
+        module purge;
+        module load $modules;
+        module load $python2_module; 
+        export OMP_NUM_THREADS=$THREADS_PER_TASK
+        srun -n 1 python ${bench_model}/4x4mm2LFP/mesocircuit/parameterspace_control.py ${SCALE} ${NUM_VPS} ${SIMTIME} ${TRANSIENT}
+        
+        module purge;
+        module load $modules;
+        source ${NEST_INSTALL_DIR}/bin/nest_vars.sh;
+        srun ${JEMALLOC_INSTALL_DIR}/bin/jemalloc.sh ${NEST_INSTALL_DIR}/bin/nest ${bench_model}/4x4mm2LFP/mesocircuit/parameters/${NUM_VPS}-${SCALE}/acd429db3b9ab17b5f5391184e500dc6.sli ${slifile} 
+      </parameter>
+    </parameterset>
+
+    <parameterset name="bench_nest_meso_boost_srun">
+      <parameter name="job_name" type="string">bench-${nest_version}-${system_name}-${nest_config}</parameter>      
+      <parameter name="exec">
+        rm -rf ${mesocircuit_home}/parameters/${NUM_VPS}-${SCALE}
+
+        module swap $swap_modules
+        module load $modules
+        module load $boost_module
+        module load $python2_module;
+
+        export OMP_NUM_THREADS=$THREADS_PER_TASK
+        srun -n 1 python ${bench_model}/4x4mm2LFP/mesocircuit/parameterspace_control.py ${SCALE} ${NUM_VPS} ${SIMTIME} ${TRANSIENT}
+        
+        module purge;
+        module load $modules;
+        source ${NEST_INSTALL_DIR}/bin/nest_vars.sh;
+        srun ${JEMALLOC_INSTALL_DIR}/bin/jemalloc.sh ${NEST_INSTALL_DIR}/bin/nest ${bench_model}/4x4mm2LFP/mesocircuit/parameters/${NUM_VPS}-${SCALE}/acd429db3b9ab17b5f5391184e500dc6.sli ${slifile} 
+      </parameter>
+    </parameterset>
+
+    <parameterset name="bench_nest_MAM_mpirun">
+      <parameter name="job_name" type="string">bench-${nest_version}-${system_name}-${nest_config}</parameter>
+      <parameter name="exec">
+        module purge;
+        module load $modules;
+        module load $gsl_module;
+        module load $python_module;
+        
+        source ${NEST_INSTALL_DIR}/bin/nest_vars.sh;
+        export PYTHONPATH=${MAM_home}/multi-area-model/:$PYTHONPATH;
+        export OMP_NUM_THREADS=$THREADS_PER_TASK
+       
+        python ${bench_model}/multi-area-model/run_example_createParams.py ${SCALE} ${totVPs} ${SIMTIME} ${K_SCALE} ${NEST_VERSION}
+
+        mpirun ${JEMALLOC_INSTALL_DIR}/bin/jemalloc.sh python ${pythonfile} ${SCALE} ${totVPs} ${NEST_VERSION}
+      </parameter>
+    </parameterset>
+
+    <parameterset name="bench_nest_MAM_srun">
+      <parameter name="job_name" type="string">bench-${nest_version}-${system_name}-${nest_config}</parameter>
+      <parameter name="exec">
+        module purge;
+        module load $modules;
+        module load $gsl_module;
+        module load $python_module;
+        
+        source ${NEST_INSTALL_DIR}/bin/nest_vars.sh;
+        export PYTHONPATH=${MAM_home}/multi-area-model/:$PYTHONPATH;
+        export OMP_NUM_THREADS=$THREADS_PER_TASK
+       
+        srun -n 1 python ${bench_model}/multi-area-model/run_example_createParams.py ${SCALE} ${totVPs} ${SIMTIME} ${K_SCALE} ${NEST_VERSION}
+
+        srun ${JEMALLOC_INSTALL_DIR}/bin/jemalloc.sh python ${pythonfile} ${SCALE} ${totVPs} ${NEST_VERSION}
+      </parameter>
+    </parameterset>
+
+    <parameterset name="bench_nest_MAM_boost_srun">
+      <parameter name="job_name" type="string">bench-${nest_version}-${system_name}-${nest_config}</parameter>
+      <parameter name="exec">
+        module swap $swap_modules
+        module load $modules
+        module load $boost_module
+        module load $gsl_module
+        module load $python_module
+        
+        source ${NEST_INSTALL_DIR}/bin/nest_vars.sh;
+        export PYTHONPATH=${MAM_home}/multi-area-model/:$PYTHONPATH;
+        export OMP_NUM_THREADS=$THREADS_PER_TASK
+       
+        srun -n 1 python ${bench_model}/multi-area-model/run_example_createParams.py ${SCALE} ${totVPs} ${SIMTIME} ${K_SCALE} ${NEST_VERSION}
+
+        srun ${JEMALLOC_INSTALL_DIR}/bin/jemalloc.sh python ${pythonfile} ${SCALE} ${totVPs} ${NEST_VERSION}
+      </parameter>
+    </parameterset>
+
+    <parameterset name="bench_nest_mpirun_noje">
+      <parameter name="job_name" type="string">bench-${nest_version}-${system_name}-${nest_config}</parameter>      
+      <parameter name="exec">
+      	module purge;
+      	module load $modules; 
+      	source ${NEST_INSTALL_DIR}/bin/nest_vars.sh;
+      	export OMP_NUM_THREADS=$THREADS_PER_TASK
+      	mpirun -np ${num_tasks} ${NEST_INSTALL_DIR}/bin/nest ${slifile}  --userargs=${SCALE}_${totVPs}_${SIMTIME}_${NUM_REC}_${PLASTIC}_${D_MIN}_${D_MAX}
+      </parameter>
+    </parameterset>
+
+    <parameterset name="bench_nest_noje">
+      <parameter name="job_name" type="string">bench-${nest_version}-${system_name}-${nest_config}</parameter>      
+      <parameter name="exec">
+        module purge;
+        module load $modules;
+        source ${NEST_INSTALL_DIR}/bin/nest_vars.sh;
+        export OMP_NUM_THREADS=$THREADS_PER_TASK
+        srun ${NEST_INSTALL_DIR}/bin/nest ${slifile}  --userargs=${SCALE}_${totVPs}_${SIMTIME}_${NUM_REC}_${PLASTIC}_${D_MIN}_${D_MAX}
+      </parameter>
+    </parameterset>
+
+ <parameterset name="bench_nest_rule">
+    <parameter name="job_name" type="string">bench-${nest_version}-${system_name}-${nest_config}</parameter>
+    <parameter name="exec">
+      module swap $swap_modules
+      module load $modules
+      module load $boost_module
+      module load $gsl_module
+
+    	source ${NEST_INSTALL_DIR}/bin/nest_vars.sh;
+    	export OMP_NUM_THREADS=$THREADS_PER_TASK
+
+    	srun ${JEMALLOC_INSTALL_DIR}/bin/jemalloc.sh ${NEST_INSTALL_DIR}/bin/nest ${slifile} --userargs=${SCALE}_${totVPs}_${SIMTIME}_${NUM_REC}_${PLASTIC}_${D_MIN}_${D_MAX}_${RULE}
+    </parameter>
+  </parameterset>
+
+  <parameterset name="bench_nest_split">
+    <parameter name="job_name" type="string">bench-${nest_version}-${system_name}-${nest_config}</parameter>
+    <parameter name="exec">
+      module swap $swap_modules
+      module load $modules
+      module load $boost_module
+
+    	source ${NEST_INSTALL_DIR}/bin/nest_vars.sh;
+    	export OMP_NUM_THREADS=$THREADS_PER_TASK
+
+    	srun ${JEMALLOC_INSTALL_DIR}/bin/jemalloc.sh ${NEST_INSTALL_DIR}/bin/nest ${slifile} --userargs=${SCALE}_${totVPs}_${SIMTIME}_${NUM_REC}_${PLASTIC}_${D_MIN}_${D_MAX}_${NBLOCKS}
+    </parameter>
+  </parameterset>
+
+  <parameterset name="bench_nest_rule_mpirun">
+    <parameter name="job_name" type="string">bench-${nest_version}-${system_name}-${nest_config}</parameter>
+    <parameter name="exec">
+    	module purge;
+    	module load $modules;
+    	source ${NEST_INSTALL_DIR}/bin/nest_vars.sh;
+    	export OMP_NUM_THREADS=$THREADS_PER_TASK
+    	mpirun -n ${num_tasks} ${JEMALLOC_INSTALL_DIR}/bin/jemalloc.sh ${NEST_INSTALL_DIR}/bin/nest ${slifile} --userargs=${SCALE}_${totVPs}_${SIMTIME}_${NUM_REC}_${PLASTIC}_${D_MIN}_${D_MAX}_${RULE}
+    </parameter>
+  </parameterset>
+
+  <parameterset name="bench_nest_split_mpirun">
+    <parameter name="job_name" type="string">bench-${nest_version}-${system_name}-${nest_config}</parameter>
+    <parameter name="exec">
+    	module purge;
+    	module load $modules;
+    	source ${NEST_INSTALL_DIR}/bin/nest_vars.sh;
+    	export OMP_NUM_THREADS=$THREADS_PER_TASK
+    	mpirun -n ${num_tasks} ${JEMALLOC_INSTALL_DIR}/bin/jemalloc.sh ${NEST_INSTALL_DIR}/bin/nest ${slifile} --userargs=${SCALE}_${totVPs}_${SIMTIME}_${NUM_REC}_${PLASTIC}_${D_MIN}_${D_MAX}_${NBLOCKS}
+    </parameter>
+  </parameterset>
+
+  <parameterset name="bench_nest_population">
+    <parameter name="job_name" type="string">bench-${nest_version}-${system_name}-${nest_config}</parameter>
+    <parameter name="exec">
+      module swap $swap_modules
+      module load $modules
+      module load $boost_module
+
+      source ${NEST_INSTALL_DIR}/bin/nest_vars.sh;
+      export OMP_NUM_THREADS=$THREADS_PER_TASK
+
+      srun ${JEMALLOC_INSTALL_DIR}/bin/jemalloc.sh ${NEST_INSTALL_DIR}/bin/nest ${slifile} --userargs=${SCALE}_${totVPs}_${PLASTIC}
+    </parameter>
+  </parameterset>
+
+  <parameterset name="bench_population_py">
+    <parameter name="job_name" type="string">bench-${nest_version}-${system_name}-${nest_config}</parameter>
+    <parameter name="exec">
+      module swap $swap_modules
+      module load $modules
+      module load $boost_module
+      module load $gsl_module
+      module load $python_module
+
+      source ${NEST_INSTALL_DIR}/bin/nest_vars.sh;
+      export OMP_NUM_THREADS=$THREADS_PER_TASK
+
+      srun ${JEMALLOC_INSTALL_DIR}/bin/jemalloc.sh python ${pythonfile} ${SCALE} ${totVPs} ${PLASTIC} ${RULE}
+    </parameter>
+  </parameterset>
+
+  <parameterset name="bench_nest_topology">
+    <parameter name="job_name" type="string">bench-${nest_version}-${system_name}-${nest_config}</parameter>
+    <parameter name="exec">
+      module swap $swap_modules
+      module load $modules
+      module load $boost_module
+      module load $gsl_module
+      module load $python_module
+      
+      source ${NEST_INSTALL_DIR}/bin/nest_vars.sh;
+      export OMP_NUM_THREADS=$THREADS_PER_TASK
+
+      srun ${JEMALLOC_INSTALL_DIR}/bin/jemalloc.sh python ${pythonfile} ${SCALE} ${totVPs}
+    </parameter>
+  </parameterset>
+
+    <!-- Regex pattern -->
+    <patternset name="nest_pattern_stdcout">
+      <pattern name="T_nrns" type="float">$jube_pat_fp # build_time_nodes</pattern> 
+      <pattern name="T_conns" type="float">$jube_pat_fp # build_edge_time</pattern> 
+      <pattern name="T_ini" type="float">$jube_pat_fp # init_time</pattern> 
+      <pattern name="T_equ" type="float">$jube_pat_fp # presim_time</pattern> 
+      <pattern name="T_sim" type="float">$jube_pat_fp # sim_time</pattern>
+      <pattern name="VSize_nodes" type="int">$jube_pat_int # virt_mem_after_nodes</pattern> 
+      <pattern name="VSize_mem" type="int">$jube_pat_int # virt_mem_after_edges</pattern> 
+      <pattern name="VSize_ini" type="int">$jube_pat_int # virt_mem_after_init</pattern> 
+      <pattern name="VSize" type="int">$jube_pat_int # virt_mem_after_sim</pattern> 
+      <pattern name="Rate" type="float">$jube_pat_fp # average rate</pattern> 
+      <pattern name="N_nrns" type="int">$jube_pat_int # num_neurons</pattern> 
+      <pattern name="N_conns" type="int">$jube_pat_int # num_connections</pattern> 
+      <pattern name="N_spks" type="int">$jube_pat_int # local_spike_counter</pattern> 
+      <pattern name="d_min" type="float">$jube_pat_fp # min_delay</pattern> 
+      <pattern name="d_max" type="float">$jube_pat_fp # max_delay</pattern> 
+      <pattern name="inicc" type="int">$jube_pat_int # initial_connector_capacity</pattern>
+      <pattern name="lcl" type="int">$jube_pat_int # large_connector_limit</pattern> 
+      <pattern name="lgf" type="float">$jube_pat_fp # large_connector_growth_factor</pattern> 
+      <pattern name="git" type="string">GIT: (.+)</pattern> 
+      <pattern name="EE_inner_conn_time" type="float">$jube_pat_int # EE inner_conn_time</pattern>
+      <pattern name="IE_inner_conn_time" type="float">$jube_pat_int # IE inner_conn_time</pattern>
+      <pattern name="EI_inner_conn_time" type="float">$jube_pat_int # EI inner_conn_time</pattern>
+      <pattern name="II_inner_conn_time" type="float">$jube_pat_int # II inner_conn_time</pattern>
+      <pattern name="EE_conns_per_sec" type="float">\d+ (.+) # EE conns_per_sec</pattern>
+      <pattern name="IE_conns_per_sec" type="float">\d+ (.+) # IE conns_per_sec</pattern>
+      <pattern name="EI_conns_per_sec" type="float">\d+ (.+) # EI conns_per_sec</pattern>
+      <pattern name="II_conns_per_sec" type="float">\d+ (.+) # II conns_per_sec</pattern>
+      <pattern name="T_boost_sort" type="float">elapsed sorting time: $jube_pat_fp</pattern>
+      <pattern name="T_communication_time" type="float">elapsed communication time: $jube_pat_fp</pattern>
+      <pattern name="T_comm_allToall" type="float">elapsed communication alltoall time: $jube_pat_fp</pattern>
+      <pattern name="T_collocation" type="float">elapsed collocation time: $jube_pat_fp</pattern>
+    </patternset>
+    
+    <!-- Regex pattern -->
+    <patternset name="nest_pattern_meso_stdcout">
+      <pattern name="hash" type="string">Hash: $jube_pat_wrd</pattern>
+      <pattern name="T_nrns" type="float">Creating   took $jube_pat_fp</pattern> 
+      <pattern name="T_conns" type="float">Connecting took $jube_pat_fp</pattern>
+      <pattern name="T_ini" type="float">Init time: $jube_pat_fp</pattern>
+      <pattern name="T_sim" type="float">Simulating took $jube_pat_fp</pattern> 
+      <pattern name="VSize_nodes" type="int">mem_after_nodes: $jube_pat_int</pattern>  
+      <pattern name="VSize_mem" type="int">mem_after_connect: $jube_pat_int</pattern>  
+      <pattern name="VSize_ini" type="int">mem_after_ini: $jube_pat_int</pattern>
+      <pattern name="VSize" type="int">Memory: $jube_pat_int</pattern>  
+      <pattern name="N_nrns" type="int">Number of neurons, without TC: $jube_pat_int</pattern> 
+      <pattern name="N_conns" type="int">$jube_pat_int # num_connections</pattern>
+      <pattern name="N_spks" type="int">$jube_pat_int # local_spike_counter</pattern>
+      <pattern name="git" type="string">GIT: (.+)</pattern>
+    </patternset>
+
+    <!-- Regex pattern -->
+    <patternset name="nest_pattern_MAM_stdcout">
+      <pattern name="T_network_local" type="float">'time_network_local': $jube_pat_fp</pattern>
+      <pattern name="T_network_global" type="float">'time_network_global': $jube_pat_fp</pattern>
+      <pattern name="T_create" type="float">'time_create': $jube_pat_fp</pattern>
+      <pattern name="T_connect" type="float">'time_connect': $jube_pat_fp</pattern>
+      <pattern name="T_ini" type="float">'time_init': $jube_pat_fp</pattern>
+      <pattern name="T_sim" type="float">'time_simulate': $jube_pat_fp</pattern>
+      <pattern name="VSize" type="int">'total_memory': $jube_pat_int</pattern>
+      <pattern name="VSize_ini" type="int">'init_memory': $jube_pat_int</pattern>
+      <pattern name="VSize_net" type="int">'network_memory': $jube_pat_int</pattern>
+      <pattern name="N_nrns" type="int">Network size: $jube_pat_int</pattern>
+      <pattern name="N_conns" type="int">'num_connections': $jube_pat_int</pattern>
+      <pattern name="N_spks" type="int">'local_spike_counter': $jube_pat_int</pattern>
+      <pattern name="git" type="string">GIT: (.+)</pattern>
+    </patternset>
+
+
+</jube>

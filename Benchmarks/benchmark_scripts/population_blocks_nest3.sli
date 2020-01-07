@@ -1,0 +1,374 @@
+/*
+ *  population_blocks.sli
+ *
+ *  This file is part of NEST.
+ *
+ *  Copyright (C) 2004 The NEST Initiative
+ *
+ *  NEST is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  NEST is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with NEST.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
+
+/*
+  Population model for NEST 3.0
+
+  The population model creates scale * 20 populations, where each population
+  consist of 5000 neurons. When connecting, we connect each population with
+  100 other random populations, and use a indegree of 50 connections per neuron.
+
+  This model focuses on connection, no simulation is carried out, except for a
+  short simulation to carry out the exchange needed because of connection.
+
+   - Uses iaf_psc_alpha neuron model
+   - Connections use stdp_pl_synapse_hom_hpc if plastic is true,
+     else static_synapse
+
+   - Network size: scale * 20 * 5000
+   - Connectivity: 50 * 100 * num_populations
+
+   User arguments
+   --------------
+   - All are required
+   - Script must be run as
+
+      <bin_path>/nest <script_path>/population_blocks.sli --userargs=<scale>_<num_vp>_<plastic>
+
+    - Individual arguments must be separated with _ for JUBE compatibility
+    - Arguments:
+      - scale (int)    : network size is scale * 20 * 5000 (scale >= 5 recommended)
+      - num_vp (int)   : number of virtual processes (MPI ranks x threads per rank)
+      - plastic (bool) : if true, use plastic E->E synapses, otherwise static
+
+    Benchmark phases
+    ----------------
+    1. Startup
+    2. Neuron (node) creation
+    3. Network connection setup
+    4. Initial simulation (single time step)
+    5. Finalization
+
+    Benchmark output
+    ----------------
+    - All ranks write to stdout (approx 140 lines per rank)
+    - Normal NEST output is mixed with logging lines
+    - Logging lines have the format
+
+              <rank> <value> # <tag>
+
+      where the tag uniquely identifies the value being logged. Tags
+      can contain spaces and each rank will write each tag once.
+    - The following tags are output:
+
+      virt_mem_0  -- virtual memory size after startup
+
+      build_time_nodes -- time required for phase 2
+      virt_mem_after_nodes -- virtual memory size after phase 2
+
+      build_edge_time -- time required for phase 3
+      virt_mem_after_edges -- virtual memory size after phase 3
+
+      init_time -- time required for phase 4
+      virt_mem_after_init -- virtual memory size after phase 4
+
+      num_neurons -- total number of neurons in network
+
+      num_connections -- number of connections stored on MPI rank
+
+      min_delay -- actual minimum delay
+
+      max_delay -- actual maximal delay
+
+    Notes
+    -----
+    - When comparing 2.14 and 5G, one needs to consider sum of build_edge_time
+      and init_time
+    - The total number of connections in a network is obtained by summing
+      num_connections across ranks.     
+*/
+  
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%% PARAMETER SECTION %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% define all relevant parameters: changes should be made here
+% all data is placed in the userdict dictionary
+
+% call like:
+% nest --userargs=scale,nvp,plastic,d_min,d_max hpc_benchmark.sli
+
+/user_scale statusdict/userargs :: 0 get (_) breakup 0 get double def
+/user_nvp statusdict/userargs :: 0 get (_) breakup 1 get int def
+/user_plastic statusdict/userargs :: 0 get (_) breakup 2 get (true) eq def
+
+
+(GIT: ) =only statusdict/version :: ==
+
+(user_scale  : ) =only user_scale ==
+(user_nvp    : ) =only user_nvp ==
+(user_plastic: ) =only user_plastic ==
+
+/nvp user_nvp def     % total number of virtual processes
+/scale user_scale def % scaling factor of the network size,
+                      % total network size = scale*5000*20 neurons
+/plastic user_plastic def
+/d_min 1.5 def
+/d_max 1.5 def
+
+/inisimtime 10. ms def  % initial simulation time: calibration etc
+/dt 0.1 ms def          % simulation step
+
+% ------------------------------------------------------------------------------
+
+% Rise time of synaptic currents
+
+/tau_syn 0.32582722403722841 ms def
+
+% ------------------------------------------------------------------------------
+
+/brunel_params
+<<
+  /num_neurons 5000                % number of neurons per population
+  /num_pop 20 scale mul round cvi  % number of populations (20 * scale)
+  /num_pop_connections 100         % each population connect to 100 populations
+
+  scale 4 leq
+  {
+    % if scale is less than 5, we only connect to num_pop per population
+    /num_pop_connections 20 scale mul round cvi def
+  } if
+
+  /model_params
+  <<
+    % Set variables for iaf_psc_alpha
+    /E_L     0.0  mV  % Resting membrane potential (mV)
+    /C_m   250.0  pF  % Capacity of the membrane (pF)
+    /tau_m  10.0  ms  % Membrane time constant (ms)
+    /t_ref   0.5  ms  % duration of refractory period (ms)
+    /V_th   20.0  mV  % Threshold (mV)
+    /V_reset 0.0  mV  % Reset Potential (mV)
+    /tau_syn_ex   tau_syn % time const. postsynaptic currents (ms)
+    /tau_minus 30.0 ms %time constant for STDP (depression)
+    % V can be randomly initialized see below
+    /V_m 5.7 mV % mean value of membrane potential
+  >>
+
+  /delay  d_min ms        % synaptic delay, all connections (ms)
+
+  /stdp_params
+  <<
+    /delay d_min ms
+    /alpha  0.0513
+    /lambda 0.1          %STDP step size
+    /mu     0.4          %STDP weight dependence exponent (potentiation)
+    /tau_plus 15.0       %time constant for potentiation
+  >>
+
+>> def
+
+% Here we resolve parameter dependencies, by making the independent
+% values visible
+brunel_params dup using
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% FUNCTION SECTION %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+/BuildNetwork
+{
+  
+  tic % start timer on construction
+  % set global kernel parameters
+  <<
+     /total_num_virtual_procs nvp
+     /resolution  dt
+     /overwrite_files true
+  >> SetKernelStatus
+
+  /iaf_psc_alpha    model_params    SetDefaults
+
+  % ------------------------- Build network ------------------------------------
+
+  M_INFO (BuildNetwork)
+  (Creating populations.) message % show message
+
+  /population_vector [] def  % Array containing all populations
+  /num_nodes 0 def           % Size of all populations
+
+  1 1 num_pop
+  {
+    pop  % remove number on stack
+
+    /iaf_psc_alpha num_neurons Create /population_gc Set           % GIDCollection of population
+    /num_nodes num_nodes population_gc size add def
+
+    population_vector population_gc append /population_vector Set  % Add GC to vector
+  } for
+
+  toc /BuildNodeTime Set
+
+  BuildNodeTime cvs ( # build_time_nodes) join logger /log call
+
+  memory_thisjob cvs ( # virt_mem_after_nodes) join logger /log call
+ 
+  %-------------------------- Connection ---------------------------------------
+
+  tic   % start timer for selecting targets
+
+  M_INFO (BuildNetwork)
+  (Finding target populations.) message
+
+  /base_seed GetKernelStatus /rng_seeds get Last def
+  /rng nvp base_seed add rngdict/MT19937 :: exch CreateRNG def
+
+  /targets [ num_pop ] { ; rng population_vector num_pop_connections RandomSubset } Table def
+
+  toc /FindTargetsTime Set
+
+  FindTargetsTime cvs ( # find_targets_time) join logger /log call
+
+  tic    % Start timer for connection time
+
+  /conn_degree 50 def % number of connections per neuron
+  /conn_dict 
+  <<
+   /rule (fixed_indegree) /indegree conn_degree /allow_autapses false /allow_multapses true
+  >> def
+
+
+  % Create custom synapse types with appropriate values for
+  % our excitatory and inhibitory connections
+  /static_synapse_hpc << /delay delay >> SetDefaults
+  /static_synapse_hpc /syn_std  CopyModel
+  /static_synapse_hpc /syn << /weight 1. >> CopyModel
+
+  plastic
+  {
+    stdp_params /weight 1. put 
+    /stdp_pl_synapse_hom_hpc /syn_ex_ex stdp_params CopyModel
+  }
+  {
+    /static_synapse_hpc /syn_ex_ex << /weight 1. >> CopyModel
+  }
+  ifelse
+
+
+  M_INFO (BuildNetwork)
+  (Connecting populations.) message
+
+  d_min d_max neq
+  {
+    /delays << /distribution /uniform /low d_min /high d_max >> def
+  }
+  {
+    /delays d_min def
+  }
+  ifelse
+
+  [ targets population_vector ] 
+  { 
+    /source Set
+    /target_vec Set
+
+    target_vec
+    { 
+      /target Set
+      source target conn_dict << /synapse_model /syn_ex_ex >> Connect
+    }
+    forall % populations
+  }
+  ScanThread
+
+  % read out time used for building
+  toc /BuildEdgeTime Set
+  BuildEdgeTime cvs ( # build_edge_time ) join logger /log call
+  memory_thisjob cvs ( # virt_mem_after_edges) join logger /log call
+
+ } def % end of buildnetwork
+
+% ------------------------------------------------------------------------------
+
+/RunSimulation
+{
+
+  % initialize logger
+  logger /init call
+
+  ResetKernel
+
+  memory_thisjob cvs ( # virt_mem_0) join logger /log call
+
+  % ----------------------- Network Construction -------------------------------
+
+  BuildNetwork
+
+  % ---------------- Initial simulation: rig and calibrate ---------------------
+
+  tic
+
+  Prepare
+  inisimtime Run
+
+  toc /InitializationTime Set
+
+  memory_thisjob cvs ( # virt_mem_after_init) join logger /log call
+  InitializationTime cvs ( # init_time) join logger /log call
+
+  % ----------------------- Cleanup and output ---------------------------------
+
+  Cleanup
+  
+
+  num_nodes cvs ( # num_neurons) join logger /log call
+  GetKernelStatus /num_connections get cvs ( # num_connections) join logger /log call
+  GetKernelStatus /min_delay get cvs ( # min_delay) join logger /log call
+  GetKernelStatus /max_delay get cvs ( # max_delay) join logger /log call
+
+  logger /done call
+  
+} def
+
+% ------------------------------------------------------------------------------
+
+/*
+    This function defines a logger class used to properly log memory and timing
+    information from network simulations. It is used by hpc_benchmark.sli to
+    store the information to the log files.
+*/
+
+/logger
+<<
+    /line_counter 0
+
+    % constructor
+    /init
+    {
+      % nothing to do since we only log to stdout
+    }
+
+    % logging function
+    % expects one operand on stack to write to file
+    /log
+    {
+      /value Set
+      
+      cout Rank <- ( ) <- value <- endl flush pop
+    }
+
+    % closes file
+    /done
+    {
+  % nothing to do since we only log to stdout
+    }
+
+>> def
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% RUN BENCHMARK %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+RunSimulation

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jube>
+
+  <include-path>
+    <path>../jube_config/</path>
+  </include-path>
+
+  <benchmark name="installcheck_nest" outpath="../../../BenchWork/jube_builds/NEST-2.16">
+    
+    <step name="installcheck">
+      <use from="dir_config.xml">dir_config</use>
+      <use from="system_descriptions.xml">system_stallo</use>
+      <use from="packages.xml">nest_2_16,nest_base_O3_strict</use>
+      <use from="build_jobs.xml">build_base,run_nest_installcheck,files,sub_build_job</use>
+      <do done_file="$ready_file">$submit_cmd $job_file</do> <!-- shell command -->
+    </step>
+
+    <!-- Create result table -->
+
+    <analyser name="analyse_nest_installcheck">
+      <use from="build_jobs.xml">nest_installcheck_pattern</use>
+      <analyse step="installcheck">
+	<file>stdout</file>
+      </analyse>
+    </analyser>
+    
+    <result>
+      <use>analyse_nest_installcheck</use>
+      <table name="NEST Installcheck" style="pretty" sort="number">
+	<column>nest_version</column>
+	<column>system_name</column>
+	<column>nest_config</column>
+	<column>n_tests</column>
+	<column>n_passed</column>
+	<column>n_skipped</column>	
+	<column>n_failed</column>	
+      </table>
+    </result>
+
+  </benchmark>
+</jube>
+

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jube>
+
+  <!-- This version runs all MPI/Thread Combinations for 24 VPs in one
+       script, scale 20 -->
+
+  <include-path>
+    <path>../jube_config/</path>
+  </include-path>
+
+
+  <benchmark name="hpc_2_14_daint" outpath="../../../../../BenchWork/jube_hpc/nest_2.14">
+
+    <parameterset name="scale_check">
+      <parameter name="base_vp" type="int">36</parameter>
+      <parameter name="base_scale" type="int">20</parameter>
+      <parameter name="SIMTIME" type="float">1000</parameter>
+      <parameter name="NUMBER_OF_NODES" type="int">8</parameter>
+      <parameter name="NUM_VPS" type="int" mode="python">$base_vp*$NUMBER_OF_NODES</parameter>
+      <parameter name="SCALE" type="int" mode="python">$base_scale*$NUMBER_OF_NODES</parameter>
+      <parameter name="THREADS_PER_TASK" type="int">1,3,4,6,9,18</parameter>
+      <parameter name="NUM_REC" type="int">1000</parameter>
+      <parameter name="PLASTIC" type="string">true</parameter>
+      <parameter name="D_MIN" type="float">1.5</parameter>
+      <parameter name="D_MAX" type="float">1.5</parameter>
+    </parameterset>
+
+    <step name="bench">
+      <use from="dir_config.xml">dir_config</use>
+      <use from="system_descriptions.xml">system_daint</use>
+      <use from="benchmark_systems.xml">hpc_benchmark</use>
+      <use from="packages.xml">nest_2_14,nest_base_O3_strict,jemalloc</use>
+      <use from="bench_jobs.xml">bench_base_vp_daint,bench_nest,files,sub_bench_job</use>
+      <use>scale_check</use>
+      <do done_file="$ready_file">$submit_cmd $job_file</do>
+    </step>
+
+
+    <!-- Analyse -->
+    <analyser name="analyse_scale_check">
+      <use from="bench_jobs.xml">nest_pattern_stdcout</use>      <!-- use existing patternset -->
+      <analyse step="bench">
+        <file>stdout</file>        <!-- file which should be scanned -->
+      </analyse>
+    </analyser>
+
+    <!-- Create result table -->
+    <result>
+      <use>analyse_scale_check</use>      <!-- use existing analyser -->
+      <table name="NEST_2_14_daint" style="cvs" sort="number">
+        <column>NUMBER_OF_NODES</column>
+        <column>TASKS_PER_NODE</column>
+        <column>THREADS_PER_TASK</column>
+        <column>NUM_VPS</column>
+        <column>SCALE</column>
+        <column>PLASTIC</column>
+        <column>T_nrns</column>
+        <column>T_conns_min</column>
+        <column>T_conns_max</column>
+        <column>T_ini_min</column>
+        <column>T_ini_max</column>
+        <column>T_equ</column>
+        <column>T_sim</column>
+        <column>VSize_sum</column>
+        <column>N_spks_sum</column>
+        <column>Rate_sum</column>
+        <column>N_nrns</column>
+        <column>N_conns_sum</column>
+        <column>d_min</column>
+        <column>d_max</column>
+      </table>
+    </result>
+
+
+  </benchmark>
+</jube>

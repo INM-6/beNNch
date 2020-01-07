@@ -1,0 +1,1479 @@
+/*
+    mesocircuit.sli
+    bases on
+    microcircuit.sli
+
+    Implementation of a multi-layered spatially structured
+    cortical network model.
+
+    function definitions:
+    - CheckParameters
+    - PrepareSimulation
+    - DerivedParameters
+    - CreateNetworkNodes
+    - ConnectNetworkNodes
+    - GetConnectionDictionary
+    - CheckConnections
+    - WriteGIDstoFile
+    - WritePositionstoFile
+    - WriteConnectionstoFile
+
+    Copyright (C) 2014-2018, 4x4mm2LFP model authors.
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+*/
+
+
+% NEST topology module for creating and connecting neurons
+topology using
+
+
+/CheckParameters
+% raise errors if wrong parameters are provided
+{
+    Rank 0 eq
+    {
+        (Checking parameters.) M_INFO message
+    }
+    % TODO add more checks
+
+    % normal delays and weights required if connect_method = 'Connect'
+    connect_method (Connect) eq
+    {
+        delay_parameter (normal) neq
+        {
+            /CheckParameters /delay_parameter raiseerror
+        } if
+
+        weight_parameters
+        {
+            /weight_parameter Set
+            weight_parameter (normal) neq
+            {
+                /CheckParameters /weight_parameters raiseerror
+            } if
+        } forall
+    } if
+
+} def
+
+
+/PrepareSimulation
+% sets global kernel and recording parameters
+{
+    Rank 0 eq
+    {
+        (Preparing Simulation.) M_INFO message
+    }
+
+    ResetKernel
+    % kernel parameters
+    0
+    <<
+       /resolution dt
+       /total_num_virtual_procs n_vp
+       /overwrite_files overwrite_existing_files
+       /rng_seeds master_seed [0 n_vp 1 sub] add Range % local RNG seeds
+       /grng_seed master_seed n_vp add                 % global RNG seed
+       /data_path output_path
+    >> SetStatus
+
+    % random number generators
+%    /seed_offset master_seed n_vp add def
+%    /script_rngs [ n_vp ]
+%    { seed_offset add rngdict /gsl_mt19937 get exch createrng } table def
+%    /normal_rdvs script_rngs { rdevdict /normal get createrdv } map def
+%    % create global rng with master_seed independent of vps
+%    /global_rng rngdict /gsl_mt19937 get seed_offset createrng def
+
+    /seed_offset master_seed n_vp add def
+    /script_rngs [ n_vp ]
+    { seed_offset add rngdict /MT19937 get exch CreateRNG } Table def
+    /normal_rdvs script_rngs { rdevdict /normal get CreateRDV } Map def
+    % create global rng with master_seed independent of vps
+    /global_rng rngdict /MT19937 get seed_offset CreateRNG def 
+
+    % use global spike detector if more than 1 MPI process is used
+    % and num_rec_procs is set to be greater than 0
+    NumProcesses 1 gt
+    num_rec_procs 0 gt
+    and
+    {
+        num_rec_procs SetNumRecProcesses % number of recording mpi processes
+    } if
+} def
+
+
+/DerivedParameters
+% parameters derived from those in parameterset.py and parameterset_control.py
+%
+% TODO: consider which parameters could be defined on the Python level instead
+% TODO: scaling for preserving the working point
+{
+    Rank 0 eq
+    {
+        (Deriving parameters.) M_INFO message
+    }
+
+    % NEST simulation time
+    /nest_t_sim
+        transient t_sim add
+    def
+
+
+    % scale number of neurons according to the given density
+    /num_neurons
+    full_num_neurons
+        { density mul cvi } [2] Map
+    def
+
+    ('number of neurons ') ==
+    num_neurons ==
+
+    % scale the number of synapses between populations
+    /num_synapses
+        full_num_synapses
+        { density mul } [2] Map
+    def
+
+    % same for thalamus
+    % scale number of neurons according to the given density
+    /num_neurons_th
+    full_num_neurons_th
+        { density mul cvi } [2] Map
+    0 get 0 get
+    def
+
+    % scale the number of synapses
+    /num_synapses_th
+        full_num_synapses_th
+        { density mul } [2] Map
+    def
+
+    % number of layers
+    /num_layers num_neurons length def
+    % number of populations in each layer
+    /num_pops_per_layer num_neurons Dimensions 1 get def
+
+
+    % compute PSC amplitude from PSP amplitude
+    model_params using
+
+    % factors for transforming PSP amplitude to PSC amplitude
+    /re tau_m tau_syn_ex div def
+    /de tau_syn_ex tau_m sub def
+    /ri tau_m tau_syn_in div def
+    /di tau_syn_in tau_m sub def
+
+    /PSC_e_over_PSP_e
+        (((C_m)^(-1)*tau_m*tau_syn_ex/de*(re^(tau_m/de)-re^(tau_syn_ex/de)))^(-1))
+        ExecMath
+    def
+
+    /PSC_i_over_PSP_i
+        (((C_m)^(-1)*tau_m*tau_syn_in/di*(ri^(tau_m/di)-ri^(tau_syn_in/di)))^(-1))
+        ExecMath
+    def
+    endusing % of model_params
+
+    % compute weight (PSC) matrix
+    % first, multiply the weight modification matrix with the absolute PSP_e
+    % which already gives the matrix structure
+    weight_mod_facts { PSP_e mul } Map
+
+    % second, scale from PSP to PSC. every second entry is exc.
+    { [ PSC_e_over_PSP_e PSC_i_over_PSP_i
+        PSC_e_over_PSP_e PSC_i_over_PSP_i
+        PSC_e_over_PSP_e PSC_i_over_PSP_i
+        PSC_e_over_PSP_e PSC_i_over_PSP_i ] mul } Map
+    /PSC_matrix Set
+
+    % PSC amplitude for external input
+    /PSC_ext PSC_e_over_PSP_e PSP_ext mul def
+
+    % sd of external weight (taking relative sd of EX neurons)
+    /PSC_ext_sd PSC_ext PSC_rel_sd 0 get mul def
+
+    % scale the weight of the thalamic population
+    /PSC_th PSC_ext th_weight_scale mul def
+    /PSC_th_sd PSC_ext_sd th_weight_scale mul def
+
+    % extent of the whole simulated area
+    /area_extent extent_length dup mul def
+
+    % in case of non-random positions (= jittered lattice),
+    % the neuron numbers are converted to the nearest square numbers
+    random_positions not
+    {
+        num_neurons
+        {
+            {
+                dup /nneurons Set
+                nneurons sqrt nneurons sqrt int sub
+                0.5 lt
+                {
+                    /num_sqrt nneurons sqrt int def
+                }
+                {
+                    /num_sqrt nneurons sqrt int 1 add def
+                } ifelse
+                0 mul num_sqrt dup mul add
+            } Map
+        } Map
+        /num_neurons Set
+    } if
+
+
+    % numbers of neurons from which to record spikes and membrane potentials
+    record_fraction_neurons_spikes
+    {
+        /num_neurons_rec_spikes
+            num_neurons{ frac_rec_spikes mul cvi } [2] Map
+        def
+    }{
+        /num_neurons_rec_spikes
+            [num_layers num_pops_per_layer] n_rec_spikes LayoutArray
+        def
+    } ifelse
+
+    record_fraction_neurons_voltage
+    {
+        /num_neurons_rec_voltage
+            num_neurons{ frac_rec_voltage mul cvi } [2] Map
+        def
+    }{
+        /num_neurons_rec_voltage
+            [num_layers num_pops_per_layer] n_rec_voltage LayoutArray
+        def
+    } ifelse
+
+
+    % add MPI Rank info to position and connection filenames
+    /position_filename position_filename_trunk Rank cvs join (.dat) join def
+    /connection_filename connection_filename_trunk Rank cvs join (.dat) join
+
+    % create arrays with 0s for derived parameters in each connection loop
+    % (length of # of different connections)
+    % scaling factor a
+    /derived_params_a num_synapses Flatten length_a array def
+    % number of connections between populations K
+    /derived_params_K num_synapses Flatten length_a array def
+
+} def
+
+
+
+/CreateNetworkNodes
+% create nodes of neurons and devices
+%
+% TODO: replace subnet structures by GIDCollections
+{
+    Rank 0 eq
+    {
+        (Creating network nodes.) M_INFO message
+    }
+
+    % create and configure neurons
+    neuron_model model_params SetDefaults
+    % arrays of GIDs:
+    % topology layer subnets each containing the neurons
+    /topo_layer_subnet_GIDs [num_layers num_pops_per_layer] 0 LayoutArray def
+    % spike detectors
+    /spike_detector_GIDs [num_layers num_pops_per_layer] 0 LayoutArray def
+    % voltmeters
+    /voltmeter_GIDs [num_layers num_pops_per_layer] 0 LayoutArray def
+    % Poisson generators
+    /poisson_GIDs [num_layers num_pops_per_layer] 0 LayoutArray def
+    % DC generators
+    /dc_GIDs  [num_layers num_pops_per_layer] 0 LayoutArray def
+
+    % first, create spike detectors in a subnet so that they have a continous
+    % range of GIDs (for round-robin distribution on MPI processes)
+    0 ChangeSubnet
+    /subnet Create /spike_detector_subnet Set
+    spike_detector_subnet ChangeSubnet
+
+    0 1 num_layers 1 sub
+    {
+        /layer_idx Set
+        0 1 num_pops_per_layer 1 sub
+        {
+            /pop_idx Set
+
+            /spike_detector Create /this_spike_detector Set
+            this_spike_detector
+            <<
+                % set spike detector label for filenames;
+                % the GID of the spike detector and the process number
+                % are appended automatically
+                /label spike_detector_label layer_idx 2 mul pop_idx add cvs join
+                /to_file save_cortical_spikes
+                /to_memory false
+                /start transient
+            >> SetStatus
+            spike_detector_GIDs [layer_idx pop_idx]
+            this_spike_detector put
+            /spike_detector_GIDs Set
+
+        } for % loop over EX and IN populations
+    } for % loop over layers
+
+
+    % next, create neurons and other devices
+    0 1 num_layers 1 sub
+    {
+        /layer_idx Set
+        0 ChangeSubnet % change to the root node
+        /subnet Create /layer_subnet Set
+        0 1 num_pops_per_layer 1 sub
+        {
+            /pop_idx Set
+            layer_subnet ChangeSubnet
+            /subnet Create /population_subnet Set
+            population_subnet ChangeSubnet
+
+            % create neurons at spatial positions with topology
+            % topology LAYER containing one population != cortical LAYER
+
+            % dimensions of topology layer
+            /dim_topo 2 def % 2D sheet = 2 coordinates per neuron
+            % get virtual process of neuron subnet for accessing the
+            % RNG on this vp
+            CurrentSubnet /vp get /node_vp Set
+            % number of neurons on this vp
+            num_neurons layer_idx get pop_idx get
+            /num_neurons_vp Set
+
+            random_positions % original neuron numbers
+            {
+                /pos [ num_neurons_vp ] { ; [global_rng drand global_rng drand ] } Table
+                    0.5 sub extent_length mul
+                def
+
+            } % positions shall be completely random
+            { % else: jittered lattice positions, neuron numbers are square numbers
+                /num_sqrt_here num_neurons_vp sqrt int def
+                % distance between two grid points
+                /grid_dist extent_length num_sqrt_here div def
+                % create array with matrix indeces,
+                % e.g., [[0 0] [0 1] [1 0] [1 1]] for 4 neurons;
+                % "1 sub" because indeces start with 0
+                [num_neurons_vp] Range 1 sub
+                {num_sqrt_here cv2d dim_topo arraystore} Map
+                % scale to the size of the extent (first position at grid_dist/2)
+                {0.5 add grid_dist mul} Map
+                % add randomization, jitter_factor in [0,1]
+                /half_extent 0.5 extent_length mul def
+                { [ dim_topo {global_rng get drand 0.5 sub % rnd in [-0.5,0.5]
+                extent_length mul jitter_factor mul} repeat ] add } Map
+                % constrain every position into [-extent_length/2 extent_length/2]
+                {
+                    % constrain in [0,extent_length], some values might be outside because
+                    % the rnd no. was added and are now shifted back inside
+                    {
+                        dup
+                        0 lt { extent_length add } if
+                        dup
+                        extent_length gt { extent_length sub } if
+                    } Map
+
+                    % shift into [-extent_length/2 extent_length/2]
+                    half_extent sub
+                } Map
+                /pos Set
+            } ifelse
+
+            % topology layer dictionary
+            /topo_layer_dict
+            <<
+                /positions pos
+                /extent [extent_length extent_length]
+                /center [0. 0.]
+                /elements neuron_model
+                /edge_wrap pbc
+            >>
+            def
+
+            topo_layer_dict CreateLayer /topo_layer_subnet Set
+
+            % add the GID of the topology layer to the GID collection
+            topo_layer_subnet_GIDs [layer_idx pop_idx]
+            topo_layer_subnet put
+            /topo_layer_subnet_GIDs Set
+
+            % initialize membrane potentials
+            topo_layer_subnet GetLocalChildren
+            {
+                dup /vp get /node_vp Set
+                << /V_m normal_rdvs node_vp get Random Vm0_std mul
+                    Vm0_mean add
+                >> SetStatus
+            } forall
+
+
+            population_subnet ChangeSubnet
+            % create and configure stimulus and recording devices,
+            % one per population
+            /subnet Create /device_subnet Set
+            device_subnet ChangeSubnet
+
+            /voltmeter Create /this_voltmeter Set
+            this_voltmeter
+            <<
+               /label voltmeter_label layer_idx 2 mul pop_idx add cvs join
+               /to_file save_voltages
+               /to_memory false
+               /start rec_voltage_start transient add
+               /stop rec_voltage_stop transient add
+               /interval dt_voltage
+            >> SetStatus
+            voltmeter_GIDs [layer_idx pop_idx] this_voltmeter put
+            /voltmeter_GIDs Set
+
+            /poisson_generator Create /this_poisson_generator Set
+            K_bg layer_idx get pop_idx get /this_K_bg Set
+            this_poisson_generator
+            <<
+               /rate this_K_bg bg_rate mul
+            >> SetStatus
+
+            poisson_GIDs [layer_idx pop_idx] this_poisson_generator
+            put
+            /poisson_GIDs Set
+
+            % WARNING: currently, dc generators are not used.
+            % they are created and connected but in network_params the
+            % dc_amplitude is set to 0
+            dc_amplitudes layer_idx get pop_idx get
+            /dc_amp Set
+            /dc_generator Create /this_dc_generator Set
+            this_dc_generator
+            <<
+               /amplitude dc_amp
+            >> SetStatus
+            dc_GIDs [layer_idx pop_idx] this_dc_generator put
+            /dc_GIDs Set
+
+        } for % loop over EX and IN populations
+    } for % loop over layers
+
+
+    % create and configure thalamic neurons (parrots) and their Poisson inputs
+    0 ChangeSubnet
+    num_neurons_th 0 gt
+    {
+        /subnet Create /th_subnet Set
+        th_subnet ChangeSubnet
+
+        % create position array for thalamic neurons
+        /th_pos [ num_neurons_th ] { ; [global_rng drand global_rng drand ] } Table
+        0.5 sub extent_length mul def
+
+        % extract GIDs of thalamic neurons which are in the circular area to be
+        % activated with an external stimulus
+        /GIDs_th_pos [] def
+        % counter starts at 2 because th_subnet + topo_layer subnet come first
+        /counter 2  def
+        th_pos
+        {
+            /this_pos Set
+            this_pos 0 get /x Set
+            this_pos 1 get /y Set
+
+            % x^2 + y^2 < r^2
+            x x mul y y mul add
+            th_radius th_radius mul
+            lt
+            {
+                % GID of neuron with position this_pos
+                /gid th_subnet counter add def
+                GIDs_th_pos gid append /GIDs_th_pos Set
+            } if
+            /counter counter 1 add def
+        } forall % neuron positions in this population
+
+        % topology layer dictionary
+        /topo_layer_dict << /positions th_pos
+                            /extent [extent_length extent_length]
+                            /center [0. 0.]
+                            /elements /parrot_neuron
+                            /edge_wrap pbc
+                         >> def
+
+        topo_layer_dict CreateLayer /th_topo_layer_subnet_GID Set
+
+        % retrieve GID list of all thalamic neurons
+        th_topo_layer_subnet_GID 1 add /first_glob_thal_GID Set
+        num_neurons_th
+        first_glob_thal_GID add 1 sub /last_glob_thal_GID Set
+        [first_glob_thal_GID last_glob_thal_GID] Range
+        /GIDs_th_neurons Set
+
+
+        % stimulus for the thalamic population
+        /subnet Create /th_device_subnet Set
+        th_device_subnet ChangeSubnet
+
+        th_poisson_input {
+            % poisson input to thalamic neurons
+            /poisson_generator Create /th_input_GID Set
+            % start time of thalamic poisson input, subtracting 1 ms
+            % = the default delay between poisson generator and thalamic neurons
+            /th_start_tr th_start transient add 1. sub def
+            /th_stop_tr th_start_tr th_duration add def % stop time
+            th_input_GID << /rate th_rate
+                            /start th_start_tr
+                            /stop th_stop_tr
+                         >> SetStatus
+        }
+        {
+            % activation of all thalamic neurons at specific spike times
+            /spike_generator Create /th_input_GID Set
+            % spike times of the whole thalamic population, subtracting 1 ms
+            % = the default delay between spike generator and thalamic neurons
+            /th_spike_times_tr th_spike_times {transient add 1. sub} Map def
+            th_input_GID << /spike_times th_spike_times_tr
+                         >> SetStatus
+        } ifelse % if: poisson input, else: specific spike times
+
+        record_thalamic_spikes
+        {
+            /spike_detector Create /th_spike_detector_GID Set
+            th_spike_detector_GID << /label th_spike_detector_label
+                                     /to_file save_thalamic_spikes
+                                     /to_memory false
+                                     /start transient
+                                  >> SetStatus
+        } if % record thalamic spikes
+    } if % num_neurons_th > 0
+
+
+    % spike generator for providing an additional external stimulus
+    % to a subset of a population
+    /spike_generator /stim_spike_generator
+    << /spike_times stim_spike_times transient add >> CopyModel
+
+    /stim_layer_dict
+        <<
+            /positions stim_pos
+            /extent[extent_length extent_length]
+            /center [0. 0.]
+            /elements /stim_spike_generator
+            /edge_wrap pbc
+        >> def
+
+    /stim_spike_generator_layer_GID stim_layer_dict CreateLayer def
+
+} def
+
+
+
+/ConnectNetworkNodes
+% connects neurons recurrently and to external devices;
+% outer loop over sources, inner over targets
+{
+    Rank 0 eq
+    {
+        (Connecting.) M_INFO message
+    }
+
+    /conn_counter 0 def % counts the number of different connections
+
+    0 1 num_layers 1 sub % source layer
+    {
+        /source_layer Set
+        0 1 num_pops_per_layer 1 sub % source population
+        {
+            /source_pop Set
+
+            % get neuron IDs
+            topo_layer_subnet_GIDs source_layer get source_pop get
+            dup /source_layer_GID Set
+
+            source_layer_GID 1 add /first_glob_source_GID Set
+            num_neurons source_layer get source_pop get
+            first_glob_source_GID add 1 sub /last_glob_source_GID Set
+            [first_glob_source_GID last_glob_source_GID] Range /source_nodes Set
+
+            % number of source neurons
+            /num_sources num_neurons source_layer get source_pop get def
+
+            0 1 num_layers 1 sub % target layer
+            {
+                /target_layer Set
+                0 1 num_pops_per_layer 1 sub % target population
+                {
+                    /target_pop Set
+
+                    % get neuron IDs
+                    topo_layer_subnet_GIDs target_layer get target_pop get
+                    /target_layer_GID Set
+
+                    % number of target neurons
+                    /num_targets num_neurons target_layer get target_pop get def
+
+                    % pick target row for extracting table entries
+                    target_layer num_pops_per_layer mul target_pop add
+                    /target_row Set
+                    % pick source row for extracting table entries
+                    source_layer num_pops_per_layer mul source_pop add
+                    /source_row Set
+
+                    % extract the number of synapses between source and target
+                    % population
+                    num_synapses target_row get source_row get
+                    /num_synapses_src_tgt Set
+
+                    num_synapses_src_tgt 0 gt
+                    {
+                        % create label for target and source populations
+                        /conn_label layers target_layer get (_) join
+                                    populations target_pop get join (-) join
+                                    layers source_layer get join (_) join
+                                    populations source_pop get join
+                                    def
+
+                        % set mean weight
+                        PSC_matrix target_row get source_row get
+                        /mean_weight Set
+
+                        % specification of weights and delays
+                        weight_parameters source_pop get
+                        /weight_parameter Set
+
+                        % distance-dependent connections
+                        connect_method (ConnectLayers) eq
+                        {
+                            % product of the numbers of source and target neurons
+                            % according to topology layer size and neuron density
+                            /prod
+                                num_neurons source_layer get source_pop get
+                                num_neurons target_layer get target_pop get
+                                mul
+                            def
+
+                            weight_parameter (normal) eq
+                            {
+                                PSC_rel_sd source_pop get /PSC_sd_src Set
+                                % set standard deviation of distribution
+                                mean_weight PSC_sd_src mul abs /weight_sd Set
+                                /weight_param
+                                    << /normal
+                                        << /mean mean_weight
+                                           /sigma weight_sd >> >>
+                               CreateParameter def
+                            } if % normally distributed weights
+
+                            weight_parameter (lognormal) eq
+                            {
+                                PSC_lognorm_rel_sd source_pop get
+                                /PSC_rel_sd_src Set
+                                % set standard deviation of distribution
+                                mean_weight PSC_rel_sd_src mul abs /weight_sd Set
+                                % the lognormal parameter is created with the absolute value
+                                % and then multiplied with the sign
+                                mean_weight abs ln /abs_ln_mean Set
+                                weight_sd abs ln /abs_ln_sigma Set
+
+                                << /lognormal
+                                    << /mu abs_ln_mean
+                                       /sigma abs_ln_sigma >> >>
+                                CreateParameter /logn Set
+                                /sign mean_weight Sign 1. mul def
+                                << /constant << /value sign >> >>
+                                CreateParameter /sign Set
+                                /weight_param
+                                    logn sign mul
+                                def
+                            } if % lognormal weights
+
+
+                            delay_parameter (normal) eq
+                            {
+                                % mean delay and standard deviation
+                                delays source_pop get /mean_delay Set
+                                mean_delay delay_rel_sd mul /delay_sd Set
+
+                                /delay_param
+                                    << /normal
+                                        << /mean mean_delay
+                                           /sigma delay_sd
+                                    % min delay must be at least sim. resolution
+                                           /min dt >> >>
+                                CreateParameter def
+                            } if % normally distributed delays
+
+                            delay_parameter (linear) eq
+                            {
+                                min_delays source_pop get /min_delay Set
+                                prop_speeds source_pop get /prop_speed Set
+                                sigma_delays source_pop get /sigma_delay Set
+
+                                /inverse_speed 1. prop_speed div def
+                                % linear parameter:  p(d) = c + a*d
+                                << /linear
+                                    << /a inverse_speed
+                                       /c min_delay >> >>
+                                CreateParameter /pure_linear_delay Set
+
+                                % additive noise from normal distribution,
+                                % sum of linear and normal parameter must
+                                % be larger than temporal resolution
+                                /max_diff min_delay dt sub def
+                                /min_diff -1. max_diff mul def
+                                << /normal
+                                    << /mean 0.
+                                       /sigma sigma_delay
+                                       /min min_diff
+                                       /max max_diff >> >>
+                                CreateParameter /noise_delay Set
+
+                                % sum up purely linear delay with noise
+                                pure_linear_delay noise_delay add
+                                /delay_param Set
+                            } if
+
+                            % get connectivity profile, decay parameter
+                            % and mask radius from tables
+                            conn_profiles target_row get source_row get
+                            /conn_profile Set
+                            decay_params target_row get source_row get
+                            /decay_param Set
+                            mask_radii target_row get source_row get
+                            /mask_radius Set
+
+                            % connection type
+                            /conn_type (convergent) def
+
+                            % construct the connection dictionary
+                            num_synapses_src_tgt prod
+                            conn_profile decay_param mask_radius
+                            weight_param delay_param
+                            conn_type
+                            GetConnectionDictionary
+                            /conn_dict Set
+                            /repeat_factor Set
+
+                            % connect source and target layers
+                            % (repeat factor allows to create multapses)
+                            repeat_factor
+                            {
+                                source_layer_GID
+                                target_layer_GID
+                                conn_dict
+                                ConnectLayers
+                            } repeat
+
+                            % store derived parameter a (only using ConnectLayers method)
+                            derived_params_a [ conn_counter ] a_temp put /derived_params_a Set
+                        } if % connect_method = ConnectLayers
+
+
+                        % random connectivity with Connect
+                        % (preserving the total number of connections between
+                        % populations)
+                        connect_method (Connect) eq
+                        {
+                            % extract target nodes
+                            % (source_nodes are already defined above)
+                            target_layer_GID 1 add /first_glob_target_GID Set
+                            num_neurons target_layer get target_pop get
+                            first_glob_target_GID add 1 sub /last_glob_target_GID Set
+                            [first_glob_target_GID last_glob_target_GID] Range /target_nodes Set
+
+                            % synapse dictionary
+                            /syn_dict << /model synapse_model >> def
+
+                            % add weight dictionary
+                            % note: ONLY NORMAL WEIGHTS!
+                            mean_weight 0 lt {
+                                /weight_dict << /distribution /normal_clipped
+                                                /high 0.0 >> def
+                            }
+                            {
+                                /weight_dict << /distribution /normal_clipped
+                                                /low 0.0 >> def
+                            } ifelse
+                            PSC_rel_sd source_pop get /PSC_sd_src Set
+                            mean_weight PSC_sd_src mul abs /weight_sd Set
+                            weight_dict /mu mean_weight put
+                            weight_dict /sigma weight_sd put
+                            syn_dict /weight weight_dict put
+
+                            % add delay dictionary
+                            % note: ONLY NORMAL DELAYS!
+                            /delay_dict << /distribution /normal_clipped
+                                           /low dt >> def
+                            delays source_pop get /mean_delay Set
+                            mean_delay delay_rel_sd mul /delay_sd Set
+                            delay_dict /mu mean_delay put
+                            delay_dict /sigma delay_sd put
+                            syn_dict /delay delay_dict put
+
+
+                            % connection dictionary
+                            /conn_dict << /rule /fixed_total_number
+                                          /N num_synapses_src_tgt cvi >> def
+
+                            % Connect the populations
+                            source_nodes
+                            target_nodes
+                            conn_dict
+                            syn_dict
+                            Connect
+
+                        } if % connect_method = Connect
+
+                    } if % num_synapses_src_tgt > 0
+
+                    % store derived parameter K (same for Connect and ConnectLayers)
+                    derived_params_K [ conn_counter ] num_synapses_src_tgt put /derived_params_K Set
+                    /conn_counter conn_counter 1 add def
+
+
+                } for % target population
+            } for % target layer
+
+            % connect devices
+
+            % connect to the spike detector
+            source_nodes
+            % record from a continuous range of IDs
+            % WARNING: shouldn't be used without random positions
+            num_neurons_rec_spikes source_layer get source_pop get
+            Take
+            spike_detector_GIDs source_layer get source_pop get
+            1 arraystore
+            /all_to_all
+            Connect
+
+            % connect to the voltmeter
+            voltmeter_GIDs source_layer get source_pop get
+            1 arraystore
+            source_nodes
+            % record from a continuous range of IDs
+            num_neurons_rec_voltage source_layer get source_pop get
+            Take
+            /all_to_all
+            Connect
+
+            % connect to the Poisson generators
+            poisson_GIDs source_layer get source_pop get
+            1 arraystore
+            source_nodes
+            /all_to_all
+            << /weight PSC_ext /delay delays 0 get >>
+            Connect
+
+            % connect DC generators
+            dc_GIDs source_layer get source_pop get
+            1 arraystore
+            source_nodes
+            /all_to_all
+            Connect
+
+            % connect additional spike generator for external stimulus
+            stim_pop source_layer get source_pop get 1 eq
+            {
+                /PSC_stim PSC_ext stim_weight_scale mul def
+                /PSC_stim_sd PSC_ext_sd stim_weight_scale mul def
+
+                /stim_conn_dict << /connection_type (convergent)
+                /weights
+                    << /normal << /mean PSC_stim
+                                  /sigma PSC_stim_sd >> >>
+                                  /delays dt
+                                  /synapse_model synapse_model
+                                  /mask stim_mask >>
+                def
+
+                stim_spike_generator_layer_GID
+                source_layer_GID
+                stim_conn_dict
+                ConnectLayers
+            } if
+
+        } for % source population
+    } for % source layer
+
+
+    % connect thalamic neurons to cortical neurons
+    connect_method (Connect) eq
+    {
+        % extract thalamic nodes (source)
+        th_topo_layer_subnet_GID 1 add /first_glob_source_GID Set
+        num_neurons_th first_glob_source_GID add 1 sub /last_glob_source_GID Set
+        [first_glob_source_GID last_glob_source_GID] Range /source_nodes Set
+    } if % connect_method = Connect
+
+    % loop over target layers and populations
+    0 1 num_layers 1 sub % target layer
+    {
+        /target_layer Set
+        0 1 num_pops_per_layer 1 sub % target population
+        {
+            /target_pop Set
+
+            topo_layer_subnet_GIDs target_layer get target_pop get
+            /target_layer_GID Set
+
+            target_layer num_pops_per_layer mul target_pop add
+            /target_row Set
+
+            num_synapses_th target_row get 0 get
+            /num_synapses_src_tgt Set
+
+            num_synapses_src_tgt 0 gt
+            {
+                % distance-dependent connections
+                connect_method (ConnectLayers) eq
+                {
+                    % specify weight and delay parameters
+                    /weight_param << /normal << /mean PSC_th
+                                                /sigma PSC_th_sd >> >>
+                    CreateParameter def
+
+                    /delay_param << /constant << /value dt >> >>
+                    CreateParameter def
+
+                    % product of thalamic and target neuron numbers
+                    /prod
+                        num_neurons target_layer get target_pop get
+                        num_neurons_th
+                        mul
+                    def
+
+                    % get connectivity profile, decay parameter
+                    % and mask radius from tables
+                    conn_profiles_th target_layer get target_pop get
+                    /conn_profile Set
+                    decay_params_th target_layer get target_pop get
+                    /decay_param Set
+                    mask_radii_th target_layer get target_pop get
+                    /mask_radius Set
+
+                    % connection type
+                    /conn_type (divergent) def
+
+                    % construct the connection dictionary
+                    num_synapses_src_tgt prod
+                    conn_profile decay_param mask_radius
+                    weight_param delay_param
+                    conn_type
+                    GetConnectionDictionary
+                    /conn_dict Set
+                    /repeat_factor Set
+
+                    % connect thalamic neurons with target populations
+                    repeat_factor
+                    {
+                        th_topo_layer_subnet_GID
+                        target_layer_GID
+                        conn_dict
+                        ConnectLayers
+                    } repeat
+                } if % connect_method = ConnectLayers
+
+                % random connectivity with Connect
+                % (preserving the total number of connections between
+                % populations)
+                connect_method (Connect) eq
+                {
+                    % extract target nodes
+                    target_layer_GID 1 add /first_glob_target_GID Set
+                    num_neurons target_layer get target_pop get
+                    first_glob_target_GID add 1 sub /last_glob_target_GID Set
+                    [first_glob_target_GID last_glob_target_GID] Range /target_nodes Set
+
+                    % synapse dictionary
+                    /syn_dict << /model synapse_model >> def
+
+                    % add weight dictionary
+                    /weight_dict << /distribution /normal
+                                    /mu PSC_th
+                                    /sigma PSC_th_sd >> def
+                    syn_dict /weight weight_dict put
+
+                    % add delay
+                    syn_dict << /delay dt >>
+
+                    % connection dictionary
+                    /conn_dict << /rule /fixed_total_number
+                                  /N num_synapses_src_tgt cvi >> def
+
+                    % connect thalamic neurons to populations
+                    source_nodes
+                    target_nodes
+                    conn_dict
+                    syn_dict
+                    Connect
+                } if % connect_method = Connect
+
+            } if % num_synapses_src_tgt > 0  (src = th)
+
+        } for % target population
+    } for % target layer
+
+
+    % connect Poisson generator to selected thalamic neurons,
+    % record from all
+    num_neurons_th 0 gt
+    {
+        % connect thalamic poisson_generator
+        % to those thalamic neurons (parrots) chosen by position
+        th_input_GID
+        1 arraystore
+        /thal_poisson_input Set
+
+        thal_poisson_input GIDs_th_pos
+        /all_to_all
+        Connect
+
+        record_thalamic_spikes
+        {
+            % connect all thalamic neurons to spike detector
+            GIDs_th_neurons
+            th_spike_detector_GID
+            1 arraystore
+            /all_to_all
+            Connect
+        } if
+    } if
+
+} def
+
+
+/GetConnectionDictionary
+[
+    /doubletype    % num_synapses_src_tgt
+    /integertype   % prod
+    /stringtype    % conn_profile
+    /doubletype    % decay_param
+    /doubletype    % mask_radius
+    /parametertype % weight_param
+    /parametertype % delay_param
+    /stringtype    % (convergent) or (divergent)
+]
+% constructs a connection dictionary for parameters for a specific population
+% and a repeat factor
+{
+
+    % compute a_temp, the scaling factor for preserving the total number of
+    % connections; homogeneous, non-local connectivity
+    conn_profile (random) eq
+    {
+        /a_temp
+        % this connection routine does not support multapses
+        % and we have to use the C=K/NN for the connection probability
+        % to get the correct total number of synapses
+        num_synapses_src_tgt prod div
+        %( 1.-(1.-1./prod)^num_synapses_src_tgt ) ExecMath % with multapses
+        def
+    } % if random connectivity
+    { % else local connectivity
+        % the area of the mask needs to be taken into account for scaling
+        % the connection probability
+        /area_mask mask_radius dup mul Pi mul def
+        ( 1.*num_synapses_src_tgt / prod * area_extent / area_mask ) ExecMath
+        /mask_conn_prob_temp Set
+
+        % different local connectivity profiles
+        conn_profile (uniform) eq
+        {
+            /a_temp
+              mask_conn_prob_temp
+            def
+        } if
+
+        % for non-uniform connectivity profiles, the number of synapses
+        % is scaled according to the intregral of the profile
+        conn_profile (gaussian) eq
+        {
+            /a_temp
+                ( mask_radius**2 * mask_conn_prob_temp
+                / (2 * decay_param**2
+                * (1. - exp(-(mask_radius**2)/(2*decay_param**2)))))
+                ExecMath
+            def
+        } if
+
+        conn_profile (exponential) eq
+        {
+            /a_temp
+                ( mask_radius**2 * mask_conn_prob_temp
+                / (2 * decay_param
+                * (decay_param - (mask_radius + decay_param)
+                * exp(-mask_radius / decay_param))) )
+                ExecMath
+            def
+        } if
+
+    } ifelse % conn_profile equal to random
+
+
+    % use a_temp to compute a_scale and the repeat_factor.
+    % if a_temp > 1, a_scale < 1 is computed and the connection routine
+    % is called repeat_factor times
+    a_temp 1. gt
+    {
+        a_temp ceil cvi /repeat_factor Set
+        /a_scale a_temp repeat_factor div def
+    }
+    {
+        /a_scale a_temp def
+        /repeat_factor 1 def
+    } ifelse
+
+    % determine the kernel for the different connectivity profiles
+    conn_profile (random) eq
+    conn_profile (uniform) eq
+    or
+    {
+        /kernel_profile a_scale def
+    } if
+
+    conn_profile (gaussian) eq
+    {
+        /kernel_profile
+            << /gaussian << /c 0.
+                            /p_center a_scale
+                            /mean 0.
+                            /sigma decay_param >> >>
+        def
+    } if
+
+    conn_profile (exponential) eq
+    {
+        /kernel_profile
+            << /exponential
+                << /c 0.
+                   /a a_scale
+                   /tau decay_param >> >>
+        def
+    } if
+
+
+    % construct the connection dictionary
+    /conn_dict
+        << /connection_type conn_type
+           /allow_autapses false
+           /allow_multapses true
+           /weights weight_param
+           /delays delay_param
+           /synapse_model synapse_model
+           /kernel kernel_profile >>
+    def
+
+    % add mask in case of non random connnectivity
+    conn_profile (random) eq not
+    {
+        /mask_profile << /circular << /radius mask_radius >> >> def
+        conn_dict /mask mask_profile put_d % add entry to dictionary
+    } if
+
+    % put connection dictionary and repeat factor on the stack
+    % (the return parameters)
+    repeat_factor conn_dict
+
+} def
+
+
+/WriteGIDstoFile
+% only Rank 0 actually writes, but all ranks are needed to extract
+% global variables
+{
+    Rank 0 eq
+    {
+        (Writing GIDs to file.) M_INFO message
+
+        output_path (/) join GID_filename join
+        (w) ofsopen
+        ; /outputstream Set
+        outputstream
+
+        % take the GIDs of the neurons in each topology layer subnet
+        % and write minimum and maximum GID to file
+        /iter 0 def
+        topo_layer_subnet_GIDs Flatten
+        {
+            /topo_layer_subnet_GID Set
+            num_neurons Flatten iter get /num_neurons_here Set
+
+            topo_layer_subnet_GID 1 add /first_glob_GID Set
+            num_neurons_here first_glob_GID add 1 sub /last_glob_GID Set
+            [first_glob_GID last_glob_GID] Range /GIDs Set
+
+            GIDs Min <- (\t) <- GIDs Max <- (\n) <-
+
+            /iter iter 1 add def
+        } forall % topology layer subnets
+
+        % write GIDs of thalamic population
+        num_neurons_th 0 gt
+        {
+            th_topo_layer_subnet_GID 1 add /first_glob_GID Set
+
+            num_neurons_th first_glob_GID add 1 sub /last_glob_GID Set
+
+            [first_glob_GID last_glob_GID] Range /GIDs Set
+
+            GIDs Min <- (\t) <- GIDs Max <- (\n) <-
+
+        } if
+
+        close
+
+    } if % Rank = 0
+
+    SyncProcesses % MPI_BARRIER()
+} def
+
+
+/WritePositionstoFile
+% separately for each rank and only the neurons for which
+% spikes are recorded
+{
+    Rank 0 eq
+    {
+        (Writing positions to file.) M_INFO message
+    }
+    % write only on ranks which contain neurons
+    % and are not selected for recording spikes only (GSD)
+    Rank
+    NumProcesses num_rec_procs sub
+    lt
+    {
+        output_path (/) join position_filename join
+        (w) ofsopen
+        ; /outputstream Set
+        outputstream
+
+        num_neurons num_neurons_rec_spikes eq
+        {
+            topo_layer_subnet_GIDs Flatten
+            {
+                DumpLayerNodes
+            } forall
+        }
+        {
+            % for picking the correct population of num_neurons_rec_spikes
+            /iter 0 def
+            topo_layer_subnet_GIDs Flatten
+            {
+                /topo_layer_subnet_GID Set
+
+                % GIDs of neurons for which spikes are recorded
+                % (without using a global function)
+                % note: first GID after topo_layer_subnet_GID belongs
+                %       to the first neuron in this subnet
+                topo_layer_subnet_GID 1 add /first_glob_GID Set
+                num_neurons_rec_spikes Flatten iter get
+                first_glob_GID add 1 sub /last_glob_GID Set
+                [first_glob_GID last_glob_GID] Range /GIDs_record Set
+
+                GIDs_record
+                {
+                    /this_GID Set
+
+                    % check if neuron belongs the current MPI process
+                    this_GID /local get
+                    {
+                        this_GID <- (\t) <- % neuron GID
+                        this_GID GetPosition /these_positions Set
+                        these_positions 0 get <- (\t) <- % x-position
+                        these_positions 1 get <- (\n) <- % y-position
+                    } if % GID is local
+
+                } forall % neurons for which the positions shall be stored GIDs_record
+
+                /iter iter 1 add def
+
+            } forall % neuron topology subnet GIDs
+
+        } ifelse % if spikes shall be recorded from all neurons
+
+
+        % for the thalamic population, all positions are stored
+        num_neurons_th 0 gt
+        {
+            th_topo_layer_subnet_GID
+            % writes: GID x-position y-position
+            DumpLayerNodes
+        } if
+
+        % close open stream
+        close
+
+    } if % current Rank contains neurons and is not selected for recording spikes
+
+    SyncProcesses
+} def
+
+
+/WriteDerivedParamstoFile
+% on Rank 0, write derived parameters to file
+{
+    Rank 0 eq
+    {
+        (Writing derived parameters to file.) M_INFO message
+    }
+
+    output_path (/) join derived_params_filename join
+    (w) ofsopen
+    ; /outputstream Set
+
+    Rank 0 eq
+    {
+        outputstream
+    } if
+
+    0 1 derived_params_a length_a 1 sub
+    {
+        /iter Set
+
+        Rank 0 eq
+        {
+            derived_params_a iter get <- (\t) <-
+            derived_params_K iter get <- (\n) <-
+            } if
+    } for % elements in the arrays
+
+    Rank 0 eq
+    {
+        % close open stream
+        close
+    } if
+
+    SyncProcesses
+} def
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%              Executive section              %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+CheckParameters
+
+PrepareSimulation
+
+DerivedParameters
+
+SyncProcesses
+%--------------------%
+
+tic
+    CreateNetworkNodes
+toc /CreateTime Set
+
+(mem_after_nodes: ) memory_thisjob cvs join ( kB) join ==
+
+%--------------------%
+tic
+    ConnectNetworkNodes
+toc /ConnectTime Set
+
+(mem_after_connect: ) memory_thisjob cvs join ( kB) join ==
+(Connecting take: ) ConnectTime cvs join ==
+
+%--------------------%
+
+tic
+    Prepare
+    10. Run
+toc /InitTime Set
+(mem_after_ini: ) memory_thisjob cvs join ( kB) join ==
+
+tic
+    nest_t_sim Run
+    Cleanup
+toc /SimTime Set
+
+(Init time: ) InitTime cvs join ==
+
+%--------------------%
+
+tic
+%    WriteGIDstoFile
+%
+%    WritePositionstoFile
+%
+%    WriteDerivedParamstoFile
+%
+toc /WriteTime Set
+
+
+
+
+%--------------------%
+
+
+Rank 0 eq
+{
+    % compute the total number of external synapses
+    /K_bg_total 0 def
+    0 1 num_layers 1 sub % layer
+    {
+        /layer_idx Set
+        0 1 num_pops_per_layer 1 sub % population
+        {
+            /pop_idx Set
+            % multiply the neuron numbers with the external indegree for each population
+            K_bg_total
+                num_neurons layer_idx get pop_idx get
+                K_bg layer_idx get pop_idx get
+                mul
+            add
+            /K_bg_total Set
+        } for % populations per layer
+    } for % layers
+
+    % total number of synapses: internal + external
+    /total_num_synapses
+        num_neurons Flatten Total
+        derived_params_K Total
+        add
+    def
+
+    (GIT: ) =only statusdict/version :: ==
+
+    (Number of neurons, without TC: ) num_neurons Flatten Total cvs join ( \n) join
+    (Total number of synapses, without TC: ) join total_num_synapses cvs join ( \n) join
+    (Number of internal synapses, without TC: ) join derived_params_K Total cvs join ( \n) join
+    (Number of external synapses: ) join K_bg_total cvs join ( \n) join
+    %(Creating   took ) join CreateTime cvs join ( s\n) join
+    %(Connecting took ) join ConnectTime cvs join ( s\n) join
+    (Init       took ) join InitTime cvs join ( s\n) join
+    (Simulating took ) join SimTime cvs join ( s\n) join
+    (Writing    took ) join WriteTime cvs join ( s\n) join
+    (Memory on Rank 0: ) join memory_thisjob cvs join ( kB\n) join
+    (Timestamp: ) join time cvs join
+    /sim_info Set
+
+    sim_info M_INFO message % print to screen
+
+    % write to file
+   % output_path (/) join sim_info_filename join
+   % (w) ofsopen ;
+   % sim_info <-
+   % close
+} if
+
+(Creating   took ) CreateTime cvs join ==
+(Connecting took ) ConnectTime cvs join ==
+0 /num_connections get cvs ( # num_connections) join ==
+0 /local_spike_counter get cvs ( # local_spike_counter) join ==
+
+(Memory: ) memory_thisjob cvs join ( kB) join ==
+
+(mesocircuit.sli has finished.) M_INFO message
+
+% clean exit
+SyncProcesses

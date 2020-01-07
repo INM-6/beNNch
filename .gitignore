@@ -1,0 +1,7 @@
+# git ignore patterns
+.*
+!.gitignore
+*.py[cod]
+
+# Jupyter Notebook
+.ipynb_checkpoints

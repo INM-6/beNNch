@@ -1,0 +1,13 @@
+Metadata-Version: 1.1
+Name: mesocircuit-analysis
+Version: 0.1
+Summary: methods to analyze cortical mesocircuit network model
+Home-page: github.com/INM6
+Author: ['Espen Hagen', 'Johanna Senk']
+Author-email: ['espehage@fys.uio.no', 'j.senk@fz-juelich.de']
+License: LICENSE
+Description: # 4x4mm2LFP
+        Mesocircuit model accounting for spiking activity and LFPs under development.
+        
+Platform: UNKNOWN
+Provides: mesocircuit_analysis

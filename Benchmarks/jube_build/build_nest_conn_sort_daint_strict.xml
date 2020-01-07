@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jube>
+
+  <include-path>
+    <path>../jube_config/</path>
+  </include-path>
+
+  <benchmark name="build_nest" outpath="../../../BenchWork/jube_builds/NEST-conn-sort">
+
+    <step name="build">
+      <use from="dir_config.xml">dir_config</use>
+      <use from="system_descriptions.xml">system_daint</use>
+      <use from="packages.xml">nest_conn_sort,nest_base_O3_strict</use>
+      <use from="build_jobs.xml">build_base_daint,build_nest_boost,files,sub_build_job</use>
+      <do done_file="$ready_file">$submit_cmd $job_file</do>      <!-- shell command -->
+    </step>
+
+  </benchmark>
+</jube>
+

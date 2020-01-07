@@ -1,0 +1,20 @@
+<jube>
+  <parameterset name="dir_config">
+
+    <!-- Adjust the next four paths according to your setup -->
+    <parameter name="bench_home" type="string">${HOME}/nest-benchmarks/Benchmarks</parameter>
+    <parameter name="bench_work" type="string">${HOME}/BenchWork</parameter>
+    <parameter name="bench_model" type="string">${HOME}/nest-benchmarks/BenchModels</parameter>
+
+    <!-- Parameters below should not need to be modified -->
+
+    <parameter name="NEST_INSTALL_DIR" type="string">${bench_work}/${nest_version}-${system_name}-${nest_config}/install</parameter>
+    <parameter name="NEST_BUILD_DIR" type="string">${bench_work}/jube_builds/${nest_version}/${system_name}-${nest_config}</parameter>
+    <parameter name="NEST_SRC_DIR" type="string">${bench_work}/${nest_version}/src</parameter>
+
+    <!-- Jemalloc cannot be built out-of-tree, thus no BUILD -->
+    <parameter name="JEMALLOC_INSTALL_DIR" type="string">${bench_work}/${jemalloc_version}-${system_name}/install</parameter>
+    <parameter name="JEMALLOC_SRC_DIR" type="string">${bench_work}/${jemalloc_version}</parameter>
+
+  </parameterset>
+</jube>
