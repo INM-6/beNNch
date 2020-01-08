@@ -370,7 +370,7 @@
       <pattern name="inicc" type="int">$jube_pat_int # initial_connector_capacity</pattern>
       <pattern name="lcl" type="int">$jube_pat_int # large_connector_limit</pattern> 
       <pattern name="lgf" type="float">$jube_pat_fp # large_connector_growth_factor</pattern> 
-      <pattern name="git" type="string">GIT: (.+)</pattern> 
+      <pattern name="git" type="string">GIT: \([\da-z.]*@[\da-z]{9}\)</pattern> 
       <pattern name="EE_inner_conn_time" type="float">$jube_pat_int # EE inner_conn_time</pattern>
       <pattern name="IE_inner_conn_time" type="float">$jube_pat_int # IE inner_conn_time</pattern>
       <pattern name="EI_inner_conn_time" type="float">$jube_pat_int # EI inner_conn_time</pattern>
@@ -399,7 +399,7 @@
       <pattern name="N_nrns" type="int">Number of neurons, without TC: $jube_pat_int</pattern> 
       <pattern name="N_conns" type="int">$jube_pat_int # num_connections</pattern>
       <pattern name="N_spks" type="int">$jube_pat_int # local_spike_counter</pattern>
-      <pattern name="git" type="string">GIT: (.+)</pattern>
+      <pattern name="git" type="string">GIT: \([\da-z.]*@[\da-z]{9}\)</pattern>
     </patternset>
 
     <!-- Regex pattern -->
@@ -416,7 +416,7 @@
       <pattern name="N_nrns" type="int">Network size: $jube_pat_int</pattern>
       <pattern name="N_conns" type="int">'num_connections': $jube_pat_int</pattern>
       <pattern name="N_spks" type="int">'local_spike_counter': $jube_pat_int</pattern>
-      <pattern name="git" type="string">GIT: (.+)</pattern>
+      <pattern name="git" type="string">GIT: \([\da-z.]*@[\da-z]{9}\)</pattern>
     </patternset>
 
 
