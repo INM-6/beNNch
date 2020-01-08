@@ -35,6 +35,6 @@ if __name__ == '__main__':
     InitializationTime = time.time() - tic
 
     print('{} # init_time'.format(InitializationTime))
-    print('{} # virt_mem_after_init'.format(memory_thisjob()))
+    print('{} # virt_mem_after_init'.format(nest.ll_api.sli_func('memory_thisjob')))
 
     print('{} # virt_mem_after_sim'.format(nest.ll_api.sli_func('memory_thisjob'))) # No simulation, just here for consistency
