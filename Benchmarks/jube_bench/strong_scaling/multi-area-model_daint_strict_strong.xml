@@ -14,8 +14,8 @@
       <parameter name="base_vp" type="int">36</parameter>
       <parameter name="base_scale" type="int">1</parameter>
       <parameter name="SIMTIME" type="float">500.</parameter>
-      <parameter name="NUMBER_OF_NODES" type="int">1,2,4,8,16,32,64,128</parameter>
-      <parameter name="TASKS_PER_NODE" type="int">1</parameter>
+      <parameter name="NUMBER_OF_NODES" type="int">32,48,64,80,96,112,128</parameter>
+      <parameter name="TASKS_PER_NODE" type="int">6</parameter>
       <parameter name="SCALE" type="int" mode="python">$base_scale</parameter>
       <parameter name="K_SCALE" type="float" mode="python">1.</parameter>
       <parameter name="THREADS_PER_TASK" type="int">6</parameter>
@@ -44,6 +44,7 @@
     <result>
       <use>analyse_scale_check</use>      <!-- use existing analyser -->
       <table name="NEST_MAM_daint" style="csv" sort="number">
+        <column>git</column>
         <column>NUMBER_OF_NODES</column>
         <column>TASKS_PER_NODE</column>
         <column>NUM_VPS</column>

@@ -44,6 +44,7 @@
     <result>
       <use>analyse_scale_check</use>      <!-- use existing analyser -->
       <table name="NEST_MAM_strong" style="csv" sort="number">
+        <column>git</column>
         <column>NUMBER_OF_NODES</column>
         <column>TASKS_PER_NODE</column>
         <column>NUM_VPS</column>
