@@ -57,9 +57,9 @@ jube run nest-benchmarks/Benchmarks/jube_build/build_nest_py_daint_strict.xml
 
 If you want to run NEST with Boost, you need to manually copy out lines 35, 38, 188,193, 194 and 195 in `<PATH>/BenchWork/NEST/src/libnestutil/sort.h`
 
-![](https://github.com/compneuronmbu/nest-benchmarks/blob/master/boost1.png)
+![](https://gin.g-node.org/nest/nest-benchmarks/src/master/boost1.png)
 
-![](https://github.com/compneuronmbu/nest-benchmarks/blob/master/boost2.png)
+![](https://gin.g-node.org/nest/nest-benchmarks/src/master/boost2.png)
 
 
 
