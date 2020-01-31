@@ -127,7 +127,7 @@ def BuildNetwork(logger):
     master_seed = 101
     n_vp = nest.GetKernelStatus(['total_num_virtual_procs'])[0]
 
-    nest.ll_api.sli_run('<< /grng rngdict/MT19937 :: 101 CreateRNG >> SetKernelStatus')
+    nest.ll_api.sli_run('0 << /grng rngdict/MT19937 :: 101 CreateRNG >> SetStatus')
 
     rng_seeds = list(range(
         master_seed + 1 + n_vp,
