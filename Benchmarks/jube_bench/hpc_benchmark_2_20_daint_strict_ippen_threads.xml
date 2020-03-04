@@ -13,7 +13,6 @@
     <parameterset name="scale_check">
       <parameter name="NUMBER_OF_NODES" type="int">1</parameter>
       <parameter name="TASKS_PER_NODE" type="int">36</parameter>
-      <parameter name="NUM_VPS" type="int" mode="python">$base_vp*$NUMBER_OF_NODES</parameter>
       <parameter name="THREADS_PER_TASK" type="int">1,3,6,9,18,36</parameter>
       <parameter name="SCALE" type="float">2.2222</parameter>
     </parameterset>
