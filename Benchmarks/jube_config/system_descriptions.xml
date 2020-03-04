@@ -24,7 +24,7 @@
     <parameter name="partition" type="string">normal</parameter>
     <parameter name="modules">daint-mc</parameter>
     <parameter name="swap_modules">PrgEnv-cray/6.0.5 PrgEnv-intel</parameter>
-    <parameter name="cmake_module"></parameter>
+    <parameter name="cmake_module">module load CMake/3.14.5</parameter>
     <parameter name="gcc_module"></parameter>
     <parameter name="gsl_module">GSL/2.5-CrayIntel-19.10</parameter>
     <parameter name="python_module">cray-python/3.6.5.7</parameter>

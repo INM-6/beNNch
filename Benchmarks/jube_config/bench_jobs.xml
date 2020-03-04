@@ -90,8 +90,9 @@
     <parameterset name="bench_nest">
       <parameter name="job_name" type="string">bench-${nest_version}-${system_name}-${nest_config}</parameter>      
       <parameter name="exec">
-        module purge;
-        module load $modules; 
+        module swap $swap_modules
+        module load $modules;
+        
         source ${NEST_INSTALL_DIR}/bin/nest_vars.sh;
         export OMP_NUM_THREADS=$THREADS_PER_TASK
         srun ${JEMALLOC_INSTALL_DIR}/bin/jemalloc.sh ${NEST_INSTALL_DIR}/bin/nest ${slifile}  --userargs=${SCALE}_${totVPs}_${SIMTIME}_${NUM_REC}_${PLASTIC}_${D_MIN}_${D_MAX}
@@ -143,7 +144,7 @@
       <parameter name="job_name" type="string">bench-${nest_version}-${system_name}-${nest_config}</parameter>      
       <parameter name="exec">
         rm -rf ${mesocircuit_home}/parameters/${NUM_VPS}-${SCALE}
-        module purge;
+        module swap $swap_modules
         module load $modules;
         module load $python2_module; 
         export OMP_NUM_THREADS=$THREADS_PER_TASK
