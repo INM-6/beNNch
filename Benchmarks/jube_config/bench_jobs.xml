@@ -361,6 +361,21 @@
     </parameter>
   </parameterset>
 
+  <parameterset name="bench_nest_ippen_thread">
+    <parameter name="job_name" type="string">bench-${nest_version}-${system_name}-${nest_config}</parameter>
+    <parameter name="exec">
+      module swap $swap_modules
+      module load $modules
+      module load $boost_module
+      module load $gsl_module
+      
+      source ${NEST_INSTALL_DIR}/bin/nest_vars.sh;
+      export OMP_NUM_THREADS=$THREADS_PER_TASK
+
+      srun ${JEMALLOC_INSTALL_DIR}/bin/jemalloc.sh $NEST_INSTALL_DIR/bin/nest --userargs=${SCALE},$THREADS_PER_TASK hpc_benchmark_ippen_thread.sli
+    </parameter>
+  </parameterset>
+
     <!-- Regex pattern -->
     <patternset name="nest_pattern_stdcout">
       <pattern name="T_nrns" type="float">$jube_pat_fp # build_time_nodes</pattern> 
