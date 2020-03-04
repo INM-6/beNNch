@@ -26,6 +26,11 @@
     <parameter name="nest_branch" type="string">new_container</parameter>
   </parameterset>
 
+  <parameterset name="nest_2_20">
+    <parameter name="nest_version" type="string">NEST-2.20</parameter>
+    <parameter name="nest_branch" type="string">new_container</parameter>
+  </parameterset>
+
   <parameterset name="nest_master">
     <parameter name="nest_version" type="string">NEST-master</parameter>
     <parameter name="nest_branch" type="string">master</parameter>
