@@ -12,7 +12,7 @@
 
     <parameterset name="scale_check">
       <parameter name="NUMBER_OF_NODES" type="int">1</parameter>
-      <parameter name="TASKS_PER_NODE" type="int">36</parameter>
+      <parameter name="TASKS_PER_NODE" type="int">1</parameter>
       <parameter name="THREADS_PER_TASK" type="int">1,3,6,9,18,36</parameter>
       <parameter name="SCALE" type="float">2.2222</parameter>
     </parameterset>
@@ -22,7 +22,7 @@
       <use from="system_descriptions.xml">system_daint</use>
       <use from="benchmark_systems.xml">hpc_benchmark_ippen_thread</use>
       <use from="packages.xml">nest_2_20,nest_base_O3_strict,jemalloc</use>
-      <use from="bench_jobs.xml">bench_base_daint,bench_nest_boost,files,sub_bench_job</use>
+      <use from="bench_jobs.xml">bench_base_daint,bench_nest_ippen_thread,files,sub_bench_job</use>
       <use>scale_check</use>
       <do done_file="$ready_file">$submit_cmd $job_file</do>
     </step>
