@@ -42,11 +42,13 @@
     <parameterset name="build_nest">
       <parameter name="job_name" type="string">build-${nest_version}-${system_name}-${nest_config}</parameter>      
       <parameter name="exec">
-      	module purge;
-      	module load $modules
-      	module load $gsl_module
-      	module load $cmake_module
+      	module swap $swap_modules
+        module load $modules
+        module load $gsl_module
+        module load $cmake_module
+
         export CRAYPE_LINK_TYPE=dynamic
+
       	cd $NEST_SRC_DIR
       	# git checkout $nest_branch
       	cd ..
@@ -70,6 +72,7 @@
         module load $cmake_module
         
         export CRAYPE_LINK_TYPE=dynamic
+
         cd $NEST_SRC_DIR
         # git checkout $nest_branch
         cd ..
@@ -86,12 +89,14 @@
     <parameterset name="build_nest_py">
       <parameter name="job_name" type="string">build-${nest_version}-${system_name}-${nest_config}</parameter>      
       <parameter name="exec">
-      	module purge;
-      	module load $modules
-      	module load $gsl_module
+        module swap $swap_modules
+        module load $modules
+        module load $gsl_module
         module load $python_module
-      	module load $cmake_module
+        module load $cmake_module
+
         export CRAYPE_LINK_TYPE=dynamic
+
       	cd $NEST_SRC_DIR
       	# git checkout $nest_branch
       	cd ..
@@ -114,7 +119,9 @@
         module load $gsl_module
         module load $python_module
         module load $cmake_module
+
         export CRAYPE_LINK_TYPE=dynamic
+
         cd $NEST_SRC_DIR
         # git checkout $nest_branch
         cd ..
@@ -133,6 +140,7 @@
       <parameter name="exec">
     	module swap $swap_modules
       module load $modules
+
     	cd ${bench_work}/jemalloc
     	rm -rf $JEMALLOC_INSTALL_DIR
     	cd $jemalloc_version
@@ -144,9 +152,10 @@
     <parameterset name="run_nest_installcheck">
       <parameter name="job_name" type="string">icheck-${nest_version}-${system_name}-${nest_config}</parameter>      
       <parameter name="exec">
-    	module purge;
+    	module swap $swap_modules
     	module load $modules
     	module load $python_module
+      
     	cd $NEST_BUILD_DIR
     	make installcheck
       </parameter>

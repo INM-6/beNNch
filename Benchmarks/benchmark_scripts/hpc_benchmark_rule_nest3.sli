@@ -1,0 +1,684 @@
+/*
+ *  hpc_benchmark.sli
+ *
+ *  This file is part of NEST.
+ *
+ *  Copyright (C) 2004 The NEST Initiative
+ *
+ *  NEST is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  NEST is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with NEST.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
+
+/*
+   HPC Benchmark for NEST for DEEP-EST
+   
+   Modified from NEST-2.14.0 version as follows, based on Ippen et al (2017)
+
+   - Uses iaf_psc_alpha neuron model
+   - E -> E connections use stdp_pl_synapse_hom_hpc (if plastic is true)
+   - All other connections use static_synapse
+
+   - Network size: scale * 11.250
+   - Connectivity: 10% for scale < 10, otherwise CE = 9000, CI = 2250
+
+   User arguments
+   --------------
+   - All are required
+   - Script must be run as
+
+      <bin_path>/nest <script_path>/hpc_benchmark.sli \
+         --userargs=<scale>_<num_vp>_<simtime>_<num_rec>_<plastic>_<d_min>_<d_max>
+
+    - Individual arguments must be separated with _ for JUBE compatibility
+    - Arguments:
+      - scale (int)    : network size is scale * 11.250 (>= 8 recommended)
+      - num_vp (int)   : number of virtual processes (MPI ranks x threads per rank)
+      - simtime (float): simulation time (ms)
+      - num_rec (int)  : number of neurons to record from (suggested: 1000)
+      - plastic (bool) : if true, use plastic E->E synapses, otherwise static
+      - d_min (float)  : minimal delay (ms)
+      - d_max (float)  : maximal delay (ms); randomize uniform if != d_min
+
+    Benchmark phases
+    ----------------
+    1. Startup
+    2. Neuron (node) creation
+    3. Network connection setup
+    4. Initial simulation (single time step)
+    5. Pre-simulation (100 ms, fixed)
+    6. Simulation (simtime, adjustable)
+    7. Finalization
+
+    Benchmark output
+    ----------------
+    - All ranks write to stdout (approx 140 lines per rank)
+    - Normal NEST output is mixed with logging lines
+    - Logging lines have the format
+
+              <rank> <value> # <tag>
+
+      where the tag uniquely identifies the value being logged. Tags
+      can contain spaces and each rank will write each tag once.
+    - The following tags are output:
+
+      virt_mem_0  -- virtual memory size after startup
+
+      build_time_nodes -- time required for phase 2
+      virt_mem_after_nodes -- virtual memory size after phase 2
+
+      build_edge_time -- time required for phase 3
+      virt_mem_after_edges -- virtual memory size after phase 3
+
+      init_time -- time required for phase 4
+      virt_mem_after_init -- virtual memory size after phase 4
+
+      presim_time -- time required for phase 5
+      virt_mem_after_presim -- virtual memory size after phase 5
+
+      sim_time -- time required for phase 6
+      virt_mem_after_sim -- virtual memory size after phase 6
+
+      average rate -- average firing rate during phase 6
+
+      num_neurons -- total number of neurons in network
+
+      num_connections -- number of connections stored on MPI rank
+
+      min_delay -- actual minimum delay
+
+      max_delay -- actual maximal delay
+
+      local_spike_counter -- number of spikes emitted on MPI rank
+
+    Notes
+    -----
+    - When comparing 2.14 and 5G, one needs to consider sum of build_edge_time and init_time
+    - Average rate should be below 10; for small networks (scale < 8), it will be lower, but
+      this regime is not relevant. Rates should be similar across ranks.
+    - The total number of connections in a network is obtained by summing num_connections
+      across ranks.
+    - The total number of spikes fired and transmitted is obtained by summing local_spike_counter
+      across ranks.
+    - Each spike is delivered to 9000 (80% of spikes) or 2250 (20% of spikes) neurons for
+      networks of scale >= 10.
+
+   This benchmark is close to the standard network investigated in:
+   Morrison et al (2007). Spike-timing-dependent plasticity in balanced random
+     networks. Neural Comput 19(6):1437-67
+   Helias et al (2012). Supercomputers ready for use as discovery machines for
+     neuroscience. Front. Neuroinform. 6:26
+   Kunkel et al (2014). Spiking network simulation code for petascale 
+     computers. Front. Neuroinform. 8:78
+   Ippen et al (2017). Constructing Neuronal Network Models in Massively Parallel
+     Environments. Front. Neuroinform. 11:30.
+     
+*/
+  
+%%% PARAMETER SECTION %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% define all relevant parameters: changes should be made here
+% all data is placed in the userdict dictionary
+
+% call like:
+% nest --userargs=scale,nvp,simtime,numrec,plastic,d_min,d_max hpc_benchmark.sli
+
+/user_scale statusdict/userargs :: 0 get (_) breakup 0 get double def
+/user_nvp statusdict/userargs :: 0 get (_) breakup 1 get int def
+/user_simtime statusdict/userargs :: 0 get (_) breakup 2 get double def
+/user_numrec statusdict/userargs :: 0 get (_) breakup 3 get int def
+/user_plastic statusdict/userargs :: 0 get (_) breakup 4 get (true) eq def
+/user_d_min statusdict/userargs :: 0 get (_) breakup 5 get double def
+/user_d_max statusdict/userargs :: 0 get (_) breakup 6 get double def
+/conn_rule statusdict/userargs :: 0 get (_) breakup 7 get def
+
+(GIT: ) =only statusdict/version :: ==
+
+(user_scale  : ) =only user_scale ==
+(user_nvp    : ) =only user_nvp ==
+(user_simtime: ) =only user_simtime ==
+(user_numrec : ) =only user_numrec ==
+(user_plastic: ) =only user_plastic ==
+(user_d_min  : ) =only user_d_min ==
+(user_d_max  : ) =only user_d_max ==
+(user_rule   : ) =only conn_rule ==
+
+/nvp user_nvp def % total number of virtual processes
+/scale user_scale def %  scaling factor of the network size, total network size = scale*11250 neurons
+/simtime user_simtime def
+/Nrec user_numrec def
+/plastic user_plastic def
+/d_min user_d_min def
+/d_max user_d_max def
+
+/inisimtime 10. ms def  % initial simulation time: calibration etc
+/presimtime 90. ms def  % simulation time until reaching equilibrium
+/dt 0.1 ms def          % simulation step
+/path_name (.) def      % path where all files will have to be written
+/record_spikes true def % record excitatory spikes 
+
+% -------------------------------------------------------------------------------------
+
+%%% Define function to convert synapse weight from  mV to pA %%%%%%%%%%
+
+/ConvertSynapseWeight
+{
+  /tauMem Set
+  /tauSyn Set
+  /CMem Set
+  % This function is specific to the used neuron model
+  % Leaky integrate-and-fire neuron with alpha-shaped
+  % postsynaptic currents
+  (
+  a = tauMem / tauSyn;
+  b = 1.0 / tauSyn - 1.0 / tauMem;
+  % time of maximum
+  t_max = 1.0/b * (-LambertWm1(-exp(-1.0/a)/a)-1.0/a);
+  % maximum of PSP for current of unit amplitude
+  exp(1.0)/(tauSyn*CMem*b) * ((exp(-t_max/tauMem) - exp(-t_max/tauSyn)) / b - t_max*exp(-t_max/tauSyn))
+  ) ExecMath
+  1 exch div
+}
+def
+
+%%% Rise time of synaptic currents
+
+% The synaptic rise time is chosen such that the rise time of the
+% evoked post-synaptic potential is 1.700759 ms.
+% For alpha-shaped postynaptic currents, the rise time of the post-synaptic
+% potential follows from the synaptic rise time as
+
+/PSP_rise_time
+{
+  /taumem set
+  /tausyn set
+  
+  (
+  a = taumem / tausyn;
+  b = 1.0 / tausyn - 1.0 / taumem;
+  ) execmath
+  
+} def
+
+% Inverting this equation numerically leads to tau_syn = 0.32582722403722841 ms,
+% as specified in model_params below.
+
+/tau_syn 0.32582722403722841 ms def
+
+% -------------------------------------------------------------------------------------
+
+/brunel_params
+<<
+  /NE 9000 scale mul round cvi   % number of excitatory neurons
+  /NI 2250 scale mul round cvi   % number of inhibitory neurons
+
+  conn_rule (all) eq
+  {
+    /NE 9000 scale sqrt mul iround def
+    /NI 2250 scale sqrt mul iround def
+    NE ==
+    NI ==
+  } if
+
+  conn_rule (one) eq
+  {
+    /NE 9000 scale mul round cvi def
+    /NI 9000 scale mul round cvi def
+  } if
+
+  /model_params
+  <<
+    % Set variables for iaf_psc_alpha
+    /E_L     0.0  mV  % Resting membrane potential (mV)
+    /C_m   250.0  pF  % Capacity of the membrane (pF)
+    /tau_m  10.0  ms  % Membrane time constant (ms)
+    /t_ref 0.5  ms  % duration of refractory period (ms)
+    /V_th   20.0  mV  % Threshold (mV)
+    /V_reset 0.0  mV  % Reset Potential (mV)
+    /tau_syn_ex   tau_syn % time const. postsynaptic excitatory currents (ms)
+    /tau_syn_in   tau_syn % time const. postsynaptic inhibitory currents (ms)
+    /tau_minus 30.0 ms %time constant for STDP (depression)
+    % V can be randomly initialized see below
+    /V_m 5.7 mV % mean value of membrane potential
+  >>
+
+  /randomize_Vm true
+  /mean_potential 5.7 mV  % Note that Kunkel et al. (2014) report different values. The values
+  /sigma_potential 7.2 mV % in the paper were used for the benchmarks on K, the values given
+                          % here were used for the benchmark on JUQUEEN.
+
+  /delay  d_min ms         % synaptic delay, all connections (ms)
+
+   % synaptic weight
+  /JE 0.14 mV %peak of EPSP
+
+  /sigma_w 3.47 pA      %standard dev. of E->E synapses (pA)
+  /g  -5.0
+
+  /stdp_params
+  <<
+    /delay d_min ms
+    /alpha  0.0513
+    /lambda 0.1          %STDP step size
+    /mu     0.4          %STDP weight dependence exponent (potentiation)
+    /tau_plus 15.0       %time constant for potentiation
+  >>
+  
+  /eta 1.685         %scaling of external stimulus
+  /filestem path_name
+
+>> def
+
+% Here we resolve parameter dependencies, by making the independent
+% values visible
+brunel_params dup using
+
+% create one single random number generator    
+rngdict /knuthlfg get 238 CreateRNG /myrng Set
+
+% normal distribution to draw initial membrane potentials from
+myrng rdevdict /normal get CreateRDV /normal_dv Set
+
+
+%%% FUNCTION SECTION %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+/BuildNetwork
+{
+  
+  tic % start timer on construction
+  % set global kernel parameters
+  <<
+     /total_num_virtual_procs nvp
+     /resolution  dt
+     /overwrite_files true
+  >> SetKernelStatus
+
+  /iaf_psc_alpha    model_params    SetDefaults
+
+  /iaf_psc_alpha 1 Create  % We do this to get same spike counter as NEST 2.16!
+
+  M_INFO (BuildNetwork)
+  (Creating excitatory population.) message  % show message
+  /E_neurons /iaf_psc_alpha NE Create def
+
+  /iaf_psc_alpha 1 Create  % We do this to get same spike counter as NEST 2.16!
+
+  M_INFO (BuildNetwork)
+  (Creating inhibitory population.) message  % show message
+  /I_neurons /iaf_psc_alpha NI Create def
+
+  randomize_Vm
+  {
+      M_INFO (BuildNetwork)
+      (Randomzing membrane potentials.) message
+
+      /base_seed GetKernelStatus /rng_seeds get Last def
+      /rdevs
+        [ nvp ]
+        { base_seed add rngdict/MT19937 :: exch CreateRNG rdevdict/normal :: CreateRDV }
+        Table
+      def
+
+      E_neurons LocalOnly
+      {
+          dup
+          /vp get rdevs exch get /normal Set  % Gaussian generator for VP of node
+          << /V_m mean_potential sigma_potential normal Random mul add >>
+          SetStatus
+      } forall
+
+      I_neurons LocalOnly
+      {
+          dup
+          /vp get rdevs exch get /normal Set  % Gaussian generator for VP of node
+          << /V_m mean_potential sigma_potential normal Random mul add >>
+          SetStatus
+      } forall
+  } if
+
+  /N E_neurons size I_neurons size add def
+
+
+  /CE 9000 def %number of incoming excitatory connections
+  /CI 2250 def %number of incomining inhibitory connections    
+
+  % Fixed connection rule
+  conn_rule (all) eq
+  {
+    /EE_conn_spec << /rule (all_to_all) /allow_autapses true >> def
+    /EI_conn_spec EE_conn_spec def
+    /IE_conn_spec EE_conn_spec def
+    /II_conn_spec EE_conn_spec def
+  } if
+  conn_rule (one) eq
+  {
+    /EE_conn_spec << /rule (one_to_one) >> def
+    /EI_conn_spec EE_conn_spec def
+    /IE_conn_spec EE_conn_spec def
+    /II_conn_spec EE_conn_spec def
+  } if
+  conn_rule (in) eq
+  {
+    /EE_conn_spec << /rule (fixed_indegree) /indegree CE /allow_autapses true /allow_multapses true >> def
+    /EI_conn_spec EE_conn_spec def
+    /II_conn_spec << /rule (fixed_indegree) /indegree CI /allow_autapses true /allow_multapses true >> def
+    /IE_conn_spec II_conn_spec def
+  } if
+  conn_rule (out) eq
+  {
+    /EE_conn_spec << /rule (fixed_outdegree) /outdegree CE /allow_autapses true /allow_multapses true >> def
+    /EI_conn_spec << /rule (fixed_outdegree) /outdegree CI /allow_autapses true /allow_multapses true >> def
+    /IE_conn_spec EE_conn_spec def
+    /II_conn_spec EI_conn_spec def
+  } if
+  conn_rule (tot) eq
+  {
+    /CEEt NE CE mul def
+    /CIIt NI CI mul def
+    /CEIt NE CI mul def
+    /CIEt NI CE mul def
+    CEEt ==
+    CIIt ==
+    CEIt ==
+    CIEt ==
+    /EE_conn_spec << /rule (fixed_total_number) /N CEEt /allow_autapses true /allow_multapses true >> def
+    /II_conn_spec << /rule (fixed_total_number) /N CIIt /allow_autapses true /allow_multapses true >> def
+    /IE_conn_spec << /rule (fixed_total_number) /N CIEt /allow_autapses true /allow_multapses true >> def
+    /EI_conn_spec << /rule (fixed_total_number) /N CEIt /allow_autapses true /allow_multapses true >> def
+  } if
+  conn_rule (bern) eq
+  {
+    /p_CE CE NE cvd div def
+    /p_CI CI NI cvd div def
+    /EE_conn_spec << /rule (pairwise_bernoulli) /p p_CE /allow_autapses true /allow_multapses true >> def
+    /EI_conn_spec EE_conn_spec def
+    /II_conn_spec << /rule (pairwise_bernoulli) /p p_CI /allow_autapses true /allow_multapses true >> def
+    /IE_conn_spec II_conn_spec def
+  } if
+  conn_rule (sym-bern) eq
+  {
+    /p_CE CE NE cvd div 0.5 mul def
+    /p_CI CI NI cvd div 0.5 mul def
+    /EE_conn_spec << /rule (symmetric_pairwise_bernoulli) /p p_CE /allow_autapses true /allow_multapses true /make_symmetric true >> def
+    /EI_conn_spec EE_conn_spec def
+    /II_conn_spec << /rule (symmetric_pairwise_bernoulli) /p p_CI /allow_autapses true /allow_multapses true /make_symmetric true >> def
+    /IE_conn_spec II_conn_spec def
+  } if
+
+
+
+  M_INFO (BuildNetwork)
+  (Creating excitatory stimulus generator.) message
+
+  model_params using
+
+  % Convert synapse weight from mV to pA
+  C_m tau_syn tau_m ConvertSynapseWeight /conversion_factor Set
+  /JE_pA conversion_factor JE mul def
+
+  /nu_thresh V_th CE tau_m C_m div mul JE_pA mul 1.0 exp mul tau_syn mul div def
+  /nu_ext nu_thresh eta mul def
+  endusing
+
+  /E_stimulus /poisson_generator Create def
+  E_stimulus
+  <<
+     /rate nu_ext CE mul 1000. mul
+  >> SetStatus
+
+  /I_stimulus /poisson_generator Create def
+  I_stimulus
+  <<
+     /rate nu_ext CE mul 1000. mul
+  >> SetStatus
+
+  M_INFO (BuildNetwork)
+  (Creating excitatory spike detector.) message
+
+  record_spikes
+  {
+    /detector_label  filestem (/alpha_) join stdp_params /alpha get cvs join (_spikes) join def
+    /E_detector /spike_detector Create def
+    E_detector
+    <<
+       /label detector_label
+       /start inisimtime presimtime add
+    >> SetStatus
+  } if
+
+  toc /BuildNodeTime Set
+
+  BuildNodeTime cvs ( # build_time_nodes) join logger /log call
+
+  memory_thisjob cvs ( # virt_mem_after_nodes) join logger /log call
+
+  tic    % Start timer for connection time
+
+  % Create custom synapse types with appropriate values for
+  % our excitatory and inhibitory connections
+  /static_synapse_hpc << /delay delay >> SetDefaults
+  /static_synapse_hpc /syn_std  CopyModel
+  /static_synapse_hpc /syn_ex << /weight JE_pA >> CopyModel
+  /static_synapse_hpc /syn_in << /weight JE_pA g mul >> CopyModel
+
+  plastic
+  {
+    stdp_params /weight JE_pA put   
+    /stdp_pl_synapse_hom_hpc /syn_ex_ex stdp_params CopyModel
+  }
+  {
+    /static_synapse_hpc /syn_ex_ex << /weight JE_pA >> CopyModel
+  }
+  ifelse
+
+  M_INFO (BuildNetwork)
+  (Connecting stimulus generators.) message
+
+  % Connect Poisson generator to neuron
+
+  E_stimulus E_neurons << /rule (all_to_all) >> << /synapse_model /syn_ex >> Connect
+  E_stimulus I_neurons << /rule (all_to_all) >> << /synapse_model /syn_ex >> Connect
+
+  M_INFO (BuildNetwork)
+  (Connecting excitatory -> excitatory population.) message
+
+  d_min d_max neq
+  {
+    /delays << /distribution /uniform /low d_min /high d_max >> def
+  }
+  {
+    /delays d_min def
+  }
+  ifelse
+
+  E_neurons E_neurons EE_conn_spec << /synapse_model /syn_ex_ex /delay delays >> Connect
+
+  M_INFO (BuildNetwork)
+  (Connecting inhibitory -> excitatory population.) message
+
+  I_neurons E_neurons IE_conn_spec << /synapse_model /syn_in  /delay delays >> Connect
+
+  M_INFO (BuildNetwork)
+  (Connecting excitatory -> inhibitory population.) message
+
+  E_neurons I_neurons EI_conn_spec << /synapse_model /syn_ex  /delay delays >> Connect
+
+  M_INFO (BuildNetwork)
+  (Connecting inhibitory -> inhibitory population.) message
+
+  I_neurons I_neurons II_conn_spec << /synapse_model /syn_in  /delay delays >> Connect
+
+
+  record_spikes true eq
+  {
+    E_neurons size Nrec lt
+    {
+      M_ERROR (BuildNetwork)
+      (Networks is smaller than number of neurons to record from!) message
+      1 quit_i
+    } if
+
+    M_INFO (BuildNetwork)
+    (Connecting spike detectors.) message
+    E_neurons Nrec Take E_detector << /rule (all_to_all) >> << /synapse_model /syn_std >> Connect
+  } if
+
+  % read out time used for building
+  toc /BuildEdgeTime Set
+  BuildEdgeTime cvs ( # build_edge_time ) join logger /log call
+  memory_thisjob cvs ( # virt_mem_after_edges) join logger /log call
+
+ } def % end of buildnetwork
+
+/RunSimulation
+{
+
+  % initialize logger
+  logger /init call
+
+  ResetKernel
+
+  memory_thisjob cvs ( # virt_mem_0) join logger /log call
+
+  % - Network Construction ----------------------------------
+
+  BuildNetwork
+
+  % - Initial simulation: rig and calibrate -----------------
+  
+  tic
+
+  Prepare
+  inisimtime Run
+
+  toc /InitializationTime Set
+
+  memory_thisjob cvs ( # virt_mem_after_init) join logger /log call
+  InitializationTime cvs ( # init_time) join logger /log call
+
+  % - Presimulation: equilibrate system -----------------
+
+  tic
+  
+  presimtime Run
+
+  toc /PresimTime Set
+
+  memory_thisjob cvs ( # virt_mem_after_presim) join logger /log call
+  PresimTime cvs ( # presim_time) join logger /log call
+
+  % - Simulation -----------------
+
+  tic
+
+  simtime Run
+
+  toc /SimCPUTime Set
+
+  memory_thisjob cvs ( # virt_mem_after_sim) join logger /log call
+  SimCPUTime cvs ( # sim_time) join logger /log call
+
+  % - Cleanup and output -----------
+
+  Cleanup
+  
+  record_spikes true eq
+  {
+    E_detector ComputeRate cvs ( # average rate) join logger /log call
+  } if
+
+  E_neurons size I_neurons size add cvs ( # num_neurons) join logger /log call
+  GetKernelStatus /num_connections get cvs ( # num_connections) join logger /log call
+  GetKernelStatus /min_delay get cvs ( # min_delay) join logger /log call
+  GetKernelStatus /max_delay get cvs ( # max_delay) join logger /log call
+  GetKernelStatus /local_spike_counter get cvs ( # local_spike_counter) join logger /log call
+
+  logger /done call
+  
+} def
+
+% ------------------------------------------------------------------------------------
+
+% Take spike detector, find total number of spikes registered,
+% return average rate per neuron in Hz.
+% NOTE: If you are running with several MPI processes, this
+%       function only gives an approximation to the true rate.
+%
+% spike_det ComputeRate -> rate
+/ComputeRate
+{
+  << >> begin  % anonymous dictionary for local variables
+
+    /sdet Set
+
+    % We need to guess how many neurons we record from.
+    % This assumes an even distribution of nodes across
+    % processes, as well as homogeneous activity in the
+    % network. So this is really a hack. NEST needs better
+    % support for rate calculations, such as giving the
+    % number of neurons recorded from by each spike detector.
+
+    %/n_local_neurons Nrec cvd NumProcesses div def
+    /divisor Nrec simtime mul def
+    divisor 0 gt
+    {
+      sdet /n_events get divisor div
+      1000 mul         % convert from mHz to Hz, leave on stack
+    }
+    {
+      (NaN) double   % no rate if nothing recorded
+    }
+    ifelse
+
+  end
+} bind             % optional, improves performance
+def
+
+% ------------------------------------------------------------------------------------
+
+/*
+    This function defines a logger class used to properly log memory and timing
+    information from network simulations. It is used by hpc_benchmark.sli to
+    store the information to the log files.
+*/
+
+/logger
+<<
+    /line_counter 0
+
+    % constructor
+    /init
+    {
+      % nothing to do since we only log to stdout
+    }
+
+    % logging function
+    % expects one operand on stack to write to file
+    /log
+    {
+      /value Set
+      
+      cout Rank <- ( ) <- value <- endl flush pop
+    }
+
+    % closes file
+    /done
+    {
+    % nothing to do since we only log to stdout
+    }
+
+>> def
+
+% ------------------------------------------------------------------------------------
+
+RunSimulation
