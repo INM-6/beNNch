@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jube>
+
+  <!-- MAM -->
+
+  <include-path>
+    <path>../jube_config/</path>
+  </include-path>
+
+
+  <benchmark name="MAM_daint" outpath="../../../BenchWork/jube_MAM/nest_2_20">
+
+    <parameterset name="scale_check">
+      <parameter name="base_vp" type="int">36</parameter>
+      <parameter name="base_scale" type="int">0.0625</parameter>
+      <parameter name="SIMTIME" type="float">500.</parameter>
+      <parameter name="NUMBER_OF_NODES" type="int">1,2,4,8,16,32</parameter>
+      <parameter name="NUM_VPS" type="int" mode="python">$base_vp*$NUMBER_OF_NODES</parameter>
+      <parameter name="SCALE" type="float" mode="python">$base_scale*$NUMBER_OF_NODES</parameter>
+      <parameter name="K_SCALE" type="float" mode="python">1.</parameter>
+      <parameter name="THREADS_PER_TASK" type="int">6</parameter>
+      <parameter name="NEST_VERSION" type="int">2</parameter>
+    </parameterset>
+
+    <step name="bench">
+      <use from="dir_config.xml">dir_config</use>
+      <use from="system_descriptions.xml">system_daint</use>
+      <use from="benchmark_systems.xml">MAM_benchmark</use>
+      <use from="packages.xml">nest_2_20,nest_py_O3_strict,jemalloc</use>
+      <use from="bench_jobs.xml">bench_base_vp_daint,bench_nest_MAM_boost_srun,files,sub_bench_job</use>
+      <use>scale_check</use>
+      <do done_file="$ready_file">$submit_cmd $job_file</do>
+    </step>
+
+    <!-- Analyse -->
+    <analyser name="analyse_scale_check">
+      <use from="bench_jobs.xml">nest_pattern_MAM_stdcout</use>      <!-- use existing patternset -->
+      <analyse step="bench">
+        <file>stdout</file>        <!-- file which should be scanned -->
+      </analyse>
+    </analyser>
+
+    <!-- Create result table -->
+    <result>
+      <use>analyse_scale_check</use>      <!-- use existing analyser -->
+      <table name="NEST_2_20_MAM_daint" style="csv" sort="number">
+        <column>git</column>
+        <column>NUMBER_OF_NODES</column>
+        <column>TASKS_PER_NODE</column>
+        <column>NUM_VPS</column>
+        <column>THREADS_PER_TASK</column>
+        <column>SCALE</column>
+        <column>NUM_VPS</column>
+        <column>num_tasks</column>
+        <column>T_network_local</column>    
+        <column>T_network_global_min</column>
+        <column>T_network_global_max</column>
+        <column>T_network_global_sum</column>
+        <column>T_create_min</column>
+        <column>T_create_max</column>
+        <column>T_create_sum</column>
+        <column>T_connect_max</column>
+        <column>T_connect_min</column>
+        <column>T_connect_sum</column>
+        <column>T_ini_min</column>
+        <column>T_ini_max</column>
+        <column>T_sim</column>
+        <column>VSize_sum</column>
+        <column>VSize_ini_sum</column>
+        <column>VSize_net_sum</column>
+        <column>N_spks_sum</column> 
+        <column>N_nrns</column>
+        <column>N_conns_sum</column>
+      </table>
+    </result>
+
+
+  </benchmark>
+</jube>
