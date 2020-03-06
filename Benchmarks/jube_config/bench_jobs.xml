@@ -372,7 +372,22 @@
       source ${NEST_INSTALL_DIR}/bin/nest_vars.sh;
       export OMP_NUM_THREADS=$THREADS_PER_TASK
 
-      srun ${JEMALLOC_INSTALL_DIR}/bin/jemalloc.sh $NEST_INSTALL_DIR/bin/nest ${slifile} --userargs=${SCALE}_${THREADS_PER_TASK}
+      srun ${JEMALLOC_INSTALL_DIR}/bin/jemalloc.sh $NEST_INSTALL_DIR/bin/nest ${slifile} --userargs=${SCALE}_${totVPs}
+    </parameter>
+  </parameterset>
+
+  <parameterset name="bench_nest_ippen_mpi">
+    <parameter name="job_name" type="string">bench-${nest_version}-${system_name}-${nest_config}</parameter>
+    <parameter name="exec">
+      module swap $swap_modules
+      module load $modules
+      module load $boost_module
+      module load $gsl_module
+      
+      source ${NEST_INSTALL_DIR}/bin/nest_vars.sh;
+      export OMP_NUM_THREADS=$THREADS_PER_TASK
+
+      srun -n ${TASKS_PER_NODE} ${JEMALLOC_INSTALL_DIR}/bin/jemalloc.sh $NEST_INSTALL_DIR/bin/nest ${slifile} --userargs=${SCALE}_${totVPs}
     </parameter>
   </parameterset>
 
