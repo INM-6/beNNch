@@ -44,10 +44,7 @@
         <column>NUMBER_OF_NODES</column>
         <column>TASKS_PER_NODE</column>
         <column>THREADS_PER_TASK</column>
-        <column>num_tasks</column>
-        <column>NUM_VPS</column>
         <column>SCALE</column>
-        <column>PLASTIC</column>
         <column>T_nrns</column>
         <column>T_conns_min</column>
         <column>T_conns_max</column>
@@ -64,8 +61,7 @@
         <column>Rate_sum</column>
         <column>N_nrns</column>
         <column>N_conns_sum</column>
-        <column>d_min</column>
-        <column>d_max</column>
+
       </table>
     </result>
 

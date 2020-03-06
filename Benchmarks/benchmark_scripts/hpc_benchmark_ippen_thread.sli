@@ -348,6 +348,12 @@ myrng rdevdict /normal get CreateRDV /normal_dv Set
 %(\nBRN STDP Equilibrium Simulation) =
   mpi_rank cvs (] ) join (Simulation time   : ) join  =only SimCPUTime   =only ( s\n) =
 
+  E_neurons size I_neurons size add cvs ( # num_neurons) join logger /log call
+  0 /num_connections get cvs ( # num_connections) join logger /log call
+  0 /min_delay get cvs ( # min_delay) join logger /log call
+  0 /max_delay get cvs ( # max_delay) join logger /log call
+  0 /local_spike_counter get cvs ( # local_spike_counter) join logger /log call
+
   logger /done call  
 } def
 
