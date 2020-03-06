@@ -38,7 +38,7 @@
   
   <parameterset name="MAM_benchmark">
     <parameter name="benchmark_system_name" type="string">
-      run_example_simulate
+      run_benchmark
     </parameter>
     <parameter name="pythonfile" type="string">
       ${bench_model}/multi-area-model/${benchmark_system_name}.py

@@ -195,10 +195,8 @@
         source ${NEST_INSTALL_DIR}/bin/nest_vars.sh;
         export PYTHONPATH=${MAM_home}/multi-area-model/:$PYTHONPATH;
         export OMP_NUM_THREADS=$THREADS_PER_TASK
-       
-        python ${bench_model}/multi-area-model/run_example_createParams.py ${SCALE} ${totVPs} ${SIMTIME} ${K_SCALE} ${NEST_VERSION}
 
-        mpirun ${JEMALLOC_INSTALL_DIR}/bin/jemalloc.sh python ${pythonfile} ${SCALE} ${totVPs} ${NEST_VERSION}
+        mpirun ${JEMALLOC_INSTALL_DIR}/bin/jemalloc.sh python ${pythonfile} ${SCALE} ${totVPs} ${SIMTIME} ${K_SCALE} ${NEST_VERSION}
       </parameter>
     </parameterset>
 
@@ -215,9 +213,7 @@
         export PYTHONPATH=${MAM_home}/multi-area-model/:$PYTHONPATH;
         export OMP_NUM_THREADS=$THREADS_PER_TASK
        
-        srun -n 1 python ${bench_model}/multi-area-model/run_example_createParams.py ${SCALE} ${totVPs} ${SIMTIME} ${K_SCALE} ${NEST_VERSION}
-
-        srun ${JEMALLOC_INSTALL_DIR}/bin/jemalloc.sh python ${pythonfile} ${SCALE} ${totVPs} ${NEST_VERSION}
+        srun ${JEMALLOC_INSTALL_DIR}/bin/jemalloc.sh python ${pythonfile} ${SCALE} ${totVPs} ${SIMTIME} ${K_SCALE} ${NEST_VERSION}
       </parameter>
     </parameterset>
 
@@ -234,9 +230,7 @@
         export PYTHONPATH=${MAM_home}/multi-area-model/:$PYTHONPATH;
         export OMP_NUM_THREADS=$THREADS_PER_TASK
        
-        srun -n 1 python ${bench_model}/multi-area-model/run_example_createParams.py ${SCALE} ${totVPs} ${SIMTIME} ${K_SCALE} ${NEST_VERSION}
-
-        srun ${JEMALLOC_INSTALL_DIR}/bin/jemalloc.sh python ${pythonfile} ${SCALE} ${totVPs} ${NEST_VERSION}
+        srun ${JEMALLOC_INSTALL_DIR}/bin/jemalloc.sh python ${pythonfile} ${SCALE} ${totVPs} ${SIMTIME} ${K_SCALE} ${NEST_VERSION}
       </parameter>
     </parameterset>
 
