@@ -50,6 +50,8 @@
 (user_scale: ) =only user_scale ==
 (user_nvp: ) =only user_nvp ==
 
+(GIT: ) =only statusdict/version :: ==
+
 /nvp user_nvp def % total number of virtual processes
 /scale user_scale def %  scaling factor of the network size, total network size = scale*11250 neurons
 /Tsim 1000. def % total simulation time in ms
