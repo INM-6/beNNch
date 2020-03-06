@@ -45,8 +45,8 @@
 % call like:
 % nest --userargs=$scale,$nvp,$logfile_base hpc_benchmark.sli
 
-/user_scale statusdict/userargs :: 0 get (,) breakup 0 get double def
-/user_nvp statusdict/userargs :: 0 get (,) breakup 1 get int def
+/user_scale statusdict/userargs :: 0 get (_) breakup 0 get double def
+/user_nvp statusdict/userargs :: 0 get (_) breakup 1 get int def
 (user_scale: ) =only user_scale ==
 (user_nvp: ) =only user_nvp ==
 

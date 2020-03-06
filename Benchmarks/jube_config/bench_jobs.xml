@@ -372,7 +372,7 @@
       source ${NEST_INSTALL_DIR}/bin/nest_vars.sh;
       export OMP_NUM_THREADS=$THREADS_PER_TASK
 
-      srun ${JEMALLOC_INSTALL_DIR}/bin/jemalloc.sh $NEST_INSTALL_DIR/bin/nest --userargs=${SCALE},$THREADS_PER_TASK hpc_benchmark_ippen_thread.sli
+      srun ${JEMALLOC_INSTALL_DIR}/bin/jemalloc.sh $NEST_INSTALL_DIR/bin/nest ${slifile} --userargs=${SCALE}_${THREADS_PER_TASK}
     </parameter>
   </parameterset>
 
