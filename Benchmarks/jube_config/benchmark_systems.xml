@@ -72,9 +72,9 @@
     </parameter>
   </parameterset>
 
-  <parameterset name="hpc_synapse_benchmark">
+  <parameterset name="hpc_benchmark_ippen_nest3">
     <parameter name="benchmark_system_name" type="string">
-      hpc_population_comp_benchmark
+      hpc_benchmark_ippen_nest_3
     </parameter>
     <parameter name="slifile" type="string">
       ${bench_home}/benchmark_scripts/${benchmark_system_name}.sli
