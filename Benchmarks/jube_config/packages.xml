@@ -31,28 +31,18 @@
     <parameter name="nest_branch" type="string">new_container</parameter>
   </parameterset>
 
+  <parameterset name="nest_3">
+    <parameter name="nest_version" type="string">NEST-3</parameter>
+    <parameter name="nest_branch" type="string">nest-3</parameter>
+  </parameterset>
+
+  <parameterset name="nest_5g">
+    <parameter name="nest_version" type="string">NEST-5G</parameter>
+    <parameter name="nest_branch" type="string">5g</parameter>
+  </parameterset>  
+
   <parameterset name="nest_master">
     <parameter name="nest_version" type="string">NEST-master</parameter>
-    <parameter name="nest_branch" type="string">master</parameter>
-  </parameterset>
-
-  <parameterset name="nest_master_update">
-    <parameter name="nest_version" type="string">NEST-master-update</parameter>
-    <parameter name="nest_branch" type="string">master</parameter>
-  </parameterset>
-
-  <parameterset name="nest_BV">
-    <parameter name="nest_version" type="string">NEST-BV</parameter>
-    <parameter name="nest_branch" type="string">master</parameter>
-  </parameterset>
-
-  <parameterset name="nest_conn_sort">
-    <parameter name="nest_version" type="string">NEST-conn-sort</parameter>
-    <parameter name="nest_branch" type="string">master</parameter>
-  </parameterset>
-
-  <parameterset name="nest_me5g">
-    <parameter name="nest_version" type="string">NEST-me5g</parameter>
     <parameter name="nest_branch" type="string">master</parameter>
   </parameterset>
 
@@ -66,8 +56,9 @@
     <parameter name="nest_branch" type="string">master</parameter>
   </parameterset>
 
-  <parameterset name="nest_master_lcid">
-    <parameter name="nest_version" type="string">NEST-master_lcid</parameter>
+  <parameterset name="nest_6ec5807">
+    <parameter name="nest_version" type="string">NEST-6ec5807</parameter>
+    <parameter name="nest_branch" type="string">master</parameter>
   </parameterset>
 
   <parameterset name="nest_bisect">
@@ -79,30 +70,10 @@
     <parameter name="nest_branch" type="string">master</parameter>
   </parameterset>
 
-  <parameterset name="nest_dq">
-    <parameter name="nest_version" type="string">NEST-DQ</parameter>
-    <parameter name="nest_branch" type="string">master-deque</parameter>
-  </parameterset>
-
-  <parameterset name="nest_sq">
-    <parameter name="nest_version" type="string">NEST-SQ</parameter>
-    <parameter name="nest_branch" type="string">new_container</parameter>
-  </parameterset>
-
   <parameterset name="nest_db70dcc1edb">
     <parameter name="nest_version" type="string">NEST-db70dcc1edb</parameter>
     <parameter name="nest_branch" type="string">new_container</parameter>
   </parameterset>
-
-  <parameterset name="nest_3">
-    <parameter name="nest_version" type="string">NEST-3</parameter>
-    <parameter name="nest_branch" type="string">nest-3</parameter>
-  </parameterset>
-
-  <parameterset name="nest_5g">
-    <parameter name="nest_version" type="string">NEST-5G</parameter>
-    <parameter name="nest_branch" type="string">5g</parameter>
-  </parameterset>  
 
   <parameterset name="jemalloc">
     <parameter name="jemalloc_version" type="string">jemalloc-5.0.1</parameter>
