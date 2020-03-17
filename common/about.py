@@ -1,11 +1,20 @@
 #!/usr/bin/env python
+# encoding: utf8
 
 import os
-
 from pprint import pformat
 import logging
+import logging.config
 log = logging.getLogger()
-logging.basicConfig(level=logging.DEBUG)
+
+try:
+    import yaml
+    basepath = os.path.dirname(__file__)
+    with open(os.path.join(basepath, "../logging.yaml"), 'r') as infile:
+        logging.config.dictConfig(yaml.safe_load(infile))
+except Exception as e:
+    logging.basicConfig(level=logging.DEBUG)
+    log.warning("using basic logging config due to exception %s", e)
 
 recordables = {
     'date': 'date --iso=seconds',
