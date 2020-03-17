@@ -1,5 +1,6 @@
-name: jube
 channels:
   - defaults
-prefix: /home/terhorst/miniconda3/envs/jube
+dependencies:
+  - python=3
+  - pip >=20
 

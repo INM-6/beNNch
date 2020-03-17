@@ -4,22 +4,22 @@ configfile: "config.yaml"
 
 rule all:
     input:
-        '.JUBE.installed'
+        '.jube-version-installed'
 
 rule install_jube:
     input:
         "JUBE-%s.tar.gz" % config['jubeversion'],
     output:
-        ".JUBE.installed"
-    params:
-        prefix = os.environ.get("CONDA_PREFIX", os.path.expanduser("~/.local"))
+        ".jube-version-installed"
+    conda: 'environment.yml'
     shell:
         '''
-        tar -xf {input}
-        echo "installing to environment '$CONDA_DEFAULT_ENV'..."
-        pip install ./JUBE-{config[jubeversion]}   # this uses the conda pip to install into the correct environment
-        jube --version >{output}
-        rm -rf JUBE-{config[jubeversion]}
+        echo "CONDA_DEFAULT_ENV: $CONDA_DEFAULT_ENV"
+        echo "CONDA_PREFIX: $CONDA_PREFIX"
+        echo "installing to CONDA_PREFIX..."
+        pip install --prefix $CONDA_PREFIX {input}   # this uses the conda pip to install into the correct environment
+        jube --version >{output} 2>&1
+        echo "installed in $CONDA_PREFIX" >>{output}
         '''
 
 rule download_jube:
