@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jube>
+  <benchmark name="include" outpath="bench_run">
+    <comment>A include example</comment>
+    
+    <!-- use parameterset out of an external file and add a additional parameter -->
+    <parameterset name="machine_params" init_with="machine_params.xml">
+      <parameter name="foo">bar</parameter>
+    </parameterset>
+    
+    <!-- Operation -->
+    <step name="say_hello">
+      <use>machine_params</use> <!-- use existing parameterset -->
+      <use from="model_params.xml">param_set2</use> <!-- out of an external file -->
+      <do>echo $foo</do> <!-- shell command -->
+      <include from="benchmark_params.xml" path="dos/do" /> <!-- include all available tag -->
+    </step>    
+  </benchmark>
+
+</jube>

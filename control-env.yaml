@@ -1,0 +1,16 @@
+#
+# This is the required environment for the controlling process
+#
+# This environment just has to be able to run snakemake, which will take care
+# of establishing required nested environments. In case you already have
+# Snakemake installed in your current environment, there is no need to build
+# this as an extra one. Just run `snakemake` then.
+#
+channels:
+  - defaults
+dependencies:
+  - python=3
+  - pip >=20
+  - datrie      # required because of bug in snakemake requirements
+  - pip:
+    - snakemake >=5

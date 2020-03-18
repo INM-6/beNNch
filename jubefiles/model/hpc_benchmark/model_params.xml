@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jube>
+  <parameterset name="param_set2">
+    <parameter name="text">Hello</parameter>
+  </parameterset>
+</jube>

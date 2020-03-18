@@ -1,0 +1,7 @@
+
+default:
+  model: hpc_benchmark
+  benchmark: thread_scaling
+  machine: laptop
+
+outpath: output

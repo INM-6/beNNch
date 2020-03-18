@@ -1,0 +1,17 @@
+#
+# This is the environment from where the jobs are launched, basically by
+# calling JUBE. This envrionment is usually necessary on the cluster head node.
+# The run environment in many cases inherits packages from here, depending on
+# how the batch submissionis set up. The run environment may also be set up
+# separately by the job (e.g. via `module load`).
+#
+channels:
+  - defaults
+  - bioconda
+dependencies:
+  - python=3
+  - pip >=20
+  - datrie      # required because of bug in snakemake requirements
+  - pip:
+    - snakemake >=5
+    #- jube >=2.2   # this is not pip installable at the moment, so it is manually done by a snakemake rule.

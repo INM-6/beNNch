@@ -1,0 +1,15 @@
+#!/bin/bash -x
+#MSUB -l nodes=#NODES#:ppn=#TASKS_PER_NODE#
+#MSUB -l walltime=#WALLTIME#
+#MSUB -o #OUTPATH#
+#MSUB -e #ERRPATH#
+#MSUB -M #MAIL_ADDRESS#
+#MSUB -m #MAIL_MODE#
+#
+# THIS FILE MUST CONTAIN BATCH-SYSTEM SPECIFIC COMMANDS ONLY!
+# Do not add job instructions here! Do this in the jobfile!
+#
+
+#JOBSCRIPT#
+
+touch #READY#

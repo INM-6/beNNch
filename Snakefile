@@ -1,6 +1,6 @@
 import os
 
-configfile: "config.yaml"
+configfile: "workflow.yaml"
 
 rule all:
     input:
@@ -10,16 +10,19 @@ rule install_jube:
     input:
         "JUBE-%s.tar.gz" % config['jubeversion'],
     output:
-        ".jube-version-installed"
-    conda: 'environment.yml'
+        info = ".jube-version-installed",
+        env = directory('env/launch'),
+    conda: 'launch-env.yaml'
     shell:
         '''
+        set -x
         echo "CONDA_DEFAULT_ENV: $CONDA_DEFAULT_ENV"
         echo "CONDA_PREFIX: $CONDA_PREFIX"
         echo "installing to CONDA_PREFIX..."
         pip install --prefix $CONDA_PREFIX {input}   # this uses the conda pip to install into the correct environment
         jube --version >{output} 2>&1
-        echo "installed in $CONDA_PREFIX" >>{output}
+        echo "installed in $CONDA_PREFIX" >>{output.info}
+        ln -vs $CONDA_PREFIX {output.env}
         '''
 
 rule download_jube:
