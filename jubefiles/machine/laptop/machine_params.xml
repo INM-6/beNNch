@@ -2,5 +2,6 @@
 <jube>
   <parameterset name="machine_params">
     <parameter name="number" type="int">1,2,4</parameter>
+    <parameter name="shared_folder">$HOME</parameter>
   </parameterset>
 </jube>

@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jube>
+  <benchmark name="MININEST" outpath="test_bench">
+    <comment>A toy NEST caching test</comment>
+
+    <!-- Configuration -->
+    <parameterset name="environment">
+      <parameter name="basedir">$PWD</parameter>
+      <parameter name="compile">echo COMPILE COMMAND</parameter>
+      <parameter name="link">echo LINK COMMAND </parameter>
+      <parameter name="submit_cmd">bash</parameter>
+    </parameterset>
+
+    <!-- include from="userconfig/terhorst1.xml" path="./" /-->
+    <parameterset name="userdata">
+      <parameter name="mail">d.terhorst@fz-juelich.de</parameter>
+    </parameterset>
+
+    <parameterset name="versions">
+      <parameter name="commit" separator=";">46b198a</parameter>
+    </parameterset>
+
+    <parameterset name="compile_params_prefetching=1">
+      <parameter name="LOCALITY" type="int">0,1,2</parameter>
+      <parameter name="PREFETCH_DISTANCE" type="int">1,2,4,7,10</parameter>
+    </parameterset>
+    <parameterset name="compile_params_prefetching=0">
+      <parameter name="LOCALITY" type="int">0</parameter>
+      <parameter name="PREFETCH_DISTANCE" type="int">0</parameter>
+    </parameterset>
+
+    <parameterset name="compile_params">
+    <!--
+      PREFETCHING true/false
+        LOCALITY int
+        PREFETCH_DISTANCE int
+      TARGET_IDX true/false
+      N_TARGETS_PER_SOURCE int (1)
+      PRINT_FINAL_RING_BUFFER true/false
+     -->
+      <parameter name="PREFETCHING" type="int">0,1</parameter>
+      <parameter name="TARGET_IDX" type="int">0,1</parameter>
+      <parameter name="N_TARGETS_PER_NEURON" type="int">1000</parameter>
+      <parameter name="PRINT_FINAL_RING_BUFFER" type="int">1</parameter>
+    </parameterset>
+
+    <parameterset name="run_params_ringbuffer_set=0">
+      <parameter name="mindelay_in_steps" type="int">10</parameter>
+      <parameter name="maxdelay_in_steps" type="int">10</parameter>
+    </parameterset>
+
+    <parameterset name="run_params_ringbuffer_set=1">
+      <parameter name="mindelay_in_steps" type="int">1</parameter>
+      <parameter name="maxdelay_in_steps" type="int">10,100</parameter>
+    </parameterset>
+
+    <parameterset name="run_params">
+      <parameter name="seed" type="int">1239</parameter>
+      <parameter name="n_neurons_per_node" type="int">10000</parameter>
+      <parameter name="n_connections_per_neuron" type="int">100</parameter>
+      <parameter name="simtime_in_steps" type="int">10000</parameter>
+      <parameter name="_ringbuffer_set">0,1</parameter>
+      <parameter name="mpi_recv_buffer_size" type="int">10000</parameter>
+      <parameter name="affinity" separator=";">compact</parameter>
+    </parameterset>
+
+    <parameterset name="jobsystem">
+      <parameter name="jobfile">jobfile.jdf</parameter>
+      <parameter name="jobname">$jube_benchmark_name</parameter>
+      <!--parameter name="workdir" mode="python" type="str">"$$WORK/%06d/%06d/" % ($jube_benchmark_id, $jube_wp_id)</parameter-->
+      <parameter name="workdir">$jube_wp_abspath</parameter>
+      <parameter name="stdout">stdout.app</parameter>
+      <parameter name="stderr">stderr.app</parameter>
+      <parameter name="walltime">02:00:00</parameter>
+      <parameter name="ntasks">1</parameter>
+      <parameter name="cpuspertask ">1</parameter>
+      <parameter name="nodes">1</parameter>
+      <parameter name="mailtype" separator=";">FAIL</parameter>
+      <parameter name="mailuser">$mail</parameter>
+      <parameter name="account">prcoe01</parameter>
+      <parameter name="reservation">osws_thu_devel</parameter>
+      <parameter name="modules" separator=";">Intel Python SciPy-Stack</parameter>
+      <parameter name="readyfile">ready</parameter>
+      <parameter name="exec">main $seed $n_neurons_per_node $n_connections_per_neuron $simtime_in_steps $mindelay_in_steps $maxdelay_in_steps $mpi_recv_buffer_size</parameter>
+    </parameterset>
+
+
+    <!-- Operation -->
+    <step name="fetch"><!-- STEPfetch -->
+      <use>environment</use>
+      <use>versions</use>
+      <do>
+        set -xeu
+        echo would git clone -l -s $basedir/mini-nest -n
+        echo would cd mini-nest;
+        echo would git checkout $commit;
+        echo "CHECKED OUT $commit";
+      </do>
+    </step>
+    <step name="compile" depend="fetch"><!-- STEPcompile -->
+      <use>compile_params</use>
+      <use>compile_params_prefetching=$PREFETCHING</use>
+      <do>
+        pwd >&amp;2
+        ls >&amp;2
+        $compile -DPREFETCHING=$PREFETCHING -DLOCALITY=$LOCALITY -DPREFETCH_DISTANCE=$PREFETCH_DISTANCE -DTARGET_IDX=$TARGET_IDX -DN_TARGETS_PER_NEURON=$N_TARGETS_PER_NEURON -DPRINT_FINAL_RING_BUFFER=$PRINT_FINAL_RING_BUFFER -I fetch/mini-nest fetch/mini-nest/main.cpp
+        $compile -DPREFETCHING=$PREFETCHING -DLOCALITY=$LOCALITY -DPREFETCH_DISTANCE=$PREFETCH_DISTANCE -DTARGET_IDX=$TARGET_IDX -DN_TARGETS_PER_NEURON=$N_TARGETS_PER_NEURON -DPRINT_FINAL_RING_BUFFER=$PRINT_FINAL_RING_BUFFER -I fetch/mini-nest fetch/mini-nest/stopwatch.cpp
+        $compile -DPREFETCHING=$PREFETCHING -DLOCALITY=$LOCALITY -DPREFETCH_DISTANCE=$PREFETCH_DISTANCE -DTARGET_IDX=$TARGET_IDX -DN_TARGETS_PER_NEURON=$N_TARGETS_PER_NEURON -DPRINT_FINAL_RING_BUFFER=$PRINT_FINAL_RING_BUFFER -I fetch/mini-nest fetch/mini-nest/simulate.cpp
+        echo "#!/bin/bash\ndate\necho \"deliver took $(python -c 'import random; print(10+20*random.random())')s\"" >main
+        chmod u+x main
+      </do>
+    </step>
+
+    <!-- Load jobfile -->
+    <fileset name="files">
+      <copy>${jobfile}.template</copy>
+      <copy>time</copy>
+    </fileset>
+    <substituteset name="jobfile_substitutions">
+      <iofile in="${jobfile}.template" out="$jobfile" />
+      <sub source="#JOBNAME#" dest="$jobname" />
+      <sub source="#WORKDIR#" dest="$workdir" />
+      <sub source="#STDOUT#" dest="$stdout" />
+      <sub source="#STDERR#" dest="$stderr" />
+      <sub source="#WALLTIME#" dest="$walltime" />
+      <sub source="#NTASKS#" dest="$ntasks" />
+      <sub source="#CPUSPERTASK#" dest="$cpuspertask" />
+      <sub source="#NODES#" dest="$nodes" />
+      <sub source="#MAILTYPE#" dest="$mailtype" />
+      <sub source="#MAILUSER#" dest="$mailuser" />
+      <sub source="#ACCOUNT#" dest="$account" />
+      <sub source="#RESERVATION#" dest="$reservation" />
+      <sub source="#READYFILE#" dest="$readyfile" />
+      <sub source="#AFFINITY#" dest="$affinity" />
+      <sub source="#MODULES#" dest="$modules" />
+      <sub source="#EXEC#" dest="$exec" />
+    </substituteset>
+
+    <step name="run" depend="compile" iterations="3"><!-- STEPrun -->
+      <use>environment</use>
+      <use>run_params</use>
+      <use>run_params_ringbuffer_set=$_ringbuffer_set</use>
+      <use>userdata</use>
+      <use>jobsystem</use>
+      <use>files,jobfile_substitutions</use>
+      <do done_file="$readyfile">
+        echo "submitting jobfile:"
+        cat $jobfile
+        $submit_cmd $jobfile
+      </do>
+    </step>
+
+    <!-- Regex pattern -->
+    <patternset name="pattern">
+      <pattern name="deliver_time" type="float">deliver took ([0-9.]+)s</pattern>
+      <pattern name="cpureal" type="float">CPU_REAL: ([0-9.]+)s</pattern>
+      <pattern name="cpuuser" type="float">CPU_USER: ([0-9.]+)s</pattern>
+      <pattern name="cpusys" type="float">CPU_SYS: ([0-9.]+)s</pattern>
+      <pattern name="cpupct" type="int">CPU_PCT: ([0-9.]+)%</pattern>
+      <pattern name="memtotal" type="int">MEM_TOTAL: ([0-9.]+)</pattern>
+      <pattern name="memres" type="int">MEM_RES: ([0-9.]+)</pattern>
+      <pattern name="mempfaults" type="int">MEM_PAGEFAULTS: ([0-9.]+)</pattern>
+      <pattern name="memprecovers" type="int">MEM_PAGERECOVERS: ([0-9.]+)</pattern>
+      <pattern name="signals" type="int">SIGNALS: ([0-9.]+)</pattern>
+      <pattern name="switches" type="int">SWITCHES: ([0-9.]+)</pattern>
+      <pattern name="sock_recv" type="int">SOCK_RECV: ([0-9.]+)</pattern>
+      <pattern name="sock_send" type="int">SOCK_SEND: ([0-9.]+)</pattern>
+    </patternset>
+
+    <!-- Analyse -->
+    <analyser name="analyse">
+      <use>pattern</use> <!-- use existing patternset -->
+      <analyse step="run">
+        <file>stdout.app</file> <!-- file which should be scanned -->
+        <file>stderr.app</file> <!-- file which should be scanned -->
+      </analyse>
+    </analyser>
+
+    <!-- Create result table -->
+    <result name="external instumentation">
+      <use>analyse</use> <!-- use existing analyser -->
+      <table name="external_results" style="pretty" sort="cpureal">
+        <column>commit</column>
+        <column>PREFETCHING</column>
+        <column>LOCALITY</column>
+        <column>PREFETCH_DISTANCE</column>
+        <column>TARGET_IDX</column>
+        <column>N_TARGETS_PER_NEURON</column>
+        <column>affinity</column>
+        <column>seed</column>
+        <column>n_neurons_per_node</column>
+        <column>n_connections_per_neuron</column>
+        <column>simtime_in_steps</column>
+        <column>mindelay_in_steps</column>
+        <column>maxdelay_in_steps</column>
+        <column>mpi_recv_buffer_size</column>
+        <!-- measurements -->
+        <column>cpureal_min</column>
+        <column>cpureal_avg</column>
+        <column>cpureal_std</column>
+        <column>cpupct_min</column>
+        <column>cpupct_max</column>
+        <!--column>cpuuser</column-->
+        <!--column>cpusys</column-->
+        <column>memres_max</column>
+        <column>memres_avg</column>
+        <column>memres_std</column>
+        <column>mempfaults</column>
+        <column>memprecovers</column>
+        <column>switches</column>
+        <column>signals</column>
+        <column>sock_send</column>
+        <column>sock_recv</column>
+      </table>
+    </result>
+
+    <result name="internal instumentation">
+      <use>analyse</use> <!-- use existing analyser -->
+      <table name="internal_results" style="pretty" sort="deliver_time">
+        <column>commit</column>
+        <column>PREFETCHING</column>
+        <column>LOCALITY</column>
+        <column>PREFETCH_DISTANCE</column>
+        <column>TARGET_IDX</column>
+        <column>N_TARGETS_PER_NEURON</column>
+        <column>affinity</column>
+        <column>seed</column>
+        <column>n_neurons_per_node</column>
+        <column>n_connections_per_neuron</column>
+        <column>simtime_in_steps</column>
+        <column>mindelay_in_steps</column>
+        <column>maxdelay_in_steps</column>
+        <column>mpi_recv_buffer_size</column>
+        <!-- measurements -->
+        <column>deliver_time_min</column>
+        <column>deliver_time_avg</column>
+        <column>deliver_time_std</column>
+      </table>
+    </result>
+
+  </benchmark>
+</jube>

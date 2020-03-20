@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jube>
+  <!-- parameters to mini-nest -->
+  <parameterset name="model_params">
+    <parameter name="seed">123456</parameter>
+    <parameter name="n_neurons_per_node">10000</parameter>
+    <parameter name="n_connections_per_neuron">10000</parameter>
+    <parameter name="simtime_in_steps">1000</parameter>
+    <parameter name="mindelay_in_steps">10</parameter>
+    <parameter name="maxdelay_in_steps">100</parameter>
+    <parameter name="mpi_recv_buffer_size">32</parameter>
+  </parameterset>
+</jube>

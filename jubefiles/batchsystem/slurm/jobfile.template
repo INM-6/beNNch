@@ -1,17 +1,23 @@
 #!/bin/bash
 #SBATCH --partition=#PARTITION#
-#SBATCH --job-name=#JOB_NAME#
+#SBATCH --job-name=#JOBNAME#
+#SBATCH --workdir=#WORKDIR#
 #SBATCH -o #OUTPATH#
 #SBATCH -e #ERRPATH#
+#SBATCH --mail-type=#MAILTYPE#
+#SBATCH --mail-user=#MAILUSER#
+#SBATCH --account #ACCOUNT#
 #SBATCH --nodes=#NODES#
-#SBATCH --ntasks-per-node=#TASKS_PER_NODE#
-####SBATCH --ntasks=#TASKS#
-#SBATCH --cpus-per-task=#CPUS_PER_TASK#
+#SBATCH --ntasks=#TASKS#
+#SBATCH --ntasks-per-node=#TASKSPERNODE#
+#SBATCH --cpus-per-task=#CPUSPERTASK#
+#SBATCH --ntasks-per-core=#TASKSPERCORE#
 #SBATCH --time=#WALLTIME#
-#SBATCH --exclusive
-#SBATCH --ntasks-per-core=#TASKS_PER_CORE#
 #SBATCH --mem=#MEMORY#
+#SBATCH --exclusive
 #SBATCH --constraint=#CONSTRAINT#
+#SBATCH --reservation=#RESERVATION#
+#SBATCH --disable-perfparanoid
 #
 # THIS FILE MUST CONTAIN BATCH-SYSTEM SPECIFIC COMMANDS ONLY!
 # Do not add job instructions here! Do this in the jobfile!
@@ -32,6 +38,17 @@ echo "SLURM: current home directory is $HOME"
 echo "SLURM: PATH = $PATH"
 echo "------------------------------------------------------"
 
-#JOBSCRIPT#
+#ENVSETUP#
 
-touch #READY#
+#
+# RUN
+#
+#PARALLELIZATION_SETUP#
+
+# gather a report before going into the parallel call
+#REPORTING#
+
+#INSTRUMENTATION# #PARALLELIZATION# #SCRIPT#
+
+# anounce completion
+touch #READYFILE#

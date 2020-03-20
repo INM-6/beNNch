@@ -1,0 +1,7 @@
+<xml version="1.0" encoding="UTF-8">
+<jube>
+  <parameterset name="instrumentation_params">
+    <!-- NOTE: time is a local copy, since compute nodes on JUWELS do not have it -->
+    <parameter name="instrumentation_wrapper">./time -p</parameter>
+  </parameterset>
+</jube>

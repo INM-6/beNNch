@@ -1,0 +1,10 @@
+<xml version="1.0" encoding="UTF-8">
+<jube>
+  <parameterset name="batch_params">
+    <parameter name="WALLTIME">00:30:00</parameter>
+    <parameter name="TASKS">1</parameter>
+    <parameter name="CPUSPERTASK">1</parameter>
+    <parameter name="TASKSPERCORE">1</parameter>
+    <parameter name="NODES">1</parameter>
+  </parameterset>
+</jube>

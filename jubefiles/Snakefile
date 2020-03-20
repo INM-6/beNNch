@@ -10,12 +10,14 @@ from .logging import logger as log
 configfile: "workflow.yaml"
 
 
-# construct the list of available bench_runs
-# (this is required e.g. for rule show_runs)
-log.info("searching for available runs in %s" % config['outpath'])
-UUID_re = r'[0-9a-f]{8}-([0-9a-f]{4}-){3}[0-9a-f]{12}'
-bench_ids = [name for name in os.listdir(config['outpath']) if re.match(UUID_re, name) and os.path.isdir(os.path.join(config['outpath'], name))]
-log.info("%d bench_runs found." % len(bench_ids))
+def bench_ids():
+    # construct the list of available bench_runs
+    # (this is required e.g. for rule show_runs)
+    log.info("searching for available runs in %s" % config['outpath'])
+    UUID_re = r'[0-9a-f]{8}-([0-9a-f]{4}-){3}[0-9a-f]{12}'
+    ids = [name for name in os.listdir(config['outpath']) if re.match(UUID_re, name) and os.path.isdir(os.path.join(config['outpath'], name))]
+    log.info("%d bench_runs found." % len(ids))
+    return ids
 
 rule show_help:
     '''
@@ -72,15 +74,38 @@ rule run:
         '{model}__{benchmark}'.format(**config['default'])
 
 
+rule cancel:
+    '''
+    remove all local files from a broken run (does not stop queued jobs)
+    '''
+    shell:
+        '''
+        for runfile in $(ls -1 *.submit.id 2>/dev/null || echo "No run found to cancel!" >&2); do
+            echo "WILL REMOVE $runfile"
+            echo "WILL REMOVE"
+            du -hcs "$(cat $runfile | cut -f1 -d' ')"/*
+            echo "Sure? (type 'yes')?"
+            read sure
+            test "$sure" == "yes"
+            rm -rf "$(cat $runfile | cut -f1 -d' ')"
+            rm -f "$runfile"
+        done
+        '''
+
 rule submit_run:
     '''
     (called from 'run')
     Start a new benchmark run and hand control over to JUBE.
+
+    In case something goes wrong here, you can clean-up the broken run by
+
+      snakemake cancel
+
     '''
     input:
-        'jube.xml',
+        'test_bench.xml',
     output:
-        temporary('{model}__{benchmark,[^.]+}.submit.id'),
+        protected('{model}__{benchmark,[^.]+}.submit.id'),
     log:
         '{model}__{benchmark,[^.]+}.submit.log',
     message:
@@ -89,7 +114,7 @@ rule submit_run:
         '''
     shell:
         '''
-        jube -v run {input} --include-path machine/{config[default][machine]} benchmark/{config[default][benchmark]} model/{config[default][model]} --outpath {config[outpath]}/$(uuid) | tee {log}
+        jube -v run {input} --include-path machine/{config[default][machine]} benchmark/{config[default][benchmark]} model/{config[default][model]} --outpath {config[outpath]}/$(uuid) |& tee {log}
         common/submit-info.py {log} >{output}
         '''
 
@@ -100,15 +125,54 @@ rule continue_run:
     Tell JUBE to continue the last started benchmark run.
     '''
     input:
-        id = '{model}__{benchmark,[^.]+}.submit.id',
+        id = '{model}__{benchmark}.submit.id',
     output:
         temporary('{model}__{benchmark}.complete'),
+    log:
+        run = '{model}__{benchmark,[^.]+}.continue.log',
+        id = '{model}__{benchmark,[^.]+}.continue.log',
     shell:
         '''
-        jube info $(cat {input.id})
-        jube continue $(cat {input.id})
-        cut -f1 -d" " {input.id} >{output}
+        jube info $(cat {input.id}) >{log.id} 2>&1
+        date >>{log.run}
+        jube continue $(cat {input.id}) >>{log.run} 2>&1
+        if grep "Benchmark finished" {log.id}; then
+            cp {input.id} {output}
+        fi
         '''
+
+rule result_aggregation:
+    '''
+    (called from 'run')
+
+    Tell JUBE to fetch 'results' and run 'analyse'.
+    '''
+    input:
+        id = '{model}__{benchmark}.complete',
+    output:
+        temporary('{model}__{benchmark,[^.]+}.analysed'),
+    log:
+        result = '{model}__{benchmark,[^.]+}.result.log',
+    message:
+        '''
+        Analysing the runs... check analyse.log
+
+        '''
+    shell:
+        '''
+        jube analyse $(cat {input.id})
+        ID=$(cut -f1 -d' ' {input.id})
+        mkdir -pv $ID/results/txt $ID/results/csv
+        egrep -o '<table.*' test_bench.xml | egrep -o 'name="[^"]+"' | egrep -o '[^"]+' | grep -v name |\
+        while read tablename; do
+            echo "Result table $tablename..."
+            jube result $ID -o $tablename --style pretty >$ID/results/txt/$tablename
+            jube result $ID -o $tablename --style csv    >$ID/results/csv/$tablename
+        done
+        echo "Results stored in $ID/results/"
+        cp {input.id} {output}
+        '''
+
 
 rule result_cleanup:
     '''
@@ -116,7 +180,7 @@ rule result_cleanup:
     Run `JUBE analyse` and `JUBE result` to compile result dataset. Then tidy up.
     '''
     input:
-        '{model}__{benchmark}.complete',
+        '{model}__{benchmark}.analysed',
     output:
         temporary('{model}__{benchmark,[^.]+}.tidy'),
     shell:
@@ -154,7 +218,7 @@ rule upload_results:
 
 rule show_runs:
     input:
-        expand("{path}/{uuid}.info.txt", path=config['outpath'], uuid=bench_ids),
+        expand("{path}/{uuid}.info.txt", path=config['outpath'], uuid=bench_ids()),
     shell:
         '''
         cat {input}

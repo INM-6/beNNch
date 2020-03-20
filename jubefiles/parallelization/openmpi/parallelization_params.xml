@@ -1,0 +1,10 @@
+<xml version="1.0" encoding="UTF-8">
+<jube>
+  <parameterset name="parallelization_params">
+    <parameter name="parallelization_setup">
+	export KMP_AFFINITY=$affinity;
+    </parameter>
+    <parameter name="runcommand">mpirun -n $PROCESSES</parameter>
+    <!-- parameter name="runcommand">srun</parameter -->
+  </parameterset>
+</jube>

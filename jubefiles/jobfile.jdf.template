@@ -1,0 +1,50 @@
+#!/bin/bash
+#SBATCH --job-name #JOBNAME#
+#SBATCH --workdir #WORKDIR#
+#SBATCH -o #STDOUT#
+#SBATCH -e #STDERR#
+#SBATCH --time #WALLTIME#
+#SBATCH --ntasks #NTASKS#
+#SBATCH --cpus-per-task #CPUSPERTASK#
+#SBATCH --nodes #NODES#
+#SBATCH --exclusive
+#SBATCH --mail-type #MAILTYPE#
+#SBATCH --mail-user #MAILUSER#
+#SBATCH --account #ACCOUNT#
+#SBATCH --reservation #RESERVATION#
+
+#
+# ENVIRONMENT SETUP
+#
+set -euo pipefail
+#module purge
+## module load GCC CMake ParaStationMPI Python SciPy-Stack GSL git
+#module load #MODULES#
+#module list
+set -x
+export TIME='CMD: %C\nEXIT: %x\n\nMEM_UNSHARED: %DKiB\nMEM_STACK: %pKiB\nMEM_TOTAL: %KKiB\nMEM_RES: %MKiB\nMEM_SHARED: %XKiB\nMEM_RES_SET: %tKiB\nMEM_PAGEFAULTS: %F\nMEM_PAGERECOVERS: %R\n\nCPU_USER: %Us\nCPU_SYS: %Ss\nCPU_REAL: %es\nCPU_PCT: %P\n\nFS_INP: %I\nFS_OUT: %O\nSOCK_SEND: %smessages\nSOCK_RECV: %rmessages\nSWITCHES: %w\nSIGNALS: %k';
+
+#
+# CODE SETUP
+#
+#make
+
+#
+# RUN
+#
+export KMP_AFFINITY=#AFFINITY#
+
+env
+# parameters to mini-nest:
+#   $seed
+#   $n_neurons_per_node
+#   $n_connections_per_neuron
+#   $simtime_in_steps
+#   $mindelay_in_steps
+#   $maxdelay_in_steps
+#   $mpi_recv_buffer_size
+# (note: time is a local copy, since compute nodes on JUWELS do not have it)
+./time compile/#EXEC#
+
+# anounce completion
+touch #READYFILE#
