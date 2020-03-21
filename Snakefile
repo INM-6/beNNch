@@ -1,4 +1,5 @@
 import os, re
+from fnmatch import filter as fnfilter
 
 # hook into snakemake logger
 # be aware that this is not a default logging.Logger instance and calls behave
@@ -18,7 +19,7 @@ rule install_jube:
         "JUBE-%s.tar.gz" % config['jubeversion'],
     output:
         info = ".jube-version-installed",
-        env = directory('env/launch'),
+        env = directory('environment/launch'),
     conda: 'environment/launch.yaml'
     shell:
         '''
@@ -126,6 +127,28 @@ rule cancel:
         done
         '''
 
+rule info:
+    '''
+    show jube info of current run
+    '''
+    input:
+        lambda wc: fnfilter(os.listdir(), "*.submit.id")
+    conda:
+        'environment/launch.yaml'
+    shell:
+        '''
+        if [ -z "{input}" ]; then
+            echo "No current runs found."
+            exit 0;
+        fi
+        for ID in {input}; do
+            echo ""
+            echo ""
+            echo "$ID"
+            jube info $(cut -f1 -d' ' "$ID")
+            jube info $(cat "$ID")
+        done
+        '''
 rule submit_run:
     '''
     (called from 'run')
@@ -166,14 +189,14 @@ rule continue_run:
         temporary('{model}__{benchmark}.complete'),
     log:
         run = '{model}__{benchmark,[^.]+}.continue.log',
-        id = '{model}__{benchmark,[^.]+}.continue.log',
+        id = '{model}__{benchmark,[^.]+}.info.log',
     conda:
         'environment/launch.yaml'
     shell:
         '''
         jube info $(cat {input.id}) >{log.id} 2>&1
         date >>{log.run}
-        jube continue $(cat {input.id}) >>{log.run} 2>&1
+        jube continue $(cat {input.id}) |& tee -a {log.run}
         if grep "Benchmark finished" {log.id}; then
             cp {input.id} {output}
         fi
@@ -260,15 +283,20 @@ rule upload_results:
         '''
 
 rule show_runs:
+    '''
+    Create overviews of all available outputs and give very brief status of
+    each.
+    '''
     input:
         expand("{path}/{uuid}.info.txt", path=config['outpath'], uuid=bench_ids()),
     shell:
         '''
-        cat {input}
+        grep -H "Benchmark.*finished" {input}
         '''
 
 rule extract_run_info:
     '''
+    (called from 'show_runs')
     Create an info file for a specific bench_run (UUID)
     '''
     output:

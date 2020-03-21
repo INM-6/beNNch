@@ -2,3 +2,7 @@ __pycache__/
 .snakemake/
 .JUBE.installed
 .jube-version-installed
+
+*.log
+output/
+*.submit.id

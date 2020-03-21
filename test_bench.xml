@@ -113,8 +113,8 @@
 
     <!-- Load jobfile -->
     <fileset name="files">
-      <copy>${jobfile}.template</copy>
-      <copy>time</copy>
+      <copy>jubefiles/${jobfile}.template</copy>
+      <copy>common/time</copy>
     </fileset>
     <substituteset name="jobfile_substitutions">
       <iofile in="${jobfile}.template" out="$jobfile" />
