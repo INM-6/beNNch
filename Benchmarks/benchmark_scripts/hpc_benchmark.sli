@@ -485,6 +485,8 @@ myrng rdevdict /normal get CreateRDV /normal_dv Set
 
   ResetKernel
 
+  M_WARNING setverbosity
+
   memory_thisjob cvs ( # virt_mem_0) join logger /log call
 
   % - Network Construction ----------------------------------
