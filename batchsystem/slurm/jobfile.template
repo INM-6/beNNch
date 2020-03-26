@@ -50,5 +50,7 @@ echo "------------------------------------------------------"
 
 #INSTRUMENTATION# #PARALLELIZATION# #SCRIPT#
 
+scontrol show jobid ${SLURM_JOBID} -ddd >>about/job-${SLURM_JOBID}_$(date --iso) 2>&1
+
 # anounce completion
 touch #READYFILE#

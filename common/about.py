@@ -32,16 +32,20 @@ recordables = {
     'ompi_info': 'ompi_info',
     'ip-r': 'ip r',
     'ip-l': 'ip l',
+    'hwloc-info': 'hwloc-info',
+    'hwloc-ls': 'hwloc-ls',
+    'hwloc-topology': 'hwloc-gather-topology {outdir}/hwloc-topology',
+    'lstopo': 'lstopo --of ascii {outdir}/{name}',
 }
 
 from subprocess import Popen, PIPE, STDOUT, CalledProcessError, TimeoutExpired
 import shlex
 
 class Recorder(object):
-    def __init__(self, outdir = "about", timeout=5, errors_fatal=False):
+    def __init__(self, outdir = "about", timeout=60, errors_fatal=False):
         self.errors_fatal = errors_fatal
         self.timeout = timeout
-        self.outdir = outdir
+        self.outdir = outdir or '.'
         if not os.path.isdir(outdir):
             os.mkdir(outdir)
             log.warning("created output directory %s", outdir)
@@ -52,8 +56,13 @@ class Recorder(object):
             outname = os.path.join(self.outdir, name) + ".out"
             errname = os.path.join(self.outdir, name) + ".err"
 
+            parameters = {
+                'outdir': self.outdir,
+                'name': name,
+                'command': command,
+            }
             try:
-                with Popen(shlex.split(command), stdout=PIPE, stderr=PIPE) as infile:
+                with Popen(shlex.split(command.format(**parameters)), stdout=PIPE, stderr=PIPE) as infile:
                     infile.wait(timeout=self.timeout)
                     if infile.returncode != 0:
                         log.warning("%s: returned %s (non-zero)!", name, infile.returncode)
