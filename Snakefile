@@ -132,7 +132,8 @@ rule info:
     show jube info of current run
     '''
     input:
-        lambda wc: fnfilter(os.listdir(), "*.submit.id")
+        lambda wc: fnfilter(os.listdir(), "*.submit.id"),
+        jube = ".jube-version-installed",
     conda:
         'environment/launch.yaml'
     shell:
@@ -160,7 +161,8 @@ rule submit_run:
 
     '''
     input:
-        'test_bench.xml',
+        jubefile = 'test_bench.xml',
+        jube = ".jube-version-installed",
     output:
         protected('{model}__{benchmark,[^.]+}.submit.id'),
     log:
@@ -173,7 +175,7 @@ rule submit_run:
         '''
     shell:
         '''
-        jube -v run {input} --include-path machine/{config[default][machine]} benchmark/{config[default][benchmark]} model/{config[default][model]} --outpath {config[outpath]}/$(uuid) |& tee {log}
+        jube -v run {input.jubefile} --include-path machine/{config[default][machine]} benchmark/{config[default][benchmark]} model/{config[default][model]} --outpath {config[outpath]}/$(uuidgen) |& tee {log}
         common/submit-info.py {log} >{output}
         '''
 
