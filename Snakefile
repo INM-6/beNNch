@@ -104,9 +104,19 @@ rule run:
 ################################################################################
                            R U N   C O M P L E T E
 ################################################################################
+
         '''
     input:
         '{model}__{benchmark}'.format(**config['default'])
+    shell:
+        '''
+        echo "MOVING LOGFILES INTO THE RUN DIRECTORY"
+        mkdir -v $(cut -f1 -d' ' {input}.submit.id)/logs
+        mv -v *.log $(cut -f1 -d' ' {input}.submit.id)/logs
+        echo "REMOVING ID FILE OF COMPLETED RUN:"
+        cat {input}.submit.id
+        rm -f {input}.submit.id
+        '''
 
 
 rule cancel:
