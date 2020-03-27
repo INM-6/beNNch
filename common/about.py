@@ -2,6 +2,7 @@
 # encoding: utf8
 
 import os
+import time
 from pprint import pformat
 import logging
 import logging.config
@@ -42,9 +43,10 @@ from subprocess import Popen, PIPE, STDOUT, CalledProcessError, TimeoutExpired
 import shlex
 
 class Recorder(object):
-    def __init__(self, outdir = "about", timeout=60, errors_fatal=False):
+    def __init__(self, outdir = "about", timeout=300, errors_fatal=False):
         self.errors_fatal = errors_fatal
         self.timeout = timeout
+        self.logtimethres = 10 # seconds
         self.outdir = outdir or '.'
         if not os.path.isdir(outdir):
             os.mkdir(outdir)
@@ -62,8 +64,12 @@ class Recorder(object):
                 'command': command,
             }
             try:
+                starttime = time.time()
+                stoptime = None
+                iotime = None
                 with Popen(shlex.split(command.format(**parameters)), stdout=PIPE, stderr=PIPE) as infile:
                     infile.wait(timeout=self.timeout)
+                    stoptime = time.time()
                     if infile.returncode != 0:
                         log.warning("%s: returned %s (non-zero)!", name, infile.returncode)
                     with open(outname, 'wb') as outfile:
@@ -76,12 +82,18 @@ class Recorder(object):
                             if self.errors_fatal:
                                 log.fatal("ERRORS are configured to be fatal.")
                                 raise ValueError("Process wrote errors to STDERR!")
+                    iotime = time.time()
             except TimeoutExpired as e:
                 log.warning("%s: process did not finish in time! Output will be incomplete!", name)
             except CalledProcessError as e:
                 log.error("%s: called process failed! retrun code: %d", name, e.return_code)
             except FileNotFoundError as e:
                 log.error("%s: %s", name, e)
+            finally:
+                if stoptime and starttime and stoptime - starttime > self.logtimethres:
+                    log.info("%s execution took %s seconds", name, stoptime - starttime)
+                if iotime and stoptime and iotime - stoptime > self.logtimethres:
+                    log.info("%s io took %s seconds", name, stoptime - starttime)
 
 def main():
     recorder = Recorder()
