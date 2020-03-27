@@ -14,6 +14,11 @@ configfile: "workflow.yaml"
 rule install_jube:
     '''
     Install jube into the launch environment.
+
+    This rule also creates a symlink to the launch environment, such that you
+    can do
+       $ conda activate environment/launch
+    to enter the launch environment with your shell to check the correct setup.
     '''
     input:
         "JUBE-%s.tar.gz" % config['jubeversion'],
@@ -128,7 +133,7 @@ rule cancel:
         for runfile in $(ls -1 *.submit.id 2>/dev/null || echo "No run found to cancel!" >&2); do
             echo "WILL REMOVE $runfile"
             echo "WILL REMOVE"
-            du -hcs "$(cat $runfile | cut -f1 -d' ')"/*
+            du -hcs "$(cat $runfile | cut -f1 -d' ')"/* || true;
             echo "Sure? (type 'yes')?"
             read sure
             test "$sure" == "yes"
@@ -142,17 +147,17 @@ rule info:
     show jube info of current run
     '''
     input:
-        lambda wc: fnfilter(os.listdir(), "*.submit.id"),
+        runs = lambda wc: fnfilter(os.listdir(), "*.submit.id"),
         jube = ".jube-version-installed",
     conda:
         'environment/launch.yaml'
     shell:
         '''
-        if [ -z "{input}" ]; then
+        if [ -z "{input.runs}" ]; then
             echo "No current runs found."
             exit 0;
         fi
-        for ID in {input}; do
+        for ID in {input.runs}; do
             echo ""
             echo ""
             echo "$ID"
@@ -181,7 +186,11 @@ rule submit_run:
         'environment/launch.yaml'
     message:
         '''
-        STARTING NEW JUBE RUN
+
+################################################################################
+                S T A R T I N G   N E W   J U B E   R U N
+################################################################################
+
         '''
     shell:
         '''
@@ -206,11 +215,14 @@ rule continue_run:
         'environment/launch.yaml'
     shell:
         '''
+        set -x
         jube info $(cat {input.id}) >{log.id} 2>&1
         date >>{log.run}
         jube continue $(cat {input.id}) |& tee -a {log.run}
         if grep "Benchmark finished" {log.id}; then
             cp {input.id} {output}
+        else
+            echo -e "\n\n BENCHMARK NOT FINISHED! (rerun "smake run" to continue)\n\n"
         fi
         '''
 
