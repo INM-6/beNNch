@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jube>
+  <!-- these are the default values for this machine. some may be overwritten by specific benchmarks -->
+  <parameterset name="machine_params">
+    <parameter name="max_cores" type="shell">$(nproc)</parameter>
+    <parameter name="output_folder" type="shell">$(pwd)</parameter>
+    <parameter name="batchsystem">bash</parameter>
+  </parameterset>
+</jube>

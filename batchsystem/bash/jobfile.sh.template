@@ -1,0 +1,20 @@
+#!/bin/bash
+#
+# THIS FILE MUST CONTAIN BATCH-SYSTEM SPECIFIC COMMANDS ONLY!
+# Do not add job instructions here! Do this in the jobfile!
+#
+
+#ENVSETUP#
+
+#
+# RUN
+#
+#PARALLELIZATION_SETUP#
+
+# gather a report before going into the parallel call
+#REPORTING#
+
+#INSTRUMENTATION# #PARALLELIZATION# #SCRIPT#
+
+# anounce completion
+touch #READYFILE#

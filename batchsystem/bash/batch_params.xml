@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jube>
+  <parameterset name="batch_params">
+    <parameter name="batchsystem">bash</parameter>
+    <parameter name="WALLTIME">00:30:00</parameter>
+    <parameter name="TASKS">1</parameter>
+    <parameter name="CPUSPERTASK">1</parameter>
+    <parameter name="TASKSPERCORE">1</parameter>
+    <parameter name="NODES">1</parameter>
+    <parameter name="submit_cmd">bash</parameter>
+    <parameter name="jobfile">jobfile.sh</parameter>
+    <parameter name="readyfile">ready</parameter><!-- actually this is not needed for bash, but we touch a readyfile in jobfile.sh to be symmetric with other batch systems -->
+  </parameterset>
+</jube>

@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jube>
+
+  <!-- dependant configurations based on variables -->
+  <include-path>
+    <path>batchsystem/bash</path>
+  </include-path>
+
   <benchmark name="MININEST" outpath="test_bench">
     <comment>A toy NEST caching test</comment>
 
@@ -11,6 +17,15 @@
       <parameter name="submit_cmd">bash</parameter>
     </parameterset>
 
+
+    <!-- configurations based on include-paths handed in from Snakemake level -->
+    <include from="machine_params.xml" path="./" /> <!-- machine configuration -->
+
+
+    <!-- automatically selects the right machine based on the include path
+         given to the jube command -->
+    <include from="batch_params.xml" path="./" /> <!-- batch system -->
+
     <!-- include from="userconfig/terhorst1.xml" path="./" /-->
     <parameterset name="userdata">
       <parameter name="mail">d.terhorst@fz-juelich.de</parameter>
@@ -21,8 +36,8 @@
     </parameterset>
 
     <parameterset name="compile_params_prefetching=1">
-      <parameter name="LOCALITY" type="int">0,1,2</parameter>
-      <parameter name="PREFETCH_DISTANCE" type="int">1,2,4,7,10</parameter>
+      <parameter name="LOCALITY" type="int">0</parameter>
+      <parameter name="PREFETCH_DISTANCE" type="int">1</parameter>
     </parameterset>
     <parameterset name="compile_params_prefetching=0">
       <parameter name="LOCALITY" type="int">0</parameter>
@@ -38,8 +53,8 @@
       N_TARGETS_PER_SOURCE int (1)
       PRINT_FINAL_RING_BUFFER true/false
      -->
-      <parameter name="PREFETCHING" type="int">0,1</parameter>
-      <parameter name="TARGET_IDX" type="int">0,1</parameter>
+      <parameter name="PREFETCHING" type="int">0</parameter>
+      <parameter name="TARGET_IDX" type="int">0</parameter>
       <parameter name="N_TARGETS_PER_NEURON" type="int">1000</parameter>
       <parameter name="PRINT_FINAL_RING_BUFFER" type="int">1</parameter>
     </parameterset>
@@ -59,29 +74,9 @@
       <parameter name="n_neurons_per_node" type="int">10000</parameter>
       <parameter name="n_connections_per_neuron" type="int">100</parameter>
       <parameter name="simtime_in_steps" type="int">10000</parameter>
-      <parameter name="_ringbuffer_set">0,1</parameter>
+      <parameter name="_ringbuffer_set">0</parameter>
       <parameter name="mpi_recv_buffer_size" type="int">10000</parameter>
       <parameter name="affinity" separator=";">compact</parameter>
-    </parameterset>
-
-    <parameterset name="jobsystem">
-      <parameter name="jobfile">jobfile.jdf</parameter>
-      <parameter name="jobname">$jube_benchmark_name</parameter>
-      <!--parameter name="workdir" mode="python" type="str">"$$WORK/%06d/%06d/" % ($jube_benchmark_id, $jube_wp_id)</parameter-->
-      <parameter name="workdir">$jube_wp_abspath</parameter>
-      <parameter name="stdout">stdout.app</parameter>
-      <parameter name="stderr">stderr.app</parameter>
-      <parameter name="walltime">02:00:00</parameter>
-      <parameter name="ntasks">1</parameter>
-      <parameter name="cpuspertask ">1</parameter>
-      <parameter name="nodes">1</parameter>
-      <parameter name="mailtype" separator=";">FAIL</parameter>
-      <parameter name="mailuser">$mail</parameter>
-      <parameter name="account">prcoe01</parameter>
-      <parameter name="reservation">osws_thu_devel</parameter>
-      <parameter name="modules" separator=";">Intel Python SciPy-Stack</parameter>
-      <parameter name="readyfile">ready</parameter>
-      <parameter name="exec">main $seed $n_neurons_per_node $n_connections_per_neuron $simtime_in_steps $mindelay_in_steps $maxdelay_in_steps $mpi_recv_buffer_size</parameter>
     </parameterset>
 
 
@@ -113,8 +108,9 @@
 
     <!-- Load jobfile -->
     <fileset name="files">
-      <copy>jubefiles/${jobfile}.template</copy>
+      <copy>batchsystem/${batchsystem}/${jobfile}.template</copy>
       <copy>common/time</copy>
+      <copy>common/about.py</copy>
     </fileset>
     <substituteset name="jobfile_substitutions">
       <iofile in="${jobfile}.template" out="$jobfile" />
@@ -123,8 +119,9 @@
       <sub source="#STDOUT#" dest="$stdout" />
       <sub source="#STDERR#" dest="$stderr" />
       <sub source="#WALLTIME#" dest="$walltime" />
-      <sub source="#NTASKS#" dest="$ntasks" />
+      <sub source="#TASKS#" dest="$tasks" />
       <sub source="#CPUSPERTASK#" dest="$cpuspertask" />
+      <sub source="#TASKSPERCORE#" dest="$taskspercore" />
       <sub source="#NODES#" dest="$nodes" />
       <sub source="#MAILTYPE#" dest="$mailtype" />
       <sub source="#MAILUSER#" dest="$mailuser" />
@@ -141,11 +138,12 @@
       <use>run_params</use>
       <use>run_params_ringbuffer_set=$_ringbuffer_set</use>
       <use>userdata</use>
-      <use>jobsystem</use>
+      <use>batch_params</use>
       <use>files,jobfile_substitutions</use>
       <do done_file="$readyfile">
         echo "submitting jobfile:"
         cat $jobfile
+        ./about.py
         $submit_cmd $jobfile
       </do>
     </step>

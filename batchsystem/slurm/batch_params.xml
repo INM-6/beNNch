@@ -1,10 +1,39 @@
 <xml version="1.0" encoding="UTF-8">
 <jube>
+  <!-- default parameters for the batch system
+       some parameters will be overwritten by specific benchmarks -->
   <parameterset name="batch_params">
-    <parameter name="WALLTIME">00:30:00</parameter>
-    <parameter name="TASKS">1</parameter>
-    <parameter name="CPUSPERTASK">1</parameter>
-    <parameter name="TASKSPERCORE">1</parameter>
-    <parameter name="NODES">1</parameter>
+
+    <!-- administrative information -->
+    <parameter name="batchsystem">slurm</parameter>
+    <parameter name="jobfile">jobfile.sh</parameter>
+    <parameter name="jobname">$jube_benchmark_name</parameter>
+    <parameter name="workdir">$jube_wp_abspath</parameter>
+    <parameter name="stdout">stdout.app</parameter>
+    <parameter name="stderr">stderr.app</parameter>
+    <parameter name="readyfile">ready</parameter>
+    <parameter name="mailtype" separator=";">FAIL</parameter>
+    <parameter name="mailuser">$mail</parameter>
+
+    <parameter name="submit_cmd">sbatch</parameter>
+
+    <!-- allocation -->
+    <parameter name="tasks">1</parameter>
+    <parameter name="cpuspertask ">1</parameter>
+    <parameter name="taskspercore">1</parameter>
+    <parameter name="nodes">1</parameter>
+
+
+    <!-- FOLLOWING SECTIONS ARE IN THE WRONG PLACE HERE -->
+
+    <!-- boundary conditions -->
+    <parameter name="walltime">02:00:00</parameter>
+    <parameter name="account">prcoe01</parameter>
+    <parameter name="reservation">osws_thu_devel</parameter>
+
+    <!-- job/environment parameters -->
+    <parameter name="modules" separator=";">Intel Python SciPy-Stack</parameter>
+    <parameter name="exec">main $seed $n_neurons_per_node $n_connections_per_neuron $simtime_in_steps $mindelay_in_steps $maxdelay_in_steps $mpi_recv_buffer_size</parameter>
+
   </parameterset>
 </jube>
