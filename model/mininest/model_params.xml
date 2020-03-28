@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jube>
+  <parameterset name="model_params_mininest">
+    <parameter name="modelname">mininest</parameter>
+    <parameter name="text">Hello</parameter>
+  </parameterset>
+
+  <parameterset name="versions">
+    <parameter name="commit" separator=";">46b198a</parameter>
+  </parameterset>
+
+  <parameterset name="compile_params_prefetching=1">
+    <parameter name="LOCALITY" type="int">0</parameter>
+    <parameter name="PREFETCH_DISTANCE" type="int">1</parameter>
+  </parameterset>
+  <parameterset name="compile_params_prefetching=0">
+    <parameter name="LOCALITY" type="int">0</parameter>
+    <parameter name="PREFETCH_DISTANCE" type="int">0</parameter>
+  </parameterset>
+
+  <parameterset name="compile_params">
+  <!--
+    PREFETCHING true/false
+      LOCALITY int
+      PREFETCH_DISTANCE int
+    TARGET_IDX true/false
+    N_TARGETS_PER_SOURCE int (1)
+    PRINT_FINAL_RING_BUFFER true/false
+   -->
+    <parameter name="PREFETCHING" type="int">0</parameter>
+    <parameter name="TARGET_IDX" type="int">0</parameter>
+    <parameter name="N_TARGETS_PER_NEURON" type="int">1000</parameter>
+    <parameter name="PRINT_FINAL_RING_BUFFER" type="int">1</parameter>
+  </parameterset>
+
+  <parameterset name="run_params_ringbuffer_set=0">
+    <parameter name="mindelay_in_steps" type="int">10</parameter>
+    <parameter name="maxdelay_in_steps" type="int">10</parameter>
+  </parameterset>
+
+  <parameterset name="run_params_ringbuffer_set=1">
+    <parameter name="mindelay_in_steps" type="int">1</parameter>
+    <parameter name="maxdelay_in_steps" type="int">10,100</parameter>
+  </parameterset>
+
+  <!-- patterns define which values are provided by a model
+       if a model produces different output files, patterns may be separated to
+       patternsets for each filetype -->
+  <patternset name="pattern_stdio">
+    <pattern name="deliver_time" type="float">deliver took ([0-9.]+)s</pattern>
+    <pattern name="cpureal" type="float">CPU_REAL: ([0-9.]+)s</pattern>
+    <pattern name="cpuuser" type="float">CPU_USER: ([0-9.]+)s</pattern>
+    <pattern name="cpusys" type="float">CPU_SYS: ([0-9.]+)s</pattern>
+    <pattern name="cpupct" type="int">CPU_PCT: ([0-9.]+)%</pattern>
+    <pattern name="memtotal" type="int">MEM_TOTAL: ([0-9.]+)</pattern>
+    <pattern name="memres" type="int">MEM_RES: ([0-9.]+)</pattern>
+    <pattern name="mempfaults" type="int">MEM_PAGEFAULTS: ([0-9.]+)</pattern>
+    <pattern name="memprecovers" type="int">MEM_PAGERECOVERS: ([0-9.]+)</pattern>
+    <pattern name="signals" type="int">SIGNALS: ([0-9.]+)</pattern>
+    <pattern name="switches" type="int">SWITCHES: ([0-9.]+)</pattern>
+    <pattern name="sock_recv" type="int">SOCK_RECV: ([0-9.]+)</pattern>
+    <pattern name="sock_send" type="int">SOCK_SEND: ([0-9.]+)</pattern>
+  </patternset>
+</jube>
