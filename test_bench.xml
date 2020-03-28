@@ -1,35 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jube>
 
-  <!-- dependant configurations based on variables -->
-  <include-path>
-    <path>batchsystem/bash</path>
-  </include-path>
+  <!-- configurations based on include-paths handed in from Snakemake level -->
+  <include from="machine_params.xml" path="./" /> <!-- machine configuration -->
 
-  <benchmark name="MININEST" outpath="test_bench">
-    <comment>A toy NEST caching test</comment>
+  <!-- BEGIN ALL AVAILABLE DEPENDANT CONFIGURATIONS -->
 
-    <!-- Configuration -->
-    <parameterset name="environment">
-      <parameter name="basedir">$PWD</parameter>
-      <parameter name="compile">echo COMPILE COMMAND</parameter>
-      <parameter name="link">echo LINK COMMAND </parameter>
-      <parameter name="submit_cmd">bash</parameter>
-    </parameterset>
+  <!-- include available batch system definitions -->
+  <include from="batchsystem/bash/batch_params.xml" path="./" />
+  <include from="batchsystem/slurm/batch_params.xml" path="./" />
 
+  <!-- include available model definitions -->
+  <include from="model/mininest/model_params.xml" path="./" />
+  <include from="model/hpc_benchmark/model_params.xml" path="./" />
 
-    <!-- configurations based on include-paths handed in from Snakemake level -->
-    <include from="machine_params.xml" path="./" /> <!-- machine configuration -->
+  <!-- END ALL AVAILABLE DEPENDANT CONFIGURATIONS -->
 
-
-    <!-- automatically selects the right machine based on the include path
-         given to the jube command -->
-    <include from="batch_params.xml" path="./" /> <!-- batch system -->
-
-    <!-- include from="userconfig/terhorst1.xml" path="./" /-->
-    <parameterset name="userdata">
-      <parameter name="mail">d.terhorst@fz-juelich.de</parameter>
-    </parameterset>
+  <benchmark name="MININEST" outpath="mininest_bench"><!-- is usually overwritten by Snakefile -->
+    <comment>A toy-NEST caching test</comment>
 
     <parameterset name="versions">
       <parameter name="commit" separator=";">46b198a</parameter>
@@ -82,11 +70,10 @@
 
     <!-- Operation -->
     <step name="fetch"><!-- STEPfetch -->
-      <use>environment</use>
       <use>versions</use>
       <do>
         set -xeu
-        echo would git clone -l -s $basedir/mini-nest -n
+        echo would git clone -l -s mininest -n
         echo would cd mini-nest;
         echo would git checkout $commit;
         echo "CHECKED OUT $commit";
@@ -133,12 +120,12 @@
       <sub source="#EXEC#" dest="$exec" />
     </substituteset>
 
-    <step name="run" depend="compile" iterations="3"><!-- STEPrun -->
-      <use>environment</use>
+    <step name="run" depend="compile" iterations="1"><!-- STEPrun -->
       <use>run_params</use>
       <use>run_params_ringbuffer_set=$_ringbuffer_set</use>
-      <use>userdata</use>
-      <use>batch_params</use>
+      <use>userdata_${USER}</use>
+      <use>machine_params</use>
+      <use>batch_params_${batchsystem}</use>
       <use>files,jobfile_substitutions</use>
       <do done_file="$readyfile">
         echo "submitting jobfile:"
@@ -148,22 +135,8 @@
       </do>
     </step>
 
-    <!-- Regex pattern -->
-    <patternset name="pattern">
-      <pattern name="deliver_time" type="float">deliver took ([0-9.]+)s</pattern>
-      <pattern name="cpureal" type="float">CPU_REAL: ([0-9.]+)s</pattern>
-      <pattern name="cpuuser" type="float">CPU_USER: ([0-9.]+)s</pattern>
-      <pattern name="cpusys" type="float">CPU_SYS: ([0-9.]+)s</pattern>
-      <pattern name="cpupct" type="int">CPU_PCT: ([0-9.]+)%</pattern>
-      <pattern name="memtotal" type="int">MEM_TOTAL: ([0-9.]+)</pattern>
-      <pattern name="memres" type="int">MEM_RES: ([0-9.]+)</pattern>
-      <pattern name="mempfaults" type="int">MEM_PAGEFAULTS: ([0-9.]+)</pattern>
-      <pattern name="memprecovers" type="int">MEM_PAGERECOVERS: ([0-9.]+)</pattern>
-      <pattern name="signals" type="int">SIGNALS: ([0-9.]+)</pattern>
-      <pattern name="switches" type="int">SWITCHES: ([0-9.]+)</pattern>
-      <pattern name="sock_recv" type="int">SOCK_RECV: ([0-9.]+)</pattern>
-      <pattern name="sock_send" type="int">SOCK_SEND: ([0-9.]+)</pattern>
-    </patternset>
+    <!-- configurations based on include-paths handed in from Snakemake level -->
+    <patternset name="pattern" init_with="model_params.xml" path="./" />
 
     <!-- Analyse -->
     <analyser name="analyse">

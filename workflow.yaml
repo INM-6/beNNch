@@ -5,7 +5,7 @@ outpath: output
 
 # Default benchmark choices
 default:
-  model: hpc_benchmark
+  model: mininest
   benchmark: thread_scaling
   machine: localhost
 

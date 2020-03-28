@@ -312,15 +312,30 @@ rule show_runs:
     each.
     '''
     input:
-        expand("{path}/{uuid}.info.txt", path=config['outpath'], uuid=bench_ids()),
+        os.path.join(config['outpath'], "_OVERVIEW_.txt")
     shell:
         '''
-        grep -H "Benchmark.*finished" {input}
+        cat {input}
+        '''
+
+rule run_overview:
+    '''
+    (called from 'run_overview')
+    Creates a summary by extracting lines from extract_run_info results.
+    '''
+    input:
+        expand("{path}/{uuid}.info.txt", path=config['outpath'], uuid=bench_ids()),
+    output:
+        os.path.join(config['outpath'], "_OVERVIEW_.txt")
+    shell:
+        '''
+        #grep -H "Benchmark.*finished" {input}
+        egrep -H "^ +[0-9]+|Benchmark.*finished" output/*.info.txt | sed -e "s/^.*--- Benchmark/|/g" -e "s/ ---$/%/" | tr "\n" " " | tr "%" "\n"  | sed -e "s/\.info\.txt:/ |/" -e "s%^.*/%%;" >{output}
         '''
 
 rule extract_run_info:
     '''
-    (called from 'show_runs')
+    (called from 'run_overview')
     Create an info file for a specific bench_run (UUID)
     '''
     output:

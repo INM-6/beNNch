@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jube>
-  <parameterset name="batch_params">
+  <parameterset name="batch_params_bash">
     <parameter name="batchsystem">bash</parameter>
     <parameter name="WALLTIME">00:30:00</parameter>
     <parameter name="TASKS">1</parameter>

@@ -1,8 +1,8 @@
-<xml version="1.0" encoding="UTF-8">
+<?xml version="1.0" encoding="UTF-8"?>
 <jube>
   <!-- default parameters for the batch system
        some parameters will be overwritten by specific benchmarks -->
-  <parameterset name="batch_params">
+  <parameterset name="batch_params_slurm">
 
     <!-- administrative information -->
     <parameter name="batchsystem">slurm</parameter>

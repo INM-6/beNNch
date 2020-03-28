@@ -2,6 +2,7 @@ __pycache__/
 .snakemake/
 .JUBE.installed
 .jube-version-installed
+.nfs*
 
 *.log
 output/

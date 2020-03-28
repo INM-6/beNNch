@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jube>
+    <!-- userdata_$USER
+         is used in various places e.g. for mail notificatios of jobs
+         -->
+    <parameterset name="userdata_d.terhorst">
+      <parameter name="mail">d.terhorst@fz-juelich.de</parameter>
+    </parameterset>
+    <!-- copy of userdata for different username on another system -->
+    <parameterset name="userdata_terhorst" init_with="globals.xml:userdata_d.terhorst"></parameterset>
+    <parameterset name="userdata_terhorst1" init_with="globals.xml:userdata_d.terhorst"></parameterset>
+    <parameterset name="userdata_pcp004" init_with="globals.xml:userdata_d.terhorst"></parameterset>
+
+</jube>
