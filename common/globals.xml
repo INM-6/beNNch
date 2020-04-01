@@ -5,6 +5,7 @@
          -->
     <parameterset name="userdata_d.terhorst">
       <parameter name="mail">d.terhorst@fz-juelich.de</parameter>
+      <parameter name="author">Dennis Terhorst</parameter>
     </parameterset>
     <!-- copy of userdata for different username on another system -->
     <parameterset name="userdata_terhorst" init_with="globals.xml:userdata_d.terhorst"></parameterset>

@@ -33,6 +33,7 @@ recordables = {
     'ompi_info': 'ompi_info',
     'ip-r': 'ip r',
     'ip-l': 'ip l',
+    'nproc': 'nproc',
     'hwloc-info': 'hwloc-info',
     'hwloc-ls': 'hwloc-ls',
     'hwloc-topology': 'hwloc-gather-topology {outdir}/hwloc-topology',
