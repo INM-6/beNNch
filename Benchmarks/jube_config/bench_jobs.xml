@@ -229,6 +229,8 @@
         source ${NEST_INSTALL_DIR}/bin/nest_vars.sh;
         export PYTHONPATH=${MAM_home}/multi-area-model/:$PYTHONPATH;
         export OMP_NUM_THREADS=$THREADS_PER_TASK
+
+        srun -n 1 ${JEMALLOC_INSTALL_DIR}/bin/jemalloc.sh python ${bench_model}/multi-area-model/run_benchmark_createParams.py ${SCALE} ${totVPs} ${SIMTIME} ${K_SCALE} ${NEST_VERSION}
        
         srun ${JEMALLOC_INSTALL_DIR}/bin/jemalloc.sh python ${pythonfile} ${SCALE} ${totVPs} ${SIMTIME} ${K_SCALE} ${NEST_VERSION}
       </parameter>
