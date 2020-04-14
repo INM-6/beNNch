@@ -1,0 +1,3 @@
+git,NUMBER_OF_NODES,TASKS_PER_NODE,NUM_VPS,THREADS_PER_TASK,SCALE,NUM_VPS,num_tasks,T_network_local,T_network_global_min,T_network_global_max,T_network_global_sum,T_create_min,T_create_max,T_create_sum,T_connect_max,T_connect_min,T_connect_sum,T_ini_min,T_ini_max,T_sim,VSize_sum,VSize_ini_sum,VSize_net_sum,N_spks_sum,N_nrns,N_conns_sum
+GIT: (NEST master@0a6bac389),16,6,576,6,1.0,576,96,61.7995452881,59.5817420483,63.6573898792,5853.44372368,16.0251829624,16.500056982,1550.60777354,53.7653298378,45.5977487564,4729.9938581,65.4046759605,65.4050409794,216.758883238,1631626804,1631626804,1571851428,21909606,4130179,24134776576
+
