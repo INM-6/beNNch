@@ -13,7 +13,7 @@
     <parameterset name="scale_check">
       <parameter name="base_vp" type="int">36</parameter>
       <parameter name="base_scale" type="int">1</parameter>
-      <parameter name="SIMTIME" type="float">500.</parameter>
+      <parameter name="SIMTIME" type="float">2000.</parameter>
       <parameter name="NUMBER_OF_NODES" type="int">32,48,64,80,96,112,128</parameter>
       <parameter name="TASKS_PER_NODE" type="int">6</parameter>
       <parameter name="SCALE" type="int" mode="python">$base_scale</parameter>
