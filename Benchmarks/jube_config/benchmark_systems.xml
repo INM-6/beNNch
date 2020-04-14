@@ -108,6 +108,15 @@
     </parameter>
   </parameterset>
 
+  <parameterset name="hill_tononi">
+    <parameter name="benchmark_system_name" type="string">
+      hill_tononi_Vp
+    </parameter>
+    <parameter name="pythonfile" type="string">
+      ${bench_home}/benchmark_scripts/${benchmark_system_name}.py
+    </parameter>
+  </parameterset>
+
   <parameterset name="hill_tononi_3">
     <parameter name="benchmark_system_name" type="string">
       hill_tononi_Vp_nest3

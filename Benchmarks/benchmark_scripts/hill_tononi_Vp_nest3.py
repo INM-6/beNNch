@@ -926,9 +926,6 @@ logger.log('{} # virt_mem_after_sim'.format(memory_thisjob()))
 
 nest.Cleanup()
 
-# just for some information at the end
-# pprint(nest.GetKernelStatus())
-
 logger.log('{} # num_neurons'.format(nest.GetKernelStatus('network_size')))
 logger.log('{} # num_connections'.format(nest.GetKernelStatus('num_connections')))
 logger.log('{} # local_spike_counter'.format(nest.GetKernelStatus('local_spike_counter')))
