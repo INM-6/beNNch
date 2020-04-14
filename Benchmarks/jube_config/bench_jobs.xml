@@ -341,6 +341,22 @@
     </parameter>
   </parameterset>
 
+  <parameterset name="bench_hill_tononi">
+    <parameter name="job_name" type="string">bench-${nest_version}-${system_name}-${nest_config}</parameter>
+    <parameter name="exec">
+      module swap $swap_modules
+      module load $modules
+      module load $boost_module
+      module load $gsl_module
+      module load $python_module
+
+      source ${NEST_INSTALL_DIR}/bin/nest_vars.sh;
+      export OMP_NUM_THREADS=$THREADS_PER_TASK
+
+      srun ${JEMALLOC_INSTALL_DIR}/bin/jemalloc.sh python ${pythonfile} ${totVPs}
+    </parameter>
+  </parameterset>
+
   <parameterset name="bench_nest_topology">
     <parameter name="job_name" type="string">bench-${nest_version}-${system_name}-${nest_config}</parameter>
     <parameter name="exec">
