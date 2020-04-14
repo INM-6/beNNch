@@ -901,9 +901,6 @@ logger.log('{} # virt_mem_after_edges'.format(memory_thisjob()))
 # clear data from the multimeters and plot the data as pseudocolor
 # plots.
 
-# show time during simulation
-nest.SetKernelStatus({'print_time': True})
-
 # ---------------- Initial simulation: rig and calibrate -------------------
 nest.message(M_INFO, 'run_simulation', 'Running simulation.')
 
@@ -934,6 +931,6 @@ nest.Cleanup()
 
 logger.log('{} # num_neurons'.format(nest.GetKernelStatus('network_size')))
 logger.log('{} # num_connections'.format(nest.GetKernelStatus('num_connections')))
-logger.log('{} # num_connections'.format(nest.GetKernelStatus('local_spike_counter')))
+logger.log('{} # local_spike_counter'.format(nest.GetKernelStatus('local_spike_counter')))
 logger.log('{} # min_delay'.format(nest.GetKernelStatus('min_delay')))
 logger.log('{} # max_delay'.format(nest.GetKernelStatus('max_delay')))
