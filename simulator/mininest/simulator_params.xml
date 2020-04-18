@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jube>
-  <parameterset name="model_params_mininest">
-    <parameter name="modelname">mininest</parameter>
+  <parameterset name="simulator_params_mininest">
+    <parameter name="simulatorname">mininest</parameter>
     <parameter name="text">Hello</parameter>
     <parameter name="origin">https://github.com/inm-6/mininest</parameter>
     <parameter name="commit" separator=";">46b198a</parameter>
@@ -31,34 +31,15 @@
     <parameter name="PRINT_FINAL_RING_BUFFER" type="int">1</parameter>
   </parameterset>
 
-  <parameterset name="run_params_ringbuffer_set=0">
-    <parameter name="mindelay_in_steps" type="int">10</parameter>
-    <parameter name="maxdelay_in_steps" type="int">10</parameter>
+  <parameterset name="run_params">
+    <parameter name="seed" type="int">1239</parameter>
+    <parameter name="n_neurons_per_node" type="int">10000</parameter>
+    <parameter name="n_connections_per_neuron" type="int">100</parameter>
+    <parameter name="simtime_in_steps" type="int">10000</parameter>
+    <parameter name="_ringbuffer_set">0</parameter>
+    <parameter name="mpi_recv_buffer_size" type="int">10000</parameter>
+    <parameter name="affinity" separator=";">compact</parameter>
   </parameterset>
-
-  <parameterset name="run_params_ringbuffer_set=1">
-    <parameter name="mindelay_in_steps" type="int">1</parameter>
-    <parameter name="maxdelay_in_steps" type="int">10,100</parameter>
-  </parameterset>
-
-  <steps>
-    <step name="model_checkout">
-      <do>
-        #git checkout mininest
-        echo would git clone -l -s mininest -n
-        echo would cd mini-nest;
-        echo would git checkout $commit;
-        echo "CHECKED OUT $commit";
-      </do>
-    </step>
-
-    <step name="model_compile" depend="model_checkout">
-      <do>
-      echo "# BUILDING THE MODEL INTERNALS"
-      echo "(no model compile for hpc_benchmark)"
-      </do>
-    </step>
-  </steps>
 
   <!-- patterns define which values are provided by a model
        if a model produces different output files, patterns may be separated to

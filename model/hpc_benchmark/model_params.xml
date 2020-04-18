@@ -1,6 +1,47 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jube>
-  <parameterset name="model_params_hpc_benchmark">
+  <parameterset name="model_params">
+    <parameter name="modelname">hpc_benchmark</parameter>
     <parameter name="text">Hello</parameter>
+    <parameter name="origin">https://github.com/nest/nest-simulator</parameter>
+    <parameter name="commit" separator=";">master</parameter>
   </parameterset>
+
+  <steps>
+    <step name="model_checkout">
+      <use>model_params</use>
+      <do>
+        git clone --quiet --depth 1 --single-branch --branch $commit $origin model
+        echo "# CHECKOUT MODEL DEFINITION"
+        echo "(no model checkout for hpc_benchmark)"
+      </do>
+    </step>
+
+    <step name="model_compile" depend="model_checkout">
+      <do>
+      echo "# BUILDING THE MODEL INTERNALS"
+      echo "(no model compile for hpc_benchmark)"
+      ls -l model_checkout/model/
+      </do>
+    </step>
+  </steps>
+
+  <!-- patterns define which values are provided by a model
+       if a model produces different output files, patterns may be separated to
+       patternsets for each filetype -->
+  <patternset name="pattern_stdio">
+    <pattern name="deliver_time" type="float">deliver took ([0-9.]+)s</pattern>
+    <pattern name="cpureal" type="float">CPU_REAL: ([0-9.]+)s</pattern>
+    <pattern name="cpuuser" type="float">CPU_USER: ([0-9.]+)s</pattern>
+    <pattern name="cpusys" type="float">CPU_SYS: ([0-9.]+)s</pattern>
+    <pattern name="cpupct" type="int">CPU_PCT: ([0-9.]+)%</pattern>
+    <pattern name="memtotal" type="int">MEM_TOTAL: ([0-9.]+)</pattern>
+    <pattern name="memres" type="int">MEM_RES: ([0-9.]+)</pattern>
+    <pattern name="mempfaults" type="int">MEM_PAGEFAULTS: ([0-9.]+)</pattern>
+    <pattern name="memprecovers" type="int">MEM_PAGERECOVERS: ([0-9.]+)</pattern>
+    <pattern name="signals" type="int">SIGNALS: ([0-9.]+)</pattern>
+    <pattern name="switches" type="int">SWITCHES: ([0-9.]+)</pattern>
+    <pattern name="sock_recv" type="int">SOCK_RECV: ([0-9.]+)</pattern>
+    <pattern name="sock_send" type="int">SOCK_SEND: ([0-9.]+)</pattern>
+  </patternset>
 </jube>

@@ -3,7 +3,7 @@ __pycache__/
 .JUBE.installed
 .jube-version-installed
 .nfs*
-
+*.git/
 *.log
 output/
 *.submit.id

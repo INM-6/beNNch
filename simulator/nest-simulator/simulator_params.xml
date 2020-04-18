@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jube>
+  <parameterset name="simulator_params">
+    <parameter name="simulatorname">nest-simulator</parameter>
+    <!--parameter name="origin">https://github.com/nest/nest-simulator</parameter-->
+    <parameter name="origin">/home/terhorst/sdvlp/nest-benchmarks/simulator/nest-simulator/nest-simulator.git</parameter>
+    <parameter name="commit">master</parameter>
+  </parameterset>
+
+  <parameterset name="simulator_compile_params">
+    <parameter name="withpython">ON</parameter>
+  </parameterset>
+
+  <parameterset name="simulator_environment_params">
+    <parameter name="bulid_dir">build</parameter>
+    <parameter name="install_dir">../nest-simulator</parameter>
+  </parameterset>
+
+  <steps>
+    <!-- for all but the interface simulator_params use with the "from" attribute! -->
+  
+    <!-- Operation -->
+    <step name="simulator_clone"><!-- STEP fetch_simulator -->
+      <use>simulator_params</use>
+      <do>
+        # do a full clone centrally to this jube-run, but not checkout any files
+        time git clone --quiet --bare $origin $simulator
+      </do>
+    </step>
+
+    <step name="simulator_checkout" depend="simulator_clone"><!-- STEP checkout specific version -->
+      <use>simulator_params</use>
+      <do>
+        set -xeu
+
+        # do a minimal clone of the central simulator_fetch
+        # (the `--shared` will keep the size of the `.git/` directory around ~200k, vs. ~72M of the full clone)
+        time git clone --quiet --shared --branch $commit  --single-branch simulator_clone/nest-simulator.git nest-simulator
+
+        # alternatively do a clone as shallow as possible then fetch a tag from origin
+        #time git clone --shared -n simulator_clone/nest-simulator.git nest-simulator
+        #cd nest-simulator
+        #time git fetch origin 81f716d4f49135012b1d0252ee4c2c678ce88189   # to get a COMMIT (full SHA!)
+        #time git fetch origin refs/tags/v2.14.0         # to get a TAG
+        #time git fetch origin refs/heads/nest-2.20.1    # to get a BRANCH
+        #time git fetch origin $(git revparse $commit)   # to get a COMMIT (full SHA!)
+        #time git checkout FETCH_HEAD  # will get the fetched revision as detached head
+      </do>
+    </step>
+
+    <fileset name="simulator_environment_definitions">
+      <copy>conda-minimal-compile-env.yaml</copy>
+      <copy>conda-minimal-run-env.yaml</copy>
+      <copy>$HOME/miniconda3/etc/profile.d/conda.sh</copy>
+    </fileset>
+
+    <step name="simulator_environments">
+      <use from="simulator_params.xml">simulator_environment_definitions</use>
+      <use from="machine_params.xml">machine_params</use><!-- for conda_folder -->
+      <do>
+        set -eu
+        for env in "run" "compile"; do
+          file=conda-minimal-$env-env.yaml
+          envhash="$(md5sum $file | cut -f1 -d' ')"
+          envdir="$conda_folder/$envhash"
+          # create an environment if it doesn't exist yet
+          test -d "$envdir" || conda env create -p "$envdir" -f "$file" || exit 1
+          ln -sf "$envdir/" "$env"
+          ln -sf "$envhash/" "$conda_folder/$env"
+          conda env export -p "$env" >"$file.export"
+        done
+      </do>
+    </step>
+
+
+    <step name="simulator_compile" depend="simulator_checkout,simulator_environments"><!-- STEPcompile -->
+      <use from="simulator_params.xml">simulator_compile_params</use>
+      <do>
+        set -xeu
+        . ./simulator_environments/conda.sh  # initialize conda
+        # clone the environment for this particular compile
+        conda create --clone ./simulator_environments/compile -p ./install
+        conda activate ./install
+        mkdir build
+        cd build
+        cmake -DCMAKE_INSTALL_PREFIX:PATH=$$CONDA_PREFIX -Dwith-python=$withpython ../simulator_checkout/nest-simulator
+        make -j $(nproc)
+        make install
+      </do>
+    </step>
+
+    <step name="simulator_installcheck" depend="simulator_compile,simulator_environments"><!-- STEPinstallcheck -->
+      <use from="simulator_params.xml">simulator_compile_params</use>
+      <do>
+        set000005_simulator_compile/work/stderr -xeu
+        . ./simulator_environments/conda.sh  # initialize conda
+        conda activate simulator_environments/run
+        cd simulator_compile/build
+        make installcheck
+      </do>
+    </step>
+
+  </steps>
+</jube>

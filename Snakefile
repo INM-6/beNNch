@@ -194,7 +194,7 @@ rule submit_run:
         '''
     shell:
         '''
-        jube -v run {input.jubefile} --include-path machine/{config[default][machine]} benchmark/{config[default][benchmark]} model/{config[default][model]} --outpath {config[outpath]}/$(uuidgen) |& tee {log}
+        jube -v run "{input.jubefile}" --include-path "simulator/{config[default][simulator]}" "machine/{config[default][machine]}" "benchmark/{config[default][benchmark]}" "model/{config[default][model]}" --outpath "{config[outpath]}/$(uuidgen)" |& tee {log}
         common/submit-info.py {log} >{output}
         '''
 

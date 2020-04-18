@@ -17,49 +17,14 @@
 
     <!-- configurations based on include-paths handed in from Snakemake level -->
 
-    <parameterset name="versions" init_with="model_params.xml" path="./" />
-    <patternset name="pattern_stdio" init_with="model_params.xml" path="./" />
-    <parameterset name="compile_params_prefetching=1" init_with="model_params.xml" path="./" />
-    <parameterset name="compile_params_prefetching=0" init_with="model_params.xml" path="./" />
-    <parameterset name="compile_params" init_with="model_params.xml" path="./" />
-    <parameterset name="run_params_ringbuffer_set=0" init_with="model_params.xml" path="./" />
-    <parameterset name="run_params_ringbuffer_set=1" init_with="model_params.xml" path="./" />
+    <parameterset name="simulator_params" init_with="simulator_params.xml" path="./" />
+    <parameterset name="model_params" init_with="model_params.xml" path="./" />
 
-    <parameterset name="run_params">
-      <parameter name="seed" type="int">1239</parameter>
-      <parameter name="n_neurons_per_node" type="int">10000</parameter>
-      <parameter name="n_connections_per_neuron" type="int">100</parameter>
-      <parameter name="simtime_in_steps" type="int">10000</parameter>
-      <parameter name="_ringbuffer_set">0</parameter>
-      <parameter name="mpi_recv_buffer_size" type="int">10000</parameter>
-      <parameter name="affinity" separator=";">compact</parameter>
-    </parameterset>
-
-
-    <!-- Operation -->
-    <step name="fetch"><!-- STEPfetch -->
-      <use>versions</use>
-      <do>
-        set -xeu
-        echo would git clone -l -s mininest -n
-        echo would cd mini-nest;
-        echo would git checkout $commit;
-        echo "CHECKED OUT $commit";
-      </do>
-    </step>
-    <step name="compile" depend="fetch"><!-- STEPcompile -->
-      <use>compile_params</use>
-      <use>compile_params_prefetching=$PREFETCHING</use>
-      <do>
-        pwd >&amp;2
-        ls >&amp;2
-        $compile -DPREFETCHING=$PREFETCHING -DLOCALITY=$LOCALITY -DPREFETCH_DISTANCE=$PREFETCH_DISTANCE -DTARGET_IDX=$TARGET_IDX -DN_TARGETS_PER_NEURON=$N_TARGETS_PER_NEURON -DPRINT_FINAL_RING_BUFFER=$PRINT_FINAL_RING_BUFFER -I fetch/mini-nest fetch/mini-nest/main.cpp
-        $compile -DPREFETCHING=$PREFETCHING -DLOCALITY=$LOCALITY -DPREFETCH_DISTANCE=$PREFETCH_DISTANCE -DTARGET_IDX=$TARGET_IDX -DN_TARGETS_PER_NEURON=$N_TARGETS_PER_NEURON -DPRINT_FINAL_RING_BUFFER=$PRINT_FINAL_RING_BUFFER -I fetch/mini-nest fetch/mini-nest/stopwatch.cpp
-        $compile -DPREFETCHING=$PREFETCHING -DLOCALITY=$LOCALITY -DPREFETCH_DISTANCE=$PREFETCH_DISTANCE -DTARGET_IDX=$TARGET_IDX -DN_TARGETS_PER_NEURON=$N_TARGETS_PER_NEURON -DPRINT_FINAL_RING_BUFFER=$PRINT_FINAL_RING_BUFFER -I fetch/mini-nest fetch/mini-nest/simulate.cpp
-        echo "#!/bin/bash\ndate\necho \"deliver took $(python -c 'import random; print(10+20*random.random())')s\"" >main
-        chmod u+x main
-      </do>
-    </step>
+    <!-- get simulator and model
+         files may contain any number of steps enclosed in a <steps> tag
+         final step must be a {simulator,model}_compile, which the benchmark depends on -->
+    <include from="simulator_params.xml" path="./steps/" />
+    <include from="model_params.xml" path="./steps/" />
 
     <!-- Load jobfile -->
     <fileset name="files">
@@ -88,20 +53,21 @@
       <sub source="#EXEC#" dest="$exec" />
     </substituteset>
 
-    <step name="run" depend="compile" iterations="1"><!-- STEPrun -->
-      <use>run_params</use>
-      <use>run_params_ringbuffer_set=$_ringbuffer_set</use>
+    <step name="run" depend="simulator_compile,model_compile" iterations="1"><!-- STEPrun -->
       <use>userdata_${USER}</use>
       <use>machine_params</use>
       <use>batch_params_${batchsystem}</use>
       <use>files,jobfile_substitutions</use>
-      <do done_file="$readyfile">
-        echo "submitting jobfile:"
-        cat $jobfile
-        ./about.py
-        $submit_cmd $jobfile
+      <do> <!-- done_file="$readyfile"-->
+        false;
+        #echo "submitting jobfile:"
+        #cat $jobfile
+        #./about.py
+        #$submit_cmd $jobfile
       </do>
     </step>
+
+    <patternset name="pattern_stdio" init_with="model_params.xml" path="./" />
 
     <!-- Analyse -->
     <analyser name="analyse">

@@ -47,3 +47,29 @@ software.
    specific commands should be necessary here, e.g.  `python
    microcircuit_bench.py`.
 
+
+
+# Compile environments
+
+   When compiling the simulator and/or other software, it is important to
+   consider how often an environment will be used. For the `launch` environment
+   it is very likely only one will be used for all jobs, very few tools just
+   need to be there. For the `compile` and `run` environments dependencies and
+   installs require a bit more thinking.
+
+   * installs into the environment may collide with other jobs that may run in
+     parallel but with different compile time parameters.
+     * When using Conda, this workflow uses `conda create --clone` for the
+       derived environment (hardlinks, man inodes!). An alternative would be to
+       create a new empty environment for the compile and run "conda activate
+       --stack" to combine a base and specialized environment.
+
+   * installs not into the environment needs to keep track of this dependency,
+     since the compiled software depends on a certain set of libraries in
+     specific versions.
+
+   * the environment for running the software needs to provide at least
+     *exactly* the same run-time dependencies. It may drop compile-time
+     dependencies (like compilers, etc.) and it may add additional dependencies
+     (like scipy).
+

@@ -1,0 +1,4 @@
+dependencies:
+- pip>=18
+- pip:
+  - snakemake

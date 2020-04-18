@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jube>
+
+  <parameterset name="machine_params">
+  <parameter name="machine_name">jureca</parameter><!-- choose from "laptop" or "jureca" here -->
+  </parameterset>
+
+  <parameterset name="jureca_envtypes">
+  <parameter name="envloader">module,conda</parameter>
+  </parameterset>
+
+  <parameterset name="laptop_envtypes">
+  <parameter name="envloader">conda</parameter>
+  </parameterset>
+
+  <parameterset name="envloader_conda">
+  <parameter name="env_name">./conda</parameter>
+  <parameter name="env_create">conda create -p $env_name $conda_packages</parameter>
+  <parameter name="env_enter">conda activate $env_name</parameter>
+  </parameterset>
+
+  <parameterset name="envloader_module">
+  <parameter name="env_create"></parameter>
+  <parameter name="env_enter">module load $module_packages</parameter>
+  </parameterset>
+
+  <parameterset name="simulator_params">
+  <parameter name="gsl">2.3</parameter>
+  <parameter name="ltdl">12.0</parameter>
+
+  <parameter name="module_laptop_packages">GSL/$gsl libLTDL/$ltdl GCC</parameter>
+  <parameter name="module_jureca_packages">libGSL/$gsl LTDL/$ltdl intelCC</parameter>
+  <!-- name translation for different environments -->
+  <parameter name="conda_packages">gsl-$gsl libtool-$ltdl gxx_linux-64</parameter>
+  <parameter name="module_packages">${module_${machine_name}_packages}</parameter>
+  </parameterset>
+
+  <benchmark name="envtest" outpath="envtest">
+
+    <!-- in this benchmark we want to compare two gsl versions -->
+    <parameterset name="simulator_params_here" init_with="envtest.xml:simulator_params">
+    <parameter name="gsl">2.0,2.4</parameter>
+    </parameterset>
+
+    <step name="run">
+      <use>machine_params</use>
+      <use>${machine_name}_envtypes</use>
+      <use>simulator_params_here</use><!-- note the benchmark specific name here, instead of the global simulator_params -->
+      <use>envloader_${envloader}</use>
+      <do>
+        echo "$env_create"
+        echo "$env_enter"
+      </do>
+    </step>
+
+  </benchmark>
+</jube>

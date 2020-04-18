@@ -5,7 +5,8 @@ outpath: output
 
 # Default benchmark choices
 default:
-  model: mininest
+  simulator: nest-simulator
+  model: hpc_benchmark
   benchmark: thread_scaling
-  machine: localhost
+  machine: laptop
 
