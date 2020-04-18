@@ -1,0 +1,6 @@
+alias leavestep="cd $PWD"
+function gostep() {
+	cd $(cut -f1 -d" " *submit.id)/000000 && \
+	find ${1:-.} -name "stderr" -size +0 | sort | xargs tail -n 100 | egrep -C1000 --color=always "^==.*==$"
+	find ${1:-.} -name "stderr" -size +0 | sort
+}

@@ -28,7 +28,18 @@
 
 # Framework Description
 
-   
+   [...]
+
+   When debugging, you can load commands to quickly jump into and out of a job
+   result by sourcing `common/aliasses`
+
+    ```bash
+    source common/aliasses
+    ```
+
+   This will give you the commands `gostep` to jump into the workdir and see
+   all `stderr` files, and `leavestep` to jump back to the base directory of
+   the workflow.
 
 
    Look at <http://www.fz-juelich.de/ias/jsc/EN/Expertise/Support/Software/JUBE/JUBE2/jube-documentation_node.html>
