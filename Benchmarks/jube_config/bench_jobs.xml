@@ -258,150 +258,164 @@
       </parameter>
     </parameterset>
 
- <parameterset name="bench_nest_rule">
-    <parameter name="job_name" type="string">bench-${nest_version}-${system_name}-${nest_config}</parameter>
-    <parameter name="exec">
-      module swap $swap_modules
-      module load $modules
-      module load $boost_module
-      module load $gsl_module
+    <parameterset name="bench_nest_rule">
+      <parameter name="job_name" type="string">bench-${nest_version}-${system_name}-${nest_config}</parameter>
+      <parameter name="exec">
+        module swap $swap_modules
+        module load $modules
+        module load $boost_module
+        module load $gsl_module
 
-    	source ${NEST_INSTALL_DIR}/bin/nest_vars.sh;
-    	export OMP_NUM_THREADS=$THREADS_PER_TASK
+      	source ${NEST_INSTALL_DIR}/bin/nest_vars.sh;
+      	export OMP_NUM_THREADS=$THREADS_PER_TASK
 
-    	srun ${JEMALLOC_INSTALL_DIR}/bin/jemalloc.sh ${NEST_INSTALL_DIR}/bin/nest ${slifile} --userargs=${SCALE}_${totVPs}_${SIMTIME}_${NUM_REC}_${PLASTIC}_${D_MIN}_${D_MAX}_${RULE}
-    </parameter>
-  </parameterset>
+      	srun ${JEMALLOC_INSTALL_DIR}/bin/jemalloc.sh ${NEST_INSTALL_DIR}/bin/nest ${slifile} --userargs=${SCALE}_${totVPs}_${SIMTIME}_${NUM_REC}_${PLASTIC}_${D_MIN}_${D_MAX}_${RULE}
+      </parameter>
+    </parameterset>
 
-  <parameterset name="bench_nest_split">
-    <parameter name="job_name" type="string">bench-${nest_version}-${system_name}-${nest_config}</parameter>
-    <parameter name="exec">
-      module swap $swap_modules
-      module load $modules
-      module load $boost_module
-      module load $gsl_module
+    <parameterset name="bench_nest_split">
+      <parameter name="job_name" type="string">bench-${nest_version}-${system_name}-${nest_config}</parameter>
+      <parameter name="exec">
+        module swap $swap_modules
+        module load $modules
+        module load $boost_module
+        module load $gsl_module
 
-    	source ${NEST_INSTALL_DIR}/bin/nest_vars.sh;
-    	export OMP_NUM_THREADS=$THREADS_PER_TASK
+      	source ${NEST_INSTALL_DIR}/bin/nest_vars.sh;
+      	export OMP_NUM_THREADS=$THREADS_PER_TASK
 
-    	srun ${JEMALLOC_INSTALL_DIR}/bin/jemalloc.sh ${NEST_INSTALL_DIR}/bin/nest ${slifile} --userargs=${SCALE}_${totVPs}_${SIMTIME}_${NUM_REC}_${PLASTIC}_${D_MIN}_${D_MAX}_${NBLOCKS}
-    </parameter>
-  </parameterset>
+      	srun ${JEMALLOC_INSTALL_DIR}/bin/jemalloc.sh ${NEST_INSTALL_DIR}/bin/nest ${slifile} --userargs=${SCALE}_${totVPs}_${SIMTIME}_${NUM_REC}_${PLASTIC}_${D_MIN}_${D_MAX}_${NBLOCKS}
+      </parameter>
+    </parameterset>
 
-  <parameterset name="bench_nest_rule_mpirun">
-    <parameter name="job_name" type="string">bench-${nest_version}-${system_name}-${nest_config}</parameter>
-    <parameter name="exec">
-    	module purge;
-    	module load $modules;
-    	source ${NEST_INSTALL_DIR}/bin/nest_vars.sh;
-    	export OMP_NUM_THREADS=$THREADS_PER_TASK
-    	mpirun -n ${num_tasks} ${JEMALLOC_INSTALL_DIR}/bin/jemalloc.sh ${NEST_INSTALL_DIR}/bin/nest ${slifile} --userargs=${SCALE}_${totVPs}_${SIMTIME}_${NUM_REC}_${PLASTIC}_${D_MIN}_${D_MAX}_${RULE}
-    </parameter>
-  </parameterset>
+    <parameterset name="bench_nest_rule_mpirun">
+      <parameter name="job_name" type="string">bench-${nest_version}-${system_name}-${nest_config}</parameter>
+      <parameter name="exec">
+      	module purge;
+      	module load $modules;
+      	source ${NEST_INSTALL_DIR}/bin/nest_vars.sh;
+      	export OMP_NUM_THREADS=$THREADS_PER_TASK
+      	mpirun -n ${num_tasks} ${JEMALLOC_INSTALL_DIR}/bin/jemalloc.sh ${NEST_INSTALL_DIR}/bin/nest ${slifile} --userargs=${SCALE}_${totVPs}_${SIMTIME}_${NUM_REC}_${PLASTIC}_${D_MIN}_${D_MAX}_${RULE}
+      </parameter>
+    </parameterset>
 
-  <parameterset name="bench_nest_split_mpirun">
-    <parameter name="job_name" type="string">bench-${nest_version}-${system_name}-${nest_config}</parameter>
-    <parameter name="exec">
-    	module purge;
-    	module load $modules;
-    	source ${NEST_INSTALL_DIR}/bin/nest_vars.sh;
-    	export OMP_NUM_THREADS=$THREADS_PER_TASK
-    	mpirun -n ${num_tasks} ${JEMALLOC_INSTALL_DIR}/bin/jemalloc.sh ${NEST_INSTALL_DIR}/bin/nest ${slifile} --userargs=${SCALE}_${totVPs}_${SIMTIME}_${NUM_REC}_${PLASTIC}_${D_MIN}_${D_MAX}_${NBLOCKS}
-    </parameter>
-  </parameterset>
+    <parameterset name="bench_nest_split_mpirun">
+      <parameter name="job_name" type="string">bench-${nest_version}-${system_name}-${nest_config}</parameter>
+      <parameter name="exec">
+      	module purge;
+      	module load $modules;
+      	source ${NEST_INSTALL_DIR}/bin/nest_vars.sh;
+      	export OMP_NUM_THREADS=$THREADS_PER_TASK
+      	mpirun -n ${num_tasks} ${JEMALLOC_INSTALL_DIR}/bin/jemalloc.sh ${NEST_INSTALL_DIR}/bin/nest ${slifile} --userargs=${SCALE}_${totVPs}_${SIMTIME}_${NUM_REC}_${PLASTIC}_${D_MIN}_${D_MAX}_${NBLOCKS}
+      </parameter>
+    </parameterset>
 
-  <parameterset name="bench_nest_population">
-    <parameter name="job_name" type="string">bench-${nest_version}-${system_name}-${nest_config}</parameter>
-    <parameter name="exec">
-      module swap $swap_modules
-      module load $modules
-      module load $boost_module
-      module load $gsl_module
+    <parameterset name="bench_nest_population">
+      <parameter name="job_name" type="string">bench-${nest_version}-${system_name}-${nest_config}</parameter>
+      <parameter name="exec">
+        module swap $swap_modules
+        module load $modules
+        module load $boost_module
+        module load $gsl_module
 
-      source ${NEST_INSTALL_DIR}/bin/nest_vars.sh;
-      export OMP_NUM_THREADS=$THREADS_PER_TASK
+        source ${NEST_INSTALL_DIR}/bin/nest_vars.sh;
+        export OMP_NUM_THREADS=$THREADS_PER_TASK
 
-      srun ${JEMALLOC_INSTALL_DIR}/bin/jemalloc.sh ${NEST_INSTALL_DIR}/bin/nest ${slifile} --userargs=${SCALE}_${totVPs}_${PLASTIC}
-    </parameter>
-  </parameterset>
+        srun ${JEMALLOC_INSTALL_DIR}/bin/jemalloc.sh ${NEST_INSTALL_DIR}/bin/nest ${slifile} --userargs=${SCALE}_${totVPs}_${PLASTIC}
+      </parameter>
+    </parameterset>
 
-  <parameterset name="bench_population_py">
-    <parameter name="job_name" type="string">bench-${nest_version}-${system_name}-${nest_config}</parameter>
-    <parameter name="exec">
-      module swap $swap_modules
-      module load $modules
-      module load $boost_module
-      module load $gsl_module
-      module load $python_module
+    <parameterset name="bench_population_py">
+      <parameter name="job_name" type="string">bench-${nest_version}-${system_name}-${nest_config}</parameter>
+      <parameter name="exec">
+        module swap $swap_modules
+        module load $modules
+        module load $boost_module
+        module load $gsl_module
+        module load $python_module
 
-      source ${NEST_INSTALL_DIR}/bin/nest_vars.sh;
-      export OMP_NUM_THREADS=$THREADS_PER_TASK
+        source ${NEST_INSTALL_DIR}/bin/nest_vars.sh;
+        export OMP_NUM_THREADS=$THREADS_PER_TASK
 
-      srun ${JEMALLOC_INSTALL_DIR}/bin/jemalloc.sh python ${pythonfile} ${SCALE} ${totVPs} ${PLASTIC} ${RULE}
-    </parameter>
-  </parameterset>
+        srun ${JEMALLOC_INSTALL_DIR}/bin/jemalloc.sh python ${pythonfile} ${SCALE} ${totVPs} ${PLASTIC} ${RULE}
+      </parameter>
+    </parameterset>
 
-  <parameterset name="bench_hill_tononi">
-    <parameter name="job_name" type="string">bench-${nest_version}-${system_name}-${nest_config}</parameter>
-    <parameter name="exec">
-      module swap $swap_modules
-      module load $modules
-      module load $boost_module
-      module load $gsl_module
-      module load $python_module
+    <parameterset name="bench_hill_tononi">
+      <parameter name="job_name" type="string">bench-${nest_version}-${system_name}-${nest_config}</parameter>
+      <parameter name="exec">
+        module swap $swap_modules
+        module load $modules
+        module load $boost_module
+        module load $gsl_module
+        module load $python_module
 
-      source ${NEST_INSTALL_DIR}/bin/nest_vars.sh;
-      export OMP_NUM_THREADS=$THREADS_PER_TASK
+        source ${NEST_INSTALL_DIR}/bin/nest_vars.sh;
+        export OMP_NUM_THREADS=$THREADS_PER_TASK
 
-      srun ${JEMALLOC_INSTALL_DIR}/bin/jemalloc.sh python ${pythonfile} ${totVPs}
-    </parameter>
-  </parameterset>
+        srun ${JEMALLOC_INSTALL_DIR}/bin/jemalloc.sh python ${pythonfile} ${totVPs}
+      </parameter>
+    </parameterset>
 
-  <parameterset name="bench_nest_topology">
-    <parameter name="job_name" type="string">bench-${nest_version}-${system_name}-${nest_config}</parameter>
-    <parameter name="exec">
-      module swap $swap_modules
-      module load $modules
-      module load $boost_module
-      module load $gsl_module
-      module load $python_module
-      
-      source ${NEST_INSTALL_DIR}/bin/nest_vars.sh;
-      export OMP_NUM_THREADS=$THREADS_PER_TASK
+    <parameterset name="bench_nest_topology">
+      <parameter name="job_name" type="string">bench-${nest_version}-${system_name}-${nest_config}</parameter>
+      <parameter name="exec">
+        module swap $swap_modules
+        module load $modules
+        module load $boost_module
+        module load $gsl_module
+        module load $python_module
+        
+        source ${NEST_INSTALL_DIR}/bin/nest_vars.sh;
+        export OMP_NUM_THREADS=$THREADS_PER_TASK
 
-      srun ${JEMALLOC_INSTALL_DIR}/bin/jemalloc.sh python ${pythonfile} ${SCALE} ${totVPs}
-    </parameter>
-  </parameterset>
+        srun ${JEMALLOC_INSTALL_DIR}/bin/jemalloc.sh python ${pythonfile} ${SCALE} ${totVPs}
+      </parameter>
+    </parameterset>
 
-  <parameterset name="bench_nest_ippen_thread">
-    <parameter name="job_name" type="string">bench-${nest_version}-${system_name}-${nest_config}</parameter>
-    <parameter name="exec">
-      module swap $swap_modules
-      module load $modules
-      module load $boost_module
-      module load $gsl_module
-      
-      source ${NEST_INSTALL_DIR}/bin/nest_vars.sh;
-      export OMP_NUM_THREADS=$THREADS_PER_TASK
+    <parameterset name="bench_nest_ippen_thread">
+      <parameter name="job_name" type="string">bench-${nest_version}-${system_name}-${nest_config}</parameter>
+      <parameter name="exec">
+        module swap $swap_modules
+        module load $modules
+        module load $boost_module
+        module load $gsl_module
+        
+        source ${NEST_INSTALL_DIR}/bin/nest_vars.sh;
+        export OMP_NUM_THREADS=$THREADS_PER_TASK
 
-      srun ${JEMALLOC_INSTALL_DIR}/bin/jemalloc.sh $NEST_INSTALL_DIR/bin/nest ${slifile} --userargs=${SCALE}_${totVPs}
-    </parameter>
-  </parameterset>
+        srun ${JEMALLOC_INSTALL_DIR}/bin/jemalloc.sh $NEST_INSTALL_DIR/bin/nest ${slifile} --userargs=${SCALE}_${totVPs}
+      </parameter>
+    </parameterset>
 
-  <parameterset name="bench_nest_ippen_mpi">
-    <parameter name="job_name" type="string">bench-${nest_version}-${system_name}-${nest_config}</parameter>
-    <parameter name="exec">
-      module swap $swap_modules
-      module load $modules
-      module load $boost_module
-      module load $gsl_module
-      
-      source ${NEST_INSTALL_DIR}/bin/nest_vars.sh;
-      export OMP_NUM_THREADS=$THREADS_PER_TASK
+    <parameterset name="bench_nest_ippen_mpi">
+      <parameter name="job_name" type="string">bench-${nest_version}-${system_name}-${nest_config}</parameter>
+      <parameter name="exec">
+        module swap $swap_modules
+        module load $modules
+        module load $boost_module
+        module load $gsl_module
+        
+        source ${NEST_INSTALL_DIR}/bin/nest_vars.sh;
+        export OMP_NUM_THREADS=$THREADS_PER_TASK
 
-      srun -n ${TASKS_PER_NODE} ${JEMALLOC_INSTALL_DIR}/bin/jemalloc.sh $NEST_INSTALL_DIR/bin/nest ${slifile} --userargs=${SCALE}_${totVPs}
-    </parameter>
-  </parameterset>
+        srun -n ${TASKS_PER_NODE} ${JEMALLOC_INSTALL_DIR}/bin/jemalloc.sh $NEST_INSTALL_DIR/bin/nest ${slifile} --userargs=${SCALE}_${totVPs}
+      </parameter>
+    </parameterset>
+
+    <parameterset name="bench_jakob">
+      <parameter name="job_name" type="string">bench-${nest_version}-${system_name}-${nest_config}</parameter>      
+      <parameter name="exec">
+        module swap $swap_modules
+        module load $modules
+        module load $boost_module
+        module load $gsl_module
+
+        source ${NEST_INSTALL_DIR}/bin/nest_vars.sh;
+        export OMP_NUM_THREADS=$THREADS_PER_TASK
+        srun ${JEMALLOC_INSTALL_DIR}/bin/jemalloc.sh ${NEST_INSTALL_DIR}/bin/nest ${slifile} --userargs=${SCALE}_${totVPs}_${SIMTIME}_${REC_SPIKES}_${REC_MEMBRANE}
+      </parameter>
+    </parameterset>
 
     <!-- Regex pattern -->
     <patternset name="nest_pattern_stdcout">
