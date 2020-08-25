@@ -74,6 +74,7 @@
   /dt 0.1
   /record_spikes user_rec_spk
   /record_membrane user_rec_mem
+  /inisimtime 10. ms def
   /presimtime 90. 
   /simtime user_simtime
 >> def
@@ -203,6 +204,17 @@ inject_noise
   /noise_generator 1 << /mean 0. /std 250. >> Create /ng Set
   ng N_all << /rule /all_to_all >> << /synapse_model /static_synapse /delay 1.0 >> Connect
 } if
+
+% - Initial simulation: rig and calibrate -----------------
+  
+tic
+
+inisimtime Simulate
+
+toc /InitializationTime Set
+
+memory_thisjob cvs ( # virt_mem_after_init) join logger /log call
+InitializationTime cvs ( # init_time) join logger /log call
 
 tic
 presimtime Simulate

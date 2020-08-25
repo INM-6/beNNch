@@ -26,7 +26,7 @@
       <use from="dir_config.xml">dir_config</use>
       <use from="system_descriptions.xml">system_daint</use>
       <use from="benchmark_systems.xml">jakob_benchmark</use>
-      <use from="packages.xml">nest_3,nest_base_O3_strict,jemalloc</use>
+      <use from="packages.xml">nest_3,nest_py_O3_strict,jemalloc</use>
       <use from="bench_jobs.xml">bench_base_vp_daint,bench_jakob,files,sub_bench_job</use>
       <use>scale_check</use>
       <do done_file="$ready_file">$submit_cmd $job_file</do>
