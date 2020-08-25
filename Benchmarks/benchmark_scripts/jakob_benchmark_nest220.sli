@@ -1,0 +1,264 @@
+/*
+    empty_scaling
+*/
+
+% call like:
+% nest --userargs=scale,nvp,simtime,rec_spikes,rec_membrane jakob_benchmark.sli
+
+/user_scale statusdict/userargs :: 0 get (_) breakup 0 get double def
+/user_nvp statusdict/userargs :: 0 get (_) breakup 1 get int def
+/user_simtime statusdict/userargs :: 0 get (_) breakup 2 get double def
+/user_rec_spk statusdict/userargs :: 0 get (_) breakup 3 get (true) eq def
+/user_rec_mem statusdict/userargs :: 0 get (_) breakup 4 get (true) eq def
+
+(GIT: ) =only statusdict/version :: ==
+
+(user_scale  : ) =only user_scale ==
+(user_nvp    : ) =only user_nvp ==
+(user_simtime: ) =only user_simtime ==
+(user_rec_spk: ) =only user_rec_spk ==
+(user_rec_mem: ) =only user_rec_mem ==
+
+/scale user_scale def 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
+
+/memory_thisjob_wrapper
+{
+  memory_thisjob         % returns dict on BG, number otherwise
+  DictQ { /heap get } if 
+} def
+
+%-------------------------------------------------------------------------------------
+/*
+    This function defines a logger class used to properly log memory and timing
+    information from network simulations. It is used by hpc_benchmark.sli to
+    store the information to the log files.
+*/
+
+/logger
+<<
+    /line_counter 0
+
+    % constructor
+    /init
+    {
+      % nothing to do since we only log to stdout
+    }
+
+    % logging function
+    % expects one operand on stack to write to file
+    /log
+    {
+      /value Set
+      
+      cout Rank <- ( ) <- value <- endl flush pop
+    }
+
+    % closes file
+    /done
+    {
+  % nothing to do since we only log to stdout
+    }
+
+>> def
+%---------------------------------------------------------------------------------
+
+% load parameter configuration file, all data is in dict params
+% (params.sli) run
+
+/params
+<<
+  /n_neuron 185 scale mul round cvi
+  /nvp user_nvp
+  /dt 0.1
+  /record_spikes user_rec_spk
+  /record_membrane user_rec_mem
+  /inisimtime 10. ms def
+  /presimtime 90. 
+  /simtime user_simtime
+>> def
+
+params using
+
+% script verbosity
+M_ERROR setverbosity
+
+% load and configure logger class
+%(logger.sli) run
+
+% open log file
+%log_file logger /init call
+logger /init call
+
+%more parameters
+/n_rec_spikes n_neuron def
+/n_rec_membrane 50 def
+/gap_weight .1 def
+/gap_per_neuron 60 def
+/max_iter 5 def
+/wfr_tol 0.00001 def
+/wfr_interpolation_order 3 def
+/inject_noise true def
+
+ResetKernel
+
+memory_thisjob_wrapper cvs ( # virt_mem_0) join logger /log call
+
+tic
+
+0 <<
+   /total_num_virtual_procs nvp
+   /resolution dt
+   /overwrite_files true
+   /wfr_tol wfr_tol
+   /wfr_interpolation_order wfr_interpolation_order
+   /wfr_max_iterations max_iter
+>> SetStatus
+
+/model_params
+<< 
+  /I_e 200.
+>> 
+def
+
+0 GetStatus /status_dict Set % get kernel status once to avoid communication overhead
+/num_processes status_dict /num_processes get def
+
+toc /SetGetStatusTime Set
+
+SetGetStatusTime cvs ( # set_get_status_time) join logger /log call
+
+tic
+
+/hh_psc_alpha_gap model_params SetDefaults
+
+%/N_all /hh_psc_alpha_gap n_neuron Create def
+%N_all ==
+%/N_from N_all 0 get def
+%/N_to N_all -1 get def
+
+/hh_psc_alpha_gap [n_neuron] LayoutNetwork /N_all Set  % subnet gets own gid
+/N_from N_all 1 add def                                % gid of first child
+/N_to N_from n_neuron add 1 sub def                    % gid of last child
+
+%set min_delay to 1.0
+% /iaf_psc_alpha Create
+% dup 0.0 1.0 Connect
+
+toc /BuildNodeTime Set
+
+memory_thisjob_wrapper cvs ( # virt_mem_after_nodes) join logger /log call
+BuildNodeTime cvs ( # build_time_nodes) join logger /log call
+
+tic
+
+% /p gap_per_neuron 2 div n_neuron cvd div def
+% N_all N_all
+% << /rule /symmetric_pairwise_bernoulli /p p /autapses false /multapses true /make_symmetric true >>
+% << /model /gap_junction /weight gap_weight >>
+% Connect
+
+% connect in a ring toppology: each neuron is connected to
+% gap_per_neuron of its neighbours
+[1 gap_per_neuron 2 div] Range
+{
+  /i Set
+
+  % connect up to max gid
+  N_from N_to i sub cvgidcollection /source_neurons Set
+  N_from i add N_to cvgidcollection /target_neurons Set
+  source_neurons target_neurons << /rule /one_to_one /make_symmetric true >> << /model /gap_junction /weight gap_weight >> Connect
+
+  % wrap around is not supported by GIDCollection so we need a second
+  % connect call to handle connections crossing max gid
+  N_to i sub 1 add N_to cvgidcollection /source_neurons Set
+  N_from N_from i add 1 sub cvgidcollection /target_neurons Set
+  source_neurons target_neurons << /rule /one_to_one /make_symmetric true >> << /model /gap_junction /weight gap_weight >> Connect
+} forall
+
+toc /BuildEdgeTime Set
+
+BuildEdgeTime cvs ( # build_edge_time ) join logger /log call
+memory_thisjob_wrapper cvs ( # virt_mem_after_edges) join logger /log call
+
+record_spikes
+{
+  N_from n_rec_spikes add 1 sub N_to gt {
+    exit(1)
+  } if
+  %/spike_detector 1 << /to_file true >> Create /sd Set
+  /spike_detector Create /sd Set
+  [N_from N_from n_rec_spikes add 1 sub] Range [sd] Connect
+} if
+
+record_membrane
+{
+  N_from n_rec_membrane add 1 sub N_to gt {
+    exit(1)
+  } if
+  %/multimeter 1 << /to_file true /record_from [/V_m] >> Create /mm Set
+  /multimeter 1 << /record_from [/V_m] >> Create /mm Set
+  [mm] [N_from N_from n_rec_membrane add 1 sub] Range Connect
+} if
+
+inject_noise
+{
+  /noise_generator 1 << /mean 0. /std 250. >> Create /ng Set
+  [ng] [N_from N_to] Range << /rule /all_to_all >> << /model /static_synapse /delay 1.0 >> Connect
+} if
+
+% - Initial simulation: rig and calibrate -----------------
+  
+tic
+
+inisimtime Simulate
+
+toc /InitializationTime Set
+
+memory_thisjob cvs ( # virt_mem_after_init) join logger /log call
+InitializationTime cvs ( # init_time) join logger /log call
+
+tic
+presimtime Simulate
+toc /PreparationTime Set
+
+memory_thisjob_wrapper cvs ( # virt_mem_after_presim) join logger /log call
+PreparationTime cvs ( # presim_time) join logger /log call
+
+tic
+simtime Simulate
+toc /SimCPUTime Set
+
+memory_thisjob_wrapper cvs ( # virt_mem_after_sim) join logger /log call
+SimCPUTime cvs ( # sim_time) join logger /log call
+
+0 GetStatus /status_dict Set
+status_dict /local_num_threads get cvs ( # local_num_threads) join logger /log call
+status_dict /num_processes get cvs ( # num_processes) join logger /log call
+status_dict /network_size get cvs ( # num_neurons) join logger /log call
+status_dict /num_connections get cvs ( # num_connections) join logger /log call
+status_dict /local_spike_counter get cvs ( # local_spike_counter) join logger /log call
+
+status_dict /send_buffer_size known
+{
+  status_dict /send_buffer_size get cvs ( # send_buffer_size ) join logger /log call
+  status_dict /receive_buffer_size get cvs ( # recv_buffer_size ) join logger /log call
+} if
+
+status_dict /buffer_size_secondary_events known
+{
+  status_dict /buffer_size_spike_data get cvs ( # buffer_size_spike_data ) join logger /log call
+  status_dict /buffer_size_target_data get cvs ( # buffer_size_target_data ) join logger /log call
+  status_dict /buffer_size_secondary_events get cvs ( # buffer_size_secondary_events ) join logger /log call
+} if
+
+status_dict /send_buffer_size_secondary_events known
+{
+  status_dict /buffer_size_spike_data get cvs ( # buffer_size_spike_data ) join logger /log call
+  status_dict /buffer_size_target_data get cvs ( # buffer_size_target_data ) join logger /log call
+  status_dict /send_buffer_size_secondary_events get cvs ( # send_buffer_size_secondary_events ) join logger /log call
+  status_dict /recv_buffer_size_secondary_events get cvs ( # recv_buffer_size_secondary_events ) join logger /log call
+} if
+
+logger /done call

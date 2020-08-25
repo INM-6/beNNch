@@ -171,4 +171,13 @@
     </parameter>
   </parameterset>
 
+  <parameterset name="jakob_benchmark_nest220">
+    <parameter name="benchmark_system_name" type="string">
+      jakob_benchmark_nest220
+    </parameter>
+    <parameter name="slifile" type="string">
+      ${bench_home}/benchmark_scripts/${benchmark_system_name}.sli
+    </parameter>
+  </parameterset>
+
 </jube>
