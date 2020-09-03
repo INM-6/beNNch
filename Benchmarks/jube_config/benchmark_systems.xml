@@ -180,4 +180,13 @@
     </parameter>
   </parameterset>
 
+  <parameterset name="colocate_synapse_benchmark">
+    <parameter name="benchmark_system_name" type="string">
+      colocate_synapse_benchmark
+    </parameter>
+    <parameter name="pythonfile" type="string">
+      ${bench_home}/benchmark_scripts/${benchmark_system_name}.py
+    </parameter>
+  </parameterset>
+
 </jube>
