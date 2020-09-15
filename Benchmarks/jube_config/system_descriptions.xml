@@ -23,13 +23,13 @@
     <parameter name="system_name" type="string">daint</parameter>
     <parameter name="partition" type="string">normal</parameter>
     <parameter name="modules">daint-mc</parameter>
-    <parameter name="swap_modules">PrgEnv-cray/6.0.5 PrgEnv-intel</parameter>
-    <parameter name="cmake_module">module load CMake/3.14.5</parameter>
+    <parameter name="swap_modules">PrgEnv-cray/6.0.8 PrgEnv-intel</parameter>
+    <parameter name="cmake_module">CMake/3.14.5</parameter>
     <parameter name="gcc_module"></parameter>
-    <parameter name="gsl_module">GSL/2.5-CrayIntel-19.10</parameter>
-    <parameter name="python_module">cray-python/3.6.5.7</parameter>
+    <parameter name="gsl_module">GSL/2.5-CrayIntel-20.08</parameter>
+    <parameter name="python_module">cray-python/3.8.2.1</parameter>
     <parameter name="python2_module">cray-python/2.7.15.7 h5py/2.8.0-CrayGNU-19.10-python2-parallel</parameter>
-    <parameter name="boost_module">Boost/1.70.0-CrayGNU-19.10</parameter>
+    <parameter name="boost_module">Boost/1.70.0-CrayGNU-20.08</parameter>
     <parameter name="python_exec">python</parameter>
     <parameter name="cython_exec"></parameter>
     <parameter name="pip_exec"></parameter>
