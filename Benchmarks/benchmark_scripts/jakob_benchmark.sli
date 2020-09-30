@@ -133,7 +133,8 @@ tic
 
 /hh_psc_alpha_gap model_params SetDefaults
 
-/N_all /hh_psc_alpha_gap n_neuron Create def
+%/N_all /hh_psc_alpha_gap n_neuron Create def
+/N_all /iaf_psc_alpha n_neuron Create def
 /N_from N_all 0 get def
 /N_to N_all -1 get def
 
@@ -163,13 +164,15 @@ tic
   % connect up to max gid
   N_from N_to i sub cvnodecollection /source_neurons Set
   N_from i add N_to cvnodecollection /target_neurons Set
-  source_neurons target_neurons << /rule /one_to_one /make_symmetric true >> << /synapse_model /gap_junction /weight gap_weight >> Connect
+  %source_neurons target_neurons << /rule /one_to_one /make_symmetric true >> << /synapse_model /gap_junction /weight gap_weight >> Connect
+  source_neurons target_neurons << /rule /one_to_one /make_symmetric false >> << /weight gap_weight >> Connect
 
   % wrap around is not supported by GIDCollection so we need a second
   % connect call to handle connections crossing max gid
   N_to i sub 1 add N_to cvnodecollection /source_neurons Set
   N_from N_from i add 1 sub cvnodecollection /target_neurons Set
-  source_neurons target_neurons << /rule /one_to_one /make_symmetric true >> << /synapse_model /gap_junction /weight gap_weight >> Connect
+  %source_neurons target_neurons << /rule /one_to_one /make_symmetric true >> << /synapse_model /gap_junction /weight gap_weight >> Connect
+  source_neurons target_neurons << /rule /one_to_one /make_symmetric false >> << /weight gap_weight >> Connect
 } forall
 
 toc /BuildEdgeTime Set

@@ -168,6 +168,8 @@ tic
   % connect up to max gid
   N_from N_to i sub cvgidcollection /source_neurons Set
   N_from i add N_to cvgidcollection /target_neurons Set
+  source_neurons ==
+  target_neurons ==
   source_neurons target_neurons << /rule /one_to_one /make_symmetric true >> << /model /gap_junction /weight gap_weight >> Connect
 
   % wrap around is not supported by GIDCollection so we need a second
