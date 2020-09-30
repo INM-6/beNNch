@@ -110,7 +110,7 @@ def BuildNetwork(logger):
 
     nest.message(M_INFO, 'build_network', 'Creating populations.')
 
-    population_list = [nest.Create('iaf_psc_alpha', network_params['num_neurons'])
+    population_list = [nest.Create('iaf_psc_alpha', network_params['num_neurons'], positions=nest.spatial.free(nest.random.uniform(-1., 1.), num_dimensions=2))
                        for _ in range(network_params['num_pop'])]
 
     for gc in population_list:
@@ -156,11 +156,10 @@ def BuildNetwork(logger):
 
     for source, target_vec in zip(population_list, targets):
         for target in target_vec:
-            nest.Connect(source, target, conn_dict,
-                         nest.Colocate({'synapse_model': 'syn_ex_ex'},
-                                       {'weight': 3., 'delay': 5.},
-                                       {'synapse_model': 'static_synapse'},
-                                       {'synapse_model': 'static_synapse', 'weight': -4.}))
+            nest.Connect(source, target, conn_dict, {'synapse_model': 'syn_ex_ex', 'weight': nest.spatial_distributions.exponential(nest.spatial.distance)})
+            nest.Connect(source, target, conn_dict, {'weight': 3., 'delay': 5.})
+            nest.Connect(source, target, conn_dict, {'synapse_model': 'static_synapse', 'weight': nest.spatial_distributions.gaussian(nest.spatial.distance)})
+            nest.Connect(source, target, conn_dict, {'synapse_model': 'static_synapse', 'weight': -4.})
 
     # read out time used for building
     BuildEdgeTime = time.time() - tic

@@ -48,7 +48,7 @@ params = {
 logger_params = {'num_nodes': 0}  # Total size of all populations
 
 # Parameter dependencies
-brunel_params = {
+network_params = {
     'num_neurons': 5000,                  # number of neurons per population
     'num_pop': 10 * params['scale'],      # number of populations (10 * scale)
     'num_pop_connections': 50,           # each population connect to 50 populations
@@ -76,7 +76,7 @@ brunel_params = {
 
 if params['scale'] < 5:
     # if scale is less than 5, we only connect to num_pop per population
-    brunel_params['num_pop_connections'] = 10 * params['scale']
+    network_params['num_pop_connections'] = 10 * params['scale']
 
 
 ############################ FUNCTION SECTION ##################################
@@ -104,14 +104,14 @@ def BuildNetwork(logger):
         }
     nest.SetKernelStatus(kernel_dict)
 
-    nest.SetDefaults('iaf_psc_alpha', brunel_params['model_params'])
+    nest.SetDefaults('iaf_psc_alpha', network_params['model_params'])
 
     # ------------------------- Build nodes ------------------------------------
 
     nest.message(M_INFO, 'build_network', 'Creating populations.')
 
-    population_list = [nest.Create('iaf_psc_alpha', brunel_params['num_neurons'])
-                       for _ in range(brunel_params['num_pop'])]
+    population_list = [nest.Create('iaf_psc_alpha', network_params['num_neurons'])
+                       for _ in range(network_params['num_pop'])]
 
     for gc in population_list:
         logger_params['num_nodes'] += len(gc)
@@ -128,8 +128,8 @@ def BuildNetwork(logger):
     nest.message(M_INFO, 'build_network', 'Finding target populations.')
 
     targets = [random.sample(population_list,
-                             brunel_params['num_pop_connections'])
-               for _ in range(brunel_params['num_pop'])]
+                             network_params['num_pop_connections'])
+               for _ in range(network_params['num_pop'])]
     
     FindTargetsTime = time.time() - tic
 
@@ -144,7 +144,7 @@ def BuildNetwork(logger):
         conn_dict.update({'rule': 'fixed_indegree', 'indegree': conn_degree})
 
     # Create custom synapse types with appropriate values for our connections
-    nest.SetDefaults('static_synapse_hpc', {'delay': brunel_params['delay']})
+    nest.SetDefaults('static_synapse_hpc', {'delay': network_params['delay']})
     nest.CopyModel('static_synapse_hpc', 'syn_ex_ex', {'weight': 1.})
 
     nest.message(M_INFO, 'build_network', 'Connecting populations.')

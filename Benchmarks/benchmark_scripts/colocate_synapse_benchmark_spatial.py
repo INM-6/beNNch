@@ -110,7 +110,7 @@ def BuildNetwork(logger):
 
     nest.message(M_INFO, 'build_network', 'Creating populations.')
 
-    population_list = [nest.Create('iaf_psc_alpha', network_params['num_neurons'])
+    population_list = [nest.Create('iaf_psc_alpha', network_params['num_neurons'], positions=nest.spatial.free(nest.random.uniform(-1., 1.), num_dimensions=2))
                        for _ in range(network_params['num_pop'])]
 
     for gc in population_list:
@@ -138,10 +138,8 @@ def BuildNetwork(logger):
     tic = time.time()  # Start timer for connection time
 
     conn_degree = 50   # number of connections per neuron
-    conn_dict = {'allow_autapses': False, 'allow_multapses': True}
-
-    if params['rule'] == 'in':
-        conn_dict.update({'rule': 'fixed_indegree', 'indegree': conn_degree})
+    conn_dict = {'rule': 'fixed_indegree', 'indegree': conn_degree,
+                 'allow_autapses': False, 'allow_multapses': True}
 
     # Create custom synapse types with appropriate values for our connections
     nest.SetDefaults('static_synapse_hpc', {'delay': network_params['delay']})
@@ -157,9 +155,9 @@ def BuildNetwork(logger):
     for source, target_vec in zip(population_list, targets):
         for target in target_vec:
             nest.Connect(source, target, conn_dict,
-                         nest.Colocate({'synapse_model': 'syn_ex_ex'},
+                         nest.Colocate({'synapse_model': 'syn_ex_ex', 'weight': nest.spatial_distributions.exponential(nest.spatial.distance)},
                                        {'weight': 3., 'delay': 5.},
-                                       {'synapse_model': 'static_synapse'},
+                                       {'synapse_model': 'static_synapse', 'weight': nest.spatial_distributions.gaussian(nest.spatial.distance)},
                                        {'synapse_model': 'static_synapse', 'weight': -4.}))
 
     # read out time used for building

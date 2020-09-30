@@ -253,7 +253,7 @@
       -Dwith-debug=-g \
       -Dwith-mpi=ON \
       -Dwith-gsl=ON \
-      -Dwith-python=3 \
+      -Dwith-python=ON \
       -Dwith-readline=OFF \
       -DCMAKE_C_COMPILER=$mpicc_exec \
       -DCMAKE_CXX_COMPILER=$mpicxx_exec
@@ -271,7 +271,7 @@
       -Dwith-debug=-g \
       -Dwith-mpi=ON \
       -Dwith-gsl=ON \
-      -Dwith-python=3 \
+      -Dwith-python=ON \
       -Dwith-readline=OFF \
       -DCMAKE_C_COMPILER=$mpicc_exec \
       -DCMAKE_CXX_COMPILER=$mpicxx_exec

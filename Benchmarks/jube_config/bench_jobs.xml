@@ -45,7 +45,7 @@
       <parameter name="num_tasks" type="int" mode="python">$TASKS_PER_NODE*$NUMBER_OF_NODES</parameter>
       <parameter name="cpus_per_task" type="int">$THREADS_PER_TASK</parameter>
       <parameter name="totVPs" type="int" mode="python">$THREADS_PER_TASK*$TASKS_PER_NODE*$NUMBER_OF_NODES</parameter>
-      <parameter name="walltime">01:00:00</parameter>
+      <parameter name="walltime">00:30:00</parameter>
       <parameter name="ready_file">ready</parameter>
       <parameter name="err_file">stderr</parameter>
       <parameter name="out_file">stdout</parameter>
@@ -81,7 +81,7 @@
       <parameter name="TASKS_PER_NODE" type="int">${ppn}</parameter>
       <parameter name="cpus_per_task" type="int">$THREADS_PER_TASK</parameter>
       <parameter name="totVPs" type="int" mode="python">$NUM_VPS</parameter>
-      <parameter name="walltime">01:30:00</parameter>
+      <parameter name="walltime">00:30:00</parameter>
       <parameter name="ready_file">ready</parameter>
       <parameter name="err_file">stderr</parameter>
       <parameter name="out_file">stdout</parameter>
