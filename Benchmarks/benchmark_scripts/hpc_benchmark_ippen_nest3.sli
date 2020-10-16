@@ -207,14 +207,14 @@ myrng rdevdict /normal get CreateRDV /normal_dv Set
   >> SetStatus
  
   M_INFO (BuildNetwork)
-  (Creating excitatory spike detector.) message
+  (Creating excitatory spike recorder.) message
 
   record_spikes true eq {
-    /detector_label  filestem (/alpha_) join stdp_params /alpha get cvs join (_spikes) join def
-    /E_detector /spike_detector Create def
-    E_detector
+    /recorder_label  filestem (/alpha_) join stdp_params /alpha get cvs join (_spikes) join def
+    /E_recorder /spike_recorder Create def
+    E_recorder
     << 
-      /label detector_label
+      /label recorder_label
     >> SetStatus
   } if
 
@@ -272,8 +272,8 @@ myrng rdevdict /normal get CreateRDV /normal_dv Set
   record_spikes true eq 
   {
     M_INFO (BuildNetwork)
-    (Connecting spike detectors.) message
-    E_neurons Nrec Take  E_detector << /rule (all_to_all) >> << /synapse_model /syn_std >> Connect
+    (Connecting spike recorders.) message
+    E_neurons Nrec Take  E_recorder << /rule (all_to_all) >> << /synapse_model /syn_std >> Connect
   } if    
 
   % read out time used for building    
