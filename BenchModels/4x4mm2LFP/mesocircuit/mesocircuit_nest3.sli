@@ -95,7 +95,7 @@
     % create global rng with master_seed independent of vps
     /global_rng rngdict /MT19937 get seed_offset CreateRNG def 
 
-    % use global spike detector if more than 1 MPI process is used
+    % use global spike recorder if more than 1 MPI process is used
     % and num_rec_procs is set to be greater than 0
     NumProcesses 1 gt
     num_rec_procs 0 gt
@@ -265,7 +265,7 @@
 
 
 % topology layer subnets each containing the neurons
-% spike detectors
+% spike recorders
 % voltmeters
 % Poisson generators
 % DC generators
@@ -284,12 +284,12 @@
     
     % arrays of GIDCollectionss:
     /topo_layer_GCs        [num_layers num_pops_per_layer] 0 LayoutArray def
-    /spike_detector_GCs    [num_layers num_pops_per_layer] 0 LayoutArray def
+    /spike_recorder_GCs    [num_layers num_pops_per_layer] 0 LayoutArray def
     /voltmeter_GCs         [num_layers num_pops_per_layer] 0 LayoutArray def
     /poisson_GCs           [num_layers num_pops_per_layer] 0 LayoutArray def
     /dc_GCs                [num_layers num_pops_per_layer] 0 LayoutArray def
 
-    % first, create spike detectors
+    % first, create spike recorders
     0 1 num_layers 1 sub
     {
         /layer_idx Set
@@ -297,20 +297,20 @@
         {
             /pop_idx Set
 
-            /spike_detector Create /this_spike_detector Set
-            this_spike_detector
+            /spike_recorder Create /this_spike_recorder Set
+            this_spike_recorder
             <<
-                % set spike detector label for filenames;
-                % the GID of the spike detector and the process number
+                % set spike recorder label for filenames;
+                % the GID of the spike recorder and the process number
                 % are appended automatically
-                /label spike_detector_label layer_idx 2 mul pop_idx add cvs join
+                /label spike_recorder_label layer_idx 2 mul pop_idx add cvs join
                 /record_to /ascii
                 /start transient
             >> SetStatus
             % store the GIDCollection
-            spike_detector_GCs [layer_idx pop_idx]
-            this_spike_detector put
-            /spike_detector_GCs Set
+            spike_recorder_GCs [layer_idx pop_idx]
+            this_spike_recorder put
+            /spike_recorder_GCs Set
 
         } for % loop over EX and IN populations
     } for % loop over layers
@@ -507,8 +507,8 @@
 
         record_thalamic_spikes
         {
-            /spike_detector Create /th_spike_detector_GID Set
-            th_spike_detector_GID << /label th_spike_detector_label
+            /spike_recorder Create /th_spike_recorder_GID Set
+            th_spike_recorder_GID << /label th_spike_recorder_label
                                      /record_to /ascii
                                      /start transient
                                   >> SetStatus
@@ -794,13 +794,13 @@
 
             % connect devices
 
-            % connect to the spike detector
+            % connect to the spike recorder
             source_nodes
             % record from a continuous range of IDs
             % WARNING: shouldn't be used without random positions
             num_neurons_rec_spikes source_layer get source_pop get
             Take
-            spike_detector_GCs source_layer get source_pop get
+            spike_recorder_GCs source_layer get source_pop get
             /all_to_all
             Connect
 
@@ -981,9 +981,9 @@
 
         record_thalamic_spikes
         {
-            % connect all thalamic neurons to spike detector
+            % connect all thalamic neurons to spike recorder
             GIDs_th_neurons
-            th_spike_detector_GID
+            th_spike_recorder_GID
             /all_to_all
             Connect
         } if
