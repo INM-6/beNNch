@@ -23,7 +23,7 @@
       hpc_benchmark_rng
     </parameter>
     <parameter name="slifile" type="string">
-      ${bench_home}/benchmark_scripts/${benchmark_system_name}.sli
+      ${bench_home}/benchmark_scripts/rng/${benchmark_system_name}.sli
     </parameter>
   </parameterset>
   
