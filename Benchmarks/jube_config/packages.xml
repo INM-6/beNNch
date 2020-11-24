@@ -46,6 +46,10 @@
     <parameter name="nest_branch" type="string">master</parameter>
   </parameterset>
 
+  <parameterset name="nest_rng">
+    <parameter name="nest_version" type="string">NEST-rng</parameter>
+  </parameterset>
+
   <parameterset name="nest_f104c6d">
     <parameter name="nest_version" type="string">NEST-f104c6d</parameter>
     <parameter name="nest_branch" type="string">master</parameter>
