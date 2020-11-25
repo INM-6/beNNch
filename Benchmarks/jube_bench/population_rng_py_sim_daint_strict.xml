@@ -8,11 +8,11 @@
   </include-path>
 
 
-  <benchmark name="population_daint" outpath="../../../BenchWork/jube_population/nest_3">
+  <benchmark name="population_daint" outpath="../../../BenchWork/jube_population/nest_rng">
 
     <parameterset name="scale_check">
       <parameter name="base_vp" type="int">36</parameter>
-      <parameter name="base_scale" type="float">5</parameter>
+      <parameter name="base_scale" type="float">4</parameter>
       <parameter name="NUMBER_OF_NODES" type="int">1,2,4,8,16,32</parameter>
       <parameter name="NUM_VPS" type="int" mode="python">$base_vp*$NUMBER_OF_NODES</parameter>
       <parameter name="SCALE" type="int" mode="python">$base_scale*$NUMBER_OF_NODES</parameter>
@@ -58,6 +58,9 @@
         <column>T_conns_sum</column>
         <column>T_ini_min</column>
         <column>T_ini_max</column>
+        <column>T_sim</column>
+        <column>T_sim_max</column>
+        <column>N_spks_sum</column>
         <column>VSize_nodes_sum</column>
         <column>VSize_mem_sum</column>
         <column>VSize_ini_sum</column>
