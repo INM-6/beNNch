@@ -117,6 +117,15 @@
     </parameter>
   </parameterset>
 
+  <parameterset name="population_model_sim">
+    <parameter name="benchmark_system_name" type="string">
+      population_model_sim
+    </parameter>
+    <parameter name="pythonfile" type="string">
+      ${bench_home}/benchmark_scripts/${benchmark_system_name}.py
+    </parameter>
+  </parameterset>
+
   <parameterset name="hill_tononi">
     <parameter name="benchmark_system_name" type="string">
       hill_tononi_Vp
