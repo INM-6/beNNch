@@ -26,7 +26,7 @@
     <step name="bench">
       <use from="dir_config.xml">dir_config</use>
       <use from="system_descriptions.xml">system_daint</use>
-      <use from="benchmark_systems.xml">hpc_benchmark_3</use>
+      <use from="benchmark_systems.xml">hpc_benchmark_rng</use>
       <use from="packages.xml">nest_rng,nest_base_O3_strict,jemalloc</use>
       <use from="bench_jobs.xml">bench_base_daint,bench_nest_boost,files,sub_bench_job</use>
       <use>scale_check</use>
