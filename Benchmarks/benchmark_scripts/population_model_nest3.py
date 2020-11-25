@@ -56,7 +56,7 @@ user_plastic = bool(sys.argv[3])
 user_rule = str(sys.argv[4])
 
 print('GIT: ({}) \nuser_scale: {:>3} \nuser_nvp: {:>5} \nuser_plastic: {} \nuser_rule: {:>5}'.format(
-    nest.version(), user_scale, user_nvp, user_plastic, user_rule))
+    nest.__version, user_scale, user_nvp, user_plastic, user_rule))
 
 if user_rule not in ['all', 'in', 'out', 'tot', 'bern']:
     raise ValueError("User rule not valid.")
