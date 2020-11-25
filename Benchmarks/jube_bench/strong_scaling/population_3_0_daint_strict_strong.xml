@@ -58,6 +58,9 @@
         <column>T_conns_sum</column>
         <column>T_ini_min</column>
         <column>T_ini_max</column>
+        <column>T_sim</column>
+        <column>T_sim_max</column>
+        <column>N_spks_sum</column>
         <column>VSize_nodes_sum</column>
         <column>VSize_mem_sum</column>
         <column>VSize_ini_sum</column>

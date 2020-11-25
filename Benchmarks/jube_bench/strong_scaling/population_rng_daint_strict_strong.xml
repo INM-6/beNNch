@@ -25,7 +25,7 @@
       <use from="dir_config.xml">dir_config</use>
       <use from="system_descriptions.xml">system_daint</use>
       <use from="benchmark_systems.xml">population_model_sim</use>
-      <use from="packages.xml">nest_ng,nest_py_O3_strict,jemalloc</use>
+      <use from="packages.xml">nest_rng,nest_py_O3_strict,jemalloc</use>
       <use from="bench_jobs.xml">bench_base_daint,bench_population_py,files,sub_bench_job</use>
       <use>scale_check</use>
       <do done_file="$ready_file">$submit_cmd $job_file</do>
@@ -58,6 +58,9 @@
         <column>T_conns_sum</column>
         <column>T_ini_min</column>
         <column>T_ini_max</column>
+        <column>T_sim</column>
+        <column>T_sim_max</column>
+        <column>N_spks_sum</column>
         <column>VSize_nodes_sum</column>
         <column>VSize_mem_sum</column>
         <column>VSize_ini_sum</column>
