@@ -145,7 +145,7 @@ def BuildNetwork(logger):
     #    logger_params['num_nodes'] += len(gc)
 
     nest.message(M_INFO, 'build_network', 'Creating poisson generator.')
-    poisson = nest.Create('poisson_generator', params={'rate': 40000.*brunel_params['num_pop']})
+    poisson = nest.Create('poisson_generator', params={'rate': 30000.*brunel_params['num_pop']})
 
     logger_params['num_nodes'] = nest.GetKernelStatus('network_size')
 
