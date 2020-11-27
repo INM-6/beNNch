@@ -72,6 +72,15 @@
     </parameter>
   </parameterset>
 
+  <parameterset name="hpc_benchmark_rule_rng">
+    <parameter name="benchmark_system_name" type="string">
+      hpc_benchmark_rule_rng
+    </parameter>
+    <parameter name="slifile" type="string">
+      ${bench_home}/benchmark_scripts/rng/${benchmark_system_name}.sli
+    </parameter>
+  </parameterset>
+
   <parameterset name="hpc_benchmark_ippen">
     <parameter name="benchmark_system_name" type="string">
       hpc_benchmark_ippen
