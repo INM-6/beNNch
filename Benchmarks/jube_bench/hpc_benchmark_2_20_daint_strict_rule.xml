@@ -29,7 +29,7 @@
       <use from="dir_config.xml">dir_config</use>
       <use from="system_descriptions.xml">system_daint</use>
       <use from="benchmark_systems.xml">hpc_benchmark_rule</use>
-      <use from="packages.xml">nest_2_20,nest_base_O3_strict,jemalloc</use>
+      <use from="packages.xml">nest_2_20,nest_py_O3_strict,jemalloc</use>
       <use from="bench_jobs.xml">bench_base_vp_daint,bench_nest_rule,files,sub_bench_job</use>
       <use>scale_check</use>
       <do done_file="$ready_file">$submit_cmd $job_file</do>
