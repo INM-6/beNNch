@@ -220,8 +220,7 @@ logger = Logger()
 
 tic = time.time() # start timer on construction
 
-print('GIT: ({}) \nuser_nvp: {:>3}'.format(
-    nest.version(), user_nvp))
+print('GIT: ({}) \nuser_nvp: {:>3}'.format(nest.__version__, user_nvp))
 
 nest.SetKernelStatus({'total_num_virtual_procs': user_nvp})
 
