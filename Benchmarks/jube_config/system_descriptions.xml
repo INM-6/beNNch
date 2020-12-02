@@ -39,4 +39,20 @@
     <parameter name="build_ppn" type="int">72</parameter>
   </parameterset>
 
+  <parameterset name="system_jusuf">
+    <parameter name="system_name" type="string">jusuf</parameter>
+    <parameter name="partition" type="string">batch</parameter>
+    <parameter name="modules">Intel/2019.5.281-GCC-8.3.0 IntelMPI/2019.6.154</parameter>
+    <parameter name="cmake_module">CMake/3.14.0</parameter>
+    <parameter name="gsl_module">GSL/2.5</parameter>
+    <parameter name="boost_module">Boost/1.69.0-Python-3.6.8</parameter>
+    <parameter name="python_module">module load Python/3.6.8 SciPy-Stack/2019a-Python-3.6.8</parameter>
+    <parameter name="python_exec">python</parameter>
+    <parameter name="cython_exec"></parameter>
+    <parameter name="mpicc_exec">mpicc</parameter>
+    <parameter name="mpicxx_exec">mpicxx</parameter>
+    <parameter name="build_nodes" type="int">1</parameter>
+    <parameter name="build_ppn" type="int">64</parameter>
+  </parameterset>
+
 </jube>
