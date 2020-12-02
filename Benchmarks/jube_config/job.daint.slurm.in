@@ -12,6 +12,7 @@
 #SBATCH --ntasks-per-core=1
 #SBATCH --mem=120GB
 #SBATCH --constraint=mc
+#SBATCH --account=#ACCOUNT#
 #COMMANDS#
 
 echo "------------------------------------------------------"

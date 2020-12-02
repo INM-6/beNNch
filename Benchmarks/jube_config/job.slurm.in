@@ -9,6 +9,7 @@
 #SBATCH --cpus-per-task=#CPUS_PER_TASK#
 #SBATCH --time=#TIME#
 #SBATCH --exclusive
+#SBATCH --account=#ACCOUNT#
 #COMMANDS#
 
 echo "------------------------------------------------------"

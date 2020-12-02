@@ -7,6 +7,7 @@
 #SBATCH --ntasks-per-node=#NTASKS_PER_NODE#
 #SBATCH --time=#TIME#
 #SBATCH --exclusive
+#SBATCH --account=#ACCOUNT#
 
 echo $PATH
 

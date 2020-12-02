@@ -5,6 +5,7 @@
     <parameter name="bench_home" type="string">${HOME}/nest-benchmarks/Benchmarks</parameter>
     <parameter name="bench_work" type="string">${HOME}/BenchWork</parameter>
     <parameter name="bench_model" type="string">${HOME}/nest-benchmarks/BenchModels</parameter>
+    <parameter name="account" type="string">""</parameter>
 
     <!-- Parameters below should not need to be modified -->
 

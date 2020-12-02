@@ -9,6 +9,7 @@
 #SBATCH --exclusive
 #SBATCH --ntasks-per-core=2
 #SBATCH --constraint=mc
+#SBATCH --account=#ACCOUNT#
 
 echo $PATH
 

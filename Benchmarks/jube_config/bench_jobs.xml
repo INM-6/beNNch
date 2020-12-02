@@ -20,6 +20,7 @@
       <sub source="#COMMANDS#" dest="$exec" />
       <sub source="#READY#" dest="$ready_file" />
       <sub source="#JOB_NAME#" dest="$job_name" />
+      <sub source="#ACCOUNT#" dest="$account" />
     </substituteset> 
 
     <parameterset name="bench_base">
