@@ -4,11 +4,11 @@
   <!-- HPC-benchmark on NEST-3 -->
 
   <include-path>
-    <path>../jube_config/</path>
+    <path>../../jube_config/</path>
   </include-path>
 
 
-  <benchmark name="hpc_3_0_jusuf" outpath="../../../BenchWork/jube_hpc/nest_3">
+  <benchmark name="hpc_3_0_jusuf" outpath="../../../../BenchWork/jube_hpc/nest_3">
 
     <parameterset name="scale_check">
       <parameter name="base_vp" type="int">36</parameter>
