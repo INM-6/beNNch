@@ -8,7 +8,7 @@
   </include-path>
 
 
-  <benchmark name="MAM_jusuf" outpath="../../../../BenchWork/jube_MAM/nest_3">
+  <benchmark name="MAM_jusuf" outpath="../../../../BenchWork/jube_MAM/nest_2201">
 
     <parameterset name="scale_check">
       <parameter name="base_vp" type="int">36</parameter>
@@ -19,14 +19,14 @@
       <parameter name="SCALE" type="float" mode="python">$base_scale*$NUMBER_OF_NODES</parameter>
       <parameter name="K_SCALE" type="float" mode="python">1.</parameter>
       <parameter name="THREADS_PER_TASK" type="int">6</parameter>
-      <parameter name="NEST_VERSION" type="int">3</parameter>
+      <parameter name="NEST_VERSION" type="int">2</parameter>
     </parameterset>
 
     <step name="bench">
       <use from="dir_config.xml">dir_config</use>
       <use from="system_descriptions.xml">system_jusuf</use>
       <use from="benchmark_systems.xml">MAM_benchmark</use>
-      <use from="packages.xml">nest_3,nest_py_O3_strict,jemalloc</use>
+      <use from="packages.xml">nest_2_20_1,nest_py_O3_strict,jemalloc</use>
       <use from="bench_jobs.xml">bench_base_vp,bench_nest_MAM_boost_srun,files,sub_bench_job</use>
       <use>scale_check</use>
       <do done_file="$ready_file">$submit_cmd $job_file</do>
@@ -43,7 +43,7 @@
     <!-- Create result table -->
     <result>
       <use>analyse_scale_check</use>      <!-- use existing analyser -->
-      <table name="NEST_MAM_3_0" style="csv" sort="number">
+      <table name="NEST_MAM_2_20_1" style="csv" sort="number">
         <column>git</column>
         <column>NUMBER_OF_NODES</column>
         <column>TASKS_PER_NODE</column>
