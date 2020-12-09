@@ -46,7 +46,7 @@
     <parameter name="cmake_module">CMake/3.14.0</parameter>
     <parameter name="gsl_module">GSL/2.5</parameter>
     <parameter name="boost_module">Boost/1.69.0-Python-3.6.8</parameter>
-    <parameter name="python_module">module load Python/3.6.8 SciPy-Stack/2019a-Python-3.6.8</parameter>
+    <parameter name="python_module">Python/3.6.8 SciPy-Stack/2019a-Python-3.6.8</parameter>
     <parameter name="python_exec">python</parameter>
     <parameter name="cython_exec"></parameter>
     <parameter name="mpicc_exec">mpicc</parameter>
