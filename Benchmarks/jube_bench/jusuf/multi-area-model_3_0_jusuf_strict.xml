@@ -8,7 +8,7 @@
   </include-path>
 
 
-  <benchmark name="MAM_jusuf" outpath="../../../../BenchWork/jube_MAM/nest">
+  <benchmark name="MAM_jusuf" outpath="../../../../BenchWork/jube_MAM/nest_3">
 
     <parameterset name="scale_check">
       <parameter name="base_vp" type="int">36</parameter>
