@@ -4,11 +4,11 @@
   <!-- Population model python version for NEST 2.20.1 with connection rule -->
 
   <include-path>
-    <path>../jube_config/</path>
+    <path>../../jube_config/</path>
   </include-path>
 
 
-  <benchmark name="population_jusuf" outpath="../../../BenchWork/jube_population/nest_2_20_1">
+  <benchmark name="population_jusuf" outpath="../../../../BenchWork/jube_population/nest_2_20_1">
 
     <parameterset name="scale_check">
       <parameter name="base_vp" type="int">36</parameter>
