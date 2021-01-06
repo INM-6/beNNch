@@ -10,7 +10,10 @@
   <benchmark name="hpc_general" outpath="../../../../BenchWork/jube_hpc/nest_3">
     
     <step name="bench">
-      <use from="hpc_benchmark_3_0_jusuf_strict.xml">hpc_daint</use>
+      <use from="hpc_benchmark_3_0_jusuf_strict.xml">scale_check</use>
+      <use from="hpc_benchmark_3_0_jusuf_strict.xml">bench</use>
+      <use from="hpc_benchmark_3_0_jusuf_strict.xml">analyse_scale_check</use>
+      <use from="hpc_benchmark_3_0_jusuf_strict.xml">result_table</use>
     </step>
   
   </benchmark>
@@ -18,7 +21,10 @@
   <benchmark name="population_general" outpath="../../../../BenchWork/jube_population/nest_3">
     
     <step name="bench">
-      <use from="population_py_3_0_jusuf_strict.xml">population_jusuf</use>
+      <use from="population_py_3_0_jusuf_strict.xml">scale_check</use>
+      <use from="population_py_3_0_jusuf_strict.xml">bench</use>
+      <use from="population_py_3_0_jusuf_strict.xml">analyse_scale_check</use>
+      <use from="population_py_3_0_jusuf_strict.xml">result_table</use>
     </step>
   
   </benchmark>

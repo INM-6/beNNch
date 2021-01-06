@@ -40,7 +40,7 @@
     </analyser>
 
     <!-- Create result table -->
-    <result>
+    <result name="result_table">
       <use>analyse_scale_check</use>      <!-- use existing analyser -->
       <table name="pop_3" style="csv" sort="number">
         <column>git</column>
