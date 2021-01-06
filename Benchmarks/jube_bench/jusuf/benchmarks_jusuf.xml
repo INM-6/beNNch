@@ -7,6 +7,8 @@
     <path>../../jube_config/</path>
   </include-path>
 
+  <benchmark name="rslt" outpath="../../../../BenchWork/jube_resulttable">
+  <result>
   <table name="result_table" style="csv" sort="number">
         <column>git</column>
         <column>NUMBER_OF_NODES</column>
@@ -35,6 +37,9 @@
         <column>d_min</column>
         <column>d_max</column>
   </table>
+  </result>
+  </benchmark>
+
 
   <benchmark name="hpc_general" outpath="../../../../BenchWork/jube_hpc/nest_3">
     
@@ -55,17 +60,6 @@
       <use>analyse_scale_check</use>      <!-- use existing analyser -->
       <use>result_table</use>
     </result>
-  
-  </benchmark>
-
-  <benchmark name="population_general" outpath="../../../../BenchWork/jube_population/nest_3">
-    
-    <step name="bench">
-      <use from="population_py_3_0_jusuf_strict.xml">scale_check</use>
-      <use from="population_py_3_0_jusuf_strict.xml">bench</use>
-      <use from="population_py_3_0_jusuf_strict.xml">analyse_scale_check</use>
-      <use from="population_py_3_0_jusuf_strict.xml">result_table</use>
-    </step>
   
   </benchmark>
 
