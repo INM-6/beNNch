@@ -12,9 +12,20 @@
     <step name="bench">
       <use from="hpc_benchmark_3_0_jusuf_strict.xml">scale_check</use>
       <use from="hpc_benchmark_3_0_jusuf_strict.xml">bench</use>
-      <use from="hpc_benchmark_3_0_jusuf_strict.xml">analyse_scale_check</use>
-      <use from="hpc_benchmark_3_0_jusuf_strict.xml">result_table</use>
     </step>
+
+    <!-- Analyse -->
+    <analyser name="analyse_scale_check">
+      <use from="bench_jobs.xml">nest_pattern_stdcout</use>      <!-- use existing patternset -->
+      <analyse step="bench">
+        <file>stdout</file>    <!-- file which should be scanned -->
+      </analyse>
+    </analyser>
+
+    <result>
+      <use>analyse_scale_check</use>      <!-- use existing analyser -->
+      <use from="hpc_benchmark_3_0_jusuf_strict.xml">result_table</use>
+    </result>
   
   </benchmark>
 
