@@ -17,5 +17,8 @@
     <parameter name="JEMALLOC_INSTALL_DIR" type="string">${bench_work}/${jemalloc_version}-${system_name}/install</parameter>
     <parameter name="JEMALLOC_SRC_DIR" type="string">${bench_work}/${jemalloc_version}</parameter>
 
+    <parameter name="VALGRIND_INSTALL_DIR" type="string">${bench_work}/${valgrind_version}-${system_name}/install</parameter>
+    <parameter name="VALGRIND_SRC_DIR" type="string">${bench_work}/${valgrind_version}</parameter>
+
   </parameterset>
 </jube>

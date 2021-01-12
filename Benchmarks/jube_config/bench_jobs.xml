@@ -114,6 +114,20 @@
       </parameter>
     </parameterset>
 
+    <parameterset name="bench_nest_boost_valgrind">
+      <parameter name="job_name" type="string">bench-${nest_version}-${system_name}-${nest_config}</parameter>      
+      <parameter name="exec">
+        module swap $swap_modules
+        module load $modules
+        module load $boost_module
+        module load $gsl_module
+
+        source ${NEST_INSTALL_DIR}/bin/nest_vars.sh;
+        export OMP_NUM_THREADS=$THREADS_PER_TASK
+        srun ${VALGRIND_INSTALL_DIR}/bin/valgrind.sh --tool=helgrind --trace-children=yes --verbose ${JEMALLOC_INSTALL_DIR}/bin/jemalloc.sh ${NEST_INSTALL_DIR}/bin/nest ${slifile}  --userargs=${SCALE}_${totVPs}_${SIMTIME}_${NUM_REC}_${PLASTIC}_${D_MIN}_${D_MAX}
+      </parameter>
+    </parameterset>
+
     <parameterset name="bench_nest_mpirun">
       <parameter name="job_name" type="string">bench-${nest_version}-${system_name}-${nest_config}</parameter>      
       <parameter name="exec">

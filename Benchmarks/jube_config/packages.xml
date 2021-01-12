@@ -93,6 +93,11 @@
     <parameter name="temalloc_configure_flags" type="string"></parameter>
   </parameterset>
 
+  <parameterset name="valgrind">
+    <parameter name="valgrind_version" type="string">valgrind-3.16.1</parameter>
+    <parameter name="valgrind_configure_flags" type="string"></parameter>
+  </parameterset>
+
   <parameterset name="nest_base_O3">
     <!-- build nest with minimal dependencies -->
     <parameter name="nest_config" type="string">base_O3</parameter>

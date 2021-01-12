@@ -149,6 +149,20 @@
     	make install -j $build_ppn
       </parameter>
     </parameterset>
+
+    <parameterset name="build_valgrind">
+      <parameter name="job_name" type="string">build-valgrind-$system_name</parameter>      
+      <parameter name="exec">
+      module swap $swap_modules
+      module load $modules
+
+      cd ${bench_work}/valgrind
+      rm -rf $VALGRIND_INSTALL_DIR
+      cd $valgring_version
+      ./configure --prefix=${VALGRIND_INSTALL_DIR} ${valgrind_configure_flags}
+      make install -j $build_ppn
+      </parameter>
+    </parameterset>
     
     <parameterset name="run_nest_installcheck">
       <parameter name="job_name" type="string">icheck-${nest_version}-${system_name}-${nest_config}</parameter>      
