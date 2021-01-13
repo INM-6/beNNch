@@ -158,7 +158,7 @@
 
       cd ${bench_work}/valgrind
       rm -rf $VALGRIND_INSTALL_DIR
-      cd $valgring_version
+      cd $valgrind_version
       ./configure --prefix=${VALGRIND_INSTALL_DIR} ${valgrind_configure_flags}
       make install -j $build_ppn
       </parameter>
