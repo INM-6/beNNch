@@ -124,7 +124,7 @@
 
         source ${NEST_INSTALL_DIR}/bin/nest_vars.sh;
         export OMP_NUM_THREADS=$THREADS_PER_TASK
-        srun ${VALGRIND_INSTALL_DIR}/bin/valgrind.sh --tool=helgrind --trace-children=yes --verbose ${JEMALLOC_INSTALL_DIR}/bin/jemalloc.sh ${NEST_INSTALL_DIR}/bin/nest ${slifile}  --userargs=${SCALE}_${totVPs}_${SIMTIME}_${NUM_REC}_${PLASTIC}_${D_MIN}_${D_MAX}
+        srun ${VALGRIND_INSTALL_DIR}/bin/valgrind --tool=helgrind --trace-children=yes --verbose ${JEMALLOC_INSTALL_DIR}/bin/jemalloc.sh ${NEST_INSTALL_DIR}/bin/nest ${slifile}  --userargs=${SCALE}_${totVPs}_${SIMTIME}_${NUM_REC}_${PLASTIC}_${D_MIN}_${D_MAX}
       </parameter>
     </parameterset>
 
