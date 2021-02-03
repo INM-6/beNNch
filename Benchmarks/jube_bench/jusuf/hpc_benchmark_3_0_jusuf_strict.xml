@@ -11,18 +11,18 @@
   <benchmark name="hpc_3_0_jusuf" outpath="../../../../BenchWork/jube_hpc/nest_3">
 
     <parameterset name="nest_version">
-      <parameter name="NEST" type="string">nest_3</parameter>
-      <parameter name="BENCHMARK_VERSION" type="string">hpc_benchmark_3</parameter>
+      <parameter name="NEST" type="string">3</parameter>
+      <parameter name="BENCHMARK_VERSION" type="int">3</parameter>
     </parameterset>
 
     <step name="bench">
+      <use>nest_version</use>
       <use from="benchmarks_jusuf.xml">hpc_params</use>
       <use from="dir_config.xml">dir_config</use>
       <use from="system_descriptions.xml">system_jusuf</use>
-      <use from="benchmark_systems.xml">$BENCHMARK_VERSION</use>
-      <use from="packages.xml">$NEST,nest_base_O3_strict,jemalloc</use>
+      <use from="benchmark_systems.xml:hpc_benchmark_3">hpc_benchmark_$BENCHMARK_VERSION</use>
+      <use from="packages.xml:nest_3">nest_$NEST,nest_base_O3_strict,jemalloc</use>
       <use from="bench_jobs.xml">bench_base_vp,bench_nest_boost,files,sub_bench_job</use>
-      <use>scale_check</use>
       <do done_file="$ready_file">$submit_cmd $job_file</do>
     </step>
 
