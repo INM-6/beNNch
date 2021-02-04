@@ -14,7 +14,7 @@
       <use from="benchmarks_jusuf.xml">nest_version, population_params</use>
       <use from="dir_config.xml">dir_config</use>
       <use from="system_descriptions.xml">system_jusuf</use>
-      <use from="benchmark_systems.xm:population_model_3:population_modell">hill_tononi$BENCHMARK_VERSION</use>
+      <use from="benchmark_systems.xml:population_model_3:population_modell">hill_tononi$BENCHMARK_VERSION</use>
       <use from="packages.xml:nest_3:nest_2_20:nest_2_20_1:nest_rng">nest_$NEST</use>
       <use from="packages.xml">nest_base_O3_strict,jemalloc</use>
       <use from="bench_jobs.xml">bench_base,bench_hill_tononi,files,sub_bench_job</use>

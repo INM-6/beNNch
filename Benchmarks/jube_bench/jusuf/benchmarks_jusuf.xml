@@ -28,7 +28,7 @@
 
   <parameterset name="population_params">
     <parameter name="base_vp" type="int">36</parameter>
-    <parameter name="base_scale" type="float">5</parameter>
+    <parameter name="base_scale" type="float">4</parameter>
     <parameter name="NUMBER_OF_NODES" type="int">1,2,4,8,16,32</parameter>
     <parameter name="NUM_VPS" type="int" mode="python">$base_vp*$NUMBER_OF_NODES</parameter>
     <parameter name="SCALE" type="int" mode="python">$base_scale*$NUMBER_OF_NODES</parameter>
