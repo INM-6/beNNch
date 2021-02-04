@@ -17,7 +17,8 @@
 
     <step name="bench">
       <use>mam_nest_version</use>
-      <use from="benchmarks_jusuf.xml">nest_version, population_params</use>
+      <use from="benchmarks_jusuf.xml">nest_version, MAM_params</use>
+      <use from="dir_config.xml">dir_config</use>
       <use from="system_descriptions.xml">system_jusuf</use>
       <use from="benchmark_systems.xml">MAM_benchmark</use>
       <use from="packages.xml:nest_3:nest_2_20:nest_2_20_1:nest_rng">nest_$NEST</use>
