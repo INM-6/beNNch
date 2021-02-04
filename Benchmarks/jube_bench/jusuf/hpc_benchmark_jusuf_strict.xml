@@ -10,24 +10,12 @@
 
   <benchmark name="hpc_jusuf" outpath="../../../../BenchWork/jube_hpc">
 
-    <parameterset name="nest_version">
-      <parameter name="NEST" tag="3|!rng|!2_20|!2_20_1">3</parameter>
-      <parameter name="NEST" tag="2_20">2_20</parameter>
-      <parameter name="NEST" tag="2_20_1">2_20_1</parameter>
-      <parameter name="NEST" tag="rng">rng</parameter>
-      <parameter name="BENCHMARK_VERSION" tag="3|!rng|!2_20|!2_20_1">_3</parameter>
-      <parameter name="BENCHMARK_VERSION" tag="2_20"></parameter>
-      <parameter name="BENCHMARK_VERSION" tag="2_20_1"></parameter>
-      <parameter name="BENCHMARK_VERSION" tag="rng">_rng</parameter>
-    </parameterset>
-
     <step name="bench">
-      <use>nest_version</use>
-      <use from="benchmarks_jusuf.xml">hpc_params</use>
+      <use from="benchmarks_jusuf.xml">nest_version, hpc_params</use>
       <use from="dir_config.xml">dir_config</use>
       <use from="system_descriptions.xml">system_jusuf</use>
       <use from="benchmark_systems.xml:hpc_benchmark_3:hpc_benchmark_rng:hpc_benchmark">hpc_benchmark$BENCHMARK_VERSION</use>
-      <use from="packages.xml:nest_3:nest_rng:nest_2_20:nest_2_20_1">nest_$NEST</use>
+      <use from="packages.xml:nest_3:nest_2_20:nest_2_20_1:nest_rng">nest_$NEST</use>
       <use from="packages.xml">nest_base_O3_strict,jemalloc</use>
       <use from="bench_jobs.xml">bench_base_vp,bench_nest_boost,files,sub_bench_job</use>
       <do done_file="$ready_file">$submit_cmd $job_file</do>

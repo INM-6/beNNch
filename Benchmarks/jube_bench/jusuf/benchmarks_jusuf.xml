@@ -1,6 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jube>
 
+  <parameterset name="nest_version">
+    <parameter name="NEST" tag="3|!rng|!2_20|!2_20_1">3</parameter>
+    <parameter name="NEST" tag="2_20">2_20</parameter>
+    <parameter name="NEST" tag="2_20_1">2_20_1</parameter>
+    <parameter name="NEST" tag="rng">rng</parameter>
+    <parameter name="BENCHMARK_VERSION" tag="3|!rng|!2_20|!2_20_1">_3</parameter>
+    <parameter name="BENCHMARK_VERSION" tag="2_20"></parameter>
+    <parameter name="BENCHMARK_VERSION" tag="2_20_1"></parameter>
+    <parameter name="BENCHMARK_VERSION" tag="rng">_rng</parameter>
+  </parameterset>
+
   <parameterset name="hpc_params">
     <parameter name="base_vp" type="int">36</parameter>
     <parameter name="base_scale" type="float">20</parameter>
@@ -13,6 +24,45 @@
     <parameter name="PLASTIC" type="string">true</parameter>
     <parameter name="D_MIN" type="float">1.5</parameter>
     <parameter name="D_MAX" type="float">1.5</parameter>
+  </parameterset>
+
+  <parameterset name="population_params">
+    <parameter name="base_vp" type="int">36</parameter>
+    <parameter name="base_scale" type="float">5</parameter>
+    <parameter name="NUMBER_OF_NODES" type="int">1,2,4,8,16,32</parameter>
+    <parameter name="NUM_VPS" type="int" mode="python">$base_vp*$NUMBER_OF_NODES</parameter>
+    <parameter name="SCALE" type="int" mode="python">$base_scale*$NUMBER_OF_NODES</parameter>
+    <parameter name="THREADS_PER_TASK" type="int">6</parameter>
+    <parameter name="PLASTIC" type="string">false</parameter>
+    <parameter name="RULE" type="string">in</parameter>
+  </parameterset>
+
+  <parameterset name="MAM_params">
+    <parameter name="base_vp" type="int">36</parameter>
+    <parameter name="base_scale" type="int">0.0625</parameter>
+    <parameter name="SIMTIME" type="float">2000.</parameter>
+    <parameter name="NUMBER_OF_NODES" type="int">1,2,4,8,16,32</parameter>
+    <parameter name="NUM_VPS" type="int" mode="python">$base_vp*$NUMBER_OF_NODES</parameter>
+    <parameter name="SCALE" type="float" mode="python">$base_scale*$NUMBER_OF_NODES</parameter>
+    <parameter name="K_SCALE" type="float" mode="python">1.</parameter>
+    <parameter name="THREADS_PER_TASK" type="int">6</parameter>
+  </parameterset>
+
+  <parameterset name="MAM_strong_params">
+    <parameter name="base_vp" type="int">36</parameter>
+    <parameter name="base_scale" type="int">1</parameter>
+    <parameter name="SIMTIME" type="float">2000.</parameter>
+    <parameter name="NUMBER_OF_NODES" type="int">32,48,64,80,96</parameter>
+    <parameter name="TASKS_PER_NODE" type="int">6</parameter>
+    <parameter name="SCALE" type="int" mode="python">$base_scale</parameter>
+    <parameter name="K_SCALE" type="float" mode="python">1.</parameter>
+    <parameter name="THREADS_PER_TASK" type="int">6</parameter>
+  </parameterset>
+
+  <parameterset name="hill_params">
+    <parameter name="NUMBER_OF_NODES" type="int">1,2,4,8,16,32,64</parameter>
+    <parameter name="TASKS_PER_NODE" type="int">6</parameter>
+    <parameter name="THREADS_PER_TASK" type="int">6</parameter>
   </parameterset>
 
 </jube>

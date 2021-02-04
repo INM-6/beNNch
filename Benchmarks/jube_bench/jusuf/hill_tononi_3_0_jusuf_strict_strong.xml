@@ -1,28 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jube>
 
-  <!-- Hill Tononi benchmark with strong scaling for NEST 3.0 -->
+  <!-- Hill Tononi benchmark with strong scaling -->
 
   <include-path>
     <path>../../jube_config/</path>
   </include-path>
 
 
-  <benchmark name="hill_strong_jusuf" outpath="../../../../BenchWork/jube_hill_strong/nest_3">
-
-    <parameterset name="scale_check">
-      <parameter name="NUMBER_OF_NODES" type="int">1,2,4,8,16,32,64</parameter>
-      <parameter name="TASKS_PER_NODE" type="int">6</parameter>
-      <parameter name="THREADS_PER_TASK" type="int">6</parameter>
-    </parameterset>
+  <benchmark name="hill_strong_jusuf" outpath="../../../../BenchWork/jube_hill_strong">
 
     <step name="bench">
+      <use from="benchmarks_jusuf.xml">nest_version, population_params</use>
       <use from="dir_config.xml">dir_config</use>
       <use from="system_descriptions.xml">system_jusuf</use>
-      <use from="benchmark_systems.xml">hill_tononi_3</use>
-      <use from="packages.xml">nest_3,nest_py_O3_strict,jemalloc</use>
+      <use from="benchmark_systems.xm:population_model_3:population_modell">hill_tononi$BENCHMARK_VERSION</use>
+      <use from="packages.xml:nest_3:nest_2_20:nest_2_20_1:nest_rng">nest_$NEST</use>
+      <use from="packages.xml">nest_base_O3_strict,jemalloc</use>
       <use from="bench_jobs.xml">bench_base,bench_hill_tononi,files,sub_bench_job</use>
-      <use>scale_check</use>
       <do done_file="$ready_file">$submit_cmd $job_file</do>
     </step>
 
@@ -38,7 +33,7 @@
     <!-- Create result table -->
     <result>
       <use>analyse_scale_check</use>      <!-- use existing analyser -->
-      <table name="NEST_3_0_jusuf" style="csv" sort="number">
+      <table name="hill_tononi" style="csv" sort="number">
         <column>git</column>
         <column>NUMBER_OF_NODES</column>
         <column>TASKS_PER_NODE</column>

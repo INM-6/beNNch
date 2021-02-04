@@ -1,33 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jube>
 
-  <!-- Population model python version for NEST 3.0 with connection rule -->
+  <!-- Population model python version with connection rule -->
 
   <include-path>
     <path>../../jube_config/</path>
   </include-path>
 
 
-  <benchmark name="population_jusuf" outpath="../../../../BenchWork/jube_population/nest_3">
-
-    <parameterset name="scale_check">
-      <parameter name="base_vp" type="int">36</parameter>
-      <parameter name="base_scale" type="float">5</parameter>
-      <parameter name="NUMBER_OF_NODES" type="int">1,2,4,8,16,32</parameter>
-      <parameter name="NUM_VPS" type="int" mode="python">$base_vp*$NUMBER_OF_NODES</parameter>
-      <parameter name="SCALE" type="int" mode="python">$base_scale*$NUMBER_OF_NODES</parameter>
-      <parameter name="THREADS_PER_TASK" type="int">6</parameter>
-      <parameter name="PLASTIC" type="string">false</parameter>
-      <parameter name="RULE" type="string">in</parameter>
-    </parameterset>
+  <benchmark name="population_jusuf" outpath="../../../../BenchWork/jube_population">
 
     <step name="bench">
+      <use from="benchmarks_jusuf.xml">nest_version, population_params</use>
       <use from="dir_config.xml">dir_config</use>
       <use from="system_descriptions.xml">system_jusuf</use>
-      <use from="benchmark_systems.xml">population_model_3</use>
-      <use from="packages.xml">nest_3,nest_py_O3_strict,jemalloc</use>
+      <use from="benchmark_systems.xml:population_model_3:population_model">population_model$BENCHMARK_VERSION</use>
+      <use from="packages.xml:nest_3:nest_2_20:nest_2_20_1:nest_rng">nest_$NEST</use>
+      <use from="packages.xml">nest_base_O3_strict,jemalloc</use>
       <use from="bench_jobs.xml">bench_base_vp,bench_population_py,files,sub_bench_job</use>
-      <use>scale_check</use>
       <do done_file="$ready_file">$submit_cmd $job_file</do>
     </step>
 
@@ -42,7 +32,7 @@
     <!-- Create result table -->
     <result name="result_table">
       <use>analyse_scale_check</use>      <!-- use existing analyser -->
-      <table name="pop_3" style="csv" sort="number">
+      <table name="population" style="csv" sort="number">
         <column>git</column>
         <column>NUMBER_OF_NODES</column>
         <column>TASKS_PER_NODE</column>
