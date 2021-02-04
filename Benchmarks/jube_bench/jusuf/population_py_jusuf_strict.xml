@@ -16,7 +16,7 @@
       <use from="system_descriptions.xml">system_jusuf</use>
       <use from="benchmark_systems.xml:population_model_3:population_model">population_model$BENCHMARK_VERSION</use>
       <use from="packages.xml:nest_3:nest_2_20:nest_2_20_1:nest_rng">nest_$NEST</use>
-      <use from="packages.xml">nest_base_O3_strict,jemalloc</use>
+      <use from="packages.xml">nest_py_O3_strict,jemalloc</use>
       <use from="bench_jobs.xml">bench_base_vp,bench_population_py,files,sub_bench_job</use>
       <do done_file="$ready_file">$submit_cmd $job_file</do>
     </step>
