@@ -1,39 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jube>
 
-  <!-- HPC-benchmark on NEST-3 -->
+  <!-- HPC-benchmark for Piz Daint -->
 
   <include-path>
-    <path>../jube_config/</path>
+    <path>../../jube_config/</path>
+    <path>../jusuf/</path>
   </include-path>
 
 
-  <benchmark name="hpc_3_0_daint" outpath="../../../BenchWork/jube_hpc/nest_3">
-
-    <parameterset name="scale_check">
-      <parameter name="base_vp" type="int">36</parameter>
-      <parameter name="base_scale" type="float">20</parameter>
-      <parameter name="SIMTIME" type="float">1000</parameter>
-      <parameter name="NUMBER_OF_NODES" type="int">1,2,4,8,16,32</parameter>
-      <parameter name="NUM_VPS" type="int" mode="python">$base_vp*$NUMBER_OF_NODES</parameter>
-      <parameter name="SCALE" type="int" mode="python">$base_scale*$NUMBER_OF_NODES</parameter>
-      <parameter name="THREADS_PER_TASK" type="int">6</parameter>
-      <parameter name="NUM_REC" type="int">1000</parameter>
-      <parameter name="PLASTIC" type="string">true</parameter>
-      <parameter name="D_MIN" type="float">1.5</parameter>
-      <parameter name="D_MAX" type="float">1.5</parameter>
-    </parameterset>
+  <benchmark name="hpc_daint" outpath="../../../../BenchWork/jube_hpc">
 
     <step name="bench">
+      <use from="benchmarks_jusuf.xml">nest_version, hpc_params</use>
       <use from="dir_config.xml">dir_config</use>
       <use from="system_descriptions.xml">system_daint</use>
-      <use from="benchmark_systems.xml">hpc_benchmark_3</use>
-      <use from="packages.xml">nest_3,nest_base_O3_strict,jemalloc</use>
+      <use from="benchmark_systems.xml:hpc_benchmark_3:hpc_benchmark_rng:hpc_benchmark">hpc_benchmark$BENCHMARK_VERSION</use>
+      <use from="packages.xml:nest_3:nest_2_20:nest_2_20_1:nest_rng">nest_$NEST</use>
+      <use from="packages.xml">nest_base_O3_strict,jemalloc</use>
       <use from="bench_jobs.xml">bench_base_vp_daint,bench_nest_boost,files,sub_bench_job</use>
-      <use>scale_check</use>
       <do done_file="$ready_file">$submit_cmd $job_file</do>
     </step>
-
 
     <!-- Analyse -->
     <analyser name="analyse_scale_check">
@@ -46,7 +33,7 @@
     <!-- Create result table -->
     <result>
       <use>analyse_scale_check</use>      <!-- use existing analyser -->
-      <table name="NEST_3_daint" style="csv" sort="number">
+      <table name="hpc" style="csv" sort="number">
         <column>git</column>
         <column>NUMBER_OF_NODES</column>
         <column>TASKS_PER_NODE</column>
