@@ -11,7 +11,7 @@
   <benchmark name="MAM_jusuf" outpath="../../../../BenchWork/jube_MAM_strong">
 
     <parameterset name="mam_nest_version">
-      <parameter name="NEST_VERSION" type="int" "NEST" tag="3|!rng|!2_20|!2_20_1">3</parameter>
+      <parameter name="NEST_VERSION" tag="3|!rng|!2_20|!2_20_1">3</parameter>
       <parameter name="NEST_VERSION" tag="2_20|2_20_1">2</parameter>
       <parameter name="NEST_VERSION" tag="rng">rng</parameter>
     </parameterset>
