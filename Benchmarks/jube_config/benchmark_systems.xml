@@ -126,7 +126,7 @@
     </parameter>
   </parameterset>
 
-  <parameterset name="population_model_sim">
+  <parameterset name="population_model_sim_3">
     <parameter name="benchmark_system_name" type="string">
       population_model_sim
     </parameter>
