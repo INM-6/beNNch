@@ -56,7 +56,7 @@ user_plastic = bool(sys.argv[3])
 user_rule = str(sys.argv[4])
 
 print('GIT: ({}) \nuser_scale: {:>3} \nuser_nvp: {:>5} \nuser_plastic: {} \nuser_rule: {:>5}'.format(
-    nest.__version__, user_scale, user_nvp, user_plastic, user_rule))
+    nest.version(), user_scale, user_nvp, user_plastic, user_rule))
 
 if user_rule not in ['all', 'in', 'out', 'tot', 'bern']:
     raise ValueError("User rule not valid.")
@@ -98,7 +98,7 @@ brunel_params = {
         'V_reset': 0.0,                   # Reset Potential (mV)
         'tau_syn_ex': params['tau_syn'],  # time const. postsynaptic currents (ms)
         'tau_minus':  30.,                # time constant for STDP (depression) (ms)
-        'V_m': nest.random.normal(5.7, 7.2)  # mean value of membrane potential (mV)
+        'V_m': 5.7                        # mean value of membrane potential (mV)
     },
     'delay':  params['d_min'],            # synaptic delay, all connections (ms)
     'stdp_params': {
@@ -137,11 +137,11 @@ def BuildNetwork(logger):
 
     nest.message(M_INFO, 'build_network', 'Creating populations.')
 
-    population_list = [nest.Create('iaf_psc_alpha', brunel_params['num_neurons'])
-                       for _ in range(brunel_params['num_pop'])]
-
-    #for gc in population_list:
-    #    logger_params['num_nodes'] += len(gc)
+    population_list = []
+    for _ in range(brunel_params['num_pop']):
+        pop = nest.Create('iaf_psc_alpha', brunel_params['num_neurons'])
+        population_list.append([pop[0], pop[-1]])
+        logger_params['num_nodes'] += len(pop)
 
     nest.message(M_INFO, 'build_network', 'Creating poisson generator.')
     poisson = nest.Create('poisson_generator', params={'rate': 30000.})
@@ -170,7 +170,7 @@ def BuildNetwork(logger):
     tic = time.time()  # Start timer for connection time
 
     conn_degree = 50   # number of connections per neuron
-    conn_dict = {'allow_autapses': False, 'allow_multapses': True}
+    conn_dict = {'autapses': False, 'multapses': True}
 
     if params['rule'] == 'in':
         conn_dict.update({'rule': 'fixed_indegree', 'indegree': conn_degree})
@@ -201,12 +201,14 @@ def BuildNetwork(logger):
 
     for source, target_vec in zip(population_list, targets):
         for target in target_vec:
-            nest.Connect(source, target, conn_dict, {'synapse_model': 'syn_ex_ex'})
+            nest.Connect(list(range(source[0], source[1] + 1)),
+                         list(range(target[0], target[1] + 1)),
+                         conn_dict, {'model': 'syn_ex_ex'})
 
     nest.message(M_INFO, 'build_network', 'Connecting poisson generator.')
     # Connect poisson generator to all populations
     for pop in population_list:
-        nest.Connect(poisson, pop)
+        nest.Connect(poisson, list(range(pop[0], pop[1] + 1)))
 
     # read out time used for building
     BuildEdgeTime = time.time() - tic

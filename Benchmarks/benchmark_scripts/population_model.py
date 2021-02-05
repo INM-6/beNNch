@@ -124,21 +124,9 @@ def BuildNetwork(logger):
     nest.SetKernelStatus({'total_num_virtual_procs': params['nvp'],
                           'resolution': params['dt']})
 
-    master_seed = 101
     n_vp = nest.GetKernelStatus(['total_num_virtual_procs'])[0]
 
     nest.ll_api.sli_run('0 << /grng rngdict/MT19937 :: 101 CreateRNG >> SetStatus')
-
-    rng_seeds = list(range(
-        master_seed + 1 + n_vp,
-        master_seed + 1 + (2 * n_vp)
-        ))
-    grng_seed = master_seed + n_vp
-    kernel_dict = {
-        'grng_seed': grng_seed,
-        'rng_seeds': rng_seeds
-        }
-    nest.SetKernelStatus(kernel_dict)
 
     nest.SetDefaults('iaf_psc_alpha', brunel_params['model_params'])
 
