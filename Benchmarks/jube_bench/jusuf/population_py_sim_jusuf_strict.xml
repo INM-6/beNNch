@@ -11,8 +11,8 @@
   <benchmark name="population_jusuf" outpath="../../../../BenchWork/jube_population_sim">
 
     <parameterset name="benchmark_version">  <!-- special case for this benchmark -->
-      <parameter name="BENCHMARK_VERSION" tag="3|rng|!2_20|!2_20_1">_3</parameter>
-      <parameter name="BENCHMARK_VERSION" tag="2_20|2_20_1"></parameter>
+      <parameter name="POP_BENCHMARK_VERSION" tag="3|rng|!2_20|!2_20_1">_3</parameter>
+      <parameter name="POP_BENCHMARK_VERSION" tag="2_20|2_20_1"></parameter>
     </parameterset>
 
     <step name="bench">
@@ -20,7 +20,7 @@
       <use>benchmark_version</use>
       <use from="dir_config.xml">dir_config</use>
       <use from="system_descriptions.xml">system_jusuf</use>
-      <use from="benchmark_systems.xml:population_model_sim_3:population_model_sim">population_model_sim$BENCHMARK_VERSION</use>
+      <use from="benchmark_systems.xml:population_model_sim_3:population_model_sim">population_model_sim$POP_BENCHMARK_VERSION</use>
       <use from="packages.xml:nest_3:nest_2_20:nest_2_20_1:nest_rng">nest_$NEST</use>
       <use from="packages.xml">nest_py_O3_strict,jemalloc</use>
       <use from="bench_jobs.xml">bench_base_vp,bench_population_py,files,sub_bench_job</use>
