@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jube>
 
+  <!-- All tags and benchmark parameter sets for JUSUF -->
+
   <parameterset name="nest_version">
     <parameter name="NEST" tag="3|!rng|!2_20|!2_20_1">3</parameter>
     <parameter name="NEST" tag="2_20">2_20</parameter>
     <parameter name="NEST" tag="2_20_1">2_20_1</parameter>
     <parameter name="NEST" tag="rng">rng</parameter>
     <parameter name="BENCHMARK_VERSION" tag="3|!rng|!2_20|!2_20_1">_3</parameter>
-    <parameter name="BENCHMARK_VERSION" tag="2_20"></parameter>
-    <parameter name="BENCHMARK_VERSION" tag="2_20_1"></parameter>
+    <parameter name="BENCHMARK_VERSION" tag="2_20|2_20_1"></parameter>
     <parameter name="BENCHMARK_VERSION" tag="rng">_rng</parameter>
   </parameterset>
 
