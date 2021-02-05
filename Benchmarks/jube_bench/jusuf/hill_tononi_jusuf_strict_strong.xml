@@ -10,11 +10,17 @@
 
   <benchmark name="hill_strong_jusuf" outpath="../../../../BenchWork/jube_hill_strong">
 
+    <parameterset name="benchmark_version">  <!-- special case for this benchmark -->
+      <parameter name="BENCHMARK_VERSION" tag="3|rng|!2_20|!2_20_1">_3</parameter>
+      <parameter name="BENCHMARK_VERSION" tag="2_20|2_20_1"></parameter>
+    </parameterset>
+
     <step name="bench">
       <use from="benchmarks_jusuf.xml">nest_version, hill_params</use>
+      <use>benchmark_version</use>
       <use from="dir_config.xml">dir_config</use>
       <use from="system_descriptions.xml">system_jusuf</use>
-      <use from="benchmark_systems.xml:hill_tononi_3:hill_tononi:hill_tononi_rng">hill_tononi$BENCHMARK_VERSION</use>
+      <use from="benchmark_systems.xml:hill_tononi_3:hill_tononi">hill_tononi$BENCHMARK_VERSION</use>
       <use from="packages.xml:nest_3:nest_2_20:nest_2_20_1:nest_rng">nest_$NEST</use>
       <use from="packages.xml">nest_py_O3_strict,jemalloc</use>
       <use from="bench_jobs.xml">bench_base,bench_hill_tononi,files,sub_bench_job</use>
