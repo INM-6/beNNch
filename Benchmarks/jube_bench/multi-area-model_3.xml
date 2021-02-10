@@ -8,29 +8,30 @@
   </include-path>
 
 
-  <benchmark name="MAM_daint" outpath="../../../BenchWork/jube_MAM/nest_3">
+  <benchmark name="MAM" outpath="../../../BenchWork/jube_MAM/nest_3">
 
     <parameterset name="global">
-      <parameter name="base_path" type="string">${HOME}/</parameter>
-      <parameter name="account" type="string"></parameter>
+	    <parameter name="base_path" type="string">/p/project/cjinb33/albers2/ACA_bm_framework</parameter>
+      <parameter name="account" type="string">cjinb33</parameter>
       <parameter name="email_address" type="string"></parameter>
       <parameter name="run_file" type="string">
         ${bench_model}/multi-area-model/run_benchmark.py
       </parameter>
-      <parameter name="modules">OpenMPI GSL Boost Python jemalloc nest-simulator/master/default</parameter>
+      <parameter name="modules">nest-simulator/2.20.1/default</parameter>
+      <parameter name="PARTITION">dc-cpu</parameter>
     </parameterset>
 
     <parameterset name="scale_check">
-      <parameter name="base_vp" type="int">36</parameter>
-      <parameter name="base_scale" type="int">0.0625</parameter>
+      <parameter name="base_vp" type="int">64</parameter>
+      <parameter name="base_scale" type="int">0.01</parameter>
       <parameter name="SIMTIME" type="float">200.</parameter>
       <parameter name="WALLTIME" type="string">00:30:00</parameter>
-      <parameter name="NUMBER_OF_NODES" type="int">1</parameter>
+      <parameter name="NUMBER_OF_NODES" type="int">2</parameter>
       <parameter name="NUM_VPS" type="int" mode="python">$base_vp*$NUMBER_OF_NODES</parameter>
       <parameter name="SCALE" type="float" mode="python">$base_scale*$NUMBER_OF_NODES</parameter>
-      <parameter name="K_SCALE" type="float" mode="python">1.</parameter>
-      <parameter name="THREADS_PER_TASK" type="int">6</parameter>
-      <parameter name="NEST_VERSION" type="int">3</parameter>
+      <parameter name="K_SCALE" type="float" mode="python">0.01</parameter>
+      <parameter name="THREADS_PER_TASK" type="int">32</parameter>
+      <parameter name="NEST_VERSION">2</parameter>
     </parameterset>
 
     <step name="bench">
