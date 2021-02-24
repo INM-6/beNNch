@@ -47,10 +47,8 @@
         module load $modules
         
         export OMP_NUM_THREADS=$THREADS_PER_TASK
-
-        srun -n 1 python ${bench_model}/multi-area-model/run_benchmark_createParams.py ${SCALE} ${totVPs} ${SIMTIME} ${K_SCALE} ${NEST_VERSION}
        
-        srun python ${run_file} ${SCALE} ${totVPs} ${SIMTIME} ${K_SCALE} ${NEST_VERSION}
+        srun ${language} ${run_file}
       </parameter>
     </parameterset>
 
