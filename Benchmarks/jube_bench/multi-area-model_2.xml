@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jube>
+
+  <!-- MAM -->
+
+  <include-path>
+    <path>../jube_config/</path>
+  </include-path>
+
+
+  <benchmark name="MAM" outpath="../../../BenchWork/jube_MAM/nest_2.20.1">
+
+    <parameterset name="global">
+	    <parameter name="base_path" type="string">/p/project/cjinb33/albers2/ACA_bm_framework</parameter>
+      <parameter name="account" type="string">cjinb33</parameter>
+      <parameter name="email_address" type="string"></parameter>
+      <parameter name="run_file" type="string">
+        ${bench_model}/multi-area-model/run_benchmark.py
+      </parameter>
+      <parameter name="modules">nest-simulator/2.20.1/default</parameter>
+      <parameter name="PARTITION">dc-cpu</parameter>
+    </parameterset>
+
+    <parameterset name="scale_check">
+      <parameter name="base_vp" type="int">64,128</parameter>
+      <parameter name="base_scale" type="float">1.</parameter>
+      <parameter name="SIMTIME" type="float">1000.</parameter>
+      <parameter name="WALLTIME" type="string">01:00:00</parameter>
+      <parameter name="NUMBER_OF_NODES" type="int">10</parameter>
+      <parameter name="NUM_VPS" type="int" mode="python">$base_vp*$NUMBER_OF_NODES</parameter>
+      <parameter name="SCALE" type="float" mode="python">1.</parameter>
+      <parameter name="K_SCALE" type="float" mode="python">1.</parameter>
+      <!-- <parameter name="THREADS_PER_TASK" type="int">32</parameter> -->
+      <parameter name="THREADS_PER_TASK" type="int">2,4,8,16,32,64</parameter>
+      <parameter name="NEST_VERSION">2</parameter>
+    </parameterset>
+
+    <step name="bench">
+      <use>global</use>
+      <use from="dir_config.xml">dir_config</use>
+      <use from="bench_jobs.xml">slurm,run_benchmark,files,sub_bench_job</use>
+      <use>scale_check</use>
+      <do done_file="$ready_file">$submit_cmd $job_file</do>
+    </step>
+
+
+    <!-- Analyse -->
+    <analyser name="analyse_scale_check">
+      <use from="bench_jobs.xml">nest_pattern_MAM_stdcout</use>      <!-- use existing patternset -->
+      <analyse step="bench">
+        <file>stdout</file>        <!-- file which should be scanned -->
+      </analyse>
+    </analyser>
+
+    <!-- Create result table -->
+    <result>
+      <use>analyse_scale_check</use>      <!-- use existing analyser -->
+      <table name="NEST_MAM_daint" style="csv" sort="number">
+        <column>git</column>
+        <column>NUMBER_OF_NODES</column>
+        <column>TASKS_PER_NODE</column>
+        <column>NUM_VPS</column>
+        <column>THREADS_PER_TASK</column>
+        <column>SCALE</column>
+        <column>NUM_VPS</column>
+        <column>num_tasks</column>
+        <column>T_network_local</column>    
+        <column>T_network_global_min</column>
+        <column>T_network_global_max</column>
+        <column>T_network_global_sum</column>
+        <column>T_create_min</column>
+        <column>T_create_max</column>
+        <column>T_create_sum</column>
+        <column>T_connect_max</column>
+        <column>T_connect_min</column>
+        <column>T_connect_sum</column>
+        <column>T_ini_min</column>
+        <column>T_ini_max</column>
+        <column>T_sim</column>
+        <column>VSize_sum</column>
+        <column>VSize_ini_sum</column>
+        <column>VSize_net_sum</column>
+        <column>N_spks_sum</column> 
+        <column>N_nrns</column>
+        <column>N_conns_sum</column>
+      </table>
+    </result>
+
+
+  </benchmark>
+</jube>
