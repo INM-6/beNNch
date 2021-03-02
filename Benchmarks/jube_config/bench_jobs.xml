@@ -50,7 +50,7 @@
 
         srun -n 1 python ${bench_model}/multi-area-model/run_benchmark_createParams.py ${SCALE} ${totVPs} ${SIMTIME} ${K_SCALE} ${NEST_VERSION}
        
-        srun --cpu-bind=threads --distribution=block:cyclic:fcyclic python ${run_file} ${SCALE} ${totVPs} ${SIMTIME} ${K_SCALE} ${NEST_VERSION}
+        srun --cpu-bind=threads --distribution=block:cyclic:fcyclic python ${run_file} ${SCALE} ${totVPs} ${SIMTIME} ${K_SCALE} ${NEST_VERSION} ${STDOUT_PATH}
       </parameter>
     </parameterset>
 
@@ -122,6 +122,14 @@
       <pattern name="N_spks" type="int">'local_spike_counter': $jube_pat_int</pattern>
       <pattern name="git" type="string">GIT: $jube_pat_wrd</pattern>
     </patternset>
+
+    <patternset name="nest_pattern_MAM_timer">
+      <pattern mode="pattern" name="wall_time_phase_total" type="float">total_phase_total_timer: $jube_pat_fp</pattern>
+      <pattern mode="pattern" name="wall_time_phase_update" type="float">update_phase_total_timer: $jube_pat_fp</pattern>
+      <pattern mode="pattern" name="wall_time_phase_collocate" type="float">collocate_phase_total_timer: $jube_pat_fp</pattern>
+      <pattern mode="pattern" name="wall_time_phase_communicate" type="float">communicate_phase_total_timer: $jube_pat_fp</pattern>
+      <pattern mode="pattern" name="wall_time_phase_deliver" type="float">deliver_phase_total_timer: $jube_pat_fp</pattern>
+      <pattern mode="pattern" name="wall_time_phase_sim" type="float">sim_phase_total_timer: $jube_pat_fp</pattern>
 
 
 </jube>
