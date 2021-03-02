@@ -50,7 +50,7 @@
 
         srun -n 1 python ${bench_model}/multi-area-model/run_benchmark_createParams.py ${SCALE} ${totVPs} ${SIMTIME} ${K_SCALE} ${NEST_VERSION}
        
-        srun python ${run_file} ${SCALE} ${totVPs} ${SIMTIME} ${K_SCALE} ${NEST_VERSION}
+        srun --cpu-bind=threads --distribution=block:cyclic:fcyclic python ${run_file} ${SCALE} ${totVPs} ${SIMTIME} ${K_SCALE} ${NEST_VERSION}
       </parameter>
     </parameterset>
 
