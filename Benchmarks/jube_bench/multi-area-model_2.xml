@@ -17,22 +17,22 @@
       <parameter name="run_file" type="string">
         ${bench_model}/multi-area-model/run_benchmark.py
       </parameter>
-      <parameter name="modules">nest-simulator/2.20.1/default</parameter>
+      <parameter name="modules">nest-simulator/2.20.1-timers/default</parameter>
       <parameter name="PARTITION">dc-cpu</parameter>
       <parameter name="STDOUT_PATH">$jube_wp_abspath</parameter>
     </parameterset>
 
     <parameterset name="scale_check">
-      <parameter name="base_vp" type="int">64,128</parameter>
+      <parameter name="base_vp" type="int">64</parameter>
       <parameter name="base_scale" type="float">1.</parameter>
       <parameter name="SIMTIME" type="float">1000.</parameter>
-      <parameter name="WALLTIME" type="string">01:00:00</parameter>
-      <parameter name="NUMBER_OF_NODES" type="int">10</parameter>
+      <parameter name="WALLTIME" type="string">00:20:00</parameter>
+      <parameter name="NUMBER_OF_NODES" type="int">1</parameter>
       <parameter name="NUM_VPS" type="int" mode="python">$base_vp*$NUMBER_OF_NODES</parameter>
-      <parameter name="SCALE" type="float" mode="python">1.</parameter>
-      <parameter name="K_SCALE" type="float" mode="python">1.</parameter>
+      <parameter name="SCALE" type="float" mode="python">0.01</parameter>
+      <parameter name="K_SCALE" type="float" mode="python">0.01</parameter>
       <!-- <parameter name="THREADS_PER_TASK" type="int">32</parameter> -->
-      <parameter name="THREADS_PER_TASK" type="int">2,4,8,16,32,64</parameter>
+      <parameter name="THREADS_PER_TASK" type="int">16</parameter>
       <parameter name="NEST_VERSION">2</parameter>
     </parameterset>
 

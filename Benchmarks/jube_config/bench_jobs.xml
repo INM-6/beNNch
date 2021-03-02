@@ -130,6 +130,6 @@
       <pattern mode="pattern" name="wall_time_phase_communicate" type="float">communicate_phase_total_timer: $jube_pat_fp</pattern>
       <pattern mode="pattern" name="wall_time_phase_deliver" type="float">deliver_phase_total_timer: $jube_pat_fp</pattern>
       <pattern mode="pattern" name="wall_time_phase_sim" type="float">sim_phase_total_timer: $jube_pat_fp</pattern>
-
+    </patternset>
 
 </jube>
