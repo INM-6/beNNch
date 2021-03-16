@@ -23,7 +23,7 @@
     </parameterset>
 
     <parameterset name="scale_check">
-      <parameter name="base_vp" type="int">36</parameter>
+      <parameter name="base_vp" type="int">64</parameter>
       <parameter name="base_scale" type="float">20</parameter>
       <parameter name="WALLTIME" type="string">00:30:00</parameter>
       <parameter name="NUMBER_OF_NODES" type="int">2</parameter>
@@ -37,6 +37,20 @@
       <parameter name="D_MAX" type="float">1.5</parameter>
     </parameterset>
 
+    <!-- This subsituteset maps the parameters defined in the xml
+         file(s) to the target patterns that JUBE will search for in the
+         benchmark files. -->
+    <substituteset name="simulation_substitutions">
+      <iofile in="$run_file" out="$run_file" />
+      <sub source="{scale}" dest="$SCALE" />
+      <sub source="{totVPs}" dest="$totVPs" />
+      <sub source="{simtime}" dest="$SIMTIME" />
+      <sub source="{num_rec}" dest="$NUM_REC" />
+      <sub source="{plastic}" dest="$PLASTIC" />
+      <sub source="{d_min}" dest="$D_MIN" />
+      <sub source="{d_max}" dest="$D_MAX" />
+    </substituteset>
+
     <step name="bench">
       <use>global</use>
       <use from="dir_config.xml">dir_config</use>
@@ -45,10 +59,9 @@
       <do done_file="$ready_file">$submit_cmd $job_file</do>
     </step>
 
-
     <!-- Analyse -->
     <analyser name="analyse_scale_check">
-      <use from="bench_jobs.xml">nest_pattern_MAM_stdcout</use>      <!-- use existing patternset -->
+      <use from="bench_jobs.xml">nest_pattern_stdcout</use>      <!-- use existing patternset -->
       <analyse step="bench">
         <file>stdout</file>        <!-- file which should be scanned -->
       </analyse>
