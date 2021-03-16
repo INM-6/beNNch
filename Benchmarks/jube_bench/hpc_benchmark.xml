@@ -28,7 +28,7 @@
       <parameter name="WALLTIME" type="string">00:30:00</parameter>
       <parameter name="NUMBER_OF_NODES" type="int">2</parameter>
       <parameter name="NUM_VPS" type="int" mode="python">$base_vp*$NUMBER_OF_NODES</parameter>
-      <parameter name="THREADS_PER_TASK" type="int">6</parameter>
+      <parameter name="THREADS_PER_TASK" type="int">32</parameter>
       <parameter name="SCALE" type="int" mode="python">$base_scale*$NUMBER_OF_NODES</parameter>
       <parameter name="SIMTIME" type="float">1000</parameter>
       <parameter name="NUM_REC" type="int">1000</parameter>
@@ -53,6 +53,7 @@
 
     <step name="bench">
       <use>global</use>
+      <use>simulation_substitutions</use>
       <use from="dir_config.xml">dir_config</use>
       <use from="bench_jobs.xml">slurm,run_benchmark,files,sub_bench_job</use>
       <use>scale_check</use>
