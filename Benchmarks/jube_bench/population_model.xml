@@ -34,8 +34,20 @@
       <parameter name="RULE" type="string">in</parameter>
     </parameterset>
 
+    <!-- This subsituteset maps the parameters defined in the xml
+         file(s) to the target patterns that JUBE will search for in the
+         benchmark files. -->
+    <substituteset name="simulation_substitutions">
+      <iofile in="$run_file" out="$run_file" />
+      <sub source="{scale}" dest="$SCALE" />
+      <sub source="{totVPs}" dest="$totVPs" />
+      <sub source="{plastic}" dest="$PLASTIC" />
+      <sub source="{rule}" dest="$RULE" />
+    </substituteset>
+
     <step name="bench">
       <use>global</use>
+      <use>simulation_substitutions</use>
       <use from="dir_config.xml">dir_config</use>
       <use from="bench_jobs.xml">slurm,run_benchmark,files,sub_bench_job</use>
       <use>scale_check</use>
