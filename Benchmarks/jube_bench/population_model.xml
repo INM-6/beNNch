@@ -30,8 +30,8 @@
       <parameter name="NUM_VPS" type="int" mode="python">$base_vp*$NUMBER_OF_NODES</parameter>
       <parameter name="THREADS_PER_TASK" type="int">32</parameter>
       <parameter name="SCALE" type="int" mode="python">$base_scale*$NUMBER_OF_NODES</parameter>
-      <parameter name="PLASTIC" type="string">true</parameter>
-      <parameter name="RULE" type="string">in</parameter>
+      <parameter name="PLASTIC" type="string">True</parameter>
+      <parameter name="RULE" type="string">"in"</parameter>
     </parameterset>
 
     <!-- This subsituteset maps the parameters defined in the xml
@@ -56,7 +56,7 @@
 
     <!-- Analyse -->
     <analyser name="analyse_scale_check">
-      <use from="bench_jobs.xml">nest_pattern_MAM_stdcout</use>      <!-- use existing patternset -->
+      <use from="bench_jobs.xml">nest_pattern_stdcout</use>      <!-- use existing patternset -->
       <analyse step="bench">
         <file>stdout</file>        <!-- file which should be scanned -->
       </analyse>
