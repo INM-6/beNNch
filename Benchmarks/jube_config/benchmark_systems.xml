@@ -44,6 +44,15 @@
       ${bench_model}/4x4mm2LFP/mesocircuit/${benchmark_system_name}.sli
     </parameter>
   </parameterset>
+  
+  <parameterset name="MAM_benchmark">
+    <parameter name="benchmark_system_name" type="string">
+      run_benchmark
+    </parameter>
+    <parameter name="pythonfile" type="string">
+      ${bench_model}/multi-area-model/${benchmark_system_name}.py
+    </parameter>
+  </parameterset>
 
   <parameterset name="hpc_benchmark_rule">
     <parameter name="benchmark_system_name" type="string">

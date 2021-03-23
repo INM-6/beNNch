@@ -1,6 +1,88 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jube>
 
+  <parameterset name="nest">
+    <parameter name="nest_version" type="string">NEST</parameter>
+    <parameter name="nest_branch" type="string">master</parameter>
+  </parameterset>
+
+  <parameterset name="nest_2_14">
+    <parameter name="nest_version" type="string">NEST-2.14</parameter>
+    <parameter name="nest_branch" type="string">master</parameter>
+  </parameterset>
+
+  <parameterset name="nest_2_16">
+    <parameter name="nest_version" type="string">NEST-2.16</parameter>
+    <parameter name="nest_branch" type="string">master</parameter>
+  </parameterset>
+
+  <parameterset name="nest_2_16_1">
+    <parameter name="nest_version" type="string">NEST-2.16.1</parameter>
+    <parameter name="nest_branch" type="string">new_container</parameter>
+  </parameterset>
+
+  <parameterset name="nest_2_18">
+    <parameter name="nest_version" type="string">NEST-2.18</parameter>
+    <parameter name="nest_branch" type="string">new_container</parameter>
+  </parameterset>
+
+  <parameterset name="nest_2_20">
+    <parameter name="nest_version" type="string">NEST-2.20</parameter>
+    <parameter name="nest_branch" type="string">new_container</parameter>
+  </parameterset>
+
+  <parameterset name="nest_2_20_1">
+    <parameter name="nest_version" type="string">NEST-2.20.1</parameter>
+  </parameterset>
+
+  <parameterset name="nest_3">
+    <parameter name="nest_version" type="string">NEST-3</parameter>
+    <parameter name="nest_branch" type="string">nest-3</parameter>
+  </parameterset>
+
+  <parameterset name="nest_5g">
+    <parameter name="nest_version" type="string">NEST-5G</parameter>
+    <parameter name="nest_branch" type="string">5g</parameter>
+  </parameterset>  
+
+  <parameterset name="nest_master">
+    <parameter name="nest_version" type="string">NEST-master</parameter>
+    <parameter name="nest_branch" type="string">master</parameter>
+  </parameterset>
+
+  <parameterset name="nest_rng">
+    <parameter name="nest_version" type="string">NEST-rng</parameter>
+  </parameterset>
+
+  <parameterset name="nest_f104c6d">
+    <parameter name="nest_version" type="string">NEST-f104c6d</parameter>
+    <parameter name="nest_branch" type="string">master</parameter>
+  </parameterset>
+
+  <parameterset name="nest_6b26ff5">
+    <parameter name="nest_version" type="string">NEST-6b26ff5</parameter>
+    <parameter name="nest_branch" type="string">master</parameter>
+  </parameterset>
+
+  <parameterset name="nest_6ec5807">
+    <parameter name="nest_version" type="string">NEST-6ec5807</parameter>
+    <parameter name="nest_branch" type="string">master</parameter>
+  </parameterset>
+
+  <parameterset name="nest_bisect">
+    <parameter name="nest_version" type="string">NEST-bisect</parameter>
+  </parameterset>
+
+  <parameterset name="nest_91b3fa7">
+    <parameter name="nest_version" type="string">NEST-91b3fa7</parameter>
+    <parameter name="nest_branch" type="string">master</parameter>
+  </parameterset>
+
+  <parameterset name="nest_db70dcc1edb">
+    <parameter name="nest_version" type="string">NEST-db70dcc1edb</parameter>
+    <parameter name="nest_branch" type="string">new_container</parameter>
+  </parameterset>
+
   <parameterset name="jemalloc">
     <parameter name="jemalloc_version" type="string">jemalloc-5.0.1</parameter>
     <parameter name="jemalloc_configure_flags" type="string"></parameter>
