@@ -47,8 +47,20 @@
         module load $modules
         
         export OMP_NUM_THREADS=$THREADS_PER_TASK
+
+        ${optional_run_command}
        
-        srun ${language} ${run_file}
+        srun python ${run_file} ${SCALE} ${totVPs} ${model_time_sim} ${K_SCALE} ${NEST_VERSION} ${STDOUT_PATH}
+      </parameter>
+    </parameterset>
+
+    <parameterset name="MAM_optional_run_command">
+      <parameter name="optional_run_command">srun -n 1 python ${bench_model}/multi-area-model/run_benchmark_createParams.py ${SCALE} ${totVPs} ${model_time_sim} ${K_SCALE} ${NEST_VERSION}  
+      </parameter>
+    </parameterset>
+
+    <parameterset name="no_optional_run_command">
+      <parameter name="optional_run_command">
       </parameter>
     </parameterset>
 
