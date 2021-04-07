@@ -11,13 +11,14 @@
   <benchmark name="MAM" outpath="../../../BenchWork/jube_MAM/nest_3">
 
     <parameterset name="global">
-	    <parameter name="base_path" type="string">/p/project/cjinb33/albers2/ACA_bm_framework</parameter>
+      <parameter name="base_path" type="string">/p/project/cjinb33/albers2/ACA_bm_framework</parameter>
+      <parameter name="data_path" type="string">/p/scratch/cjinb33/albers2/mam_benchmarks/test</parameter>
       <parameter name="account" type="string">cjinb33</parameter>
       <parameter name="email_address" type="string"></parameter>
       <parameter name="run_file" type="string">
-        ${bench_model}/multi-area-model/run_benchmark.py
+        ${data_path}/${data_folder_hash}/run_simulation.py ${data_path} ${data_folder_hash}
       </parameter>
-      <parameter name="modules">nest-simulator/2.20.1/default</parameter>
+      <parameter name="modules">nest-simulator/2.20.1-timers</parameter>
       <parameter name="PARTITION">dc-cpu</parameter>
     </parameterset>
 
@@ -25,8 +26,8 @@
       <parameter name="base_vp" type="int">64</parameter>
       <parameter name="base_scale" type="int">0.01</parameter>
       <parameter name="SIMTIME" type="float">200.</parameter>
-      <parameter name="WALLTIME" type="string">00:30:00</parameter>
-      <parameter name="NUMBER_OF_NODES" type="int">2</parameter>
+      <parameter name="WALLTIME" type="string">00:10:00</parameter>
+      <parameter name="NUMBER_OF_NODES" type="int">1</parameter>
       <parameter name="NUM_VPS" type="int" mode="python">$base_vp*$NUMBER_OF_NODES</parameter>
       <parameter name="SCALE" type="float" mode="python">$base_scale*$NUMBER_OF_NODES</parameter>
       <parameter name="K_SCALE" type="float" mode="python">0.01</parameter>
@@ -37,7 +38,7 @@
     <step name="bench">
       <use>global</use>
       <use from="dir_config.xml">dir_config</use>
-      <use from="bench_jobs.xml">slurm,run_benchmark,files,sub_bench_job</use>
+      <use from="bench_jobs.xml">slurm,run_benchmark,files,sub_bench_job,MAM_optional_run_command</use>
       <use>scale_check</use>
       <do done_file="$ready_file">$submit_cmd $job_file</do>
     </step>

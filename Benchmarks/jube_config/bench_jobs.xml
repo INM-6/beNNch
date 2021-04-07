@@ -50,12 +50,15 @@
 
         ${optional_run_command}
        
-        srun python ${run_file} ${SCALE} ${totVPs} ${model_time_sim} ${K_SCALE} ${NEST_VERSION} ${STDOUT_PATH}
+        srun python ${run_file}
       </parameter>
     </parameterset>
 
     <parameterset name="MAM_optional_run_command">
-      <parameter name="optional_run_command">srun -n 1 python ${bench_model}/multi-area-model/run_benchmark_createParams.py ${SCALE} ${totVPs} ${model_time_sim} ${K_SCALE} ${NEST_VERSION}  
+      <parameter name="optional_run_command">
+        data_folder_hash=`uuidgen`
+
+        srun -n 1 python ${bench_model}/multi-area-model/run_benchmark_createParams.py ${SCALE} ${totVPs} ${SIMTIME} ${K_SCALE} ${NEST_VERSION} ${data_path} ${data_folder_hash}
       </parameter>
     </parameterset>
 
