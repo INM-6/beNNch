@@ -120,12 +120,17 @@
     </patternset>
 
     <patternset name="nest_pattern_MAM_timer">
-      <pattern mode="pattern" name="wall_time_phase_total" type="float">total_phase_total_timer: $jube_pat_fp</pattern>
-      <pattern mode="pattern" name="wall_time_phase_update" type="float">update_phase_total_timer: $jube_pat_fp</pattern>
-      <pattern mode="pattern" name="wall_time_phase_collocate" type="float">collocate_phase_total_timer: $jube_pat_fp</pattern>
-      <pattern mode="pattern" name="wall_time_phase_communicate" type="float">communicate_phase_total_timer: $jube_pat_fp</pattern>
-      <pattern mode="pattern" name="wall_time_phase_deliver" type="float">deliver_phase_total_timer: $jube_pat_fp</pattern>
-      <pattern mode="pattern" name="wall_time_phase_sim" type="float">sim_phase_total_timer: $jube_pat_fp</pattern>
+        <pattern mode="pattern" name="wall_time_phase_collocate" type="float">time_collocate_spike_data $jube_pat_fp</pattern>
+        <pattern mode="pattern" name="wall_time_phase_communicate" type="float">time_communicate_spike_data $jube_pat_fp</pattern>
+        <pattern mode="pattern" name="wall_time_phase_deliver" type="float">time_deliver_spike_data $jube_pat_fp</pattern>
+        <pattern mode="pattern" name="wall_time_phase_update" type="float">time_update $jube_pat_fp</pattern>
+        <pattern mode="pattern" name="wall_time_phase_sim" type="float">time_simulate $jube_pat_fp</pattern>
+        <pattern mode="pattern" name="wall_time_phase_communicate_target_data" type="float">time_communicate_target_data $jube_pat_fp</pattern>
+        <pattern mode="pattern" name="wall_time_phase_gather_spike_data" type="float">time_gather_spike_data $jube_pat_fp</pattern>
+        <pattern mode="pattern" name="wall_time_phase_gather_target_data" type="float">time_gather_target_data $jube_pat_fp</pattern>
+        <pattern mode="pattern" name="wall_time_phase_communicate_prepare" type="float">time_communicate_prepare $jube_pat_fp</pattern>
+        <pattern mode="pattern" name="wall_time_phase_construction_connect" type="float">time_construction_connect $jube_pat_fp</pattern>
+        <pattern mode="pattern" name="wall_time_phase_construction_create" type="float">time_construction_create $jube_pat_fp</pattern>
     </patternset>
 
 </jube>

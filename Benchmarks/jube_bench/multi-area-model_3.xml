@@ -45,23 +45,23 @@
 
     <!-- Analyse -->
     <analyser name="analyse_scale_check">
-      <use from="bench_jobs.xml">nest_pattern_MAM_stdcout</use>      <!-- use existing patternset -->
+      <use from="bench_jobs.xml">nest_pattern_MAM_stdcout,nest_pattern_MAM_timer</use>      <!-- use existing patternset -->
       <analyse step="bench">
         <file>stdout</file>        <!-- file which should be scanned -->
+        <file>timer_data.txt</file>        <!-- file which should be scanned -->
       </analyse>
     </analyser>
 
     <!-- Create result table -->
     <result>
       <use>analyse_scale_check</use>      <!-- use existing analyser -->
-      <table name="NEST_MAM_daint" style="csv" sort="number">
+      <table name="NEST_MAM" style="csv" sort="number">
         <column>git</column>
         <column>NUMBER_OF_NODES</column>
         <column>TASKS_PER_NODE</column>
         <column>NUM_VPS</column>
         <column>THREADS_PER_TASK</column>
         <column>SCALE</column>
-        <column>NUM_VPS</column>
         <column>num_tasks</column>
         <column>T_network_local</column>    
         <column>T_network_global_min</column>
@@ -82,6 +82,17 @@
         <column>N_spks_sum</column> 
         <column>N_nrns</column>
         <column>N_conns_sum</column>
+        <column>wall_time_phase_collocate</column>
+        <column>wall_time_phase_communicate</column>
+        <column>wall_time_phase_deliver</column>
+        <column>wall_time_phase_update</column>
+        <column>wall_time_phase_sim</column>
+        <column>wall_time_phase_communicate_target_data</column>
+        <column>wall_time_phase_gather_spike_data</column>
+        <column>wall_time_phase_gather_target_data</column>
+        <column>wall_time_phase_communicate_prepare</column>
+        <column>wall_time_phase_construction_connect</column>
+        <column>wall_time_phase_construction_create</column>
       </table>
     </result>
 
