@@ -27,7 +27,7 @@
       <parameter name="submit_cmd">sbatch</parameter>
       <parameter name="job_file">job.slurm</parameter>
       <parameter name="nodes" type="int">$num_nodes</parameter>
-      <parameter name="num_mpi_tasks_tot" type="int" mode="python">${num_vps} // ${num_omp_threads}</parameter>
+      <parameter name="num_mpi_tasks_tot" type="int" mode="python">${num_vps} / ${num_omp_threads}</parameter>
       <parameter name="ppn" type="int" mode="python">${num_mpi_tasks_tot} // ${num_nodes}</parameter>
       
       <!-- next is alias to make result table template work -->
