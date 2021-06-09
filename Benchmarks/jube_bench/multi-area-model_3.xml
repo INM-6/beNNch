@@ -22,15 +22,15 @@
     </parameterset>
 
     <parameterset name="scale_check">
-      <parameter name="base_vp" type="int">64</parameter>
-      <parameter name="base_scale" type="float">0.01</parameter>
-      <parameter name="model_time_sim" type="float">200.</parameter>
-      <parameter name="WALLTIME" type="string">00:30:00</parameter>
-      <parameter name="num_nodes" type="int">2</parameter>
+      <parameter name="base_vp" type="int">128</parameter>
+      <parameter name="base_scale" type="float">1.</parameter>
+      <parameter name="model_time_sim" type="float">10000.</parameter>
+      <parameter name="WALLTIME" type="string">01:00:00</parameter>
+      <parameter name="num_nodes" type="int">16</parameter>
       <parameter name="num_vps" type="int" mode="python">$base_vp*$num_nodes</parameter>
-      <parameter name="SCALE" type="float" mode="python">0.01</parameter>
-      <parameter name="K_SCALE" type="float" mode="python">0.01</parameter>
-      <parameter name="num_omp_threads" type="int">16</parameter>
+      <parameter name="SCALE" type="float" mode="python">1.</parameter>
+      <parameter name="K_SCALE" type="float" mode="python">1.</parameter>
+      <parameter name="threads_per_node" type="int">32</parameter>
       <parameter name="NEST_VERSION">3</parameter>
     </parameterset>
 
@@ -45,9 +45,8 @@
 
     <!-- Analyse -->
     <analyser name="analyse_scale_check">
-      <use from="bench_jobs.xml">nest_pattern_MAM_stdcout,nest_pattern_MAM_timer</use>      <!-- use existing patternset -->
+      <use from="bench_jobs.xml">nest_pattern_MAM_timer</use>      <!-- use existing patternset -->
       <analyse step="bench">
-        <file>stdout</file>        <!-- file which should be scanned -->
         <file>timer_data.txt</file>        <!-- file which should be scanned -->
       </analyse>
     </analyser>
@@ -56,41 +55,21 @@
     <result>
       <use>analyse_scale_check</use>      <!-- use existing analyser -->
       <table name="NEST_MAM" style="csv" sort="number">
-        <column>git</column>
         <column>num_nodes</column>
-        <column>num_omp_threads</column>
-        <column>SCALE</column>
-        <column>num_tasks</column>
-        <column>T_network_local</column>    
-        <column>T_network_global_min</column>
-        <column>T_network_global_max</column>
-        <column>T_network_global_sum</column>
-        <column>T_create_min</column>
-        <column>T_create_max</column>
-        <column>T_create_sum</column>
-        <column>T_connect_max</column>
-        <column>T_connect_min</column>
-        <column>T_connect_sum</column>
-        <column>T_ini_min</column>
-        <column>T_ini_max</column>
-        <column>T_sim</column>
-        <column>VSize_sum</column>
-        <column>VSize_ini_sum</column>
-        <column>VSize_net_sum</column>
-        <column>N_spks_sum</column> 
-        <column>N_nrns</column>
-        <column>N_conns_sum</column>
+        <column>threads_per_node</column>
+        <column>tasks_per_node</column>
+        <column>model_time_sim</column>
+        <column>wall_time_create</column>
+        <column>wall_time_connect</column>
+        <column>wall_time_sim</column>
         <column>wall_time_phase_collocate</column>
         <column>wall_time_phase_communicate</column>
         <column>wall_time_phase_deliver</column>
         <column>wall_time_phase_update</column>
-        <column>wall_time_phase_sim</column>
-        <column>wall_time_phase_communicate_target_data</column>
-        <column>wall_time_phase_gather_spike_data</column>
-        <column>wall_time_phase_gather_target_data</column>
-        <column>wall_time_phase_communicate_prepare</column>
-        <column>wall_time_phase_construction_connect</column>
-        <column>wall_time_phase_construction_create</column>
+        <column>wall_time_communicate_target_data</column>
+        <column>wall_time_gather_spike_data</column>
+        <column>wall_time_gather_target_data</column>
+        <column>wall_time_communicate_prepare</column>
       </table>
     </result>
 
