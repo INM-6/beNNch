@@ -32,6 +32,7 @@
       <parameter name="K_SCALE" type="float" mode="python">1.</parameter>
       <parameter name="threads_per_node" type="int">32</parameter>
       <parameter name="NEST_VERSION">3</parameter>
+      <parameter name="MAM_STATE">Fig5</parameter>  <!-- Fig3: Groundstate, Fig5: Metastable, see Schmidt et al. 2018 -->
     </parameterset>
 
     <step name="bench">
