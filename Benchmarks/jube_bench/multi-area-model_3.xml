@@ -8,19 +8,19 @@
   </include-path>
 
 
-  <benchmark name="MAM" outpath="../../../BenchWork/jube_MAM/nest_2">
+  <benchmark name="MAM" outpath="../../../BenchWork/jube_MAM/nest_3">
 
     <parameterset name="global">
-      <parameter name="base_path" type="string">/p/project/icei-hbp-2020-0006/ACA_bm_framework</parameter>
-      <parameter name="model_path" type="string">/p/project/icei-hbp-2020-0006/ACA_bm_framework/nest-benchmarks/BenchModels/multi-area-model</parameter>
+      <parameter name="base_path" type="string">/p/project/cjinb33/albers2/ACA_bm_framework</parameter>
+      <parameter name="model_path" type="string">/p/project/cjinb33/albers2/ACA_bm_framework/nest-benchmarks/BenchModels/multi-area-model</parameter>
       <parameter name="data_path" type="string">/p/scratch/cjinb33/albers2/mam_benchmarks/test</parameter>
-      <parameter name="account" type="string">icei-hbp-2020-0006</parameter>
+      <parameter name="account" type="string">jinb33</parameter>
       <parameter name="email_address" type="string"></parameter>
       <parameter name="run_file" type="string">
-        ${model_path}/run_benchmark.py ${data_path} ${data_folder_hash} ${NEST_VERSION}
+        ${model_path}/run_benchmark.py ${data_path} ${data_folder_hash} ${NEST_VERSION} ${mam_state}
       </parameter>
-      <parameter name="modules">nest-simulator/2.20.1-timers</parameter>
-      <parameter name="PARTITION">batch</parameter>
+      <parameter name="modules">nest-simulator/3.0-bm</parameter>
+      <parameter name="PARTITION">dc-cpu</parameter>
     </parameterset>
 
     <parameterset name="scale_check">
@@ -32,8 +32,9 @@
       <parameter name="num_vps" type="int" mode="python">$base_vp*$num_nodes</parameter>
       <parameter name="SCALE" type="float" mode="python">.01</parameter>
       <parameter name="K_SCALE" type="float" mode="python">.01</parameter>
+      <parameter name="mam_state" type="string">Fig5</parameter>
       <parameter name="threads_per_node" type="int">2</parameter>
-      <parameter name="NEST_VERSION">2</parameter>
+      <parameter name="NEST_VERSION">3</parameter>
     </parameterset>
 
     <step name="bench">
