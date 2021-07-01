@@ -48,9 +48,9 @@
 
         export OMP_NUM_THREADS=$threads_per_node
 
-        srun -n 1 python ${bench_model}/multi-area-model/run_benchmark_createParams.py ${SCALE} ${totVPs} ${model_time_sim} ${K_SCALE} ${NEST_VERSION} ${MAM_STATE} ${MASTER_SEED}
+        srun -n 1 python ${bench_model}/multi-area-model/run_benchmark_createParams.py ${SCALE} ${totVPs} ${model_time_sim} ${K_SCALE} ${NEST_VERSION} ${MAM_STATE} ${MASTER_SEED} ${model_time_presim}
 
-        srun --cpu-bind=threads --distribution=block:cyclic:fcyclic python ${run_file} ${SCALE} ${totVPs} ${model_time_sim} ${K_SCALE} ${NEST_VERSION} ${MAM_STATE} ${MASTER_SEED}
+        srun --cpu-bind=threads --distribution=block:cyclic:fcyclic python ${run_file} ${SCALE} ${totVPs} ${model_time_sim} ${K_SCALE} ${NEST_VERSION} ${MAM_STATE} ${MASTER_SEED} ${model_time_presim}
       </parameter>
     </parameterset>
 
