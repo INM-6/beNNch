@@ -75,6 +75,19 @@
         <column>wall_time_gather_spike_data</column>
         <column>wall_time_gather_target_data</column>
         <column>wall_time_communicate_prepare</column>
+        <column>py_time_prepare</column>
+        <column>py_time_network_local</column>
+        <column>py_time_network_global</column>
+        <column>py_time_init</column>
+        <column>py_time_simulate</column>
+        <column>py_time_create</column>
+        <column>py_time_connect</column>
+        <column>base_memory</column>
+        <column>network_memory</column>
+        <column>init_memory</column>
+        <column>total_memory</column>
+        <column>num_connections</column>
+        <column>local_spike_counter</column>
       </table>
     </result>
 

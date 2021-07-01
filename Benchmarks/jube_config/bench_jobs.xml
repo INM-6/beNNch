@@ -131,6 +131,19 @@
         <pattern mode="pattern" name="wall_time_gather_spike_data" type="float">time_gather_spike_data $jube_pat_fp</pattern>
         <pattern mode="pattern" name="wall_time_gather_target_data" type="float">time_gather_target_data $jube_pat_fp</pattern>
         <pattern mode="pattern" name="wall_time_communicate_prepare" type="float">time_communicate_prepare $jube_pat_fp</pattern>
+        <pattern mode="pattern" name="py_time_prepare" type="float">py_time_prepare $jube_pat_fp</pattern>
+        <pattern mode="pattern" name="py_time_network_local" type="float">py_time_network_local $jube_pat_fp</pattern>
+        <pattern mode="pattern" name="py_time_network_global" type="float">py_time_network_global $jube_pat_fp</pattern>
+        <pattern mode="pattern" name="py_time_init" type="float">py_time_init $jube_pat_fp</pattern>
+        <pattern mode="pattern" name="py_time_simulate" type="float">py_time_simulate $jube_pat_fp</pattern>
+        <pattern mode="pattern" name="py_time_create" type="float">py_time_create $jube_pat_fp</pattern>
+        <pattern mode="pattern" name="py_time_connect" type="float">py_time_connect $jube_pat_fp</pattern>
+        <pattern mode="pattern" name="base_memory" type="float">base_memory $jube_pat_fp</pattern>
+        <pattern mode="pattern" name="network_memory" type="float">network_memory $jube_pat_fp</pattern>
+        <pattern mode="pattern" name="init_memory" type="float">init_memory $jube_pat_fp</pattern>
+        <pattern mode="pattern" name="total_memory" type="float">total_memory $jube_pat_fp</pattern>
+        <pattern mode="pattern" name="num_connections" type="float">num_connections $jube_pat_fp</pattern>
+        <pattern mode="pattern" name="local_spike_counter" type="float">local_spike_counter $jube_pat_fp</pattern>
     </patternset>
 
 </jube>
