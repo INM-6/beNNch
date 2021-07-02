@@ -77,7 +77,7 @@
         <column>wall_time_gather_spike_data</column>
         <column>wall_time_gather_target_data</column>
         <column>wall_time_communicate_prepare</column>
-        <column>py_time_prepare</column>
+        <column>py_time_kernel_prepare</column>
         <column>py_time_network_local</column>
         <column>py_time_network_global</column>
         <column>py_time_simulate</column>

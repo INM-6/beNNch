@@ -131,7 +131,7 @@
         <pattern mode="pattern" name="wall_time_gather_spike_data" type="float">time_gather_spike_data $jube_pat_fp</pattern>
         <pattern mode="pattern" name="wall_time_gather_target_data" type="float">time_gather_target_data $jube_pat_fp</pattern>
         <pattern mode="pattern" name="wall_time_communicate_prepare" type="float">time_communicate_prepare $jube_pat_fp</pattern>
-        <pattern mode="pattern" name="py_time_prepare" type="float">py_time_prepare $jube_pat_fp</pattern>
+        <pattern mode="pattern" name="py_time_kernel_prepare" type="float">py_time_kernel_prepare $jube_pat_fp</pattern>
         <pattern mode="pattern" name="py_time_network_local" type="float">py_time_network_local $jube_pat_fp</pattern>
         <pattern mode="pattern" name="py_time_network_global" type="float">py_time_network_global $jube_pat_fp</pattern>
         <pattern mode="pattern" name="py_time_simulate" type="float">py_time_simulate $jube_pat_fp</pattern>
