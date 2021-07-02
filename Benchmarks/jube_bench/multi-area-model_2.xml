@@ -80,8 +80,9 @@
         <column>py_time_prepare</column>
         <column>py_time_network_local</column>
         <column>py_time_network_global</column>
-        <column>py_time_init</column>
         <column>py_time_simulate</column>
+        <column>py_time_presimulate</column>
+        <column>py_time_network_prepare</column>
         <column>py_time_create</column>
         <column>py_time_connect</column>
         <column>base_memory</column>
