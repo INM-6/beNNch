@@ -44,12 +44,22 @@
     <parameterset name="run_benchmark">
       <parameter name="job_name" type="string">benchmark</parameter>
       <parameter name="exec" separator=";">
-        module load $modules
-        
-        export OMP_NUM_THREADS=$threads_per_node
 
-        srun -n 1 python ${bench_model}/multi-area-model/run_benchmark_createParams.py ${SCALE} ${totVPs} ${model_time_sim} ${K_SCALE} ${NEST_VERSION}
-       
+if [ -n $suffix ]
+then
+	module_to_load=$simulator/${version}/${variant}_${suffix}
+else
+	module_to_load=$simulator/${version}/${variant}
+fi
+echo $module_to_load
+
+module load $module_to_load
+
+
+export OMP_NUM_THREADS=$threads_per_node
+
+srun -n 1 python ${bench_model}/multi-area-model/run_benchmark_createParams.py ${SCALE} ${totVPs} ${model_time_sim} ${K_SCALE} ${NEST_VERSION}
+
         srun --cpu-bind=threads --distribution=block:cyclic:fcyclic python ${run_file} ${SCALE} ${totVPs} ${model_time_sim} ${K_SCALE} ${NEST_VERSION}
       </parameter>
     </parameterset>

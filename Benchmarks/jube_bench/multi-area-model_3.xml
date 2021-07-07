@@ -18,6 +18,11 @@
         ${bench_model}/multi-area-model/run_benchmark.py
       </parameter>
       <parameter name="modules">nest-simulator/3.0/default</parameter>
+      <parameter name="simulator">nest-simulator</parameter>
+      <parameter name="version">3.0</parameter>
+      <parameter name="variant">default</parameter>
+      <parameter name="suffix">test</parameter>
+
       <parameter name="PARTITION">batch</parameter>
     </parameterset>
 
@@ -34,6 +39,11 @@
       <parameter name="NEST_VERSION">3</parameter>
     </parameterset>
 
+    <step name="build">
+      <use>global</use>
+      <do> build_custom -s $simulator $version $variant $suffix</do>
+    </step>
+    
     <step name="bench">
       <use>global</use>
       <use from="dir_config.xml">dir_config</use>
