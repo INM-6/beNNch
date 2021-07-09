@@ -8,38 +8,39 @@
   </include-path>
 
 
-  <benchmark name="MAM" outpath="../../../BenchWork/jube_MAM/nest_2.20.1/jusuf_jureca">
+  <benchmark name="MAM" outpath="../../../BenchWork/jube_MAM/nest_2.20.1">
 
     <parameterset name="global">
-	    <parameter name="base_path" type="string">/p/project/cjinb33/albers2/ACA_bm_framework</parameter>
-      <parameter name="account" type="string">jinb33</parameter>
+      <parameter name="base_path" type="string">/p/project/icei-hbp-2020-0006/ACA_bm_framework</parameter>
+      <parameter name="model_path" type="string">/p/project/icei-hbp-2020-0006/ACA_bm_framework/nest-benchmarks/BenchModels/multi-area-model</parameter>
+      <parameter name="data_path" type="string">/p/scratch/cjinb33/albers2/mam_benchmarks/test</parameter>
+      <parameter name="account" type="string">icei-hbp-2020-0006</parameter>
       <parameter name="email_address" type="string"></parameter>
       <parameter name="run_file" type="string">
-        ${bench_model}/multi-area-model/run_benchmark.py
+        ${model_path}/run_benchmark.py ${data_path} ${data_folder_hash} ${NEST_VERSION} ${mam_state}
       </parameter>
-      <parameter name="modules">nest-simulator/2.20.1-timers-jusuf_jureca</parameter>
-      <parameter name="PARTITION">dc-cpu</parameter>
-      <parameter name="STDOUT_PATH">$jube_wp_abspath</parameter>
+      <parameter name="modules">nest-simulator/2.20.1-timers</parameter>
+      <parameter name="PARTITION">batch</parameter>
     </parameterset>
 
     <parameterset name="scale_check">
-      <parameter name="base_vp" type="int">64</parameter>
-      <parameter name="base_scale" type="float">1.</parameter>
-      <parameter name="model_time_sim" type="float">10000.</parameter>
-      <parameter name="WALLTIME" type="string">02:00:00</parameter>
-      <parameter name="num_nodes" type="int">12</parameter>
+      <parameter name="base_vp" type="int">4</parameter>
+      <parameter name="base_scale" type="float">.01</parameter>
+      <parameter name="model_time_sim" type="float">200.</parameter>
+      <parameter name="WALLTIME" type="string">00:10:00</parameter>
+      <parameter name="num_nodes" type="int">1</parameter>
       <parameter name="num_vps" type="int" mode="python">$base_vp*$num_nodes</parameter>
-      <parameter name="SCALE" type="float" mode="python">1.</parameter>
-      <parameter name="K_SCALE" type="float" mode="python">1.</parameter>
-      <!-- <parameter name="num_omp_threads" type="int">32</parameter> -->
-      <parameter name="num_omp_threads" type="int">4</parameter>
+      <parameter name="SCALE" type="float" mode="python">.01</parameter>
+      <parameter name="K_SCALE" type="float" mode="python">.01</parameter>
+      <parameter name="mam_state" type="string">Fig5</parameter>
+      <parameter name="threads_per_node" type="int">2</parameter>
       <parameter name="NEST_VERSION">2</parameter>
     </parameterset>
 
     <step name="bench">
       <use>global</use>
       <use from="dir_config.xml">dir_config</use>
-      <use from="bench_jobs.xml">slurm,run_benchmark,files,sub_bench_job</use>
+      <use from="bench_jobs.xml">slurm,run_benchmark,files,sub_bench_job,MAM_optional_run_command</use>
       <use>scale_check</use>
       <do done_file="$ready_file">$submit_cmd $job_file</do>
     </step>
@@ -47,9 +48,8 @@
 
     <!-- Analyse -->
     <analyser name="analyse_scale_check">
-      <use from="bench_jobs.xml">nest_pattern_MAM_stdcout,nest_pattern_MAM_timer</use>      <!-- use existing patternset -->
+      <use from="bench_jobs.xml">nest_pattern_MAM_timer</use>      <!-- use existing patternset -->
       <analyse step="bench">
-        <file>stdout</file>        <!-- file which should be scanned -->
         <file>timer_data.txt</file>        <!-- file which should be scanned -->
       </analyse>
     </analyser>
@@ -58,27 +58,21 @@
     <result>
       <use>analyse_scale_check</use>      <!-- use existing analyser -->
       <table name="NEST_MAM" style="csv" sort="number">
-        <column>git</column>
         <column>num_nodes</column>
-        <column>num_vps</column>
-        <column>num_mpi_tasks_tot</column>
-        <column>num_mpi_tasks</column>
-        <column>num_omp_threads</column>
-        <column>SCALE</column>
-        <column name='wall_time_creation'>wall_time_creation_avg</column>
-        <column name='wall_time_connect'>wall_time_connect_avg</column>
-        <column name='wall_time_ini'>wall_time_ini_avg</column>
-        <column>wall_time_sim</column>
+        <column>threads_per_node</column>
+        <column>tasks_per_node</column>
         <column>model_time_sim</column>
-        <column name='memory_mb'>memory_mb_sum</column>
-        <column name='num_spikes'>num_spikes_sum</column> 
-        <column>num_neurons</column>
-        <column name='num_connections'>num_connections_sum</column>
-        <column format=".2f">wall_time_phase_update</column>
-        <column format=".2f">wall_time_phase_collocate</column>
-        <column format=".2f">wall_time_phase_communicate</column>
-        <column format=".2f">wall_time_phase_deliver</column>
-        <column format=".2f">wall_time_phase_sim</column>
+        <column>wall_time_create</column>
+        <column>wall_time_connect</column>
+        <column>wall_time_sim</column>
+        <column>wall_time_phase_collocate</column>
+        <column>wall_time_phase_communicate</column>
+        <column>wall_time_phase_deliver</column>
+        <column>wall_time_phase_update</column>
+        <column>wall_time_communicate_target_data</column>
+        <column>wall_time_gather_spike_data</column>
+        <column>wall_time_gather_target_data</column>
+        <column>wall_time_communicate_prepare</column>
       </table>
     </result>
 
