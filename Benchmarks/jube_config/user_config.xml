@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jube>
+
+    <parameterset name="user_config">
+      <parameter name="model_path" type="string"></parameter>
+      <parameter name="data_path" type="string"></parameter> <!-- path where simulation output is written to -->
+      <parameter name="account" type="string"></parameter>
+      <parameter name="email_address" type="string"></parameter>
+      <parameter name="partition"></parameter>
+    </parameterset>
+
+</jube>

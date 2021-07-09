@@ -9,12 +9,12 @@
     <!-- Substitute jobfile -->
     <substituteset name="sub_bench_job">
       <iofile in="${job_file}.in" out="$job_file" />
-      <sub source="#PARTITION#" dest="$partition" />
+      <sub source="#PARTITION#" dest="$partition_" />
       <sub source="#NODES#" dest="$nodes" />
       <sub source="#NTASKS#" dest="$num_tasks_tot" />
       <sub source="#NTASKS_PER_NODE#" dest="$ppn" />
       <sub source="#CPUS_PER_TASK#" dest="$cpus_per_task" />
-      <sub source="#TIME#" dest="$walltime" />
+      <sub source="#TIME#" dest="$walltime_" />
       <sub source="#ERRPATH#" dest="$err_file" />
       <sub source="#OUTPATH#" dest="$out_file" />
       <sub source="#COMMANDS#" dest="$exec" />
@@ -34,11 +34,11 @@
       <parameter name="tasks_per_node" type="int">${ppn}</parameter>
       <parameter name="cpus_per_task" type="int">$threads_per_node</parameter>
       <parameter name="totVPs" type="int" mode="python">$num_vps</parameter>
-      <parameter name="walltime">$WALLTIME</parameter>
+      <parameter name="walltime_">$walltime</parameter>
       <parameter name="ready_file">ready</parameter>
       <parameter name="err_file">stderr</parameter>
       <parameter name="out_file">stdout</parameter>
-      <parameter name="partition">$PARTITION</parameter>
+      <parameter name="partition_">$partition</parameter>
     </parameterset>
 
     <parameterset name="run_benchmark">
@@ -50,15 +50,7 @@
 
         ${optional_run_command}
        
-        srun python ${run_file}
-      </parameter>
-    </parameterset>
-
-    <parameterset name="MAM_optional_run_command">
-      <parameter name="optional_run_command">
-        data_folder_hash=`uuidgen`
-
-        srun -n 1 python ${bench_model}/multi-area-model/run_benchmark_createParams.py ${SCALE} ${totVPs} ${model_time_sim} ${K_SCALE} ${NEST_VERSION} ${data_path} ${data_folder_hash} ${mam_state}
+        srun python ${run_file} ${run_args}
       </parameter>
     </parameterset>
 
