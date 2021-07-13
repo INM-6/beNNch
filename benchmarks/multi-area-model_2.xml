@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jube>
+
+  <include-path>
+    <path>../helpers/</path>
+    <path>../config/</path>
+  </include-path>
+
+
+  <benchmark name="MAM" outpath="../../benchmark_results/nest_2.20.1">
+
+    <!-- experiment configuration -->
+    <parameterset name="scaling_experiment">
+      <parameter name="weak_scaling" type="float">${scale_N}</parameter>
+      <parameter name="strong_scaling" type="float" mode="python">${scale_N}*${num_nodes}</parameter>
+    </parameterset>
+
+    <!-- model configuration -->
+    <parameterset name="model_commands">
+      <parameter name="run_file" type="string">
+        ${model_path}/run_benchmark.py
+      </parameter>
+      <parameter name="run_args" type="string">
+        ${data_path} ${data_folder_hash} ${mam_state}
+      </parameter>
+      <parameter name="optional_run_command">
+        data_folder_hash=`uuidgen`
+
+        srun -n 1 python ${model_path}/run_benchmark_createParams.py ${scaling} ${totVPs} ${model_time_sim} ${scale_K} ${data_path} ${data_folder_hash} ${mam_state}
+      </parameter>
+    </parameterset>
+
+    <!-- benchmark step -->
+    <step name="bench">
+      <use>model_commands,scaling_experiment</use>
+      <use from="user_config_jusuf.xml">user_config</use>
+      <use from="multi-area-model_3_config.xml">model_parameters,machine_parameters</use>
+      <use from="helpers.xml">slurm,run_benchmark,files,sub_bench_job</use>
+      <do done_file="$ready_file">$submit_cmd $job_file</do>
+    </step>
+
+
+    <!-- analysis step -->
+    <analyser name="analyse_scale_check">
+      <use from="helpers.xml">nest_pattern_MAM_timer</use>
+      <analyse step="bench">
+        <file>timer_data.txt</file>
+      </analyse>
+    </analyser>
+
+    <!-- result step -->
+    <result>
+      <use>analyse_scale_check</use>
+      <table name="NEST_MAM" style="csv" sort="number">
+        <column>num_nodes</column>
+        <column>threads_per_node</column>
+        <column>tasks_per_node</column>
+        <column>model_time_sim</column>
+        <column>wall_time_create</column>
+        <column>wall_time_connect</column>
+        <column>wall_time_sim</column>
+        <column>wall_time_phase_collocate</column>
+        <column>wall_time_phase_communicate</column>
+        <column>wall_time_phase_deliver</column>
+        <column>wall_time_phase_update</column>
+        <column>wall_time_communicate_target_data</column>
+        <column>wall_time_gather_spike_data</column>
+        <column>wall_time_gather_target_data</column>
+        <column>wall_time_communicate_prepare</column>
+      </table>
+    </result>
+
+
+  </benchmark>
+</jube>

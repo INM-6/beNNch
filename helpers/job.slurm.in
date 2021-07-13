@@ -8,7 +8,7 @@
 ####SBATCH --ntasks=#NTASKS#
 #SBATCH --cpus-per-task=#CPUS_PER_TASK#
 #SBATCH --time=#TIME#
-#SBATCH --exclusive
+#####SBATCH --exclusive
 #SBATCH --account=#ACCOUNT#
 #COMMANDS#
 
