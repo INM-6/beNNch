@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jube>
+
+    <parameterset name="file_paths">
+      <parameter name="model_path" type="string">${bench_model}/models/Potjans_2014</parameter>
+      <parameter name="data_path" type="string">/p/scratch/cjinb33/albers2/mam_benchmarks/test</parameter>
+    </parameterset>
+
+    <parameterset name="model_parameters">
+      <parameter name="net_params">network_params.py</parameter>
+      <parameter name="scale_N" type="float">.01</parameter>
+      <parameter name="scale_K" type="float">.01</parameter>
+      <parameter name="poisson_input">False</parameter>
+      <parameter name="V0_type" separator="," type="text">'optimized'</parameter>
+      <parameter name="synapse_type" separator="," type="text">'static_synapse'</parameter>
+      <parameter name="sim_params">sim_params.py</parameter>
+      <parameter name="model_time_sim" type="float">200.</parameter>
+      <parameter name="model_time_presim">100.</parameter><!-- in ms -->
+      <parameter name="seed">55</parameter><!-- main rng seed -->
+      <parameter name="record_spikes" type="string"></parameter><!-- change to 'spike_detector' for spike recordings -->
+      <parameter name="kwds" separator=";" type="string"></parameter><!-- can be used for passing arguments to SetKernelStatus, such as max_buffer_size_spike_data. If no arguments should be passed leave this empty. If something should be passed insert a dictionary, eg: {'max_buffer_size_spike_data': 10} -->
+      <parameter name="scaling">${weak_scaling}</parameter> <!-- can be either weak_scaling or strong_scaling -->
+    </parameterset>
+
+    <parameterset name="machine_parameters">
+      <parameter name="base_vp" type="int">4</parameter>
+      <parameter name="walltime" type="string">00:10:00</parameter>
+      <parameter name="num_nodes" type="int">1</parameter>
+      <parameter name="num_vps" type="int" mode="python">$base_vp*$num_nodes</parameter>
+      <parameter name="threads_per_node" type="int">2</parameter>
+      <parameter name="modules">nest-simulator/3.0</parameter>
+      <parameter name="affinity" type="string">--cpu-bind=sockets --distribution=block:cyclic:fcyclic</parameter> 
+    </parameterset>
+
+</jube>

@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jube>
 
+    <parameterset name="file_paths">
+      <parameter name="model_path" type="string">/p/project/icei-hbp-2020-0006/ACA_bm_framework/nest-benchmarks/models/multi-area-model</parameter>
+      <parameter name="data_path" type="string">/p/scratch/cjinb33/albers2/mam_benchmarks/test</parameter>
+    </parameterset>
+
     <parameterset name="model_parameters">
       <parameter name="mam_state" type="string">Fig5</parameter> 
       <parameter name="model_time_sim" type="float">200.</parameter>

@@ -7,7 +7,7 @@
   </include-path>
 
 
-  <benchmark name="MAM" outpath="../../benchmark_results/nest_2.20.1">
+  <benchmark name="MAM" outpath="../../benchmark_results/MAM/nest_2.20.1">
 
     <!-- experiment configuration -->
     <parameterset name="scaling_experiment">

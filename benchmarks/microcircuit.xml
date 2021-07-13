@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jube>
+
+  <include-path>
+    <path>../helpers/</path>
+    <path>../config/</path>
+  </include-path>
+
+  <!-- model-specific name and output path -->
+  <benchmark name="microcircuit" outpath="../../benchmark_results/microcircuit">
+
+    <!-- experiment configuration -->
+    <parameterset name="scaling_experiment">
+      <parameter name="weak_scaling" type="float">${scale_N}</parameter>
+      <parameter name="strong_scaling" type="float" mode="python">${scale_N}*${num_nodes}</parameter>
+    </parameterset>
+
+    <!-- model configuration -->
+    <parameterset name="model_commands">
+      <parameter name="run_file" type="string">
+        ${model_path}/bm_run_microcircuit.py
+      </parameter>
+    </parameterset>
+
+    <!-- load and copy model-specific files -->
+    <fileset name="model_files"> <!-- -->
+      <copy>$model_dir/bm_run_microcircuit.py</copy>
+      <copy>$model_dir/bm_helpers.py</copy>
+      <copy>$model_dir/sim_params.py</copy>
+      <copy>$model_dir/network_params.py</copy>
+      <copy>$model_dir/helpers.py</copy>
+      <copy>$model_dir/network.py</copy>
+      <copy>$model_dir/stimulus_params.py</copy>
+    </fileset>
+
+    <!-- This subsituteset maps the parameters that were defined in this xml
+         file to the target patterns that JUBE will search for in the
+         simulation files. The pattern file is bm_run_microcircuit.py which is
+         also the wrapper file for the actual microcircuit simulation. The
+         source pattern will be replaced by the value contained in dest -->
+    <substituteset name="simulation_substitutions">
+      <iofile in="bm_run_microcircuit.py" out="bm_run_microcircuit.py"/>
+      <sub source="{record_spikes}" dest="$record_spikes"/>
+      <sub source="{POISSON_INPUT}" dest="$poisson_input"/>
+      <sub source="{kwds}" dest="$kwds"/>
+      <sub source="{V0_TYPE}" dest="$V0_type"/>
+      <sub source="{SYNAPSE_TYPE}" dest="$synapse_type"/>
+      <sub source="{model_time_sim}" dest="$model_time_sim"/>
+      <sub source="{model_time_presim}" dest="$model_time_presim"/>
+      <sub source="{seed}" dest="$seed"/>
+      <sub source="{threads_per_node}" dest="$threads_per_node"/>
+      <sub source="{N_SCALING}" dest="$scale_N"/>
+      <sub source="{K_SCALING}" dest="$scale_K"/>
+    </substituteset>
+
+    <!-- benchmark step -->
+    <step name="bench">
+      <use>model_commands,scaling_experiment</use>
+      <use from="user_config_jusuf.xml">user_config</use>
+      <use from="microcircuit_config.xml">file_paths,model_parameters,machine_parameters</use>
+      <use from="helpers.xml">slurm,run_benchmark,files,sub_bench_job</use>
+      <use>model_files,simulation_substitutions</use>
+      <do done_file="$ready_file">$submit_cmd $job_file</do>
+    </step>
+
+
+    <!-- analysis step -->
+    <analyser name="analyse_scale_check">
+      <use from="helpers.xml">nest_pattern_MAM_timer</use>
+      <analyse step="bench">
+        <file>timer_data.txt</file>
+      </analyse>
+    </analyser>
+
+    <!-- result step -->
+    <!-- TODO add more information to table, e.g., affinity, local_spike_counter -->
+    <!-- TODO also add hash as in microcircuit_jube_benches, name could be hash (fix file extension from .dat to .csv) -->
+    <result>
+      <use>analyse_scale_check</use>
+      <table name="microcircuit" style="csv" sort="number">
+        <column>num_nodes</column>
+        <column>threads_per_node</column>
+        <column>tasks_per_node</column>
+        <column>model_time_sim</column>
+        <column>wall_time_create</column>
+        <column>wall_time_connect</column>
+        <column>wall_time_sim</column>
+        <column>wall_time_phase_collocate</column>
+        <column>wall_time_phase_communicate</column>
+        <column>wall_time_phase_deliver</column>
+        <column>wall_time_phase_update</column>
+        <column>wall_time_communicate_target_data</column>
+        <column>wall_time_gather_spike_data</column>
+        <column>wall_time_gather_target_data</column>
+        <column>wall_time_communicate_prepare</column>
+      </table>
+    </result>
+
+
+  </benchmark>
+</jube>
+
