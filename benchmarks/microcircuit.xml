@@ -18,19 +18,19 @@
     <!-- model configuration -->
     <parameterset name="model_commands">
       <parameter name="run_file" type="string">
-        ${model_path}/bm_run_microcircuit.py
+        bm_run_microcircuit.py
       </parameter>
     </parameterset>
 
     <!-- load and copy model-specific files -->
     <fileset name="model_files"> <!-- -->
-      <copy>$model_dir/bm_run_microcircuit.py</copy>
-      <copy>$model_dir/bm_helpers.py</copy>
-      <copy>$model_dir/sim_params.py</copy>
-      <copy>$model_dir/network_params.py</copy>
-      <copy>$model_dir/helpers.py</copy>
-      <copy>$model_dir/network.py</copy>
-      <copy>$model_dir/stimulus_params.py</copy>
+      <copy>$model_path/bm_run_microcircuit.py</copy>
+      <copy>$model_path/bm_helpers.py</copy>
+      <copy>$model_path/sim_params.py</copy>
+      <copy>$model_path/network_params.py</copy>
+      <copy>$model_path/helpers.py</copy>
+      <copy>$model_path/network.py</copy>
+      <copy>$model_path/stimulus_params.py</copy>
     </fileset>
 
     <!-- This subsituteset maps the parameters that were defined in this xml

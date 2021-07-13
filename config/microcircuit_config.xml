@@ -2,14 +2,14 @@
 <jube>
 
     <parameterset name="file_paths">
-      <parameter name="model_path" type="string">${bench_model}/models/Potjans_2014</parameter>
+      <parameter name="model_path" type="string">/p/project/icei-hbp-2020-0006/ACA_bm_framework/nest-benchmarks/models/Potjans_2014</parameter>
       <parameter name="data_path" type="string">/p/scratch/cjinb33/albers2/mam_benchmarks/test</parameter>
     </parameterset>
 
     <parameterset name="model_parameters">
       <parameter name="net_params">network_params.py</parameter>
-      <parameter name="scale_N" type="float">.01</parameter>
-      <parameter name="scale_K" type="float">.01</parameter>
+      <parameter name="scale_N" type="float">1.</parameter>
+      <parameter name="scale_K" type="float">1.</parameter>
       <parameter name="poisson_input">False</parameter>
       <parameter name="V0_type" separator="," type="text">'optimized'</parameter>
       <parameter name="synapse_type" separator="," type="text">'static_synapse'</parameter>
