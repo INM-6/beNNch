@@ -2,11 +2,12 @@
 <jube>
 
   <include-path>
-    <path>../jube_config/</path>
+    <path>../helpers/</path>
+    <path>../config/</path>
   </include-path>
 
 
-  <benchmark name="MAM" outpath="../../../BenchWork/jube_MAM/nest_3">
+  <benchmark name="MAM" outpath="../../benchmark_results/nest_2.20.1">
 
     <!-- experiment configuration -->
     <parameterset name="scaling_experiment">
@@ -34,15 +35,14 @@
       <use>model_commands,scaling_experiment</use>
       <use from="user_config_jusuf.xml">user_config</use>
       <use from="multi-area-model_3_config.xml">model_parameters,machine_parameters</use>
-      <use from="dir_config.xml">dir_config</use>
-      <use from="bench_jobs.xml">slurm,run_benchmark,files,sub_bench_job</use>
+      <use from="helpers.xml">slurm,run_benchmark,files,sub_bench_job</use>
       <do done_file="$ready_file">$submit_cmd $job_file</do>
     </step>
 
 
     <!-- analysis step -->
     <analyser name="analyse_scale_check">
-      <use from="bench_jobs.xml">nest_pattern_MAM_timer</use>
+      <use from="helpers.xml">nest_pattern_MAM_timer</use>
       <analyse step="bench">
         <file>timer_data.txt</file>
       </analyse>

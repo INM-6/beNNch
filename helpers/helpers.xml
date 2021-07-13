@@ -3,7 +3,7 @@
 
     <!-- Load jobfile -->
     <fileset name="files">
-      <copy>../jube_config/${job_file}.in</copy>
+      <copy>${job_file}.in</copy>
     </fileset>
     
     <!-- Substitute jobfile -->
