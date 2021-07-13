@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jube>
+
+    <!-- Load jobfile -->
+    <fileset name="files">
+      <copy>${job_file}.in</copy>
+    </fileset>
+    
+    <!-- Substitute jobfile -->
+    <substituteset name="sub_bench_job">
+      <iofile in="${job_file}.in" out="$job_file" />
+      <sub source="#PARTITION#" dest="$partition_" />
+      <sub source="#NODES#" dest="$nodes" />
+      <sub source="#NTASKS#" dest="$num_tasks_tot" />
+      <sub source="#NTASKS_PER_NODE#" dest="$ppn" />
+      <sub source="#CPUS_PER_TASK#" dest="$cpus_per_task" />
+      <sub source="#TIME#" dest="$walltime_" />
+      <sub source="#ERRPATH#" dest="$err_file" />
+      <sub source="#OUTPATH#" dest="$out_file" />
+      <sub source="#COMMANDS#" dest="$exec" />
+      <sub source="#READY#" dest="$ready_file" />
+      <sub source="#JOB_NAME#" dest="$job_name" />
+      <sub source="#ACCOUNT#" dest="$account" />
+    </substituteset> 
+
+    <parameterset name="slurm">
+      <parameter name="submit_cmd">sbatch</parameter>
+      <parameter name="job_file">job.slurm</parameter>
+      <parameter name="nodes" type="int">$num_nodes</parameter>
+      <parameter name="num_tasks_tot" type="int" mode="python">${num_vps} // ${threads_per_node}</parameter>
+      <parameter name="ppn" type="int" mode="python">${num_tasks_tot} // ${num_nodes}</parameter>
+      
+      <!-- next is alias to make result table template work -->
+      <parameter name="tasks_per_node" type="int">${ppn}</parameter>
+      <parameter name="cpus_per_task" type="int">$threads_per_node</parameter>
+      <parameter name="totVPs" type="int" mode="python">$num_vps</parameter>
+      <parameter name="walltime_">$walltime</parameter>
+      <parameter name="ready_file">ready</parameter>
+      <parameter name="err_file">stderr</parameter>
+      <parameter name="out_file">stdout</parameter>
+      <parameter name="partition_">$partition</parameter>
+    </parameterset>
+
+    <parameterset name="run_benchmark">
+      <parameter name="job_name" type="string">benchmark</parameter>
+      <parameter name="exec" separator=";">
+        module load $modules
+        
+        export OMP_NUM_THREADS=$threads_per_node
+
+        ${optional_run_command}
+       
+        srun ${affinity} python ${run_file} ${run_args}
+      </parameter>
+    </parameterset>
+
+    <parameterset name="no_optional_run_command">
+      <parameter name="optional_run_command">
+      </parameter>
+    </parameterset>
+
+    <!-- Regex pattern -->
+    <patternset name="nest_pattern_stdcout">
+      <pattern name="T_nrns" type="float">$jube_pat_fp # build_time_nodes</pattern> 
+      <pattern name="T_conns" type="float">$jube_pat_fp # build_edge_time</pattern> 
+      <pattern name="T_ini" type="float">$jube_pat_fp # init_time</pattern> 
+      <pattern name="T_equ" type="float">$jube_pat_fp # presim_time</pattern> 
+      <pattern name="T_sim" type="float">$jube_pat_fp # sim_time</pattern>
+      <pattern name="VSize_nodes" type="int">$jube_pat_int # virt_mem_after_nodes</pattern> 
+      <pattern name="VSize_mem" type="int">$jube_pat_int # virt_mem_after_edges</pattern> 
+      <pattern name="VSize_ini" type="int">$jube_pat_int # virt_mem_after_init</pattern> 
+      <pattern name="VSize" type="int">$jube_pat_int # virt_mem_after_sim</pattern> 
+      <pattern name="Rate" type="float">$jube_pat_fp # average rate</pattern> 
+      <pattern name="N_nrns" type="int">$jube_pat_int # num_neurons</pattern> 
+      <pattern name="N_conns" type="int">$jube_pat_int # num_connections</pattern> 
+      <pattern name="N_spks" type="int">$jube_pat_int # local_spike_counter</pattern> 
+      <pattern name="d_min" type="float">$jube_pat_fp # min_delay</pattern> 
+      <pattern name="d_max" type="float">$jube_pat_fp # max_delay</pattern> 
+      <pattern name="inicc" type="int">$jube_pat_int # initial_connector_capacity</pattern>
+      <pattern name="lcl" type="int">$jube_pat_int # large_connector_limit</pattern> 
+      <pattern name="lgf" type="float">$jube_pat_fp # large_connector_growth_factor</pattern> 
+      <pattern name="git" type="string">GIT: $jube_pat_wrd</pattern> 
+      <pattern name="EE_inner_conn_time" type="float">$jube_pat_int # EE inner_conn_time</pattern>
+      <pattern name="IE_inner_conn_time" type="float">$jube_pat_int # IE inner_conn_time</pattern>
+      <pattern name="EI_inner_conn_time" type="float">$jube_pat_int # EI inner_conn_time</pattern>
+      <pattern name="II_inner_conn_time" type="float">$jube_pat_int # II inner_conn_time</pattern>
+      <pattern name="EE_conns_per_sec" type="float">\d+ (.+) # EE conns_per_sec</pattern>
+      <pattern name="IE_conns_per_sec" type="float">\d+ (.+) # IE conns_per_sec</pattern>
+      <pattern name="EI_conns_per_sec" type="float">\d+ (.+) # EI conns_per_sec</pattern>
+      <pattern name="II_conns_per_sec" type="float">\d+ (.+) # II conns_per_sec</pattern>
+      <pattern name="T_boost_sort" type="float">elapsed sorting time: $jube_pat_fp</pattern>
+      <pattern name="T_communication_time" type="float">elapsed communication time: $jube_pat_fp</pattern>
+      <pattern name="T_comm_allToall" type="float">elapsed communication alltoall time: $jube_pat_fp</pattern>
+      <pattern name="T_collocation" type="float">elapsed collocation time: $jube_pat_fp</pattern>
+    </patternset>
+    
+    <!-- Regex pattern -->
+    <patternset name="nest_pattern_meso_stdcout">
+      <pattern name="hash" type="string">Hash: $jube_pat_wrd</pattern>
+      <pattern name="T_nrns" type="float">Creating   took $jube_pat_fp</pattern> 
+      <pattern name="T_conns" type="float">Connecting took $jube_pat_fp</pattern>
+      <pattern name="T_ini" type="float">Init time: $jube_pat_fp</pattern>
+      <pattern name="T_sim" type="float">Simulating took $jube_pat_fp</pattern> 
+      <pattern name="VSize_nodes" type="int">mem_after_nodes: $jube_pat_int</pattern>  
+      <pattern name="VSize_mem" type="int">mem_after_connect: $jube_pat_int</pattern>  
+      <pattern name="VSize_ini" type="int">mem_after_ini: $jube_pat_int</pattern>
+      <pattern name="VSize" type="int">Memory: $jube_pat_int</pattern>  
+      <pattern name="N_nrns" type="int">Number of neurons, without TC: $jube_pat_int</pattern> 
+      <pattern name="N_conns" type="int">$jube_pat_int # num_connections</pattern>
+      <pattern name="N_spks" type="int">$jube_pat_int # local_spike_counter</pattern>
+      <pattern name="git" type="string">GIT: $jube_pat_wrd</pattern>
+    </patternset>
+
+    <!-- Regex pattern -->
+    <patternset name="nest_pattern_MAM_stdcout">
+      <pattern name="wall_time_creation" type="float">'time_create': $jube_pat_fp</pattern>
+      <pattern name="wall_time_connect" type="float">'time_connect': $jube_pat_fp</pattern>
+      <pattern name="wall_time_ini" type="float">'time_init': $jube_pat_fp</pattern>
+      <pattern name="wall_time_sim" type="float">'time_simulate': $jube_pat_fp</pattern>
+      <pattern name="memory_mb" type="int">'total_memory': $jube_pat_int</pattern>
+      <pattern name="num_neurons" type="int">Network size: $jube_pat_int</pattern>
+      <pattern name="num_connections" type="int">'num_connections': $jube_pat_int</pattern>
+      <pattern name="num_spikes" type="int">'local_spike_counter': $jube_pat_int</pattern>
+      <pattern name="git" type="string">GIT: $jube_pat_wrd</pattern>
+    </patternset>
+
+    <patternset name="nest_pattern_MAM_timer">
+        <pattern mode="pattern" name="wall_time_sim" type="float">time_simulate $jube_pat_fp</pattern>
+        <pattern mode="pattern" name="wall_time_create" type="float">time_construction_create $jube_pat_fp</pattern>
+        <pattern mode="pattern" name="wall_time_connect" type="float">time_construction_connect $jube_pat_fp</pattern>
+        <pattern mode="pattern" name="wall_time_phase_collocate" type="float">time_collocate_spike_data $jube_pat_fp</pattern>
+        <pattern mode="pattern" name="wall_time_phase_communicate" type="float">time_communicate_spike_data $jube_pat_fp</pattern>
+        <pattern mode="pattern" name="wall_time_phase_deliver" type="float">time_deliver_spike_data $jube_pat_fp</pattern>
+        <pattern mode="pattern" name="wall_time_phase_update" type="float">time_update $jube_pat_fp</pattern>
+        <pattern mode="pattern" name="wall_time_communicate_target_data" type="float">time_communicate_target_data $jube_pat_fp</pattern>
+        <pattern mode="pattern" name="wall_time_gather_spike_data" type="float">time_gather_spike_data $jube_pat_fp</pattern>
+        <pattern mode="pattern" name="wall_time_gather_target_data" type="float">time_gather_target_data $jube_pat_fp</pattern>
+        <pattern mode="pattern" name="wall_time_communicate_prepare" type="float">time_communicate_prepare $jube_pat_fp</pattern>
+    </patternset>
+
+</jube>

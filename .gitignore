@@ -5,3 +5,7 @@
 
 # Jupyter Notebook
 .ipynb_checkpoints
+
+# user config files
+.multi-area-model_*_*.xml
+user_config_*
