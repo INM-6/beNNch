@@ -8,15 +8,15 @@ This will create the folder `nest-benchmarks`, and it contains all JUBE files ne
 
 *benchmarks* contains benchmark scripts to run benchmarks via JUBE.
 
-*helpers* contains helper JUBE parametersets.
-
 *config* contains user configuration file templates to be copied and adapted. 
+
+*helpers* contains helper JUBE parametersets.
 
 *results* contains all results and analysis scripts.
 
 ### First step
 
-Copy `user_config.xml` to `user_config_<your_ID_name>` and fill in all parameters:
+Copy `user_config.xml` to `user_config_<your_ID_name>.xml` and fill in all parameters:
   - `model_path`: path to the neuroscience model
   - `data_path`: path where simulation (spiking) output will be stored
   - `account`: slurm account name for job submission
