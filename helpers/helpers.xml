@@ -50,7 +50,7 @@
 
         ${optional_run_command}
        
-        srun python ${run_file} ${run_args}
+        srun ${affinity} python ${run_file} ${run_args}
       </parameter>
     </parameterset>
 
