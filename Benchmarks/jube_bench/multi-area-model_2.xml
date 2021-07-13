@@ -8,11 +8,13 @@
 
   <benchmark name="MAM" outpath="../../../BenchWork/jube_MAM/nest_2.20.1">
 
+    <!-- experiment configuration -->
     <parameterset name="scaling_experiment">
       <parameter name="weak_scaling" type="float">${scale_N}</parameter>
       <parameter name="strong_scaling" type="float" mode="python">${scale_N}*${num_nodes}</parameter>
     </parameterset>
 
+    <!-- model configuration -->
     <parameterset name="model_commands">
       <parameter name="run_file" type="string">
         ${model_path}/run_benchmark.py
@@ -27,6 +29,7 @@
       </parameter>
     </parameterset>
 
+    <!-- benchmark step -->
     <step name="bench">
       <use>model_commands,scaling_experiment</use>
       <use from="user_config_jusuf.xml">user_config</use>
@@ -37,17 +40,17 @@
     </step>
 
 
-    <!-- Analyse -->
+    <!-- analysis step -->
     <analyser name="analyse_scale_check">
-      <use from="bench_jobs.xml">nest_pattern_MAM_timer</use>      <!-- use existing patternset -->
+      <use from="bench_jobs.xml">nest_pattern_MAM_timer</use>
       <analyse step="bench">
-        <file>timer_data.txt</file>        <!-- file which should be scanned -->
+        <file>timer_data.txt</file>
       </analyse>
     </analyser>
 
-    <!-- Create result table -->
+    <!-- result step -->
     <result>
-      <use>analyse_scale_check</use>      <!-- use existing analyser -->
+      <use>analyse_scale_check</use>
       <table name="NEST_MAM" style="csv" sort="number">
         <column>num_nodes</column>
         <column>threads_per_node</column>
