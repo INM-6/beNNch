@@ -6,14 +6,7 @@
     <path>../config/</path>
   </include-path>
 
-
   <benchmark name="MAM" outpath="../../benchmark_results/MAM/nest_2.20.1">
-
-    <!-- experiment configuration -->
-    <parameterset name="scaling_experiment">
-      <parameter name="weak_scaling" type="float">${scale_N}</parameter>
-      <parameter name="strong_scaling" type="float" mode="python">${scale_N}*${num_nodes}</parameter>
-    </parameterset>
 
     <!-- model configuration -->
     <parameterset name="model_commands">
@@ -32,13 +25,12 @@
 
     <!-- benchmark step -->
     <step name="bench">
-      <use>model_commands,scaling_experiment</use>
+      <use>model_commands</use>
       <use from="user_config_jusuf.xml">user_config</use>
       <use from="multi-area-model_3_config.xml">model_parameters,machine_parameters</use>
-      <use from="helpers.xml">slurm,run_benchmark,files,sub_bench_job</use>
+      <use from="helpers.xml">slurm,run_benchmark,files,sub_bench_job,scaling_experiment</use>
       <do done_file="$ready_file">$submit_cmd $job_file</do>
     </step>
-
 
     <!-- analysis step -->
     <analyser name="analyse_scale_check">
@@ -69,7 +61,6 @@
         <column>wall_time_communicate_prepare</column>
       </table>
     </result>
-
 
   </benchmark>
 </jube>

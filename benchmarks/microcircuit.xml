@@ -9,12 +9,6 @@
   <!-- model-specific name and output path -->
   <benchmark name="microcircuit" outpath="../../benchmark_results/microcircuit">
 
-    <!-- experiment configuration -->
-    <parameterset name="scaling_experiment">
-      <parameter name="weak_scaling" type="float">${scale_N}</parameter>
-      <parameter name="strong_scaling" type="float" mode="python">${scale_N}*${num_nodes}</parameter>
-    </parameterset>
-
     <!-- model configuration -->
     <parameterset name="model_commands">
       <parameter name="run_file" type="string">
@@ -55,10 +49,10 @@
 
     <!-- benchmark step -->
     <step name="bench">
-      <use>model_commands,scaling_experiment</use>
+      <use>model_commands</use>
       <use from="user_config_jusuf.xml">user_config</use>
       <use from="microcircuit_config.xml">file_paths,model_parameters,machine_parameters</use>
-      <use from="helpers.xml">slurm,run_benchmark,files,sub_bench_job</use>
+      <use from="helpers.xml">slurm,run_benchmark,files,sub_bench_job,scaling_experiment</use>
       <use>model_files,simulation_substitutions</use>
       <do done_file="$ready_file">$submit_cmd $job_file</do>
     </step>
