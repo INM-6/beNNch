@@ -1,22 +1,27 @@
 # NEST benchmarks
 
-To run the benchmarks you need to clone the nest-benchmarks repository. To clone with git, do `git clone https://gin.g-node.org/nest/nest-benchmarks.git`
+To run the benchmarks you need to clone the nest-benchmarks repository. To clone with git, do `git clone https://gin.g-node.org/jasperalbers/nest-benchmarks.git`
 
-This will create the folder `nest-benchmarks`, and it contains all JUBE files and sli scripts etc. needed to run the benchmarks. On the same level as `nest-benchmarks` you also need to create a folder called `BenchWork`, where NEST will be installed, and where the JUBE files will be generated.
+This will create the folder `nest-benchmarks`, and it contains all JUBE files needed to run the benchmarks.
 
 ### Current repository layout
 
-*Benchmarks* contains benchmark scripts, jube files to build NEST and run benchmarks, and jube configuration files for paths etc.
+*benchmarks* contains benchmark scripts to run benchmarks via JUBE.
 
-*BenchModels* contains bigger benchmark models.
+*helpers* contains helper JUBE parametersets.
+
+*config* contains user configuration file templates to be copied and adapted. 
 
 *results* contains all results and analysis scripts.
 
 ### First step
 
-You might need to adjust the path for `bench_home`, `bench_work`, and `bench_model` folders defined in `nest-benchmarks/Benchmarks/jube_config/dir_config.xml`. 
-
-If you for instance are running you benchmarks from the `$SCRATCH` folder, you should replace `${HOME}` with `$SCRATCH`.
+Copy `user_config.xml` to `user_config_<your_ID_name>` and fill in all parameters:
+  - `model_path`: path to the neuroscience model
+  - `data_path`: path where simulation (spiking) output will be stored
+  - `account`: slurm account name for job submission
+  - `email_address` (optional): email address to which slurm sends START, END, FAIL emails for job progress info
+  - `partition` (optional, required on some machines): cluster partition, takes system default if left empty 
 
 The benchmarks are run using the automatic benchmarking environment [JUBE](https://www.fz-juelich.de/ias/jsc/EN/Expertise/Support/Software/JUBE/_node.html), so if you don't already have this installed, you will need to install it.
 
@@ -78,21 +83,28 @@ jube run <PATH>/nest-benchmarks/Benchmarks/jube_build/build_jemalloc_daint.xml
 
 ### Running Benchmarks
 
-The JUBE files for the benchmarks can be found in `<PATH>/nest-benchmarks/Benchmarks/jube_bench/`, while the benchmark scripts can be found in `<PATH>/nest-benchmarks/Benchmarks/benchmark_scipts`/ **or** in `<PATH>/nest-benchmarks/BenchModels/`.
+The JUBE scripts for the benchmarks can be found in `<PATH>/nest-benchmarks/benchmarks/`.
 
 To run a benchmark, run
 
 ```bash
-jube run <PATH>/nest-benchmarks/Benchmarks/jube_bench/<benchmark_file.xml>
+jube run <PATH>/nest-benchmarks/benchmarks/<benchmark_file.xml>
 ```
 
 You will get a job `id`.
 
 These are the benchmarks we currently have, with corresponding JUBE files:
 
+- **Multi-Area Model**
+
+  - `multi-area-model_2.xml` for usage with NEST 2.
+  - `multi-area-model_2.xml` for usage with NEST 3.
+
+#### legacy models:
+
 - **HPC_benchmark**
 
-  - `hpc_benchmark_daint_strict.xml`
+  - `hpc_benchmark.xml`
 
 - **HPC_benchmark with static synapse**
 
@@ -133,13 +145,8 @@ These are the benchmarks we currently have, with corresponding JUBE files:
 
   - `population_py_daint_strict.xml`
 
-- **Multi-Area Model**
 
-  - `multi-area-model_daint_strict.xml`
 
-- **4x4 Mesocircuit model**
-
-  - `4x4_mesocircuit_daint_strict.xml`
 
 - **HPC Benchmark on fixed VPs, changing threads**
 
@@ -157,18 +164,12 @@ The model has several populations (minimum 20 populations). Each population has 
 
 You need to have installed NEST *with* Python in order to run the MAM benchmark.
 
-```bash
-jube run <PATH>/nest-benchmarks/Benchmarks/jube_build/build_nest_py_daint_strict.xml
-```
-
 You also need to download *nested_dict* and *dicthash*:
 
 ```bash
 pip install nested_dict --user
 pip install dicthash --user
 ```
-
-On Piz-Daint we use the Python 3 `module load cray-python/3.6.5.7`.
 
 #### To run 4x4:
 
@@ -206,26 +207,26 @@ All of the benchmarks are run with the following number of nodes, VPs, scales, t
 When the benchmark is finished running, tell JUBE to analyze the results
 
 ```bash
-jube analyse BenchWork/<jube_directory>/<nest_version>/ -i id
+jube analyse <outpath> -i id
 ```
 
 Then get the results
 
 ```bash
-jube result BenchWork/<jube_directory>/<nest_version>/ -i id
+jube result <outpath> -i id
 ```
 
 If you want to save the results in a csv-file, do
 
 ```bash
-jube result BenchWork/<jube_directory>/<nest_version>/ -i id > <path-to-directory-you-want>/result-name.csv
+jube result <outpath> -i id > <path-to-directory-you-want>/result-name.csv
 ```
 
 `result-name.csv` can be an existing file, or new one. If it already exists, this will overwrite the content in the file.
 
 **Visualization**
 
-You can look at `nest-benchmarks/results/benchmark_plots.ipynb` and use `result-name.csv` to visualize the results.
+[WIP]
 
 
 
