@@ -2,9 +2,9 @@
 <jube>
 
     <parameterset name="user_config">
-      <parameter name="account" type="string">icei-hbp-2020-0006</parameter>
+      <parameter name="account" type="string"></parameter>
       <parameter name="email_address" type="string"></parameter>
-      <parameter name="partition">batch</parameter>
+      <parameter name="partition"></parameter>
     </parameterset>
-    
+
 </jube>

@@ -8,4 +8,4 @@
 
 # user config files
 .multi-area-model_*_*.xml
-user_config_*
+*_config.xml
