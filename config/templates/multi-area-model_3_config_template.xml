@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jube>
+
+  <parameterset name="file_paths">
+    <parameter name="model_path" type="string"></parameter> <!-- path where the multi-area model is stored -->
+    <parameter name="data_path" type="string"></parameter> <!-- path where the simulation files are copied and the simulation output is stored -->
+  </parameterset>
+
+  <parameterset name="model_parameters">
+    <parameter name="mam_state" type="string">Fig5</parameter> <!-- Fig5 -> metastable, Fig3 -> ground state -->
+    <parameter name="model_time_sim" type="float">1000.</parameter> <!-- biological time to be simulated in ms -->
+    <parameter name="scale_N" type="float">1.</parameter> <!-- scaling the number of neurons, 1. -> original model -->
+    <parameter name="scale_K" type="float">1.</parameter> <!-- scaling the indegree, 1. -> original model -->
+    <parameter name="scaling">${weak_scaling}</parameter> <!-- can be either weak_scaling or strong_scaling -->
+  </parameterset>
+
+  <parameterset name="machine_parameters">
+    <parameter name="base_vp" type="int"></parameter> <!-- number of virtual processes per node, accepts a list in the format a,b,c,... for generating multiple runs -->
+    <parameter name="walltime" type="string"></parameter> <!-- wall time for the job in format hh:mm:ss -->
+    <parameter name="num_nodes" type="int"></parameter> <!-- number of nodes, accepts a list in the format a,b,c,... for generating multiple runs -->
+    <parameter name="threads_per_task" type="int"></parameter> <!-- number of threads per task, accepts a list in the format a,b,c,... for generating multiple runs -->
+    <parameter name="modules">nest-simulator/3.0</parameter> <!-- modules to be loaded before execution -->
+  </parameterset>
+
+</jube>

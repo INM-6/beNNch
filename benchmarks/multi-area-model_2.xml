@@ -6,6 +6,7 @@
     <path>../config/</path>
   </include-path>
 
+  <!-- model-specific name and output path -->
   <benchmark name="MAM" outpath="../../benchmark_results/MAM/nest_2.20.1">
 
     <!-- model configuration -->
@@ -26,14 +27,14 @@
     <!-- benchmark step -->
     <step name="bench">
       <use>model_commands</use>
-      <use from="user_config_jusuf.xml">user_config</use>
-      <use from="multi-area-model_3_config.xml">model_parameters,machine_parameters</use>
+      <use from="user_config.xml">user_config</use>
+      <use from="multi-area-model_3_config.xml">file_paths,model_parameters,machine_parameters</use>
       <use from="helpers.xml">slurm,run_benchmark,files,sub_bench_job,scaling_experiment</use>
       <do done_file="$ready_file">$submit_cmd $job_file</do>
     </step>
 
     <!-- analysis step -->
-    <analyser name="analyse_scale_check">
+    <analyser name="analyse">
       <use from="helpers.xml">nest_pattern_MAM_timer</use>
       <analyse step="bench">
         <file>timer_data.txt</file>
@@ -41,11 +42,11 @@
     </analyser>
 
     <!-- result step -->
-    <result>
-      <use>analyse_scale_check</use>
-      <table name="NEST_MAM" style="csv" sort="number">
+    <result name="result">
+      <use>analyse</use>
+      <table name="result_table" style="csv" sort="number">
         <column>num_nodes</column>
-        <column>threads_per_node</column>
+        <column>threads_per_task</column>
         <column>tasks_per_node</column>
         <column>model_time_sim</column>
         <column>wall_time_create</column>

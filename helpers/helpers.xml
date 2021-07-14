@@ -27,12 +27,13 @@
       <parameter name="submit_cmd">sbatch</parameter>
       <parameter name="job_file">job.slurm</parameter>
       <parameter name="nodes" type="int">$num_nodes</parameter>
-      <parameter name="num_tasks_tot" type="int" mode="python">${num_vps} // ${threads_per_node}</parameter>
+      <parameter name="num_vps" type="int" mode="python">$base_vp*$num_nodes</parameter>
+      <parameter name="num_tasks_tot" type="int" mode="python">${num_vps} // ${threads_per_task}</parameter>
       <parameter name="ppn" type="int" mode="python">${num_tasks_tot} // ${num_nodes}</parameter>
       
       <!-- next is alias to make result table template work -->
       <parameter name="tasks_per_node" type="int">${ppn}</parameter>
-      <parameter name="cpus_per_task" type="int">$threads_per_node</parameter>
+      <parameter name="cpus_per_task" type="int">$threads_per_task</parameter>
       <parameter name="totVPs" type="int" mode="python">$num_vps</parameter>
       <parameter name="walltime_">$walltime</parameter>
       <parameter name="ready_file">ready</parameter>
@@ -46,7 +47,7 @@
       <parameter name="exec" separator=";">
         module load $modules
         
-        export OMP_NUM_THREADS=$threads_per_node
+        export OMP_NUM_THREADS=$threads_per_task
 
         ${optional_run_command}
        

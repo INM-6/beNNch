@@ -1,26 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jube>
 
-    <parameterset name="file_paths">
-      <parameter name="model_path" type="string">/p/project/icei-hbp-2020-0006/ACA_bm_framework/nest-benchmarks/models/multi-area-model</parameter>
-      <parameter name="data_path" type="string">/p/scratch/cjinb33/albers2/mam_benchmarks/test</parameter>
-    </parameterset>
+  <parameterset name="file_paths">
+    <parameter name="model_path" type="string">/p/project/icei-hbp-2020-0006/ACA_bm_framework/nest-benchmarks/models/multi-area-model</parameter>
+    <parameter name="data_path" type="string">/p/scratch/cjinb33/albers2/mam_benchmarks/test</parameter>
+    <parameter name="out_path" type="string">../../MAM/nest_3</parameter>
+  </parameterset>
 
-    <parameterset name="model_parameters">
-      <parameter name="mam_state" type="string">Fig5</parameter> 
-      <parameter name="model_time_sim" type="float">200.</parameter>
-      <parameter name="scale_N" type="float">.01</parameter>
-      <parameter name="scale_K" type="float">.01</parameter>
-      <parameter name="scaling">${weak_scaling}</parameter> <!-- can be either weak_scaling or strong_scaling -->
-    </parameterset>
+  <parameterset name="model_parameters">
+    <parameter name="mam_state" type="string">Fig5</parameter> 
+    <parameter name="model_time_sim" type="float">200.</parameter>
+    <parameter name="scale_N" type="float">.01</parameter>
+    <parameter name="scale_K" type="float">.01</parameter>
+    <parameter name="scaling">${weak_scaling}</parameter> <!-- can be either weak_scaling or strong_scaling -->
+  </parameterset>
 
-    <parameterset name="machine_parameters">
-      <parameter name="base_vp" type="int">4</parameter>
-      <parameter name="walltime" type="string">00:10:00</parameter>
-      <parameter name="num_nodes" type="int">1</parameter>
-      <parameter name="num_vps" type="int" mode="python">$base_vp*$num_nodes</parameter>
-      <parameter name="threads_per_node" type="int">2</parameter>
-      <parameter name="modules">nest-simulator/3.0</parameter>
-    </parameterset>
+  <parameterset name="machine_parameters">
+    <parameter name="base_vp" type="int">4</parameter>
+    <parameter name="walltime" type="string">00:10:00</parameter>
+    <parameter name="num_nodes" type="int">1</parameter>
+    <parameter name="threads_per_task" type="int">2</parameter>
+    <parameter name="modules">nest-simulator/3.0</parameter>
+  </parameterset>
 
 </jube>

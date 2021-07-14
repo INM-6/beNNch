@@ -14,14 +14,14 @@ This will create the folder `nest-benchmarks`, and it contains all JUBE files ne
 
 *results* contains all results and analysis scripts.
 
-### First step
+### First steps
 
-Copy `user_config.xml` to `user_config_<your_ID_name>.xml` and fill in all parameters:
-  - `model_path`: path to the neuroscience model
-  - `data_path`: path where simulation (spiking) output will be stored
+Copy `config/templates/user_config_template.xml` to `config/user_config.xml` and fill in all parameters:
   - `account`: slurm account name for job submission
   - `email_address` (optional): email address to which slurm sends START, END, FAIL emails for job progress info
   - `partition` (optional, required on some machines): cluster partition, takes system default if left empty 
+
+Copy `config/templates/<model>_config_template.xml` to `config/<model>_config.xml` and fill in all parameters.
 
 The benchmarks are run using the automatic benchmarking environment [JUBE](https://www.fz-juelich.de/ias/jsc/EN/Expertise/Support/Software/JUBE/_node.html), so if you don't already have this installed, you will need to install it.
 
