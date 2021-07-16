@@ -60,7 +60,7 @@
 
     <!-- analysis step -->
     <analyser name="analyse">
-      <use from="helpers.xml">nest_pattern_MAM_timer</use>
+      <use from="helpers.xml">timer_pattern</use>
       <analyse step="bench">
         <file>timer_data.txt</file>
       </analyse>
@@ -87,6 +87,13 @@
         <column>wall_time_gather_spike_data</column>
         <column>wall_time_gather_target_data</column>
         <column>wall_time_communicate_prepare</column>
+        <column>base_memory</column>
+        <column>network_memory</column>
+        <column>init_memory</column>
+        <column>total_memory</column>
+        <column>num_connections</column>
+        <column>local_spike_counter</column>
+        <column>e_counter</column>
       </table>
     </result>
 
