@@ -22,6 +22,9 @@
 
         srun -n 1 python ${model_path}/run_benchmark_createParams.py ${scaling} ${totVPs} ${model_time_sim} ${scale_K} ${data_path} ${data_folder_hash} ${mam_state}
       </parameter>
+      <parameter name="log_path" type="string">
+        ${data_path}/${data_folder_hash}/recordings
+      </parameter>
     </parameterset>
 
     <!-- benchmark step -->

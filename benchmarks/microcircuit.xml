@@ -14,6 +14,9 @@
       <parameter name="run_file" type="string">
         bm_run_microcircuit.py
       </parameter>
+      <parameter name="log_path" type="string">
+        ${jube_wp_abspath}/data
+      </parameter>
     </parameterset>
 
     <!-- load and copy model-specific files -->
