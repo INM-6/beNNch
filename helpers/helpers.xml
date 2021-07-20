@@ -52,6 +52,10 @@
         ${optional_run_command}
        
         srun ${affinity} python ${run_file} ${run_args}
+        echo ${base_path}/helpers/collect_timer_data.py
+        echo ${log_path}
+
+        srun -n 1 python ${base_path}/helpers/collect_timer_data.py ${log_path}
       </parameter>
     </parameterset>
 
