@@ -48,7 +48,6 @@
     <result name="result">
       <use>analyse</use>
       <table name="result_table" style="csv" sort="number">
-        <column>master_seed</column>
         <column>num_nodes</column>
         <column>threads_per_task</column>
         <column>tasks_per_node</column>

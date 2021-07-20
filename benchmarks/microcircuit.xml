@@ -44,7 +44,7 @@
       <sub source="{SYNAPSE_TYPE}" dest="$synapse_type"/>
       <sub source="{model_time_sim}" dest="$model_time_sim"/>
       <sub source="{model_time_presim}" dest="$model_time_presim"/>
-      <sub source="{seed}" dest="$seed"/>
+      <sub source="{rng_seed}" dest="$rng_seed"/>
       <sub source="{threads_per_task}" dest="$threads_per_task"/>
       <sub source="{N_SCALING}" dest="$scale_N"/>
       <sub source="{K_SCALING}" dest="$scale_K"/>
@@ -75,6 +75,7 @@
     <result name="result">
       <use>analyse</use>
       <table name="result_table" style="csv" sort="number">
+        <column>rng_seed</column>
         <column>num_nodes</column>
         <column>threads_per_task</column>
         <column>tasks_per_node</column>

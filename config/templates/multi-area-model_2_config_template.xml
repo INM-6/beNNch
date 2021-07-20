@@ -2,6 +2,7 @@
 <jube>
 
   <parameterset name="file_paths">
+    <parameter name="base_path" type="string"></parameter> <!-- path where nest-benchmarks is stored -->
     <parameter name="model_path" type="string"></parameter> <!-- path where the multi-area model is stored -->
     <parameter name="data_path" type="string"></parameter> <!-- path where the simulation files are copied and the simulation output is stored -->
   </parameterset>

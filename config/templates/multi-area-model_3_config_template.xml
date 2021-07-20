@@ -2,6 +2,7 @@
 <jube>
 
   <parameterset name="file_paths">
+    <parameter name="base_path" type="string"></parameter> <!-- path where nest-benchmarks is stored -->
     <parameter name="model_path" type="string"></parameter> <!-- path where the multi-area model is stored -->
     <parameter name="data_path" type="string"></parameter> <!-- path where the simulation files are copied and the simulation output is stored -->
   </parameterset>
@@ -12,7 +13,7 @@
     <parameter name="model_time_presim" type="float">500.</parameter> <!-- presimulation time for avoiding initial transients in ms -->
     <parameter name="scale_N" type="float">1.</parameter> <!-- scaling the number of neurons, 1. -> original model -->
     <parameter name="scale_K" type="float">1.</parameter> <!-- scaling the indegree, 1. -> original model -->
-    <parameter name="master_seed" type="int">0</parameter> <!-- master seed for NEST, accepts a list in the format a,b,c,... for generating multiple runs -->
+    <parameter name="rng_seed" type="int">0</parameter> <!-- master seed for NEST, accepts a list in the format a,b,c,... for generating multiple runs -->
     <parameter name="scaling">${weak_scaling}</parameter> <!-- can be either weak_scaling or strong_scaling -->
   </parameterset>
 
