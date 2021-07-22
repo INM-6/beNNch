@@ -1,0 +1,29 @@
+4a08a7fc-df20-4315-b232-8e149d16a305:
+  cpu model name: "model name\t: AMD EPYC 7742 64-Core Processor"
+  machine: jsfl02.jusuf
+  notes:
+  - num vps per node: 128
+  - MPI process per node: 4
+  - threads per MPI proc: 32
+  - nest: 2.14.1 with timers
+  - mam_state: Fig5
+  plot_name: scaling_2_14_1_Fig5
+  reason: Benchmark comparison with NEST 3.
+  where:
+  - jureca.fz-juelich.de
+  - /p/project/cjinb33/jinb3330/gitordner/BenchWork/jube_MAM/nest_2/000003
+a9d9b91e-e3da-4f91-b9c2-2f8c60347c53:
+  hyperthreading: false
+  machine: JUSUF
+  notes:
+  - num vps per node: 128
+  - MPI process per node: 4
+  - threads per MPI proc: 32
+  - nest: 3.0 with timers
+  - mam_state: Fig5 (metastable)
+  plot_name: scaling_3.0_Fig5_JUSUF
+  reason: Benchmark comparison with NEST 2.14/JURECA-DC. with pytimers for presim
+    time
+  where:
+  - jusuf.fz-juelich.de
+  - /p/project/icei-hbp-2020-0006/ACA_bm_framework/benchmark_results/MAM/nest_3/000025
