@@ -56,6 +56,9 @@
         echo ${log_path}
 
         srun -n 1 python ${base_path}/helpers/collect_timer_data.py ${log_path}
+
+        srun -n 1 python ${base_path}/helpers/cpu_logging.py ${jube_wp_abspath}
+        srun -n 1 python ${base_path}/helpers/job_logging.py ${jube_wp_abspath} ${base_vp} ${num_vps} ${num_nodes} ${tasks_per_node} ${threads_per_task} ${modules} ${network_state}
       </parameter>
     </parameterset>
 

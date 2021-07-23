@@ -8,7 +8,7 @@
   </parameterset>
 
   <parameterset name="model_parameters">
-    <parameter name="mam_state" type="string">Fig5</parameter> <!-- Fig5 -> metastable, Fig3 -> ground state -->
+    <parameter name="network_state" type="string">Fig5</parameter> <!-- Fig5 -> metastable, Fig3 -> ground state -->
     <parameter name="model_time_sim" type="float">1000.</parameter> <!-- biological time to be simulated in ms -->
     <parameter name="model_time_presim" type="float">500.</parameter> <!-- presimulation time for avoiding initial transients in ms -->
     <parameter name="scale_N" type="float">1.</parameter> <!-- scaling the number of neurons, 1. -> original model -->
