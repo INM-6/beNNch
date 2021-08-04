@@ -9,3 +9,4 @@
 1628087236.0602848s Architecture +x86_64
 1628087236.993236032s CPUop-modes +32-bit,64-bit
 1628087237.744983678s ByteOrder +LittleEndian
+1628087238.624878626s Addresssizes +43bitsphysical,48bitsvirtual
