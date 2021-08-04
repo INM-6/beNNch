@@ -1,8 +1,8 @@
 import os
 import sys
 
-from analysis_helper import shell, shell_return, update_catalogue, load
-from analysis_config import model, jube_bench_path, catalogue_path
+from analysis_helper import shell, shell_return, load, git_annex
+from analysis_config import model, jube_bench_path, result_path
 from plot_helper import plot
 
 jube_id = str(sys.argv[1])
@@ -16,18 +16,19 @@ shell(
 cpu_info = load(os.path.join(base_path, '000000_bench/work', 'cpu.pkl'))
 job_info = load(os.path.join(base_path, '000000_bench/work', 'job.pkl'))
 
-update_catalogue(catalogue_path=catalogue_path,
-                 uuidgen_hash=uuidgen_hash,
-                 cpu_info=cpu_info,
-                 job_info=job_info)
+git_annex(cpu_info=cpu_info,
+          job_info=job_info,
+          uuidgen_hash=uuidgen_hash,
+          base_path=base_path,
+          result_path=result_path)
 
-try:
-    # plotting only works if run goes across nodes or virtual processes
-    plot(
-        model=model,
-        timer_hash=uuidgen_hash,
-        timer_path=f'{jube_bench_path}/{jube_id.zfill(6)}',
-        catalogue_path=catalogue_path
-    )
-except ValueError:
-    print('plotting only works if run goes across nodes or virtual processes')
+# try:
+#     # plotting only works if run goes across nodes or virtual processes
+#     plot(
+#         model=model,
+#         timer_hash=uuidgen_hash,
+#         timer_path=f'{jube_bench_path}/{jube_id.zfill(6)}',
+#         catalogue_path=catalogue_path
+#     )
+# except ValueError:
+#     print('plotting only works if run goes across nodes or virtual processes')
