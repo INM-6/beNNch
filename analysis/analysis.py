@@ -27,7 +27,7 @@ git_annex(cpu_info=cpu_info,
 plot(
     model=model,
     timer_hash=uuidgen_hash,
-    timer_path=result_path,
+    timer_path=f'{jube_bench_path}/{jube_id.zfill(6)}',
 )
 # except ValueError:
 #     print('plotting only works if run goes across nodes or virtual processes')

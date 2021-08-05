@@ -6,8 +6,10 @@ import pickle
 
 
 def shell(command):
-    return os.system(command + '>/dev/null 2>&1')
+    return os.system(command)
 
+def shell_without_print(command):
+    return os.system(command + '>/dev/null 2>&1')
 
 def shell_return(command):
     return os.popen(command).read().strip()
@@ -27,13 +29,14 @@ def git_annex(cpu_info, job_info, uuidgen_hash, base_path, result_path):
 
     shell(f'cp {tmp_result_file_path} {result_file_path}')
     shell(f'git annex add {result_file_path}')
-    shell(f'git annex metadata {result_file_path} --set key={uuidgen_hash}')
+    shell_without_print(
+        f'git annex metadata {result_file_path} --set key={uuidgen_hash}')
 
     for info_dict in [job_info, cpu_info]:
         for key, value in info_dict.items():
-            shell(f'git annex metadata {result_file_path} '
+            shell_without_print(f'git annex metadata {result_file_path} '
                   + f'--set {key}="{value}" --force')
-    shell(f'git annex metadata {result_file_path} '
+    shell_without_print(f'git annex metadata {result_file_path} '
           + f'--set machine="{machine}" --force')
 
 
