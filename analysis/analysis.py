@@ -23,12 +23,11 @@ git_annex(cpu_info=cpu_info,
           result_path=result_path)
 
 # try:
-#     # plotting only works if run goes across nodes or virtual processes
-#     plot(
-#         model=model,
-#         timer_hash=uuidgen_hash,
-#         timer_path=f'{jube_bench_path}/{jube_id.zfill(6)}',
-#         catalogue_path=catalogue_path
-#     )
+    # plotting only works if run goes across nodes or virtual processes
+plot(
+    model=model,
+    timer_hash=uuidgen_hash,
+    timer_path=result_path,
+)
 # except ValueError:
 #     print('plotting only works if run goes across nodes or virtual processes')
