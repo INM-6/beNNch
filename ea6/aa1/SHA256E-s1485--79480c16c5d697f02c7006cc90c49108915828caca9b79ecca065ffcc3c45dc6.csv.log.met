@@ -1,5 +1,4 @@
 1628153948.465758576s key -ceafcc87-9a53-4e98-a1cd-4a6efd715a58
-1628153957.758212574s Architecture +x86_64
 1628153958.51447594s CPUop-modes +32-bit,64-bit
 1628153959.359906287s ByteOrder +LittleEndian
 1628153960.240544971s Addresssizes +43bitsphysical,48bitsvirtual
@@ -42,3 +41,4 @@
 1628155911.562641197s threads_per_task +2
 1628155912.370034895s nest +nest-simulator/3.0
 1628155913.572376459s network_state +Fig5
+1628155914.415018368s Architecture +x86_64
