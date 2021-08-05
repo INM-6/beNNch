@@ -1,4 +1,3 @@
-1628087236.0602848s Architecture +x86_64
 1628087236.993236032s CPUop-modes +32-bit,64-bit
 1628087237.744983678s ByteOrder +LittleEndian
 1628087238.624878626s Addresssizes +43bitsphysical,48bitsvirtual
@@ -40,3 +39,4 @@
 1628153954.259683053s threads_per_task +2
 1628153955.391381046s nest +nest-simulator/3.0
 1628153956.61222864s network_state +Fig5
+1628153957.758212574s Architecture +x86_64
