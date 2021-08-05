@@ -3,7 +3,7 @@ from matplotlib import pyplot as plt
 import matplotlib.gridspec as gridspec
 
 
-def plot(model, timer_hash, timer_path):
+def plot(model, timer_hash, timer_path, save_path):
 
     if model in ['mam', 'MAM', 'multi-area-model']:
         args = {
@@ -53,7 +53,7 @@ def plot(model, timer_hash, timer_path):
         ax1.legend()
         B.merge_legends(ax2, ax3)
 
-        plt.savefig(f'{timer_path}/{timer_hash}.pdf')
+        plt.savefig(f'{save_path}/{timer_hash}.png', dpi=600)
 
     elif model in ['mc', 'MC', 'microcircuit']:
 
@@ -95,4 +95,4 @@ def plot(model, timer_hash, timer_path):
         ax2.set_ylabel(r'relative wall time $[\%]$')
         B.merge_legends(ax1, ax2)
 
-        plt.savefig(f'{timer_path}/{timer_hash}.pdf')
+        plt.savefig(f'{save_path}/{timer_hash}.png', dpi=600)
