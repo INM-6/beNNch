@@ -74,4 +74,4 @@ if __name__ == '__main__':
     os.system("jupyter nbconvert --to slides slideshow.ipynb "
               + "--TemplateExporter.exclude_input=True "
               + "--SlidesExporter.reveal_transition='none'")
-    # os.system("rm slideshow.ipynb")
+    os.system("rm slideshow.ipynb")
