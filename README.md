@@ -6,6 +6,8 @@ This will create the folder `nest-benchmarks`, and it contains all JUBE files ne
 
 ### Current repository layout
 
+*analysis* contains JUBE analysis script, config and helpers.
+
 *benchmarks* contains benchmark scripts to run benchmarks via JUBE.
 
 *config* contains user configuration file templates to be copied and adapted. 
@@ -29,76 +31,50 @@ The benchmarks are run using the automatic benchmarking environment [JUBE](https
 
 Before running the Benchmarks, you need to install NEST, and you should also install jemalloc.
 
-#### NEST
-
-```bash
-cd <PATH>/BenchWork
-mkdir NEST
-cd NEST
-git clone https://github.com/nest/nest-simulator.git src
-```
-
-You need to clone into`src`. If you want a specific version of NEST, you need to adjust accordingly, you can find our build files [here](https://gin.g-node.org/nest/nest-benchmarks/src/master/Benchmarks/jube_build) to see which build files we have already created.
-
-Once the source code is in place, build and install NEST via JUBE:
-
-```bash
-jube run <PATH>/nest-benchmarks/Benchmarks/jube_build/build_nest_daint_strict.xml
-```
-
-NEST will be installed in `BenchWork/NEST-daint-base_O3_strict`.
-
-**NEST with Python**
-
-If you want to build and install NEST with Python, run
-
-```bash
-jube run <PATH>/nest-benchmarks/Benchmarks/jube_build/build_nest_py_daint_strict.xml
-```
-
-**NEST with Boost**
-
-If you want to run NEST with Boost, you need to manually copy out lines 35, 38, 188,193, 194 and 195 in `<PATH>/BenchWork/NEST/src/libnestutil/sort.h`
-
-![](https://gin.g-node.org/nest/nest-benchmarks/src/master/boost1.png)
-
-![](https://gin.g-node.org/nest/nest-benchmarks/src/master/boost2.png)
-
-
-#### Jemalloc
-
-```bash
-cd <PATH>/BenchWork
-mkdir jemalloc
-cd jemalloc
-wget https://github.com/jemalloc/jemalloc/releases/download/5.0.1/jemalloc-5.0.1.tar.bz2
-tar xvf jemalloc-5.0.1.tar.bz2
-```
-
-To build and install jemalloc, run
-
-```bash
-jube run <PATH>/nest-benchmarks/Benchmarks/jube_build/build_jemalloc_daint.xml
-```
 
 ### Running Benchmarks
 
-The JUBE scripts for the benchmarks can be found in `<PATH>/nest-benchmarks/benchmarks/`.
+The JUBE scripts for the benchmarks can be found in `benchmarks/`.
 
 To run a benchmark, run
 
 ```bash
-jube run <PATH>/nest-benchmarks/benchmarks/<benchmark_file.xml>
+jube run <PATH_TO_REPO>/benchmarks/<benchmark_file.xml>
 ```
 
 You will get a job `id`.
 
-These are the benchmarks we currently have, with corresponding JUBE files:
+These are the benchmarks currently implemented:
 
 - **Multi-Area Model**
 
-  - `multi-area-model_2.xml` for usage with NEST 2.
-  - `multi-area-model_2.xml` for usage with NEST 3.
+  - `benchmarks/multi-area-model_2.xml` for usage with NEST 2.
+  - `benchmarks/multi-area-model_3.xml` for usage with NEST 3.
+
+- **Microcircuit**
+
+  - `benchmarks/microcircuit.xml`
+
+### Analyze Benchmarks
+
+- copy `analysis/analysis_config_template.py` to `analysis/analysis_config.py`
+- fill in
+  + name of the model (for creating a quick, glanceable plot of the benchmark with model-specific default. To create your own plot here, add to `analysis/plot_helpers.py`. Here we provide defaults for the multi-area-model and the microcircuit.)
+  + path to the jube output (usually the same as the `outpath` of the `<benchmark>` in `benchmarks/<model>`)
+- `cd results` (s.t. git annex metadata annotation works)
+- `python ../analysis/analysis.py <id>` where `<id>` is the JUBE ID of the benchmark you want to analyze
+- if you're happy with the results: `git annex sync`
+
+
+**Visualization**
+
+- go to `results`
+- select benchmarks to plot via the following syntax:
+  + `git annex view <common_metadata>=<value_of_metadata> <differing_metadata>="*"`
+    * Here, common_metadata refers to a key that should be the same value for all benchmarks, e.g. the `machine`. A list of all available metadata keys can be obtained via `git annex metadata <uuidgen_hash>.csv`. One can use `*` here as well, e.g. when filtering out all runs that include simulations done on 10 nodes via `num_nodes='*,10*'` or all machines that have `jusuf` in their name via `machine='*jusuf*`.
+    * full example: `git annex view nest=nest-simulator/3.0 num_vps="*"`
+- create slideshow of plots with `python ../slideshow/slideshow.py <model> <bullet_1> <bullet_2> ...` with an arbitrarily long list of bullet items that appear as bullet points on the slides for comparison
+
 
 #### legacy models:
 
@@ -188,45 +164,6 @@ Then, go to `nest-benchmarks/BenchModels/4x4mm2LFP/` and run
 > python setup.py install --user
 ```
 
-**Specifications:**
-All of the benchmarks are run with the following number of nodes, VPs, scales, threads unless otherwise specified:
-
-| Nodes | VPs  | Scale - hpc | Scale - hpc_syn | Scale - hpc_rule | Scale - pop | Scale - MAM | Scale - 4x4 | Threads |
-| :---: | :--: | :---------: | :-------------: | :--------------: | :---------: | :---------: | :---------: | :-----: |
-|   1   |  36  |     20      |      44.4       |        5         |      5      |   0.0625    |   0.0625    |    6    |
-|   2   |  72  |     40      |      88.8       |        10        |     10      |    0.125    |    0.125    |    6    |
-|   4   | 144  |     80      |      177.6      |        20        |     20      |    0.25     |    0.25     |    6    |
-|   8   | 288  |     160     |      355.2      |        40        |     40      |     0.5     |     0.5     |    6    |
-|  16   | 576  |     320     |      710.4      |        80        |     80      |     1.0     |     1.0     |    6    |
-|  32   | 1152 |     640     |     1420.8      |       160        |     160     |     2.0     |     2.0     |    6    |
-
-
-
-### Analyze Benchmarks
-
-When the benchmark is finished running, tell JUBE to analyze the results
-
-```bash
-jube analyse <outpath> -i id
-```
-
-Then get the results
-
-```bash
-jube result <outpath> -i id
-```
-
-If you want to save the results in a csv-file, do
-
-```bash
-jube result <outpath> -i id > <path-to-directory-you-want>/result-name.csv
-```
-
-`result-name.csv` can be an existing file, or new one. If it already exists, this will overwrite the content in the file.
-
-**Visualization**
-
-[WIP]
 
 
 
