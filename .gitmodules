@@ -1,9 +1,9 @@
 [submodule "results"]
 	path = results
 	url = git@gin.g-node.org:/jasperalbers/benchmark-results.git
-[submodule "benchplot"]
-	path = benchplot
-	url = git@github.com:INM-6/benchplot.git
 [submodule "models"]
 	path = models
 	url = git@gin.g-node.org:/nest/benchmark-models.git
+[submodule "plot"]
+	path = plot
+	url = git@github.com:INM-6/benchplot.git
