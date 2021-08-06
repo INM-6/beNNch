@@ -3,13 +3,11 @@ from matplotlib import pyplot as plt
 import matplotlib.gridspec as gridspec
 
 
-def plot(model, timer_hash, timer_path, catalogue_path):
+def plot(model, timer_hash, timer_file, save_path):
 
     if model in ['mam', 'MAM', 'multi-area-model']:
         args = {
-            'data_hash': timer_hash,
-            'data_path': timer_path,
-            'catalogue_path': catalogue_path,
+            'data_file': timer_file,
             'x_axis': ['num_nodes'],
             'time_scaling': 1e3
         }
@@ -54,14 +52,12 @@ def plot(model, timer_hash, timer_path, catalogue_path):
         ax1.legend()
         B.merge_legends(ax2, ax3)
 
-        plt.savefig(f'{timer_path}/{timer_hash}.pdf')
+        plt.savefig(f'{save_path}/{timer_hash}.png', dpi=600)
 
     elif model in ['mc', 'MC', 'microcircuit']:
 
         args = {
-            'data_hash': timer_hash,
-            'data_path': timer_path,
-            'catalogue_path': catalogue_path,
+            'data_file': timer_file,
             'x_axis': ['num_nvp'],
             'time_scaling': 1e3
         }
@@ -97,4 +93,4 @@ def plot(model, timer_hash, timer_path, catalogue_path):
         ax2.set_ylabel(r'relative wall time $[\%]$')
         B.merge_legends(ax1, ax2)
 
-        plt.savefig(f'{timer_path}/{timer_hash}.pdf')
+        plt.savefig(f'{save_path}/{timer_hash}.png', dpi=600)

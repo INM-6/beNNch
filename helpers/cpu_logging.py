@@ -4,7 +4,7 @@ import pickle
 
 save_path = sys.argv[1]
 
-cpu_info = [element.strip().replace(' ', '')
+cpu_info = [element.strip().replace(' ', '').replace('(', '').replace(')', '')
             for element in os.popen('lscpu').readlines()]
 
 cpu_info_dict = {}
