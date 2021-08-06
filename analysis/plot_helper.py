@@ -3,12 +3,11 @@ from matplotlib import pyplot as plt
 import matplotlib.gridspec as gridspec
 
 
-def plot(model, timer_hash, timer_path, save_path):
+def plot(model, timer_hash, timer_file, save_path):
 
     if model in ['mam', 'MAM', 'multi-area-model']:
         args = {
-            'data_hash': timer_hash,
-            'data_path': timer_path,
+            'data_file': timer_file,
             'x_axis': ['num_nodes'],
             'time_scaling': 1e3
         }
@@ -58,8 +57,7 @@ def plot(model, timer_hash, timer_path, save_path):
     elif model in ['mc', 'MC', 'microcircuit']:
 
         args = {
-            'data_hash': timer_hash,
-            'data_path': timer_path,
+            'data_file': timer_file,
             'x_axis': ['num_nvp'],
             'time_scaling': 1e3
         }
