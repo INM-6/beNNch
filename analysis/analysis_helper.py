@@ -20,10 +20,10 @@ def load(filepath):
         data = pickle.load(f)
     return data
 
-def git_annex(cpu_info, job_info, uuidgen_hash, base_path, result_path):
+def git_annex(cpu_info, job_info, uuidgen_hash, base_path):
 
     tmp_result_file_path = os.path.join(base_path, uuidgen_hash + '.csv')
-    result_file_path = os.path.join(result_path, uuidgen_hash + '.csv')
+    result_file_path = os.path.join('./', uuidgen_hash + '.csv')
 
     machine = os.popen('echo $HOSTNAME').read().strip()
 
@@ -38,21 +38,3 @@ def git_annex(cpu_info, job_info, uuidgen_hash, base_path, result_path):
                   + f'--set {key}="{value}" --force')
     shell_without_print(f'git annex metadata {result_file_path} '
           + f'--set machine="{machine}" --force')
-
-
-def update_catalogue(catalogue_path, uuidgen_hash, cpu_info, job_info):
-    dict_ = {
-        uuidgen_hash: {
-            'machine': os.popen('echo $HOSTNAME').read().strip(),
-        }
-    }
-
-    dict_[uuidgen_hash].update(job_info)
-    dict_[uuidgen_hash].update(cpu_info)
-
-    with open(catalogue_path, 'r') as c:
-        catalogue = yaml.safe_load(c)
-        catalogue.update(dict_)
-
-    with open(catalogue_path, 'w') as c:
-        yaml.dump(catalogue, c)
