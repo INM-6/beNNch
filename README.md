@@ -1,8 +1,6 @@
 # NEST benchmarks
 
-To run the benchmarks you need to clone the nest-benchmarks repository. To clone with git, do `git clone https://gin.g-node.org/jasperalbers/nest-benchmarks.git`
-
-This will create the folder `nest-benchmarks`, and it contains all JUBE files needed to run the benchmarks.
+To run the benchmarks you need to clone the nest-benchmarks repository. To clone with git, do `git clone https://gin.g-node.org/jasperalbers/nest-benchmarks.git`. This will create the folder `nest-benchmarks`, and it contains all JUBE files needed to run the benchmarks.
 
 ### Current repository layout
 
@@ -16,6 +14,15 @@ This will create the folder `nest-benchmarks`, and it contains all JUBE files ne
 
 *results* contains all results and analysis scripts.
 
+
+### Initialization
+
+- download submodule data
+  + `git submodule init`
+  + `git submodule update`
+- install benchplot as module
+  + `pip install -e plot --user`
+
 ### First steps
 
 Copy `config/templates/user_config_template.xml` to `config/user_config.xml` and fill in all parameters:
@@ -25,11 +32,18 @@ Copy `config/templates/user_config_template.xml` to `config/user_config.xml` and
 
 Copy `config/templates/<model>_config_template.xml` to `config/<model>_config.xml` and fill in all parameters.
 
-The benchmarks are run using the automatic benchmarking environment [JUBE](https://www.fz-juelich.de/ias/jsc/EN/Expertise/Support/Software/JUBE/_node.html), so if you don't already have this installed, you will need to install it.
 
-### Software Installation
+### Software Dependencies
 
-Before running the Benchmarks, you need to install NEST, and you should also install jemalloc.
+- [git annex](https://git-annex.branchable.com)
+  + can be installed via 
+```bash
+wget 'http://downloads.kitenet.net/git-annex/linux/current/git-annex-standalone-amd64.tar.gz'
+tar -xzf git-annex-standalone-amd64.tar.gz
+export PATH="$PATH:<install_path>/git-annex.linux
+```
+- [JUBE](https://www.fz-juelich.de/ias/jsc/EN/Expertise/Support/Software/JUBE/_node.html)
+- Python 3
 
 
 ### Running Benchmarks
@@ -59,22 +73,31 @@ These are the benchmarks currently implemented:
 
 - copy `analysis/analysis_config_template.py` to `analysis/analysis_config.py`
 - fill in
-  + name of the model (for creating a quick, glanceable plot of the benchmark with model-specific default. To create your own plot here, add to `analysis/plot_helpers.py`. Here we provide defaults for the multi-area-model and the microcircuit.)
+  + name of the model (for creating a quick, glanceable plot of the benchmark with model-specific default. To create your own plot, add to `analysis/plot_helpers.py`. Here we provide defaults for the multi-area-model and the microcircuit.)
   + path to the jube output (usually the same as the `outpath` of the `<benchmark>` in `benchmarks/<model>`)
 - `cd results` (s.t. git annex metadata annotation works)
 - `python ../analysis/analysis.py <id>` where `<id>` is the JUBE ID of the benchmark you want to analyze
 - if you're happy with the results: `git annex sync`
 
+### Get remote benchmark results
+- `cd results`
+- `git add remote <name> <location>`, e.g. `git add remote jusuf /p/project/icei-hbp-2020-0006/ACA_bm_framework/nest-benchmarks/results`
+- `git fetch <name>`
+- `git annex get`
 
-**Visualization**
+### Visualization
 
 - go to `results`
 - select benchmarks to plot via the following syntax:
   + `git annex view <common_metadata>=<value_of_metadata> <differing_metadata>="*"`
     * Here, common_metadata refers to a key that should be the same value for all benchmarks, e.g. the `machine`. A list of all available metadata keys can be obtained via `git annex metadata <uuidgen_hash>.csv`. One can use `*` here as well, e.g. when filtering out all runs that include simulations done on 10 nodes via `num_nodes='*,10*'` or all machines that have `jusuf` in their name via `machine='*jusuf*`.
     * full example: `git annex view nest=nest-simulator/3.0 num_vps="*"`
+    * to go back in a view, execute `git annex vpop`
 - create slideshow of plots with `python ../slideshow/slideshow.py <model> <bullet_1> <bullet_2> ...` with an arbitrarily long list of bullet items that appear as bullet points on the slides for comparison
 
+#### Known issues
+- error `jinja2.exceptions.TemplateNotFound: index.html.j2`
+  + [issue](https://github.com/jupyter/nbconvert/issues/1394) with a recent version of `nbconvert`, try to install version `5.6.1` instead (e.g. `pip install nbconvert==5.6.1 --user`)
 
 #### legacy models:
 
