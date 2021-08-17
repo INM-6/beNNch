@@ -11,7 +11,7 @@ from analysis.plot_helper import plot
 
 
 def display_plot(timer_hash, plot_path, attributes):
-    display_list = '<ul>\n'
+    display_list = '<center><ul>\n'
     file_path = os.popen(
         f"find . -name '*{timer_hash}.csv'").read().strip()
     for attribute in attributes:
@@ -19,8 +19,9 @@ def display_plot(timer_hash, plot_path, attributes):
             f'git annex metadata {file_path} '
             + f'--get {attribute}').read().strip()
         display_list += f'  <li>{attribute}: {value}</li>\n'
-    display_list += '</ul>'
+    display_list += '</ul></center>'
 
+    display(HTML(f'<center><header>hash: {timer_hash}</header></center>'))
     display(Image(filename=os.path.join(plot_path, timer_hash + '.png')))
     display(HTML(display_list))
 
