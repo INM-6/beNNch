@@ -73,7 +73,7 @@ These are the benchmarks currently implemented:
 
 - copy `analysis/analysis_config_template.py` to `analysis/analysis_config.py`
 - fill in
-  + name of the model (for creating a quick, glanceable plot of the benchmark with model-specific default. To create your own plot, add to `analysis/plot_helpers.py`. Here we provide defaults for the multi-area-model and the microcircuit.)
+  + type of scaling (for creating a quick, glanceable plot of the benchmark. To create your own plot, add to `analysis/plot_helpers.py`. Here we provide defaults for plotting timers across `nodes` and `threads`.)
   + path to the jube output (usually the same as the `outpath` of the `<benchmark>` in `benchmarks/<model>`)
 - `cd results` (s.t. git annex metadata annotation works)
 - `python ../analysis/analysis.py <id>` where `<id>` is the JUBE ID of the benchmark you want to analyze
@@ -93,7 +93,7 @@ These are the benchmarks currently implemented:
     * Here, common_metadata refers to a key that should be the same value for all benchmarks, e.g. the `machine`. A list of all available metadata keys can be obtained via `git annex metadata <uuidgen_hash>.csv`. One can use `*` here as well, e.g. when filtering out all runs that include simulations done on 10 nodes via `num_nodes='*,10*'` or all machines that have `jusuf` in their name via `machine='*jusuf*`.
     * full example: `git annex view nest=nest-simulator/3.0 num_vps="*"`
     * to go back in a view, execute `git annex vpop`
-- create slideshow of plots with `python ../slideshow/slideshow.py <model> <bullet_1> <bullet_2> ...` with an arbitrarily long list of bullet items that appear as bullet points on the slides for comparison
+- create slideshow of plots with `python ../slideshow/slideshow.py <scaling_type> <bullet_1> <bullet_2> ...` with an arbitrarily long list of bullet items (metadata keys) that appear as bullet points on the slides for comparison. `<scaling_type>` defines the style of plotting, c.f. section on _Analyze Benchmarks_.
 
 #### Known issues
 - error `jinja2.exceptions.TemplateNotFound: index.html.j2`
