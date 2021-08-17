@@ -27,7 +27,7 @@
       <parameter name="submit_cmd">sbatch</parameter>
       <parameter name="job_file">job.slurm</parameter>
       <parameter name="nodes" type="int">$num_nodes</parameter>
-      <parameter name="num_vps" type="int" mode="python">$base_vp*$num_nodes</parameter>
+      <parameter name="num_vps" type="int" mode="python">$vps_per_node*$num_nodes</parameter>
       <parameter name="num_tasks_tot" type="int" mode="python">${num_vps} // ${threads_per_task}</parameter>
       <parameter name="ppn" type="int" mode="python">${num_tasks_tot} // ${num_nodes}</parameter>
       
@@ -58,7 +58,7 @@
         srun -n 1 python ${base_path}/helpers/collect_timer_data.py ${log_path}
 
         srun -n 1 python ${base_path}/helpers/cpu_logging.py ${jube_wp_abspath}
-        srun -n 1 python ${base_path}/helpers/job_logging.py ${jube_wp_abspath} ${base_vp} ${num_vps} ${num_nodes} ${tasks_per_node} ${threads_per_task} ${modules} ${network_state}
+        srun -n 1 python ${base_path}/helpers/job_logging.py ${jube_wp_abspath} ${vps_per_node} ${num_nodes} ${tasks_per_node} ${threads_per_task} ${modules} ${model_name} ${network_state}
       </parameter>
     </parameterset>
 

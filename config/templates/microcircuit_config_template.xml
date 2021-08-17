@@ -7,6 +7,7 @@
   </parameterset>
 
   <parameterset name="model_parameters">
+    <parameter name="model_name" type="string">microcircuit</parameter> <!-- for identifying the model, can be any unique string -->
     <parameter name="net_params">network_params.py</parameter> <!-- default network parameters -->
     <parameter name="network_state" type="string"></parameter> <!-- empty for microcircuit -->
     <parameter name="scale_N" type="float">1.</parameter> <!-- scaling the number of neurons, 1. -> original model -->
@@ -24,7 +25,7 @@
   </parameterset>
 
   <parameterset name="machine_parameters">
-    <parameter name="base_vp" type="int"></parameter> <!-- number of virtual processes per node, accepts a list in the format a,b,c,... for generating multiple runs -->
+    <parameter name="vps_per_node" type="int"></parameter> <!-- number of virtual processes per node, accepts a list in the format a,b,c,... for generating multiple runs -->
     <parameter name="walltime" type="string"></parameter> <!-- wall time for the job in format hh:mm:ss -->
     <parameter name="num_nodes" type="int"></parameter> <!-- number of nodes, accepts a list in the format a,b,c,... for generating multiple runs -->
     <parameter name="threads_per_task" type="int"></parameter> <!-- number of threads per task, accepts a list in the format a,b,c,... for generating multiple runs -->
