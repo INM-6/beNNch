@@ -10,6 +10,7 @@ threads_per_task = sys.argv[5]
 nest = sys.argv[6]
 model_name = sys.argv[7]
 network_state = sys.argv[8]
+network_state = sys.argv[9]
 
 job_info = {
     'vps_per_node': vps_per_node,
@@ -19,6 +20,7 @@ job_info = {
     'nest': nest,
     'model_name': model_name,
     'network_state': network_state,
+    'record_spikes': record_spikes
 }
 
 with open(os.path.join(save_path, 'job.pkl'), 'wb') as f:
