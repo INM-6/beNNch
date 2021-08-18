@@ -2,7 +2,7 @@ import os
 import sys
 
 from analysis_helper import shell, shell_return, load, git_annex
-from analysis_config import model, jube_bench_path
+from analysis_config import scaling_type, jube_bench_path
 from plot_helper import plot
 
 jube_id = str(sys.argv[1])
@@ -22,7 +22,7 @@ git_annex(cpu_info=cpu_info,
           base_path=base_path)
 
 plot(
-    model=model,
+    scaling_type=scaling_type,
     timer_hash=uuidgen_hash,
     timer_file=f'{jube_bench_path}/{jube_id.zfill(6)}/{uuidgen_hash}.csv',
     save_path=f'{jube_bench_path}/{jube_id.zfill(6)}'

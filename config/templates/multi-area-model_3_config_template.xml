@@ -8,7 +8,7 @@
   </parameterset>
 
   <parameterset name="model_parameters">
-    <parameter name="model_name" type="string">multi-area model</parameter> <!-- for identifying the model, can be any unique string -->
+    <parameter name="model_name" type="string">multi-area-model</parameter> <!-- for identifying the model, can be any unique string -->
     <parameter name="network_state" type="string">Fig5</parameter> <!-- Fig5 -> metastable, Fig3 -> ground state -->
     <parameter name="record_spikes" type="string">False</parameter> <!-- whether to write spiking output to file, either True or False -->
     <parameter name="model_time_sim" type="float">1000.</parameter> <!-- biological time to be simulated in ms -->

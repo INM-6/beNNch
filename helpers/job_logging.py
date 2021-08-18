@@ -10,7 +10,7 @@ threads_per_task = sys.argv[5]
 nest = sys.argv[6]
 model_name = sys.argv[7]
 network_state = sys.argv[8]
-network_state = sys.argv[9]
+record_spikes = sys.argv[9]
 
 job_info = {
     'vps_per_node': vps_per_node,
