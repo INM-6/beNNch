@@ -58,7 +58,7 @@
         srun -n 1 python ${base_path}/helpers/collect_timer_data.py ${log_path}
 
         srun -n 1 python ${base_path}/helpers/cpu_logging.py ${jube_wp_abspath}
-        srun -n 1 python ${base_path}/helpers/job_logging.py ${jube_wp_abspath} ${vps_per_node} ${num_nodes} ${tasks_per_node} ${threads_per_task} ${modules} ${model_name} ${network_state}
+        srun -n 1 python ${base_path}/helpers/job_logging.py ${jube_wp_abspath} ${vps_per_node} ${num_nodes} ${tasks_per_node} ${threads_per_task} ${modules} ${model_name} ${network_state} ${record_spikes}
       </parameter>
     </parameterset>
 
