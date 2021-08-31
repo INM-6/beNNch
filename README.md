@@ -40,7 +40,7 @@ Copy `config/templates/<model>_config_template.xml` to `config/<model>_config.xm
 ```bash
 wget 'http://downloads.kitenet.net/git-annex/linux/current/git-annex-standalone-amd64.tar.gz'
 tar -xzf git-annex-standalone-amd64.tar.gz
-export PATH="$PATH:<install_path>/git-annex.linux
+export PATH=$PATH:<install_path>/git-annex.linux
 ```
 - [JUBE](https://www.fz-juelich.de/ias/jsc/EN/Expertise/Support/Software/JUBE/_node.html)
 - Python 3
