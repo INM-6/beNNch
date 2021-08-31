@@ -81,9 +81,11 @@ These are the benchmarks currently implemented:
 
 ### Get remote benchmark results
 - `cd results`
+- `git annex init` (only needed at first usage for initialisation)
 - `git add remote <name> <location>`, e.g. `git add remote jusuf /p/project/icei-hbp-2020-0006/ACA_bm_framework/nest-benchmarks/results`
 - `git fetch <name>`
 - `git annex get`
+- note: if you did not initialize the results folder, you can do so with `git annex init`
 
 ### Visualization
 
