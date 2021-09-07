@@ -58,7 +58,7 @@ def make_notebook(outPath: str, timer_hashes, attributes_to_display):
 
 if __name__ == '__main__':
 
-    model = sys.argv[1]
+    scaling_type = sys.argv[1]
     attributes_to_display = sys.argv[2:]
 
     csv_files = os.popen(
@@ -69,7 +69,7 @@ if __name__ == '__main__':
     for csv_file in csv_files:
         timer_hash = csv_file.split('/')[-1].split('.')[0]
         timer_hashes.append(timer_hash)
-        plot(model=model,
+        plot(scaling_type=scaling_type,
              timer_hash=timer_hash,
              timer_file=csv_file,
              save_path='./plots'
