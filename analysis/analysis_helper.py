@@ -26,6 +26,7 @@ def git_annex(cpu_info, job_info, uuidgen_hash, base_path):
     result_file_path = os.path.join('./', uuidgen_hash + '.csv')
 
     machine = os.popen('echo $HOSTNAME').read().strip()
+    user = os.popen('echo $USER').read().strip()
 
     shell(f'cp {tmp_result_file_path} {result_file_path}')
     shell(f'git annex add {result_file_path}')
@@ -36,5 +37,8 @@ def git_annex(cpu_info, job_info, uuidgen_hash, base_path):
         for key, value in info_dict.items():
             shell_without_print(f'git annex metadata {result_file_path} '
                   + f'--set {key}="{value}" --force')
+    # additionally add machine and user name
     shell_without_print(f'git annex metadata {result_file_path} '
           + f'--set machine="{machine}" --force')
+    shell_without_print(f'git annex metadata {result_file_path} '
+          + f'--set user="{user}" --force')

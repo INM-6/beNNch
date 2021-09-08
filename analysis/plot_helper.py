@@ -3,9 +3,9 @@ from matplotlib import pyplot as plt
 import matplotlib.gridspec as gridspec
 
 
-def plot(model, timer_hash, timer_file, save_path):
+def plot(scaling_type, timer_hash, timer_file, save_path):
 
-    if model in ['mam', 'MAM', 'multi-area-model']:
+    if scaling_type == 'nodes':
         args = {
             'data_file': timer_file,
             'x_axis': ['num_nodes'],
@@ -52,9 +52,12 @@ def plot(model, timer_hash, timer_file, save_path):
         ax1.legend()
         B.merge_legends(ax2, ax3)
 
+        ax1.set_ylim(0, 2700)
+        ax2.set_ylim(0, 230)
+
         plt.savefig(f'{save_path}/{timer_hash}.png', dpi=600)
 
-    elif model in ['mc', 'MC', 'microcircuit']:
+    elif scaling_type == 'threads':
 
         args = {
             'data_file': timer_file,

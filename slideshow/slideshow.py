@@ -11,7 +11,7 @@ from analysis.plot_helper import plot
 
 
 def display_plot(timer_hash, plot_path, attributes):
-    display_list = '<ul>\n'
+    display_list = '<center><ul>\n'
     file_path = os.popen(
         f"find . -name '*{timer_hash}.csv'").read().strip()
     for attribute in attributes:
@@ -19,8 +19,9 @@ def display_plot(timer_hash, plot_path, attributes):
             f'git annex metadata {file_path} '
             + f'--get {attribute}').read().strip()
         display_list += f'  <li>{attribute}: {value}</li>\n'
-    display_list += '</ul>'
+    display_list += '</ul></center>'
 
+    display(HTML(f'<center><header>hash: {timer_hash}</header></center>'))
     display(Image(filename=os.path.join(plot_path, timer_hash + '.png')))
     display(HTML(display_list))
 
@@ -57,7 +58,7 @@ def make_notebook(outPath: str, timer_hashes, attributes_to_display):
 
 if __name__ == '__main__':
 
-    model = sys.argv[1]
+    scaling_type = sys.argv[1]
     attributes_to_display = sys.argv[2:]
 
     csv_files = os.popen(
@@ -68,7 +69,7 @@ if __name__ == '__main__':
     for csv_file in csv_files:
         timer_hash = csv_file.split('/')[-1].split('.')[0]
         timer_hashes.append(timer_hash)
-        plot(model=model,
+        plot(scaling_type=scaling_type,
              timer_hash=timer_hash,
              timer_file=csv_file,
              save_path='./plots'
