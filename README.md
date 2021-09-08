@@ -40,7 +40,7 @@ Copy `config/templates/<model>_config_template.xml` to `config/<model>_config.xm
 ```bash
 wget 'http://downloads.kitenet.net/git-annex/linux/current/git-annex-standalone-amd64.tar.gz'
 tar -xzf git-annex-standalone-amd64.tar.gz
-export PATH="$PATH:<install_path>/git-annex.linux
+export PATH=$PATH:<install_path>/git-annex.linux
 ```
 - [JUBE](https://www.fz-juelich.de/ias/jsc/EN/Expertise/Support/Software/JUBE/_node.html)
 - Python 3
@@ -81,6 +81,7 @@ These are the benchmarks currently implemented:
 
 ### Get remote benchmark results
 - `cd results`
+- `git annex init` (only needed at first usage for initialisation)
 - `git add remote <name> <location>`, e.g. `git add remote jusuf /p/project/icei-hbp-2020-0006/ACA_bm_framework/nest-benchmarks/results`
 - `git fetch <name>`
 - `git annex get`

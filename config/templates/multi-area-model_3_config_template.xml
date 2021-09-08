@@ -2,9 +2,9 @@
 <jube>
 
   <parameterset name="file_paths">
-    <parameter name="base_path" type="string"></parameter> <!-- path where nest-benchmarks is stored -->
-    <parameter name="model_path" type="string"></parameter> <!-- path where the multi-area model is stored -->
-    <parameter name="data_path" type="string"></parameter> <!-- path where the simulation files are copied and the simulation output is stored -->
+    <parameter name="base_path" type="string">BASE_PATH</parameter> <!-- path where nest-benchmarks is stored -->
+    <parameter name="model_path" type="string">MODEL_PATH</parameter> <!-- path where the multi-area model is stored -->
+    <parameter name="data_path" type="string">DATA_PATH</parameter> <!-- path where the simulation files are copied and the simulation output is stored -->
   </parameterset>
 
   <parameterset name="model_parameters">
@@ -20,10 +20,10 @@
   </parameterset>
 
   <parameterset name="machine_parameters">
-    <parameter name="vps_per_node" type="int"></parameter> <!-- number of virtual processes per node, accepts a list in the format a,b,c,... for generating multiple runs -->
-    <parameter name="walltime" type="string"></parameter> <!-- wall time for the job in format hh:mm:ss -->
-    <parameter name="num_nodes" type="int"></parameter> <!-- number of nodes, accepts a list in the format a,b,c,... for generating multiple runs -->
-    <parameter name="threads_per_task" type="int"></parameter> <!-- number of threads per task, accepts a list in the format a,b,c,... for generating multiple runs -->
+    <parameter name="vps_per_node" type="int">VPS_PER_NODE</parameter> <!-- number of virtual processes per node, accepts a list in the format a,b,c,... for generating multiple runs -->
+    <parameter name="walltime" type="string">WALLTIME</parameter> <!-- wall time for the job in format hh:mm:ss -->
+    <parameter name="num_nodes" type="int">NUM_NODES</parameter> <!-- number of nodes, accepts a list in the format a,b,c,... for generating multiple runs -->
+    <parameter name="threads_per_task" type="int">THREADS_PER_TASK</parameter> <!-- number of threads per task, accepts a list in the format a,b,c,... for generating multiple runs -->
     <parameter name="modules">nest-simulator/3.0</parameter> <!-- modules to be loaded before execution -->
   </parameterset>
 

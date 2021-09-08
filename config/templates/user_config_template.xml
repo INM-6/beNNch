@@ -2,9 +2,9 @@
 <jube>
 
     <parameterset name="user_config">
-      <parameter name="account" type="string"></parameter>
-      <parameter name="email_address" type="string"></parameter>
-      <parameter name="partition"></parameter>
+      <parameter name="account" type="string">ACCOUNT</parameter>
+      <parameter name="email_address" type="string">EMAIL_ADDRESS</parameter>
+      <parameter name="partition">PARTITION</parameter>
     </parameterset>
 
 </jube>
