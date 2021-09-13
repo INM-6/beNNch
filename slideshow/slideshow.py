@@ -62,7 +62,8 @@ if __name__ == '__main__':
     attributes_to_display = sys.argv[2:]
 
     csv_files = os.popen(
-        "find . -not -path '*/.*' -name '*.csv'").read().strip().split('\n')
+        "find . -not -path '*/.*' -name '*.csv' | sort").read().strip().split(
+            '\n')
     timer_hashes = []
     os.system('mkdir -p ./plots')
 
