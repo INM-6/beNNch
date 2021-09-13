@@ -15,12 +15,12 @@
         ${model_path}/run_benchmark.py
       </parameter>
       <parameter name="run_args" type="string">
-        ${data_path} ${data_folder_hash} ${mam_state}
+        ${data_path} ${data_folder_hash} ${network_state}
       </parameter>
       <parameter name="optional_run_command">
         data_folder_hash=`uuidgen`
 
-        srun -n 1 python ${model_path}/run_benchmark_createParams.py ${scaling} ${totVPs} ${model_time_sim} ${scale_K} ${data_path} ${data_folder_hash} ${mam_state}
+        srun -n 1 python ${model_path}/run_benchmark_createParams.py ${scaling} ${totVPs} ${model_time_sim} ${scale_K} ${data_path} ${data_folder_hash} ${network_state} ${record_spikes}
       </parameter>
       <parameter name="log_path" type="string">
         ${data_path}/${data_folder_hash}/recordings

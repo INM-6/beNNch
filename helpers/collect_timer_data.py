@@ -84,13 +84,13 @@ for m in d:
     if d[m]:
         d[m] = np.mean(d[m])
     else:
-        d[m] = -1.
+        d[m] = np.nan
 
 for m in d_sum:
     if d_sum[m]:
         d_sum[m] = np.sum(d_sum[m])
     else:
-        d_sum[m] = -1.
+        d_sum[m] = np.nan
 
 with open('timer_data.txt', "w") as outF:
     for m in d:
