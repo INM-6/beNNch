@@ -1,3 +1,0 @@
-git,NUMBER_OF_NODES,TASKS_PER_NODE,THREADS_PER_TASK,num_tasks,NUM_VPS,SCALE,PLASTIC,T_nrns,T_conns_min,T_conns_max,T_conns_sum,T_ini_min,T_ini_max,T_equ,T_sim,VSize_nodes_sum,VSize_mem_sum,VSize_ini_sum,VSize_sum,N_spks_sum,Rate_sum,N_nrns,N_conns_sum,d_min,d_max
-GIT: (HEAD@d6435f354),1,6,6,6,36,20,true,0.49,51.07,53.38,310.07,54.13,56.44,14.61,200.42,5033496,108301848,109131408,109223568,1582068,7.065,225000,2531476000,1.5,1.5
-
