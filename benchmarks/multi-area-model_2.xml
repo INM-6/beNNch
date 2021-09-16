@@ -31,7 +31,7 @@
     <step name="bench">
       <use>model_commands</use>
       <use from="user_config.xml">user_config</use>
-      <use from="multi-area-model_3_config.xml">file_paths,model_parameters,machine_parameters</use>
+      <use from="multi-area-model_2_config.xml">file_paths,model_parameters,machine_parameters</use>
       <use from="helpers.xml">slurm,run_benchmark,files,sub_bench_job,scaling_experiment</use>
       <do done_file="$ready_file">$submit_cmd $job_file</do>
     </step>
