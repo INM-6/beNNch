@@ -16,7 +16,7 @@ def display_plot(timer_hash, plot_path, attributes):
         f"find . -name '*{timer_hash}.csv'").read().strip()
     for attribute in attributes:
         value = os.popen(
-            f'git annex metadata {file_path} '
+            f'git annex metadata "{file_path}" '
             + f'--get {attribute}').read().strip()
         display_list += f'  <li>{attribute}: {value}</li>\n'
     display_list += '</ul></center>'
