@@ -7,11 +7,11 @@ vps_per_node = sys.argv[2]
 num_nodes = sys.argv[3]
 tasks_per_node = sys.argv[4]
 threads_per_task = sys.argv[5]
-affinity = sys.argv[6]
-nest = sys.argv[7]
-model_name = sys.argv[8]
-network_state = sys.argv[9]
-record_spikes = sys.argv[10]
+nest = sys.argv[6]
+model_name = sys.argv[7]
+network_state = sys.argv[8]
+record_spikes = sys.argv[9]
+affinity = ';'.join(sys.argv[10:])
 job_info = {
     'vps_per_node': vps_per_node,
     'num_nodes': num_nodes,
