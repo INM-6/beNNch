@@ -23,6 +23,7 @@
     <parameter name="num_nodes" type="int">NUM_NODES</parameter> <!-- number of nodes, accepts a list in the format a,b,c,... for generating multiple runs -->
     <parameter name="threads_per_task" type="int">THREADS_PER_TASK</parameter> <!-- number of threads per task, accepts a list in the format a,b,c,... for generating multiple runs -->
     <parameter name="modules">nest-simulator/2.20.1</parameter> <!-- modules to be loaded before execution -->
+    <parameter name="affinity" type="string">--cpu-bind=threads --distribution=block:cyclic:fcyclic --hint=nomultithread</parameter> <!-- processor affinity/pinning -->
   </parameterset>
 
 </jube>
