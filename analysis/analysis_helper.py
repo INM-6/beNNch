@@ -25,7 +25,9 @@ def git_annex(cpu_info, job_info, uuidgen_hash, base_path):
     tmp_result_file_path = os.path.join(base_path, uuidgen_hash + '.csv')
     result_file_path = os.path.join('./', uuidgen_hash + '.csv')
 
-    machine = os.popen('echo $HOSTNAME').read().strip()
+    # works for machines with the naming scheme XXX.name (used for JSC
+    # clusters, might need adjustment for other machines)
+    machine = os.popen('echo $HOSTNAME').read().strip().split('.')[-1]
     user = os.popen('echo $USER').read().strip()
 
     shell(f'cp {tmp_result_file_path} {result_file_path}')
