@@ -33,8 +33,15 @@ def plot(scaling_type, timer_hash, timer_file, save_path):
                          interpolate=True,
                          step=None,
                          error=True)
-        B.plot_main(quantities=['sim_factor', 'phase_total_factor'], axis=ax2,
+        B.plot_main(quantities=['sim_factor'], axis=ax2,
                     error=True)
+        B.plot_fractions(axis=ax2,
+                         fill_variables=[
+                             'phase_communicate_factor',
+                             'phase_update_factor',
+                             'phase_deliver_factor',
+                             'phase_collocate_factor'
+                         ])
         B.plot_fractions(axis=ax3,
                          fill_variables=[
                              'frac_phase_communicate',
@@ -44,16 +51,16 @@ def plot(scaling_type, timer_hash, timer_file, save_path):
                          ])
 
         ax1.set_xlabel('Number of Nodes')
-        ax1.set_ylabel('wall time [s]')
+        ax1.set_ylabel(r'$T_{\mathrm{wall}}$ [s]')
         ax2.set_ylabel(r'real-time factor $T_{\mathrm{wall}}/$'
                        r'$T_{\mathrm{model}}$')
         ax3.set_xlabel('Number of Nodes')
-
+        ax3.set_ylabel(r'relative $T_{\mathrm{wall}}$')
         ax1.legend()
-        B.merge_legends(ax2, ax3)
+        ax2.legend()
 
-        ax1.set_ylim(0, 2700)
-        ax2.set_ylim(0, 230)
+        ax1.set_ylim(0, 1500)
+        ax2.set_ylim(0, 150)
 
         plt.savefig(f'{save_path}/{timer_hash}.png', dpi=600)
 
