@@ -7,7 +7,7 @@
   </include-path>
 
   <!-- model-specific name and output path -->
-  <benchmark name="MAM" outpath="../../benchmark_results/MAM/nest_2.20.1">
+  <benchmark name="MAM" outpath="../../benchmark_results/MAM/nest_2.20.2">
 
     <!-- model configuration -->
     <parameterset name="model_commands">
@@ -20,7 +20,7 @@
       <parameter name="optional_run_command">
         data_folder_hash=`uuidgen`
 
-        srun -n 1 python ${model_path}/run_benchmark_createParams.py ${scaling} ${totVPs} ${model_time_sim} ${scale_K} ${data_path} ${data_folder_hash} ${network_state} ${record_spikes}
+        srun -n 1 python ${model_path}/run_benchmark_createParams.py ${scaling} ${totVPs} ${model_time_sim} ${scale_K} ${data_path} ${data_folder_hash} ${network_state} ${rng_seed} ${model_time_presim} ${record_spikes}
       </parameter>
       <parameter name="log_path" type="string">
         ${data_path}/${data_folder_hash}/recordings
