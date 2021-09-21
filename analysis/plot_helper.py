@@ -1,3 +1,4 @@
+import numpy as np
 import benchplot as bp
 from matplotlib import pyplot as plt
 import matplotlib.gridspec as gridspec
@@ -28,8 +29,9 @@ def plot(scaling_type, timer_hash, timer_file, save_path):
         ax3 = fig.add_subplot(spec[1, 1])
 
         B.plot_fractions(axis=ax1,
-                         fill_variables=['wall_time_sim',
-                                         'wall_time_create+wall_time_connect'],
+                         fill_variables=[
+                             'wall_time_create+wall_time_connect',
+                             'wall_time_sim', ],
                          interpolate=True,
                          step=None,
                          error=True)
@@ -37,32 +39,43 @@ def plot(scaling_type, timer_hash, timer_file, save_path):
                     error=True)
         B.plot_fractions(axis=ax2,
                          fill_variables=[
-                             'phase_communicate_factor',
                              'phase_update_factor',
-                             'phase_deliver_factor',
-                             'phase_collocate_factor'
+                             'phase_collocate_factor',
+                             'phase_communicate_factor',
+                             'phase_deliver_factor'
                          ])
         B.plot_fractions(axis=ax3,
                          fill_variables=[
-                             'frac_phase_communicate',
                              'frac_phase_update',
-                             'frac_phase_deliver',
-                             'frac_phase_collocate'
+                             'frac_phase_collocate',
+                             'frac_phase_communicate',
+                             'frac_phase_deliver'
                          ])
 
         ax1.set_xlabel('Number of Nodes')
-        ax1.set_ylabel(r'$T_{\mathrm{wall}}$ [s]')
+        ax1.set_ylabel(r'$T_{\mathrm{wall}}$ [s] for $T_{\mathrm{model}} =$'
+                       + f'{np.unique(B.df.model_time_sim.values)[0]} s')
         ax2.set_ylabel(r'real-time factor $T_{\mathrm{wall}}/$'
                        r'$T_{\mathrm{model}}$')
         ax3.set_xlabel('Number of Nodes')
-        ax3.set_ylabel(r'relative $T_{\mathrm{wall}}$')
-        ax1.legend()
-        ax2.legend()
+        ax3.set_ylabel(r'relative $T_{\mathrm{wall}}$ [%]')
 
-        ax1.set_ylim(0, 1500)
-        ax2.set_ylim(0, 150)
+        handles1, labels1 = ax1.get_legend_handles_labels()
+        handles2, labels2 = ax2.get_legend_handles_labels()
 
-        plt.savefig(f'{save_path}/{timer_hash}.png', dpi=600)
+        ax1.legend(handles1[::-1], labels1[::-1])
+        ax2.legend(handles2[::-1], labels2[::-1], loc='upper right')
+
+        ax1.set_ylim(0, 4500)
+        ax2.set_ylim(0, 240)
+        ax3.set_ylim(0, 100)
+
+        for ax in [ax1, ax2, ax3]:
+            ax.margins(x=0)
+        for ax in [ax1, ax2]:
+            B.simple_axis(ax)
+
+        plt.savefig(f'{save_path}/{timer_hash}.png', dpi=400)
 
     elif scaling_type == 'threads':
 
@@ -89,17 +102,19 @@ def plot(scaling_type, timer_hash, timer_file, save_path):
         B.plot_main(quantities=['sim_factor'], axis=ax1, log=(False, True))
         B.plot_fractions(axis=ax2,
                          fill_variables=[
-                             'frac_phase_communicate',
                              'frac_phase_update',
-                             'frac_phase_deliver',
-                             'frac_phase_collocate'
+                             'frac_phase_collocate',
+                             'frac_phase_communicate',
+                             'frac_phase_deliver'
                          ],
                          )
 
         ax1.set_ylabel(r'real-time factor $T_{\mathrm{wall}}/$'
                        r'$T_{\mathrm{model}}$')
         ax1.set_xlabel('number of vps')
-        ax1.legend()
+        handles1, labels1 = ax1.get_legend_handles_labels()
+        ax1.legend(handles1[::-1], labels1[::-1])
+        ax2.legend(handles2[::-1], labels2[::-1], loc='upper right')
         ax2.set_ylabel(r'relative wall time $[\%]$')
         B.merge_legends(ax1, ax2)
 
