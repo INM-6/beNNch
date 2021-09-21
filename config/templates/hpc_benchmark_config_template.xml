@@ -22,7 +22,7 @@
     <parameter name="walltime" type="string"></parameter> <!-- wall time for the job in format hh:mm:ss -->
     <parameter name="num_nodes" type="int"></parameter> <!-- number of nodes, accepts a list in the format a,b,c,... for generating multiple runs -->
     <parameter name="threads_per_task" type="int"></parameter> <!-- number of threads per task, accepts a list in the format a,b,c,... for generating multiple runs -->
-    <parameter name="modules">nest-simulator/3.1</parameter> <!-- modules to be loaded before execution -->
+    <parameter name="modules">nest-simulator/3.0</parameter> <!-- modules to be loaded before execution -->
     <parameter name="affinity" type="string"></parameter> <!-- processor affinity/pinning -->
   </parameterset>
 
