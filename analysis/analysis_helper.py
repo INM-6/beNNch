@@ -3,13 +3,16 @@ import json
 import yaml
 
 import pickle
-
+import numpy as np
+import pandas as pd
 
 def shell(command):
     return os.system(command)
 
+
 def shell_without_print(command):
     return os.system(command + '>/dev/null 2>&1')
+
 
 def shell_return(command):
     return os.popen(command).read().strip()
@@ -39,9 +42,14 @@ def git_annex(cpu_info, job_info, uuidgen_hash, base_path):
         for key, value in info_dict.items():
             value_without_spaces = value.replace(' ', ';')
             shell_without_print(f'git annex metadata {result_file_path} '
-                  + f'--set {key}="{value_without_spaces}" --force')
+                                + f'--set {key}="{value_without_spaces}" --force')
     # additionally add machine and user name
     shell_without_print(f'git annex metadata {result_file_path} '
-          + f'--set machine="{machine}" --force')
+                        + f'--set machine="{machine}" --force')
     shell_without_print(f'git annex metadata {result_file_path} '
-          + f'--set user="{user}" --force')
+                        + f'--set user="{user}" --force')
+
+    averaged_over = len(
+        np.unique(pd.read_csv(result_file_path)['rng_seed'].values))
+    shell_without_print(f'git annex metadata {result_file_path} '
+                        + f'--set averaged_over="{averaged_over}" --force')
