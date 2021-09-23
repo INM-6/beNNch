@@ -91,6 +91,11 @@
         <column>wall_time_gather_spike_data</column>
         <column>wall_time_gather_target_data</column>
         <column>wall_time_communicate_prepare</column>
+        <column>py_time_network</column>
+        <column>py_time_simulate</column>
+        <column>py_time_presimulate</column>
+        <column>py_time_create</column>
+        <column>py_time_connect</column>
         <column>base_memory</column>
         <column>network_memory</column>
         <column>init_memory</column>
