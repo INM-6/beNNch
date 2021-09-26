@@ -91,7 +91,7 @@ These are the benchmarks currently implemented:
 - go to `results`
 - select benchmarks to plot via the following syntax:
   + `git annex view <common_metadata>=<value_of_metadata> <differing_metadata>="*"`
-    * Here, common_metadata refers to a key that should be the same value for all benchmarks, e.g. the `machine`. A list of all available metadata keys can be obtained via `git annex metadata <uuidgen_hash>.csv`. One can use `*` here as well, e.g. when filtering out all runs that include simulations done on 10 nodes via `num_nodes='*,10*'` or all machines that have `jusuf` in their name via `machine='*jusuf*`.
+    * Here, common_metadata refers to a key that should be the same value for all benchmarks, e.g. the `machine`. A list of all available metadata keys can be obtained via `git annex metadata <uuidgen_hash>.csv`. One can use `*` here as well, e.g. when filtering out all runs that include simulations done on 10 nodes via `num_nodes='*,10*'` or all machines that have `jusuf` in their name via `machine='*jusuf*`. To specify multiple numerical values use `keyword={value1,value2}`.
     * full example: `git annex view nest=nest-simulator/3.0 num_vps="*"`
     * to go back in a view, execute `git annex vpop`
 - create slideshow of plots with `python ../slideshow/slideshow.py <scaling_type> <bullet_1> <bullet_2> ...` with an arbitrarily long list of bullet items (metadata keys) that appear as bullet points on the slides for comparison. `<scaling_type>` defines the style of plotting, c.f. section on _Analyze Benchmarks_.
@@ -135,7 +135,7 @@ These are the benchmarks currently implemented:
       
         `<parameter name="RULE" type="string">in</parameter>`
 
-    - Probably need to use a lower basis_scale to get some of them to work, like `basis_scale=5
+    - Probably need to use a lower basis_scale to get some of them to work, like `basis_scale=5`
 
 - **Population model**
 
