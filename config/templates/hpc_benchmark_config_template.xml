@@ -14,6 +14,7 @@
     <parameter name="model_time_presim" type="float">500.</parameter> <!-- presimulation time for avoiding initial transients in ms -->
     <parameter name="scale_N" type="float">1</parameter> <!-- scaling the number of neurons, 1. -> original model -->
     <parameter name="record_spikes" type="string">True</parameter><!-- change to True for spike recordings -->
+    <parameter name="rng_seed" type="int">1</parameter> <!-- master seed for NEST, accepts a list in the format a,b,c,... for generating multiple runs -->
     <parameter name="scaling">${weak_scaling}</parameter> <!-- can be either weak_scaling or strong_scaling -->
   </parameterset>
 

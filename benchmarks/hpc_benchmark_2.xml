@@ -31,6 +31,7 @@
       <sub source="{model_time_sim}" dest="$model_time_sim"/>
       <sub source="{model_time_presim}" dest="$model_time_presim"/>
       <sub source="{N_SCALING}" dest="$scale_N"/>
+      <sub source="{rng_seed}" dest="$rng_seed"/>
     </substituteset>
 
     <!-- benchmark step -->
