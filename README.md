@@ -79,7 +79,7 @@ These are the benchmarks currently implemented:
 
 - copy `analysis/analysis_config_template.py` to `analysis/analysis_config.py`
 - fill in
-  + type of scaling (for creating a quick, glanceable plot of the benchmark. To create your own plot, add to `analysis/plot_helpers.py`. Here we provide defaults for plotting timers across `nodes` and `threads`.)
+  + type of scaling (for creating a quick, glanceable plot of the benchmark. Here we provide defaults for plotting timers across `nodes` and `threads`. To create your own plot, add to `analysis/plot_helpers.py`.)
   + path to the jube output (usually the same as the `outpath` of the `<benchmark>` in `benchmarks/<model>`)
 - `cd results` (s.t. git annex metadata annotation works)
 - `python ../analysis/analysis.py <id>` where `<id>` is the JUBE ID of the benchmark you want to analyze
