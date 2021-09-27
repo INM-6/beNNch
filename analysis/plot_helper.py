@@ -66,8 +66,6 @@ def plot(scaling_type, timer_hash, timer_file, save_path):
         ax1.legend(handles1[::-1], labels1[::-1])
         ax2.legend(handles2[::-1], labels2[::-1], loc='upper right')
 
-        ax1.set_ylim(0, 4500)
-        ax2.set_ylim(0, 240)
         ax3.set_ylim(0, 100)
 
         for ax in [ax1, ax2, ax3]:
