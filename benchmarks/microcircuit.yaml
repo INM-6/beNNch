@@ -1,4 +1,4 @@
-# include-path:
+# include-path: # not working due to a bug in JUBE. Uncomment after next release! 
 #   path: 
 #    - ../helpers/
 #    - ../config/
@@ -49,7 +49,7 @@ step:
       name: bench
       use:
       - model_commands
-      - from: user_config.xml
+      - from: user_config.yaml
         _: user_config
       - from: microcircuit_config.xml
         _: file_paths,model_parameters,machine_parameters
