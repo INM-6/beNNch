@@ -7,7 +7,7 @@
   </include-path>
 
   <!-- model-specific name and output path -->
-  <benchmark name="MAM" outpath="../../benchmark_results/MAM/nest_2.20.2">
+  <benchmark name="MAM" outpath="../../benchmark_results/MAM">
 
     <!-- model configuration -->
     <parameterset name="model_commands">
