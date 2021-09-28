@@ -51,7 +51,7 @@ step:
       - model_commands
       - from: user_config.yaml
         _: user_config
-      - from: microcircuit_config.xml
+      - from: microcircuit_config.yaml
         _: file_paths,model_parameters,machine_parameters
       - from: helpers.xml
         _: slurm,run_benchmark,files,sub_bench_job,scaling_experiment
