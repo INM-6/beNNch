@@ -67,11 +67,17 @@ These are the benchmarks currently implemented:
 
   - `benchmarks/microcircuit.xml`
 
+- **HPC Benchmark**
+
+  - `benchmarks/hpc_benchmark_2.xml` for usage with NEST 2.
+  - `benchmarks/hpc_benchmark_3.xml` for usage with NEST 3.0.
+  - `benchmarks/hpc_benchmark_31.xml` for usage with NEST 3.1.
+
 ### Analyze Benchmarks
 
 - copy `analysis/analysis_config_template.py` to `analysis/analysis_config.py`
 - fill in
-  + type of scaling (for creating a quick, glanceable plot of the benchmark. To create your own plot, add to `analysis/plot_helpers.py`. Here we provide defaults for plotting timers across `nodes` and `threads`.)
+  + type of scaling (for creating a quick, glanceable plot of the benchmark. Here we provide defaults for plotting timers across `nodes` and `threads`. To create your own plot, add to `analysis/plot_helpers.py`.)
   + path to the jube output (usually the same as the `outpath` of the `<benchmark>` in `benchmarks/<model>`)
 - `cd results` (s.t. git annex metadata annotation works)
 - `python ../analysis/analysis.py <id>` where `<id>` is the JUBE ID of the benchmark you want to analyze
@@ -98,59 +104,6 @@ These are the benchmarks currently implemented:
 - error `jinja2.exceptions.TemplateNotFound: index.html.j2`
   + [issue](https://github.com/jupyter/nbconvert/issues/1394) with a recent version of `nbconvert`, try to install version `5.6.1` instead (e.g. `pip install nbconvert==5.6.1 --user`)
 
-#### legacy models:
-
-- **HPC_benchmark**
-
-  - `hpc_benchmark.xml`
-
-- **HPC_benchmark with static synapse**
-
-  - `hpc_benchmark_daint_strict.xml`
-
-    - where we change the parameter `PLASTIC` to false:
-
-      
-        `<parameter name="PLASTIC" type="string">false</parameter>`
-
-- **HPC_benchmark with random delay**
-
-  - `hpc_benchmark_daint_strict.xml`
-
-    - where we change the parameters `D_MIN` and `D_MAX`:
-
-      
-        `<parameter name="D_MIN" type="float">0.1</parameter>` 
-
-        `<parameter name="D_MAX" type="float">50.</parameter>`
-
-- **HPC benchmark with different connection rules**
-
-  - `hpc_benchmark_daint_strict_rule.xml`
-
-    - use `in`, `out`, `all`, `one`, `tot`, `bern` or`sym_bern` in `RULE` parameter
-
-      
-        `<parameter name="RULE" type="string">in</parameter>`
-
-    - Probably need to use a lower basis_scale to get some of them to work, like `basis_scale=5`
-
-- **Population model**
-
-  - `population_daint_strict.xml`
-
-- **Population python model**
-
-  - `population_py_daint_strict.xml`
-
-
-
-
-- **HPC Benchmark on fixed VPs, changing threads**
-
-  - `hpc_benchmark_daint_strict.xml`
-    - with `<parameter name="THREADS_PER_TASK" type="int">1,3,6,9,18,36</parameter>`
-
 
 #### Some benchmark information
 
@@ -162,29 +115,13 @@ The model has several populations (minimum 20 populations). Each population has 
 
 You need to have installed NEST *with* Python in order to run the MAM benchmark.
 
-You also need to download *nested_dict* and *dicthash*:
+You also might need to download *nested_dict* and *dicthash*:
 
 ```bash
 pip install nested_dict --user
 pip install dicthash --user
 ```
 
-#### To run 4x4:
-
-To install the 4x4 mesocircuit model, run
-
-```bash
-module load cray-python/2.7.15.1
-module load PyExtensions/2.7.15.1-CrayGNU-18.08
-module load h5py/2.8.0-CrayGNU-18.08-python2-parallel
-pip install NeuroTools
-```
-
-Then, go to `nest-benchmarks/BenchModels/4x4mm2LFP/` and run
-
-```bash
-> python setup.py install --user
-```
 
 
 
