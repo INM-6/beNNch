@@ -1,7 +1,5 @@
 # NEST benchmarks
 
-To run the benchmarks you need to clone the nest-benchmarks repository. To clone with git, do `git clone https://gin.g-node.org/jasperalbers/nest-benchmarks.git`. This will create the folder `nest-benchmarks`, and it contains all JUBE files needed to run the benchmarks.
-
 ### Current repository layout
 
 *analysis* contains JUBE analysis script, config and helpers.
