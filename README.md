@@ -81,6 +81,7 @@ These are the benchmarks currently implemented:
   + path to the jube output (usually the same as the `outpath` of the `<benchmark>` in `benchmarks/<model>`)
 - `cd results` (s.t. git annex metadata annotation works)
 - `python ../analysis/analysis.py <id>` where `<id>` is the JUBE ID of the benchmark you want to analyze
+  + if this is the first time `results` is used, get up to date via `git pull origin main`, `git checkout main`, `git annex sync`
 - if you're happy with the results: `git annex sync`
 
 ### Get remote benchmark results
