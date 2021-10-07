@@ -1,0 +1,27 @@
+parameterset:
+    - name: file_paths
+      parameter:
+       - {name: base_path, type: string, _: BASE_PATH}
+       - {name: model_path, type: string, _: MODEL_PATH}
+       - {name: data_path, type: string, _: DATA_PATH}
+
+    - name: model_parameters
+      parameter:
+       - {name: model_name, type: string, _: multi-area-model}
+       - {name: network_state, type: string, _: "Fig5"}
+       - {name: record_spikes, type: string, _: "False"}
+       - {name: model_time_sim, type: float, _: 1000.}
+       - {name: model_time_presim, _: 500.}
+       - {name: scale_N, type: float, _: 1.}
+       - {name: scale_K, type: float, _: 1.}
+       - {name: rng_seed, _: 0}
+       - {name: scaling, _: $weak_scaling}
+    
+    - name: machine_parameters
+      parameter:
+       - {name: vps_per_node, type: int, _: VPS_PER_NODE} 
+       - {name: walltime, type: string, _: "WALLTIME"}
+       - {name: num_nodes, type: int, _: NUM_NODES}
+       - {name: threads_per_task, type: int, _: THREADS_PER_TASK}
+       - {name: modules, _: nest-simulator/3.0}
+       - {name: affinity, type: string, _: "--cpu-bind=threads --distribution=block:cyclic:fcyclic --hint=nomultithread"}
