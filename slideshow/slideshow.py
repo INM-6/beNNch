@@ -21,7 +21,7 @@ def display_plot(timer_hash, plot_path, attributes):
         display_list += f'  <li>{attribute}: {value}</li>\n'
     display_list += '</ul></left>'
 
-    display(HTML(f'<center><header>hash: {timer_hash}</header></center>'))
+    display(HTML(f'<center><header>benchmark ID: {timer_hash}</header></center>'))
     display(Image(filename=os.path.join(plot_path, timer_hash + '.png')))
     display(HTML(display_list))
 
