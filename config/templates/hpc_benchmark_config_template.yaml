@@ -1,0 +1,25 @@
+parameterset:
+    - name: file_paths
+      parameter:
+       - {name: base_path, type: string, _: ""}
+       - {name: model_path, type: string, _: ""}
+       - {name: data_path, type: string, _: ""}
+    - name: model_parameters
+      parameter:
+       - {name: model_name, type: string, _: hpc_benchmark}
+       - {name: network_state, type: string, _: ""}
+       - {name: model_time_sim, type: float, _: 1000.}
+       - {name: model_time_presim, type: float, _: 500.}
+       - {name: scale_N, type: float, _: 1}
+       - {name: record_spikes, type: string, _: "True"}
+       - {name: rng_seed, type: int, _: 1}
+       - {name: scaling, _: $weak_scaling}
+
+    - name: machine_parameters
+      parameter:
+      - {name: vps_per_node, type: int, _: ""}
+      - {name: walltime, type: string, _: ""}
+      - {name: num_nodes, type: int, _: ""}
+      - {name: threads_per_task, type: int, _: ""}
+      - {name: modules, _: nest-simulator/3.0}
+      - {name: affinity, type: string, _: ""}
