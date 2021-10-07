@@ -1,7 +1,7 @@
 
 parameterset:
-    - name: user_config
-    - parameter:
+    name: user_config
+    parameter:
       - {name: account, type: string, _: ACCOUNT}
-      - {name: email_address, type: string, _: EMAIL_ADDRES}
-      - {name: email_address, type: string, _: PARTITION}
+      - {name: email_address, type: string, _: EMAIL_ADDRESS}
+      - {name: partition, type: string, _: PARTITION}
