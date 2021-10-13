@@ -6,7 +6,7 @@ import sys
 import time
 import logging
 import logging.config
-from subprocess import Popen, PIPE, CalledProcessError, TimeoutExpired
+from subprocess import Popen, PIPE, DEVNULL, CalledProcessError, TimeoutExpired
 import shlex
 
 
@@ -72,28 +72,31 @@ class Recorder(object):
                 stoptime = None
                 iotime = None
                 with Popen(shlex.split(command.format(**parameters)),
-                           stdout=PIPE, stderr=PIPE) as infile:
-                    infile.wait(timeout=self.timeout)
+                           stdout=PIPE, stderr=PIPE, stdin=DEVNULL) as infile:
+                    try:
+                        (stdout_data, stderr_data) = infile.communicate(timeout=self.timeout)
+                    except TimeoutExpired:
+                        log.warning(
+                            "%s: process did not finish in time! Output will be"
+                            "incomplete!", name)
+                        infile.kill()
+                        outs, errs = infile.communicate()
+                        log.error("Final words on stdout:\n%s", outs)
+                        log.error("Final words on stderr:\n%s", errs)
                     stoptime = time.time()
                     if infile.returncode != 0:
                         log.warning("%s: returned %s (non-zero)!",
                                     name, infile.returncode)
                     with open(outname, 'wb') as outfile:
-                        outfile.write(infile.stdout.read())
-                    errs = infile.stderr.read()
-                    if errs:
+                        outfile.write(stdout_data)
+                    if stderr_data:
                         with open(errname, 'wb') as errfile:
                             log.warning("ERRORS recorded for %s", name)
-                            errfile.write(errs)
+                            errfile.write(stderr_data)
                             if self.errors_fatal:
                                 log.fatal("ERRORS are configured to be fatal.")
-                                raise ValueError(
-                                    "Process wrote errors to STDERR!")
+                                raise ValueError("Process wrote errors to STDERR!")
                     iotime = time.time()
-            except TimeoutExpired:
-                log.warning(
-                    "%s: process did not finish in time! Output will be"
-                    "incomplete!", name)
             except CalledProcessError as e:
                 log.error("%s: called process failed! retrun code: %d",
                           name, e.return_code)
@@ -104,8 +107,7 @@ class Recorder(object):
                         > self.logtimethres):
                     log.info("%s execution took %s seconds",
                              name, stoptime - starttime)
-                if (iotime and stoptime and iotime - stoptime
-                        > self.logtimethres):
+                if (iotime and stoptime and iotime - stoptime > self.logtimethres):
                     log.info("%s io took %s seconds",
                              name, stoptime - starttime)
 
