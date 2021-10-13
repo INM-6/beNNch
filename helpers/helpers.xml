@@ -69,8 +69,8 @@
 
     <!-- experiment configuration -->
     <parameterset name="scaling_experiment">
-      <parameter name="weak_scaling" type="float">${scale_N}</parameter>
-      <parameter name="strong_scaling" type="float" mode="python">${scale_N}*${num_nodes}</parameter>
+      <parameter name="strong_scaling" type="float">${scale_N}</parameter>
+      <parameter name="weak_scaling" type="float" mode="python">${scale_N}*${num_nodes}</parameter>
     </parameterset>
 
     <patternset name="timer_pattern">

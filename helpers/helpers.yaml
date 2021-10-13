@@ -67,8 +67,8 @@ parameterset:
 # experiment configuration
   - name: scaling_experiment
     parameter:
-       - {name: weak_scaling, mode: python, type: float, "_": $scale_N}
-       - {name: strong_scaling, mode: python, type: float, "_": $scale_N*$num_nodes}
+       - {name: strong_scaling, mode: python, type: float, "_": $scale_N}
+       - {name: weak_scaling, mode: python, type: float, "_": $scale_N*$num_nodes}
 patternset:
     name: timer_pattern
     pattern:
