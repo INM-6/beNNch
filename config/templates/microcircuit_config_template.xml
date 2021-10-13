@@ -2,7 +2,7 @@
 <jube>
 
   <parameterset name="file_paths">
-    <parameter name="model_path" type="string">MODEL_PATH</parameter> <!-- path where the multi-area model is stored -->
+    <parameter name="model_path" type="string">MODEL_PATH</parameter> <!-- path where the microcircuit model is stored -->
     <parameter name="data_path" type="string">DATA_PATH</parameter> <!-- path where the simulation files are copied and the simulation output is stored -->
   </parameterset>
 
@@ -21,7 +21,7 @@
     <parameter name="rng_seed">55</parameter><!-- rng seed -->
     <parameter name="record_spikes" type="string"></parameter><!-- change to 'spike_detector' for spike recordings -->
     <parameter name="kwds" separator=";" type="string"></parameter><!-- can be used for passing arguments to SetKernelStatus, such as max_buffer_size_spike_data. If no arguments should be passed leave this empty. If something should be passed insert a dictionary, eg: {'max_buffer_size_spike_data': 10} -->
-    <parameter name="scaling">${weak_scaling}</parameter> <!-- can be either weak_scaling or strong_scaling -->
+    <parameter name="scaling">${strong_scaling}</parameter> <!-- can be either weak_scaling or strong_scaling -->
   </parameterset>
 
   <parameterset name="machine_parameters">
