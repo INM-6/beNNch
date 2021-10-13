@@ -1,0 +1,99 @@
+# include-path: # not working due to a bug in JUBE. Uncomment after next release! 
+#   path: 
+#    - ../helpers/
+#    - ../config/
+
+# model-specific name and output path
+name: HPC
+outpath: ../../benchmark_results/HPC
+parameterset:
+      name: model_commands
+      parameter:
+          - {name: run_file, type: string, _: "$jube_wp_abspath/hpc_benchmark.py"}
+          - {name: log_path, type: string, _: "${jube_wp_abspath}"}
+fileset:
+# load and copy model-specific files
+    name: model_files
+    copy: 
+      - $model_path/hpc_benchmark.py
+
+# This subsituteset maps the parameters that were defined in this yaml
+# file to the target patterns that JUBE will search for in the
+# simulation files. The pattern file is hpc_benchmark.py. The
+# source pattern will be replaced by the values.
+substituteset:
+      name: model_substitutions
+      iofile: {in: hpc_benchmark.py, out: hpc_benchmark.py}
+      sub:
+      - {source: {num_vps}, dest: $num_vps}
+      - {source: {record_spikes}, dest: $record_spikes}
+      - {source: {model_time_sim}, dest: $model_time_sim}
+      - {source: {model_time_presim}, dest: $model_time_presim}
+      - {source: {N_SCALING}, dest: $scale_N}
+      - {source: {rng_seed}, dest: $rng_seed}
+# benchmark step
+step:
+      name: bench
+      use:
+      - model_commands, model_files, model_substitutions
+      - from: user_config.yaml
+        _: user_config
+      - from: hpc_benchmark_31_config.yaml
+        _: file_paths,model_parameters,machine_parameters
+      - from: helpers.yaml
+        _: slurm,run_benchmark,files,sub_bench_job,scaling_experiment
+      do:
+        done_file: $ready_file
+        _: $submit_cmd $job_file
+# analysis step
+analyser:
+      name: analyse
+      use:
+        - from: helpers.yaml
+          _: timer_pattern
+      analyse:
+        step: bench
+        file: timer_data.txt
+
+# result step
+result:
+      name: result
+      use: analyse
+      table:
+        name: result_table
+        style: csv
+        sort: number
+        column:
+        - rng_seed
+        - num_nodes
+        - threads_per_task
+        - tasks_per_node
+        - model_time_sim
+        - wall_time_create
+        - wall_time_connect
+        - wall_time_sim
+        - wall_time_phase_collocate
+        - wall_time_phase_communicate
+        - wall_time_phase_deliver
+        - wall_time_phase_update
+        - wall_time_communicate_target_data
+        - wall_time_gather_spike_data
+        - wall_time_gather_target_data
+        - wall_time_communicate_prepare
+        - py_time_kernel_prepare
+        - py_time_network_local
+        - py_time_network_global
+        - py_time_simulate
+        - py_time_presimulate
+        - py_time_network_prepare
+        - py_time_create
+        - py_time_connect_area
+        - py_time_connect_cc
+        - py_time_connect
+        - base_memory
+        - network_memory
+        - init_memory
+        - total_memory
+        - num_connections
+        - local_spike_counter
+        - e_counter

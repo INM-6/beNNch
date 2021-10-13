@@ -16,7 +16,7 @@
     <parameter name="scale_N" type="float">1.</parameter> <!-- scaling the number of neurons, 1. -> original model -->
     <parameter name="scale_K" type="float">1.</parameter> <!-- scaling the indegree, 1. -> original model -->
     <parameter name="rng_seed" type="int">0</parameter> <!-- master seed for NEST, accepts a list in the format a,b,c,... for generating multiple runs -->
-    <parameter name="scaling">${weak_scaling}</parameter> <!-- can be either weak_scaling or strong_scaling -->
+    <parameter name="scaling">${strong_scaling}</parameter> <!-- can be either weak_scaling or strong_scaling -->
   </parameterset>
 
   <parameterset name="machine_parameters">
