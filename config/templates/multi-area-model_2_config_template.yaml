@@ -1,0 +1,25 @@
+parameterset:
+    - name: file_paths
+      parameter:
+       - {name: base_path, type: string, _: BASE_PATH}  # path where main repository is stored
+       - {name: model_path, type: string, _: MODEL_PATH}  # path where the multi-area model is stored
+       - {name: data_path, type: string, _: DATA_PATH}  # path where the simulation files are copied and the simulation output is stored
+
+    - name: model_parameters
+      parameter:
+       - {name: model_name, type: string, _: multi-area-model}  # for identifying the model, can be any unique string
+       - {name: network_state, type: string, _: "Fig5"}  # Fig5 -> metastable, Fig3 -> ground state
+       - {name: record_spikes, type: string, _: "False"}  # whether to write spiking output to file, either True or False
+       - {name: model_time_sim, type: float, _: 1000.}  # biological time to be simulated in ms
+       - {name: scale_N, type: float, _: 1.}  # scaling the number of neurons, 1. -> original model
+       - {name: scale_K, type: float, _: 1.}  # scaling the indegree, 1. -> original model
+       - {name: scaling, _: $strong_scaling}  # can be either weak_scaling or strong_scaling
+    
+    - name: machine_parameters
+      parameter:
+       - {name: vps_per_node, type: int, _: VPS_PER_NODE}  # number of virtual processes per node, accepts a list in the format a,b,c,... for generating multiple runs
+       - {name: walltime, type: string, _: "WALLTIME"}  # wall time for the job in format hh:mm:ss
+       - {name: num_nodes, type: int, _: NUM_NODES}  # number of nodes, accepts a list in the format a,b,c,... for generating multiple runs
+       - {name: threads_per_task, type: int, _: THREADS_PER_TASK}  # number of threads per task, accepts a list in the format a,b,c,... for generating multiple runs
+       - {name: modules, _: nest-simulator/3.0}  # modules to be loaded before execution
+       - {name: affinity, type: string, _: "--cpu-bind=threads --distribution=block:cyclic:fcyclic --hint=nomultithread"}  # processor affinity/pinning
