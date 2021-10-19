@@ -43,6 +43,7 @@ recordables = {
     'hwloc-ls': 'hwloc-ls',
     'hwloc-topology': 'hwloc-gather-topology {outdir}/hwloc-topology',
     'lstopo': 'lstopo --of ascii {outdir}/{name}',
+    'getconf': 'getconf -a',
 }
 
 
