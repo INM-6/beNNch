@@ -2,6 +2,7 @@ import numpy as np
 import benchplot as bp
 from matplotlib import pyplot as plt
 import matplotlib.gridspec as gridspec
+import matplotlib.transforms as mtransforms
 
 
 def plot(scaling_type, timer_hash, timer_file, save_path):
@@ -27,6 +28,15 @@ def plot(scaling_type, timer_hash, timer_file, save_path):
         ax1 = fig.add_subplot(spec[:, 0])
         ax2 = fig.add_subplot(spec[0, 1])
         ax3 = fig.add_subplot(spec[1, 1])
+
+        trans = mtransforms.ScaledTranslation(-20 /
+                                              72, 7 / 72, fig.dpi_scale_trans)
+        ax1.text(0.0, 1.0, 'A', transform=ax1.transAxes + trans,
+                 fontsize='medium', va='bottom', fontweight='bold')
+        ax2.text(0.0, 1.0, 'B', transform=ax2.transAxes + trans,
+                 fontsize='medium', va='bottom', fontweight='bold')
+        ax3.text(0.0, 1.0, 'C', transform=ax3.transAxes + trans,
+                 fontsize='medium', va='bottom', fontweight='bold')
 
         B.plot_fractions(axis=ax1,
                          fill_variables=[
