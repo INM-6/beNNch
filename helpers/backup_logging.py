@@ -44,6 +44,7 @@ recordables = {
     'hwloc-topology': 'hwloc-gather-topology {outdir}/hwloc-topology',
     'lstopo': 'lstopo --of ascii {outdir}/{name}',
     'getconf': 'getconf -a',
+    'ulimit': 'ulimit -a',
 }
 
 
