@@ -32,17 +32,17 @@ substituteset:
       name: simulation_substitutions
       iofile: {in: bm_run_microcircuit.py, out: bm_run_microcircuit.py}
       sub:
-      - {source: {record_spikes}, dest: $record_spikes}
-      - {source: {POISSON_INPUT}, dest: $poisson_input}
-      - {source: {kwds}, dest: $kwds}
-      - {source: {V0_TYPE}, dest: $V0_type}
-      - {source: {SYNAPSE_TYPE}, dest: $synapse_type}
-      - {source: {model_time_sim}, dest: $model_time_sim}
-      - {source: {model_time_presim}, dest: $model_time_presim}
-      - {source: {rng_seed}, dest: $rng_seed}
-      - {source: {threads_per_task}, dest: $threads_per_task}
-      - {source: {N_SCALING}, dest: $scale_N}
-      - {source: {K_SCALING}, dest: $scale_K}
+      - {source: "{record_spikes}", dest: $record_spikes}
+      - {source: "{POISSON_INPUT}", dest: $poisson_input}
+      - {source: "{kwds}", dest: $kwds}
+      - {source: "{V0_TYPE}", dest: $V0_type}
+      - {source: "{SYNAPSE_TYPE}", dest: $synapse_type}
+      - {source: "{model_time_sim}", dest: $model_time_sim}
+      - {source: "{model_time_presim}", dest: $model_time_presim}
+      - {source: "{rng_seed}", dest: $rng_seed}
+      - {source: "{threads_per_task}", dest: $threads_per_task}
+      - {source: "{N_SCALING}", dest: $scale_N}
+      - {source: "{K_SCALING}", dest: $scale_K}
 
 # benchmark step 
 step:
