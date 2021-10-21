@@ -25,12 +25,12 @@ substituteset:
       name: model_substitutions
       iofile: {in: hpc_benchmark.py, out: hpc_benchmark.py}
       sub:
-      - {source: {num_vps}, dest: $num_vps}
-      - {source: {record_spikes}, dest: $record_spikes}
-      - {source: {model_time_sim}, dest: $model_time_sim}
-      - {source: {model_time_presim}, dest: $model_time_presim}
-      - {source: {N_SCALING}, dest: $scale_N}
-      - {source: {rng_seed}, dest: $rng_seed}
+      - {source: "{num_vps}", dest: $num_vps}
+      - {source: "{record_spikes}", dest: $record_spikes}
+      - {source: "{model_time_sim}", dest: $model_time_sim}
+      - {source: "{model_time_presim}", dest: $model_time_presim}
+      - {source: "{N_SCALING}", dest: $scale_N}
+      - {source: "{rng_seed}", dest: $rng_seed}
 # benchmark step
 step:
       name: bench
