@@ -1,6 +1,7 @@
 parameterset:
     - name: file_paths
       parameter:
+       - {name: base_path, type: string, _: BASE_PATH}  # # path where main repository is stored
        - {name: model_path, type: string, _: MODEL_PATH}  # path where the microcircuit model is stored
        - {name: data_path, type: string, _: DATA_PATH}  # path where the simulation files are copied and the simulation output is stored
     - name: model_parameters
@@ -11,8 +12,8 @@ parameterset:
        - {name: scale_N, type: float, _: 1.}  # scaling the number of neurons, 1. -> original model
        - {name: scale_K, type: float, _: 1.}  # scaling the indegree, 1. -> original model
        - {name: poisson_input, type: string, _: False}  # choose Poisson or DC input
-       - {name: V0_type, type: text, _: 'optimized'}  # choose default or optimized initial conditions for the membrane potential
-       - {name: synapse_type, type: text, _: static_synapse}  # type of synapses in the model
+       - {name: V0_type, type: text, _: "'optimized'"}  # choose default or optimized initial conditions for the membrane potential
+       - {name: synapse_type, type: text, _: "'static_synapse'"}  # type of synapses in the model
        - {name: sim_params, _: sim_params.py}  # default simulation parameters
        - {name: model_time_sim, type: float, _: 1000.}  # biological time to be simulated in ms
        - {name: model_time_presim, _: 100.}  # in ms
