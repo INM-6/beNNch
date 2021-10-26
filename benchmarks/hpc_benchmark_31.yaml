@@ -29,7 +29,7 @@ substituteset:
       - {source: "{record_spikes}", dest: $record_spikes}
       - {source: "{model_time_sim}", dest: $model_time_sim}
       - {source: "{model_time_presim}", dest: $model_time_presim}
-      - {source: "{N_SCALING}", dest: $scale_N}
+      - {source: "{N_SCALING}", dest: $scaling}
       - {source: "{rng_seed}", dest: $rng_seed}
 # benchmark step
 step:
