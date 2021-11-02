@@ -84,7 +84,9 @@ parameterset:
         }
         
         EOT
-  
+
+        srun -n 1 python ${base_path}/helpers/backup_logging.py ${jube_wp_abspath}  
+
   - name: no_optional_run_command
     parameter:
        - {name: optional_run_command, "_": ""}
