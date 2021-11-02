@@ -1,10 +1,9 @@
 import os
 import json
-import yaml
 
-import pickle
 import numpy as np
 import pandas as pd
+
 
 def shell(command):
     return os.system(command)
@@ -19,9 +18,10 @@ def shell_return(command):
 
 
 def load(filepath):
-    with open(filepath, 'rb') as f:
-        data = pickle.load(f)
+    with open(filepath, 'r') as f:
+        data = json.load(f)
     return data
+
 
 def git_annex(cpu_info, job_info, uuidgen_hash, base_path):
 

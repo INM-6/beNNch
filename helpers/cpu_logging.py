@@ -1,6 +1,6 @@
 import os
 import sys
-import pickle
+import json
 
 save_path = sys.argv[1]
 
@@ -12,5 +12,5 @@ for element in cpu_info:
     key, value = element.split(':')
     cpu_info_dict[key] = value
 
-with open(os.path.join(save_path, 'cpu.pkl'), 'wb') as f:
-    pickle.dump(cpu_info_dict, f)
+with open(os.path.join(save_path, 'cpu.json'), 'w') as f:
+    json.dump(cpu_info_dict, f)
