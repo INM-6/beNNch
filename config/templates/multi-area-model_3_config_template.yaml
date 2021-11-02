@@ -8,7 +8,7 @@ parameterset:
     - name: model_parameters
       parameter:
        - {name: model_name, type: string, _: multi-area-model}  # for identifying the model, can be any unique string
-       - {name: network_state, type: string, _: "Fig5"}  # Fig5 -> metastable, Fig3 -> ground state
+       - {name: network_state, type: string, _: "metastable"}  # can be either "metastable" or "ground"
        - {name: record_spikes, type: string, _: "False"}  # whether to write spiking output to file, either True or False
        - {name: model_time_sim, type: float, _: 1000.}  # biological time to be simulated in ms
        - {name: model_time_presim, type: float, _: 500.}  # presimulation time for avoiding initial transients in ms
