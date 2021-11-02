@@ -79,7 +79,7 @@ parameterset:
 
         "record_spikes":"${record_spikes}",
 
-        "scaling":"${scaling}"
+        "scaling":"${scaling_name}"
 
         }
         
@@ -94,8 +94,8 @@ parameterset:
 # experiment configuration
   - name: scaling_experiment
     parameter:
-       - {name: strong_scaling, mode: python, type: float, "_": $scale_N}
-       - {name: weak_scaling, mode: python, type: float, "_": $scale_N*$num_nodes}
+       - {name: strong, mode: python, type: float, "_": $scale_N}
+       - {name: weak, mode: python, type: float, "_": $scale_N*$num_nodes}
 patternset:
     name: timer_pattern
     pattern:
