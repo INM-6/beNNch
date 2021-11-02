@@ -13,8 +13,8 @@ shell(
     + f' jube result {jube_bench_path} --id {jube_id} > '
     + f'{base_path}/{uuidgen_hash}.csv')
 
-cpu_info = load(os.path.join(base_path, '000000_bench/work', 'cpu.pkl'))
-job_info = load(os.path.join(base_path, '000000_bench/work', 'job.pkl'))
+cpu_info = load(os.path.join(base_path, '000000_bench/work', 'cpu.json'))
+job_info = load(os.path.join(base_path, '000000_bench/work', 'job.json'))
 
 git_annex(cpu_info=cpu_info,
           job_info=job_info,

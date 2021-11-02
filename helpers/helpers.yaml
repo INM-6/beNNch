@@ -1,0 +1,131 @@
+
+fileset:
+    name: files
+    copy: ${job_file}.in
+substituteset:
+    name: sub_bench_job
+    iofile: {in: $job_file.in, out: $job_file}
+    sub:
+      - {source: "#PARTITION#", dest: $partition}
+      - {source: "#NODES#", dest: $nodes}
+      - {source: "#NTASKS#", dest: $num_tasks_tot}
+      - {source: "#NTASKS_PER_NODE#", dest: $ppn}
+      - {source: "#CPUS_PER_TASK#", dest: $cpus_per_task}
+      - {source: "#TIME#", dest: $walltime_}
+      - {source: "#ERRPATH#", dest: $err_file}
+      - {source: "#OUTPATH#", dest: $out_file}
+      - {source: "#COMMANDS#", dest: $exec}
+      - {source: "#READY#", dest: $ready_file}
+      - {source: "#JOB_NAME#", dest: $job_name}
+      - {source: "#ACCOUNT#", dest: $account}
+parameterset:
+  - name: slurm
+    parameter:
+      - {name: submit_cmd, "_": sbatch }
+      - {name: job_file, "_": job.slurm }
+      - {name: nodes, type: int, "_": $num_nodes }
+      - {name: num_vps, type: int, mode: python, "_": $vps_per_node*$num_nodes}
+      - {name: num_tasks_tot, type: int, mode: python, "_": $num_vps // $threads_per_task}
+      - {name: ppn, type: int, mode: python, "_": $num_tasks_tot // $num_nodes}
+
+# next is alias to make result table template work
+      - {name: tasks_per_node, type: int, "_": $ppn}
+      - {name: cpus_per_task, type: int, "_": $threads_per_task}
+      - {name: totVPs, type: int, mode: python, "_": $num_vps}
+      - {name: walltime_, "_": $walltime}
+      - {name: ready_file, "_": ready}
+      - {name: err_file, "_": stderr}
+      - {name: out_file, "_": stdout}
+      - {name: partition_, "_": $partition}
+    
+  - name: run_benchmark
+    parameter:
+      - {name: job_name, type: string, "_": benchmark}
+      -
+       name: exec
+       separator: ;
+       _: 
+        module load $modules
+        
+        export OMP_NUM_THREADS=$threads_per_task
+
+        ${optional_run_command}
+       
+        srun ${affinity} python ${run_file} ${run_args}
+        echo ${base_path}/helpers/collect_timer_data.py
+        echo ${log_path}
+
+        srun -n 1 python ${base_path}/helpers/collect_timer_data.py ${log_path}
+
+        srun -n 1 python ${base_path}/helpers/cpu_logging.py ${jube_wp_abspath}
+
+        cat >job.json <<EOT
+
+        {"vps_per_node":"${vps_per_node}",
+
+        "num_nodes":"${num_nodes}",
+
+        "tasks_per_node":"${tasks_per_node}",
+
+        "threads_per_task":"${threads_per_task}",
+
+        "affinity":"${affinity}",
+
+        "nest":"${modules}",
+
+        "model_name":"${model_name}",
+
+        "network_state":"${network_state}",
+
+        "record_spikes":"${record_spikes}",
+
+        "scaling":"${scaling_name}"
+
+        }
+        
+        EOT
+
+        srun -n 1 python ${base_path}/helpers/backup_logging.py ${jube_wp_abspath}  
+
+  - name: no_optional_run_command
+    parameter:
+       - {name: optional_run_command, "_": ""}
+
+# experiment configuration
+  - name: scaling_experiment
+    parameter:
+       - {name: strong, mode: python, type: float, "_": $scale_N}
+       - {name: weak, mode: python, type: float, "_": $scale_N*$num_nodes}
+patternset:
+    name: timer_pattern
+    pattern:
+       - {name: wall_time_sim, mode: pattern, type: float, "_": time_simulate $jube_pat_fp}
+       - {name: wall_time_create, mode: pattern, type: float, "_": time_construction_create $jube_pat_fp}
+       - {name: wall_time_connect, mode: pattern, type: float, "_": time_construction_connect $jube_pat_fp}
+       - {name: wall_time_phase_collocate, mode: pattern, type: float, "_": time_collocate_spike_data $jube_pat_fp}
+       - {name: wall_time_phase_communicate, mode: pattern, type: float, "_": time_communicate_spike_data $jube_pat_fp}
+       - {name: wall_time_phase_deliver, mode: pattern, type: float, "_": time_deliver_spike_data $jube_pat_fp}
+       - {name: wall_time_phase_update, mode: pattern, type: float, "_": time_update $jube_pat_fp}
+       - {name: wall_time_communicate_target_data, mode: pattern, type: float, "_": time_communicate_target_data $jube_pat_fp}
+       - {name: wall_time_gather_spike_data, mode: pattern, type: float, "_": time_gather_spike_data $jube_pat_fp}
+       - {name: wall_time_gather_target_data, mode: pattern, type: float, "_": time_gather_target_data $jube_pat_fp}
+       - {name: wall_time_communicate_prepare, mode: pattern, type: float, "_": time_communicate_prepare $jube_pat_fp}
+       - {name: py_time_kernel_prepare, mode: pattern, dotall: True, type: float, "_": py_time_kernel_prepare $jube_pat_fp}
+       - {name: py_time_network_local, mode: pattern, dotall: True, type: float, "_": py_time_network_local $jube_pat_fp}
+       - {name: py_time_network_global, mode: pattern, dotall: True, type: float, "_": py_time_network_global $jube_pat_fp}
+       - {name: py_time_simulate, mode: pattern, dotall: True, type: float, "_": py_time_simulate $jube_pat_fp}
+       - {name: py_time_presimulate, mode: pattern, dotall: True, type: float, "_": py_time_presimulate $jube_pat_fp}
+       - {name: py_time_network_prepare, mode: pattern, dotall: True, type: float, "_": py_time_network_prepare $jube_pat_fp}
+       - {name: py_time_create, mode: pattern, dotall: True, type: float, "_": py_time_create $jube_pat_fp}
+       - {name: py_time_connect_area, mode: pattern, dotall: True, type: float, "_": py_time_connect_area $jube_pat_fp}
+       - {name: py_time_connect_cc, mode: pattern, dotall: True, type: float, "_": py_time_connect_cc $jube_pat_fp}
+       - {name: py_time_connect, mode: pattern, dotall: True, type: float, "_": py_time_connect $jube_pat_fp}
+       - {name: base_memory, mode: pattern, dotall: True, type: float, "_": base_memory $jube_pat_fp}
+       - {name: network_memory, mode: pattern, dotall: True, type: float, "_": network_memory $jube_pat_fp}
+       - {name: init_memory, mode: pattern, dotall: True, type: float, "_": init_memory $jube_pat_fp}
+       - {name: total_memory, mode: pattern, dotall: True, type: float, "_": total_memory $jube_pat_fp}
+       - {name: num_connections, mode: pattern, dotall: True, type: float, "_": num_connections $jube_pat_fp}
+       - {name: local_spike_counter, mode: pattern, dotall: True, type: float, "_": local_spike_counter $jube_pat_fp}
+       - {name: e_counter, mode: pattern, dotall: True, type: float, "_": e_counter $jube_pat_fp}
+
+
