@@ -54,6 +54,13 @@ To run a benchmark, run
 jube run <PATH_TO_REPO>/benchmarks/<benchmark_file.xml>
 ```
 
+Or for YAML version
+
+```bash
+export JUBE_INCLUDE_PATH="config/:helpers/"
+jube run <PATH_TO_REPO>/benchmarks/<benchmark_file.yaml>
+```
+
 You will get a job `id`.
 
 These are the benchmarks currently implemented:

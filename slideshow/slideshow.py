@@ -10,7 +10,7 @@ sys.path.insert(1, os.path.join(sys.path[0], '..'))
 from analysis.plot_helper import plot
 
 
-def display_plot(timer_hash, plot_path, attributes):
+def display_plot(timer_hash, plot_path, attributes, page_number=1):
     display_list = '<left><ul>\n'
     file_path = os.popen(
         f"find . -name '*{timer_hash}.csv'").read().strip()
@@ -21,9 +21,10 @@ def display_plot(timer_hash, plot_path, attributes):
         display_list += f'  <li>{attribute}: {value}</li>\n'
     display_list += '</ul></left>'
 
-    display(HTML(f'<center><header>hash: {timer_hash}</header></center>'))
+    display(HTML(f'<center><header>benchmark ID: {timer_hash}</header></center>'))
     display(Image(filename=os.path.join(plot_path, timer_hash + '.png')))
     display(HTML(display_list))
+    display(HTML(f'<center>page {page_number}</center>'))
 
 
 def make_notebook(outPath: str, timer_hashes, attributes_to_display):
@@ -40,10 +41,13 @@ def make_notebook(outPath: str, timer_hashes, attributes_to_display):
         'subslide': []
     }
 
+    page_number = 2
     for timer_hash in timer_hashes[1:]:
         codes['subslide'].append(f"display_plot('{timer_hash}', "
                                  + "'./plots', "
-                                 + f"{attributes_to_display})")
+                                 + f"{attributes_to_display}, "
+                                 + f"{page_number})")
+        page_number += 1
     for key, code_list in codes.items():
         for code in code_list:
             cells.append(nbf.new_code_cell(code, metadata={

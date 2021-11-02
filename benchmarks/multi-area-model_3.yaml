@@ -1,0 +1,88 @@
+# include-path: # not working due to a bug in JUBE. Uncomment after next release! 
+#   path: 
+#    - ../helpers/
+#    - ../config/
+
+# model-specific name and output path
+name: MAM
+outpath: ../../benchmark_results/MAM
+# model configuration 
+parameterset:
+     name: model_commands
+     parameter:
+        - {name: run_file, type: string, _: $model_path/run_benchmark.py}
+        - {name: run_args, type: string, _: "${data_path} ${data_folder_hash} ${network_state}"}
+        -
+         name: optional_run_command
+         _: 
+          data_folder_hash=`uuidgen`
+
+          srun -n 1 python ${model_path}/run_benchmark_createParams.py ${scaling} ${totVPs} ${model_time_sim} ${scale_K} ${data_path} ${data_folder_hash} ${network_state} ${rng_seed} ${model_time_presim} ${record_spikes}
+      
+        - {name: log_path, type: string, _: "${data_path}/${data_folder_hash}/recordings"}
+
+# benchmark step   
+step:
+    name: bench
+    use:
+    - model_commands
+    - from: user_config.yaml
+      _: user_config
+    - from: multi-area-model_3_config.yaml
+      _: file_paths,model_parameters,machine_parameters
+    - from: helpers.yaml
+      _: slurm,run_benchmark,files,sub_bench_job,scaling_experiment
+    do:
+      done_file: $ready_file
+      _: $submit_cmd $job_file
+# analysis step
+analyser:
+      name: analyse
+      use:
+      - from: helpers.yaml
+        _: timer_pattern
+      analyse:
+        step: bench
+        file: timer_data.txt
+  # result step
+result:
+      name: result
+      use: analyse
+      table:
+        name: result_table
+        style: csv
+        sort: number
+        column:
+        - rng_seed
+        - num_nodes
+        - threads_per_task
+        - tasks_per_node
+        - model_time_sim
+        - wall_time_create
+        - wall_time_connect
+        - wall_time_sim
+        - wall_time_phase_collocate
+        - wall_time_phase_communicate
+        - wall_time_phase_deliver
+        - wall_time_phase_update
+        - wall_time_communicate_target_data
+        - wall_time_gather_spike_data
+        - wall_time_gather_target_data
+        - wall_time_communicate_prepare
+        - py_time_kernel_prepare
+        - py_time_network_local
+        - py_time_network_global
+        - py_time_simulate
+        - py_time_presimulate
+        - py_time_network_prepare
+        - py_time_create
+        - py_time_connect_area
+        - py_time_connect_cc
+        - py_time_connect
+        - base_memory
+        - network_memory
+        - init_memory
+        - total_memory
+        - num_connections
+        - local_spike_counter
+        - e_counter
