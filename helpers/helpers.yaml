@@ -85,7 +85,9 @@ parameterset:
         
         EOT
 
-        srun -n 1 python ${base_path}/helpers/backup_logging.py ${jube_wp_abspath}  
+        srun -n 1 --nodes 1 python ${base_path}/helpers/metadata_archive.py ${jube_wp_abspath}/../..
+
+        cp ${jube_wp_abspath}/stderr ${jube_wp_abspath}/../../metadata_archive
 
   - name: no_optional_run_command
     parameter:

@@ -27,6 +27,10 @@ def git_annex(cpu_info, job_info, uuidgen_hash, base_path):
 
     tmp_result_file_path = os.path.join(base_path, uuidgen_hash + '.csv')
     result_file_path = os.path.join('./', uuidgen_hash + '.csv')
+    tmp_archive_path = os.path.join(base_path, 'metadata_archive')
+    archive_path = os.path.join('./', f'{uuidgen_hash}.tar.gz')
+
+    shell(f'tar -czf {archive_path} -C {tmp_archive_path} .')
 
     # works for machines with the naming scheme XXX.name (used for JSC
     # clusters, might need adjustment for other machines)
@@ -35,6 +39,7 @@ def git_annex(cpu_info, job_info, uuidgen_hash, base_path):
 
     shell(f'cp {tmp_result_file_path} {result_file_path}')
     shell(f'git annex add {result_file_path}')
+    shell(f'git annex add {archive_path}')
     shell_without_print(
         f'git annex metadata {result_file_path} --set key={uuidgen_hash}')
 

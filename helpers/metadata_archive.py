@@ -41,7 +41,7 @@ recordables = {
     'nproc': 'nproc',
     'hwloc-info': 'hwloc-info',
     'hwloc-ls': 'hwloc-ls',
-    'hwloc-topology': 'hwloc-gather-topology {outdir}/hwloc-topology',
+    # 'hwloc-topology': 'hwloc-gather-topology {outdir}/hwloc-topology',
     'lstopo': 'lstopo --of ascii {outdir}/{name}',
     'getconf': 'getconf -a',
     'ulimit': 'ulimit -a',
@@ -49,7 +49,7 @@ recordables = {
 
 
 class Recorder(object):
-    def __init__(self, outdir="about", timeout=300, errors_fatal=False):
+    def __init__(self, outdir="about", timeout=3, errors_fatal=False):
         self.errors_fatal = errors_fatal
         self.timeout = timeout
         self.logtimethres = 10  # seconds
@@ -115,7 +115,7 @@ class Recorder(object):
 
 
 def main():
-    recorder = Recorder(outdir=os.path.join(save_path, 'backup_log'))
+    recorder = Recorder(outdir=os.path.join(save_path, 'metadata_archive'))
     recorder.record(recordables)
 
 
