@@ -53,9 +53,9 @@ parameterset:
 
         srun ${affinity} python ${run_file} ${run_args}
 
-        srun -n 1 python ${base_path}/helpers/collect_timer_data.py ${log_path}
+        srun -n 1 --nodes 1 python ${base_path}/helpers/collect_timer_data.py ${log_path}
 
-        srun -n 1 python ${base_path}/helpers/cpu_logging.py ${jube_wp_abspath}
+        srun -n 1 --nodes 1 python ${base_path}/helpers/cpu_logging.py ${jube_wp_abspath}
 
         cat >job.json <<EOT
 
