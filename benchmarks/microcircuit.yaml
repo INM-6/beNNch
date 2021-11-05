@@ -54,7 +54,7 @@ step:
       - from: microcircuit_config.yaml
         _: file_paths,model_parameters,machine_parameters
       - from: helpers.yaml
-        _: slurm,run_benchmark,files,sub_bench_job,scaling_experiment
+        _: slurm,run_benchmark,files,sub_bench_job,scaling_experiment,init_job_file_variables
       - model_files,simulation_substitutions
       do:
         done_file: $ready_file

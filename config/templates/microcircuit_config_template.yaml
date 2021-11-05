@@ -20,8 +20,7 @@ parameterset:
        - {name: rng_seed, _: "55"}  # rng seed
        - {name: record_spikes, type: string, _: ""}  # change to 'spike_detector' for spike recordings
        - {name: kwds,separator:;, type: string, _: "{}"}  # can be used for passing arguments to SetKernelStatus, such as max_buffer_size_spike_data. If no arguments should be passed leave this empty. If something should be passed insert a dictionary, eg: {'max_buffer_size_spike_data': 10}
-       - {name: scaling, _: $strong}  # can be either $weak or $strong
-       - {name: scaling_name, _: "strong"}
+       - {name: scaling_type, _: "strong"}  # can be either weak or strong
     - name: machine_parameters
       parameter:
        - {name: vps_per_node, type: int, _: "VPS_PER_NODE"}  # number of virtual processes per node, accepts a list in the format a,b,c,... for generating multiple runs

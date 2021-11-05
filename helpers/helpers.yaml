@@ -37,7 +37,7 @@ parameterset:
       - {name: err_file, "_": stderr}
       - {name: out_file, "_": stdout}
       - {name: partition_, "_": $partition}
-    
+
   - name: run_benchmark
     parameter:
       - {name: job_name, type: string, "_": benchmark}
@@ -46,18 +46,16 @@ parameterset:
        separator: ;
        _: 
         module load $modules
-        
+
         export OMP_NUM_THREADS=$threads_per_task
 
         ${optional_run_command}
-       
+
         srun ${affinity} python ${run_file} ${run_args}
-        echo ${base_path}/helpers/collect_timer_data.py
-        echo ${log_path}
 
-        srun -n 1 python ${base_path}/helpers/collect_timer_data.py ${log_path}
+        srun -n 1 --nodes 1 python ${base_path}/helpers/collect_timer_data.py ${log_path}
 
-        srun -n 1 python ${base_path}/helpers/cpu_logging.py ${jube_wp_abspath}
+        srun -n 1 --nodes 1 python ${base_path}/helpers/cpu_logging.py ${jube_wp_abspath}
 
         cat >job.json <<EOT
 
@@ -79,25 +77,25 @@ parameterset:
 
         "record_spikes":"${record_spikes}",
 
-        "scaling":"${scaling_name}"
+        "scaling_type":"${scaling_type}"
 
         }
-        
+
         EOT
 
         srun -n 1 --nodes 1 python ${base_path}/helpers/metadata_archive.py ${jube_wp_abspath}/../..
 
         cp ${jube_wp_abspath}/stderr ${jube_wp_abspath}/../../metadata_archive
 
-  - name: no_optional_run_command
+  - name: init_job_file_variables
     parameter:
        - {name: optional_run_command, "_": ""}
+       - {name: run_args, type: string, _: ""}
 
 # experiment configuration
   - name: scaling_experiment
     parameter:
-       - {name: strong, mode: python, type: float, "_": $scale_N}
-       - {name: weak, mode: python, type: float, "_": $scale_N*$num_nodes}
+       - {name: scale, mode: python, type: float, "_": $scale_N*$num_nodes if "$scaling_type" == "weak" else $scale_N}
 patternset:
     name: timer_pattern
     pattern:
