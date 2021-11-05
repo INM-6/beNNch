@@ -22,4 +22,4 @@ parameterset:
        - {name: num_nodes, type: int, _: "NUM_NODES"}  # number of nodes, accepts a list in the format "a,b,c,..." for generating multiple runs
        - {name: threads_per_task, type: int, _: "THREADS_PER_TASK"}  # number of threads per task, accepts a list in the format "a,b,c,..." for generating multiple runs
        - {name: modules, _: "nest-simulator/3.0"}  # modules to be loaded before execution
-       - {name: affinity, type: string, _: "--cpu-bind=threads --distribution=block:cyclic:fcyclic --hint=nomultithread"}  # processor affinity/pinning
+       - {name: affinity, type: string, separator: ";", _: "--cpu-bind=verbose,threads --distribution=block:cyclic:fcyclic --hint=nomultithread"}  # processor affinity/pinning
