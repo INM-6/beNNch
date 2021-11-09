@@ -1,0 +1,99 @@
+# include-path: # not working due to a bug in JUBE. Uncomment after next release! 
+#   path: 
+#    - ../helpers/
+#    - ../config/
+
+### EDIT BELOW
+
+name: <network_name>
+# model-specific name and output path
+outpath: ../../benchmark_results/<network_name>
+parameterset:
+     name: model_commands
+     parameter:
+         - {name: run_file, type: string, _: <network_simulation_file>.py}
+         - {name: log_path, type: string, _: "${jube_wp_abspath}/data"}          
+fileset:
+# load and copy model-specific files
+     name: model_files
+     copy:
+      - $model_path/<network_simulation_file>
+
+# This subsituteset maps the parameters that were defined in this yaml
+# file to the target patterns that JUBE will search for in the
+# simulation files. The pattern file is bm_run_microcircuit.py which is
+# also the wrapper file for the actual microcircuit simulation. The
+# source pattern will be replaced by the value contained in dest 
+substituteset:
+      name: simulation_substitutions
+      iofile: {in: <network_simulation_file>, out: <network_simulation_file>}
+      sub:
+      - {source: "{<source_key>}", dest: $<dest_key>}
+
+### EDIT ABOVE
+
+# benchmark step 
+step:
+      name: bench
+      use:
+      - model_commands
+      - from: user_config.yaml
+        _: user_config
+      - from: microcircuit_config.yaml
+        _: file_paths,model_parameters,machine_parameters
+      - from: helpers.yaml
+        _: slurm,run_benchmark,files,sub_bench_job,scaling_experiment,init_job_file_variables
+      - model_files,simulation_substitutions
+      do:
+        done_file: $ready_file
+        _: $submit_cmd $job_file
+
+# analysis step 
+analyser:
+      name: analyse
+      use:
+        - from: helpers.yaml
+          _: timer_pattern
+      analyse:
+        step: bench
+        file: timer_data.txt
+
+# result step 
+# TODO add more information to table, e.g., affinity, local_spike_counter 
+# TODO also add hash as in microcircuit_jube_benches, name could be hash (fix file extension from .dat to .csv)
+result:
+      name: result
+      use: analyse
+      table:
+        name: result_table
+        style: csv
+        sort: number
+        column:
+        - rng_seed
+        - num_nodes
+        - threads_per_task
+        - tasks_per_node
+        - model_time_sim
+        - wall_time_create
+        - wall_time_connect
+        - wall_time_sim
+        - wall_time_phase_collocate
+        - wall_time_phase_communicate
+        - wall_time_phase_deliver
+        - wall_time_phase_update
+        - wall_time_communicate_target_data
+        - wall_time_gather_spike_data
+        - wall_time_gather_target_data
+        - wall_time_communicate_prepare
+        - py_time_network
+        - py_time_simulate
+        - py_time_presimulate
+        - py_time_create
+        - py_time_connect
+        - base_memory
+        - network_memory
+        - init_memory
+        - total_memory
+        - num_connections
+        - local_spike_counter
+        - e_counter
