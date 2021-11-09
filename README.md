@@ -159,7 +159,7 @@ In addition, minor modifications to a regular network model need to be made in o
 
 #### Input
 
-A new model needs to be able to receive input from JUBE for setting parameters. Following the `substituteset` defined in `benchmarks/template.yaml`, all listed source keys need to be initialized. See `models/Potjans_2014/run_bm_microcircuit.py` for reference.
+A new model needs to be able to receive input from JUBE for setting parameters. Following the `substituteset` defined in `benchmarks/template.yaml`, all listed source keys need to be initialized. In addition, the corresponding target keys need to be defined in a config file. Use `models/Potjans_2014/run_bm_microcircuit.py` for the former and `config/templates/microcircuit_config_template.yaml` as a reference.
 
 #### Output
 
