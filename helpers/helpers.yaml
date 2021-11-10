@@ -44,7 +44,8 @@ parameterset:
       -
        name: exec
        separator: ;
-       _: 
+       _:
+        module load $simulator/$version/$variant_$suffix 
         module load $modules
 
         export OMP_NUM_THREADS=$threads_per_task
@@ -82,6 +83,15 @@ parameterset:
         }
 
         EOT
+
+  - name: run_build
+    parameter:
+      - {name: job_name, type: string, "_": benchmark}
+      -
+       name: exec
+       separator: ;
+       _:
+        build_custom $mode $simulator $version $variant $suffix
 
   - name: init_job_file_variables
     parameter:
