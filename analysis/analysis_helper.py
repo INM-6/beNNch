@@ -28,7 +28,7 @@ def git_annex(cpu_info, job_info, uuidgen_hash, base_path):
     tmp_result_file_path = os.path.join(base_path, uuidgen_hash + '.csv')
     result_file_path = os.path.join('./', uuidgen_hash + '.csv')
     tmp_archive_path = os.path.join(base_path, 'metadata_archive')
-    archive_path = os.path.join('./', f'{uuidgen_hash}.tar.gz')
+    archive_path = f'{uuidgen_hash}.tar.gz'
 
     shell(f'tar -czf {archive_path} -C {tmp_archive_path} .')
 
