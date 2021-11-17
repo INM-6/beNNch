@@ -2,30 +2,43 @@
 
 ## Repository structure
 
-*analysis* contains JUBE analysis script, config and helpers.
+*config* contains user configuration file templates to be copied and adapted.
 
 *benchmarks* contains benchmark scripts to run benchmarks via JUBE.
 
-*config* contains user configuration file templates to be copied and adapted. 
-
 *helpers* contains helper JUBE parametersets.
 
-*results* contains all results and analysis scripts.
+*analysis* contains JUBE analysis script, config and helpers.
 
-*models* is a git submodule; the linked repository contains NEST network models adapted to work with the benchmarking framework.
+*models* is a git submodule; the linked repository (`https://github.com/INM-6/benchmark-models`) contains NEST network models adapted to work with the benchmarking framework.
 
-*plot* is a git submodule; the linked repository contains predefined plotting routines designed to process the performance results and provide a standardized plotting format.
+*plot* is a git submodule; the linked repository (`https://github.com/INM-6/benchplot`) contains predefined plotting routines designed to process the performance results and provide a standardized plotting format.
 
+*results* TODO
 
 ## Using the framework
 
 ### Initialization
 
-- download submodule data
-  + `git submodule init`
-  + `git submodule update`
-- install benchplot as module
-  + `pip install -e plot --user`
+- Download git submodules:
+
+```bash
+git submodule init
+git submodule update
+```
+
++ For the git submodules `models` and `plot`, you can checkout the latest version of the respective git repositories if needed, e.g.:
+```bash
+cd models
+git checkout main
+git pull origin main
+```
+
+- Install benchplot as Python module:
+
+```bash
+pip install -e plot --user
+```
   
 ### Software dependencies
 
@@ -36,49 +49,59 @@ wget 'http://downloads.kitenet.net/git-annex/linux/current/git-annex-standalone-
 tar -xzf git-annex-standalone-amd64.tar.gz
 export PATH=$PATH:<install_path>/git-annex.linux
 ```
-- [JUBE](https://www.fz-juelich.de/ias/jsc/EN/Expertise/Support/Software/JUBE/_node.html)
+- [JUBE](https://www.fz-juelich.de/ias/jsc/EN/Expertise/Support/Software/JUBE/_node.html)  
+_Note that if you are using the latest JUBE version 2.4.1, the following export command is required for executing benchmarks due to a known bug. Once the bug is fixed, the export will become unnecessary and the documentation here will be updated accordingly._
+
+```bash
+export JUBE_INCLUDE_PATH="<PATH_TO_REPO>config/:helpers/"
+```
+
 - Python 3.X
+
+### Models
+
+For the following network models, there is currently a NEST implementation in the *models* submodule and corresponding JUBE benchmark script in the `benchmarks/` folder:
+
+- **Multi-Area Model**
+
+  - `multi-area-model_2` for usage with NEST 2.
+  - `multi-area-model_3` for usage with NEST 3.
+
+- **Microcircuit**
+
+  - `microcircuit`
+
+- **HPC Benchmark**
+
+  - `hpc_benchmark_2` for usage with NEST 2.
+  - `hpc_benchmark_3` for usage with NEST 3.0.
+  - `hpc_benchmark_31` for usage with NEST 3.1.
 
 ### First steps: configure your simulation
 
-Copy `config/templates/user_config_template.yaml` to `config/user_config.yaml` and fill in all parameters:
-  - `account`: slurm account name for job submission
-  - `email_address` (optional): email address to which slurm sends START, END, FAIL emails for job progress info
-  - `partition` (optional, required on some machines): cluster partition, takes system default if left empty 
+Make a copy of the template config file for user parameters and fill it:
 
-Copy `config/templates/<model>_config_template.yaml` to `config/<model>_config.yaml` and fill in all parameters.
+```bash
+cp config/templates/user_config_template.yaml config/user_config.yaml
+```
+
+Copy and fill also the parameter file with model-specific parameters:
+
+```bash
+cp config/templates/<model>_config_template.yaml config/<model>_config.yaml
+```
 
 ### Run benchmarks
 
 The JUBE benchmarking scripts can be found in `benchmarks/`.
 
-To run a benchmark, execute
+To run a benchmark, execute:
 
 ```bash
-export JUBE_INCLUDE_PATH="config/:helpers/"
-jube run <PATH_TO_REPO>/benchmarks/<benchmark_file.yaml>
+jube run benchmarks/<model>.yaml
 ```
 
-_Note that the export command is working around a known bug in JUBE 2.4.1, once it is fixed the export will become unnecessary and the documentation here will be updated accordingly._
-
 JUBE displays a table summarizing the submitted job(s) and the corresponding `job id`.
-
-These are the benchmarks currently implemented:
-
-- **Multi-Area Model**
-
-  - `benchmarks/multi-area-model_2.yaml` for usage with NEST 2.
-  - `benchmarks/multi-area-model_3.yaml` for usage with NEST 3.
-
-- **Microcircuit**
-
-  - `benchmarks/microcircuit.yaml`
-
-- **HPC Benchmark**
-
-  - `benchmarks/hpc_benchmark_2.yaml` for usage with NEST 2.
-  - `benchmarks/hpc_benchmark_3.yaml` for usage with NEST 3.0.
-  - `benchmarks/hpc_benchmark_31.yaml` for usage with NEST 3.1.
 
 ### Analyze benchmarks
 
