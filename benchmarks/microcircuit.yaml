@@ -71,8 +71,6 @@ analyser:
         file: timer_data.txt
 
 # result step 
-# TODO add more information to table, e.g., affinity, local_spike_counter 
-# TODO also add hash as in microcircuit_jube_benches, name could be hash (fix file extension from .dat to .csv)
 result:
       name: result
       use: analyse

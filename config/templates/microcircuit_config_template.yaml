@@ -1,14 +1,12 @@
 parameterset:
     - name: file_paths
       parameter:
-       - {name: base_path, type: string, _: BASE_PATH}  # # path where main repository is stored
-       - {name: model_path, type: string, _: MODEL_PATH}  # path where the microcircuit model is stored
-       - {name: data_path, type: string, _: DATA_PATH}  # path where the simulation files are copied and the simulation output is stored
+       - {name: base_path, type: string, _: BASE_PATH}  # absolute path to main repository
+       - {name: model_path, type: string, _: MODEL_PATH}  # absolute path to microcircuit model, e.g., <BASE_PATH>/models/Potjans_2014
     - name: model_parameters
       parameter:
        - {name: model_name, type: string, _: "microcircuit"}  # for identifying the model, can be any unique string
        - {name: net_params, type: string, _: "network_params.py"}  # default network parameters
-       - {name: network_state, type: string, _: ""}  # empty for microcircuit
        - {name: scale_N, type: float, _: "1."}  # scaling the number of neurons, 1. -> original model
        - {name: scale_K, type: float, _: "1."}  # scaling the indegree, 1. -> original model
        - {name: poisson_input, type: string, _: "False"}  # choose Poisson or DC input
@@ -19,8 +17,8 @@ parameterset:
        - {name: model_time_presim, _: "100."}  # in ms
        - {name: rng_seed, _: "55"}  # rng seed
        - {name: record_spikes, type: string, _: ""}  # change to 'spike_detector' for spike recordings
-       - {name: kwds,separator:;, type: string, _: "{}"}  # can be used for passing arguments to SetKernelStatus, such as max_buffer_size_spike_data. If no arguments should be passed leave this empty. If something should be passed insert a dictionary, eg: {'max_buffer_size_spike_data': 10}
-       - {name: scaling_type, _: "strong"}  # can be either weak or strong
+       - {name: kwds, separator: ;, type: string, _: "{}"}  # can be used for passing arguments to SetKernelStatus, such as max_buffer_size_spike_data. If no arguments should be passed leave this empty. If something should be passed insert a dictionary, eg: {'max_buffer_size_spike_data': 10}
+       - {name: scaling_type, _: "strong"}  # strong scaling for the microcircuit
     - name: machine_parameters
       parameter:
        - {name: vps_per_node, type: int, _: "VPS_PER_NODE"}  # number of virtual processes per node, accepts a list in the format a,b,c,... for generating multiple runs
