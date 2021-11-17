@@ -91,7 +91,7 @@ parameterset:
        name: exec
        separator: ;
        _:
-        build_custom $mode $simulator $version $variant $suffix
+        build $mode $simulator $version $variant $suffix
 
   - name: init_job_file_variables
     parameter:
