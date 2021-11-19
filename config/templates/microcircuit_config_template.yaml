@@ -19,7 +19,7 @@ parameterset:
        - {name: model_time_presim, _: "100."}  # in ms
        - {name: rng_seed, _: "55"}  # rng seed
        - {name: record_spikes, type: string, _: ""}  # change to 'spike_detector' for spike recordings
-       - {name: kwds,separator:;, type: string, _: "{}"}  # can be used for passing arguments to SetKernelStatus, such as max_buffer_size_spike_data. If no arguments should be passed leave this empty. If something should be passed insert a dictionary, eg: {'max_buffer_size_spike_data': 10}
+       - {name: kwds, separator: ;, type: string, _: "{}"}  # can be used for passing arguments to SetKernelStatus, such as max_buffer_size_spike_data. If no arguments should be passed leave this empty. If something should be passed insert a dictionary, eg: {'max_buffer_size_spike_data': 10}
        - {name: scaling_type, _: "strong"}  # can be either weak or strong
     - name: machine_parameters
       parameter:

@@ -45,22 +45,20 @@ substituteset:
       - {source: "{K_SCALING}", dest: $scale_K}
 
 step:
+# build step 
     - name: build
       use:
       - model_commands
       - from: user_config.yaml
         _: user_config
-      - from: build_config.xml
-        _: build_config,machine_parameters
       - from: helpers.xml
         _: slurm,run_build,files,sub_build_job
       do:
-        - build --get ${mode} ${simulator} ${version} ${variant} ${suffix}
+        - build --get ${simulator} ${version} ${variant} ${suffix}
         - done_file: $ready_file
           _: $submit_cmd $job_file
 
-# benchmark step 
-
+# benchmark step
     - name: bench
       depend: build
       use:

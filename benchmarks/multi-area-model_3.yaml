@@ -21,20 +21,34 @@ parameterset:
       
         - {name: log_path, type: string, _: "${data_path}/${data_folder_hash}/recordings"}
 
-# benchmark step   
 step:
-    name: bench
-    use:
-    - model_commands
-    - from: user_config.yaml
-      _: user_config
-    - from: multi-area-model_3_config.yaml
-      _: file_paths,model_parameters,machine_parameters
-    - from: helpers.yaml
-      _: slurm,run_benchmark,files,sub_bench_job,scaling_experiment
-    do:
-      done_file: $ready_file
-      _: $submit_cmd $job_file
+# build step 
+    - name: build
+      use:
+      - model_commands
+      - from: user_config.yaml
+        _: user_config
+      - from: helpers.xml
+        _: slurm,run_build,files,sub_build_job
+      do:
+        - build --get ${simulator} ${version} ${variant} ${suffix}
+        - done_file: $ready_file
+          _: $submit_cmd $job_file
+
+# benchmark step
+    - name: bench
+      depend: build
+      use:
+      - model_commands
+      - from: user_config.yaml
+        _: user_config
+      - from: multi-area-model_3_config.yaml
+        _: file_paths,model_parameters,machine_parameters
+      - from: helpers.yaml
+        _: slurm,run_benchmark,files,sub_bench_job,scaling_experiment
+      do:
+        done_file: $ready_file
+        _: $submit_cmd $job_file
 # analysis step
 analyser:
       name: analyse
