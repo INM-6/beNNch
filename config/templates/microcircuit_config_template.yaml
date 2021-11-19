@@ -1,14 +1,12 @@
 parameterset:
     - name: file_paths
       parameter:
-       - {name: base_path, type: string, _: BASE_PATH}  # # path where main repository is stored
-       - {name: model_path, type: string, _: MODEL_PATH}  # path where the microcircuit model is stored
-       - {name: data_path, type: string, _: DATA_PATH}  # path where the simulation files are copied and the simulation output is stored
+       - {name: base_path, type: string, _: BASE_PATH}  # absolute path to main repository
+       - {name: model_path, type: string, _: MODEL_PATH}  # absolute path to microcircuit model, e.g., <BASE_PATH>/models/Potjans_2014
     - name: model_parameters
       parameter:
        - {name: model_name, type: string, _: "microcircuit"}  # for identifying the model, can be any unique string
        - {name: net_params, type: string, _: "network_params.py"}  # default network parameters
-       - {name: network_state, type: string, _: ""}  # empty for microcircuit
        - {name: scale_N, type: float, _: "1."}  # scaling the number of neurons, 1. -> original model
        - {name: scale_K, type: float, _: "1."}  # scaling the indegree, 1. -> original model
        - {name: poisson_input, type: string, _: "False"}  # choose Poisson or DC input

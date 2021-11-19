@@ -3,64 +3,38 @@
 #    - ../helpers/
 #    - ../config/
 
-name: microcircuit
+### EDIT BELOW
+
+name: <network_name>
 # model-specific name and output path
-outpath: ../../benchmark_results/microcircuit
+outpath: ../../benchmark_results/<network_name>
 parameterset:
      name: model_commands
      parameter:
-         - {name: run_file, type: string, _: bm_run_microcircuit.py}
+         - {name: run_file, type: string, _: <network_simulation_file>.py}
          - {name: log_path, type: string, _: "${jube_wp_abspath}/data"}          
 fileset:
 # load and copy model-specific files
      name: model_files
      copy:
-      - $model_path/bm_run_microcircuit.py
-      - $model_path/bm_helpers.py
-      - $model_path/sim_params.py
-      - $model_path/network_params.py
-      - $model_path/helpers.py
-      - $model_path/network.py
-      - $model_path/stimulus_params.py
+      - $model_path/<network_simulation_file>
 
-# This subsituteset maps the parameters that were defined in this xml
+# This subsituteset maps the parameters that were defined in this yaml
 # file to the target patterns that JUBE will search for in the
 # simulation files. The pattern file is bm_run_microcircuit.py which is
 # also the wrapper file for the actual microcircuit simulation. The
 # source pattern will be replaced by the value contained in dest 
 substituteset:
       name: simulation_substitutions
-      iofile: {in: bm_run_microcircuit.py, out: bm_run_microcircuit.py}
+      iofile: {in: <network_simulation_file>, out: <network_simulation_file>}
       sub:
-      - {source: "{record_spikes}", dest: $record_spikes}
-      - {source: "{POISSON_INPUT}", dest: $poisson_input}
-      - {source: "{kwds}", dest: $kwds}
-      - {source: "{V0_TYPE}", dest: $V0_type}
-      - {source: "{SYNAPSE_TYPE}", dest: $synapse_type}
-      - {source: "{model_time_sim}", dest: $model_time_sim}
-      - {source: "{model_time_presim}", dest: $model_time_presim}
-      - {source: "{rng_seed}", dest: $rng_seed}
-      - {source: "{threads_per_task}", dest: $threads_per_task}
-      - {source: "{N_SCALING}", dest: $scale_N}
-      - {source: "{K_SCALING}", dest: $scale_K}
+      - {source: "{<source_key>}", dest: $<dest_key>}
 
+### EDIT ABOVE
+
+# benchmark step 
 step:
-# build step 
-    - name: build
-      use:
-      - model_commands
-      - from: user_config.yaml
-        _: user_config
-      - from: helpers.xml
-        _: slurm,run_build,files,sub_build_job
-      do:
-        - build --get ${simulator} ${version} ${variant} ${suffix}
-        - done_file: $ready_file
-          _: $submit_cmd $job_file
-
-# benchmark step
-    - name: bench
-      depend: build
+      name: bench
       use:
       - model_commands
       - from: user_config.yaml
@@ -85,6 +59,8 @@ analyser:
         file: timer_data.txt
 
 # result step 
+# TODO add more information to table, e.g., affinity, local_spike_counter 
+# TODO also add hash as in microcircuit_jube_benches, name could be hash (fix file extension from .dat to .csv)
 result:
       name: result
       use: analyse
