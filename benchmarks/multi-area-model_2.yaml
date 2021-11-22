@@ -28,7 +28,7 @@ step:
       - model_commands
       - from: user_config.yaml
         _: user_config
-      - from: helpers.xml
+      - from: helpers.yaml
         _: slurm,run_build,files,sub_build_job
       do:
         - build --get ${simulator} ${version} ${variant} ${suffix}
