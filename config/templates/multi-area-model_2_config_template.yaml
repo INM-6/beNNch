@@ -22,9 +22,9 @@ parameterset:
        - {name: num_nodes, type: int, _: "NUM_NODES"}  # number of nodes, accepts a list in the format "a,b,c,..." for generating multiple runs
        - {name: threads_per_task, type: int, _: "THREADS_PER_TASK"}  # number of threads per task, accepts a list in the format "a,b,c,..." for generating multiple runs
        - {name: modules, _: "nest-simulator/3.0"}  # modules to be loaded before execution
-       - {name: simulator, _: "nest-simulator"}    # simulator to be benchmarked
-       - {name: version, _: "3.0"}                 # version simulator to be benchmarked
-       - {name: variant, _: "BUILD"}               # variant of version
-       - {name: suffix, _: "SUFFIX"}               # variant of version
+       - {name: simulator, _: "nest-simulator"}  # simulator to be installed (plan file must be provided)
+       - {name: version, _: "VERSION"}  # simulator version
+       - {name: variant, _: "default"}  # version variant
+       - {name: suffix, _: ""}  # custom suffix for identification of simulator installation
        
        - {name: affinity, type: string, _: "--cpu-bind=threads --distribution=block:cyclic:fcyclic --hint=nomultithread"}  # processor affinity/pinning
