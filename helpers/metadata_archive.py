@@ -115,7 +115,7 @@ class Recorder(object):
 
 
 def main():
-    recorder = Recorder(outdir=os.path.join(save_path, 'metadata_archive'))
+    recorder = Recorder(outdir=save_path)
     recorder.record(recordables)
 
 

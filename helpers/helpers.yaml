@@ -83,9 +83,15 @@ parameterset:
 
         EOT
 
-        srun -n 1 --nodes 1 python ${base_path}/helpers/metadata_archive.py ${jube_wp_abspath}/../..
+        metadata_uuid=$(uuidgen)
 
-        cp ${jube_wp_abspath}/stderr ${jube_wp_abspath}/../../metadata_archive
+        srun -n 1 --nodes 1 python ${base_path}/helpers/metadata_archive.py ${jube_wp_abspath}/${metadata_uuid}
+
+        cp ${jube_wp_abspath}/stderr ${jube_wp_abspath}/${metadata_uuid}
+
+        tar -czf ${metadata_uuid}.tgz -C ${jube_wp_abspath} ${metadata_uuid}
+
+        rm ${jube_wp_abspath}/${metadata_uuid}
 
   - name: init_job_file_variables
     parameter:
