@@ -91,7 +91,7 @@ parameterset:
 
         tar -czf ${metadata_uuid}.tgz -C ${jube_wp_abspath} ${metadata_uuid}
 
-        rm ${jube_wp_abspath}/${metadata_uuid}
+        rm -r ${jube_wp_abspath}/${metadata_uuid}
 
   - name: init_job_file_variables
     parameter:
