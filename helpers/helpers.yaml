@@ -3,37 +3,36 @@ fileset:
     name: files
     copy: ${job_file}.in
 substituteset:
-    name: sub_bench_job
-    iofile: {in: $job_file.in, out: $job_file}
-    sub:
-      - {source: "#PARTITION#", dest: $partition}
-      - {source: "#NODES#", dest: $nodes}
-      - {source: "#NTASKS#", dest: $num_tasks_tot}
-      - {source: "#NTASKS_PER_NODE#", dest: $ppn}
-      - {source: "#CPUS_PER_TASK#", dest: $cpus_per_task}
-      - {source: "#TIME#", dest: $walltime_}
-      - {source: "#ERRPATH#", dest: $err_file}
-      - {source: "#OUTPATH#", dest: $out_file}
-      - {source: "#COMMANDS#", dest: $exec}
-      - {source: "#READY#", dest: $ready_file}
-      - {source: "#JOB_NAME#", dest: $job_name}
-      - {source: "#ACCOUNT#", dest: $account}
-substituteset:
-    name: sub_build_job
-    iofile: {in: $job_file.in, out: $job_file}
-    sub:
-      - {source: "#PARTITION#", dest: $partition}
-      - {source: "#NODES#", dest: 1}
-      - {source: "#NTASKS#", dest: 1}
-      - {source: "#NTASKS_PER_NODE#", dest: 1}
-      - {source: "#CPUS_PER_TASK#", dest: 16}
-      - {source: "#TIME#", dest: "00:15:00"}
-      - {source: "#ERRPATH#", dest: $err_file}
-      - {source: "#OUTPATH#", dest: $out_file}
-      - {source: "#COMMANDS#", dest: $exec}
-      - {source: "#READY#", dest: $ready_file}
-      - {source: "#JOB_NAME#", dest: Builder_build}
-      - {source: "#ACCOUNT#", dest: $account}
+    - name: sub_bench_job
+      iofile: {in: $job_file.in, out: $job_file}
+      sub:
+        - {source: "#PARTITION#", dest: $partition}
+        - {source: "#NODES#", dest: $nodes}
+        - {source: "#NTASKS#", dest: $num_tasks_tot}
+        - {source: "#NTASKS_PER_NODE#", dest: $ppn}
+        - {source: "#CPUS_PER_TASK#", dest: $cpus_per_task}
+        - {source: "#TIME#", dest: $walltime_}
+        - {source: "#ERRPATH#", dest: $err_file}
+        - {source: "#OUTPATH#", dest: $out_file}
+        - {source: "#COMMANDS#", dest: $exec}
+        - {source: "#READY#", dest: $ready_file}
+        - {source: "#JOB_NAME#", dest: $job_name}
+        - {source: "#ACCOUNT#", dest: $account}
+    - name: sub_build_job
+      iofile: {in: $job_file.in, out: $job_file}
+      sub:
+        - {source: "#PARTITION#", dest: $partition}
+        - {source: "#NODES#", dest: 1}
+        - {source: "#NTASKS#", dest: 1}
+        - {source: "#NTASKS_PER_NODE#", dest: 1}
+        - {source: "#CPUS_PER_TASK#", dest: 16}
+        - {source: "#TIME#", dest: "00:15:00"}
+        - {source: "#ERRPATH#", dest: $err_file}
+        - {source: "#OUTPATH#", dest: $out_file}
+        - {source: "#COMMANDS#", dest: $exec}
+        - {source: "#READY#", dest: $ready_file}
+        - {source: "#JOB_NAME#", dest: Builder_build}
+        - {source: "#ACCOUNT#", dest: $account}
 parameterset:
   - name: slurm
     parameter:

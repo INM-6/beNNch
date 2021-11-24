@@ -51,10 +51,12 @@ step:
       - model_commands
       - from: user_config.yaml
         _: user_config
+      - from: microcircuit_config.yaml
+        _: file_paths,model_parameters,machine_parameters
       - from: helpers.yaml
         _: slurm,run_build,files,sub_build_job
       do:
-        - build --get ${simulator} ${version} ${variant} ${suffix}
+        - build --silent --get ${simulator} ${version} ${variant} ${suffix}
         - done_file: $ready_file
           _: $submit_cmd $job_file
 
