@@ -40,13 +40,12 @@ def git_annex(cpu_info, job_info, uuidgen_hash, base_path):
     metadata_uuids = [os.path.split(archive)[-1].split('.')[0]
                       for archive in metadata_archives]
     # tar metadata archives for each run
-    tar_obj = tarfile.open(archive_path, "w")
-    for archive in metadata_archives:
-        tar_obj.add(archive,
-                    arcname=os.path.join(
-                        uuidgen_hash,
-                        os.path.split(archive)[-1]))
-    tar_obj.close()
+    with tarfile.open(archive_path, "w") as tar_obj:
+        for archive in metadata_archives:
+            tar_obj.add(archive,
+                        arcname=os.path.join(
+                            uuidgen_hash,
+                            os.path.split(archive)[-1]))
     # add metadata uuid to corresponding csv entry
     csv = pd.read_csv(tmp_result_file_path)
     csv['metadata_uuid'] = metadata_uuids
