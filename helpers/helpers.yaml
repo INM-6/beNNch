@@ -44,54 +44,26 @@ parameterset:
       -
        name: exec
        separator: ;
-       _: 
+       _: |
         module load $modules
-
         export OMP_NUM_THREADS=$threads_per_task
-
         ${optional_run_command}
-
         srun ${affinity} python ${run_file} ${run_args}
-
         srun -n 1 --nodes 1 python ${base_path}/helpers/collect_timer_data.py ${log_path}
-
         srun -n 1 --nodes 1 python ${base_path}/helpers/cpu_logging.py ${jube_wp_abspath}
-
         cat >job.json <<EOT
-
         {"vps_per_node":"${vps_per_node}",
-
         "num_nodes":"${num_nodes}",
-
         "tasks_per_node":"${tasks_per_node}",
-
         "threads_per_task":"${threads_per_task}",
-
         "affinity":"${affinity}",
-
         "nest":"${modules}",
-
         "model_name":"${model_name}",
-
         "network_state":"${network_state}",
-
         "record_spikes":"${record_spikes}",
-
         "scaling_type":"${scaling_type}"
-
         }
-
         EOT
-
-        metadata_uuid=$(uuidgen)
-
-        srun -n 1 --nodes 1 python ${base_path}/helpers/metadata_archive.py ${jube_wp_abspath}/${metadata_uuid}
-
-        cp ${jube_wp_abspath}/stderr ${jube_wp_abspath}/${metadata_uuid}
-
-        tar -czf ${metadata_uuid}.tgz -C ${jube_wp_abspath} ${metadata_uuid}
-
-        rm -r ${jube_wp_abspath}/${metadata_uuid}
 
   - name: init_job_file_variables
     parameter:
