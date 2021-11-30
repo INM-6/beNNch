@@ -45,8 +45,9 @@ substituteset:
       - {source: "{K_SCALING}", dest: $scale_K}
 
 step:
-# build step 
+# build step
     - name: build
+      shared: shared
       use:
       - model_commands
       - from: user_config.yaml
@@ -56,9 +57,9 @@ step:
       - from: helpers.yaml
         _: slurm,run_build,files,sub_build_job
       do:
-        - build --get --silent ${simulator} ${version} ${variant} ${suffix}
+        - {shared: true, _: "build --get --silent ${simulator} ${version} ${variant} ${suffix}"}
         - done_file: $ready_file
-          _: $submit_cmd $job_file
+          _: {shared: true, _: "$submit_cmd $job_file"}
 
 # benchmark step
     - name: bench
@@ -76,7 +77,7 @@ step:
         done_file: $ready_file
         _: $submit_cmd $job_file
 
-# analysis step 
+# analysis step
 analyser:
       name: analyse
       use:
