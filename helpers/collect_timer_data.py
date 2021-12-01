@@ -1,6 +1,6 @@
 """
-collect_timer_data.py: Extracts timing information provided by models through
-the built-in NEST instrumentation.
+NEST Benchmarking Framework - Unified execution, collection, analysis and
+comparison of neural network simulation benchmarks.
 Copyright (C) 2021 Forschungszentrum Juelich GmbH, INM-6
 
 This program is free software: you can redistribute it and/or modify it under

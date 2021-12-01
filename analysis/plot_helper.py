@@ -1,5 +1,6 @@
 """
-plot_helper.py: Helpers for plotting, used in analysis.py.
+NEST Benchmarking Framework - Unified execution, collection, analysis and
+comparison of neural network simulation benchmarks.
 Copyright (C) 2021 Forschungszentrum Juelich GmbH, INM-6
 
 This program is free software: you can redistribute it and/or modify it under

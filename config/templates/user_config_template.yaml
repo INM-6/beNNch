@@ -1,6 +1,6 @@
 """
-user_config_template.yaml: Configuration template for defining
-user-specific options prior to submitting jobs.
+NEST Benchmarking Framework - Unified execution, collection, analysis and
+comparison of neural network simulation benchmarks.
 Copyright (C) 2021 Forschungszentrum Juelich GmbH, INM-6
 
 This program is free software: you can redistribute it and/or modify it under

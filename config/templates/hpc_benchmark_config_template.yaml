@@ -1,7 +1,6 @@
 """
-hpc_benchmark_config_template.yaml: Configuration template for specifying
-file paths, model and machine parameters of a benchmark of the hpc-benchmark
-model.
+NEST Benchmarking Framework - Unified execution, collection, analysis and
+comparison of neural network simulation benchmarks.
 Copyright (C) 2021 Forschungszentrum Juelich GmbH, INM-6
 
 This program is free software: you can redistribute it and/or modify it under

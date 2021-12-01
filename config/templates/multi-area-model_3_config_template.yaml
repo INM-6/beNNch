@@ -1,7 +1,6 @@
 """
-multi-area-model_3_config_template.yaml: Configuration template for specifying
-file paths, model and machine parameters of a benchmark of the multi-area
-model using NEST 3.X.
+NEST Benchmarking Framework - Unified execution, collection, analysis and
+comparison of neural network simulation benchmarks.
 Copyright (C) 2021 Forschungszentrum Juelich GmbH, INM-6
 
 This program is free software: you can redistribute it and/or modify it under

@@ -1,6 +1,6 @@
 """
-cpu_logging.py: Logs CPU specifications returned by the 'lscpu' shell
-command. This metadata is subsequently annotated to the timing data.
+NEST Benchmarking Framework - Unified execution, collection, analysis and
+comparison of neural network simulation benchmarks.
 Copyright (C) 2021 Forschungszentrum Juelich GmbH, INM-6
 
 This program is free software: you can redistribute it and/or modify it under

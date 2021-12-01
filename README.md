@@ -1,4 +1,6 @@
-<!-- README.md: Documentation of nest_benchmarking_framework.
+<!-- 
+NEST Benchmarking Framework - Unified execution, collection, analysis and
+comparison of neural network simulation benchmarks.
 Copyright (C) 2021 Forschungszentrum Juelich GmbH, INM-6
 
 This program is free software: you can redistribute it and/or modify it under
@@ -13,6 +15,7 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 
 SPDX-License-Identifier: GPL-3.0-or-later
 -->
+
 # NEST Benchmarking Framework
 
 ## Repository structure
