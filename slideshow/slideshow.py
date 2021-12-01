@@ -1,7 +1,7 @@
 """
 slideshow.py: Creates a slideshow of data plots and associated metadata in
 the HTML format from provided result files in csv format.
-Copyright (C) <2021> <INM-6>
+Copyright (C) 2021 Forschungszentrum Juelich GmbH, INM-6
 
 This program is free software: you can redistribute it and/or modify it under
 the terms of the GNU General Public License as published by the Free Software
