@@ -24,18 +24,17 @@ parameterset:
 step:
 # build step 
     - name: build
+      export: true
       use:
       - model_commands
       - from: user_config.yaml
         _: user_config
       - from: multi-area-model_2_config.yaml
-        _: file_paths,model_parameters,machine_parameters
+        _: file_paths,model_parameters,software_parameters
       - from: helpers.yaml
         _: slurm,run_build,files,sub_build_job
       do:
-        - build --get --silent ${simulator} ${version} ${variant} ${suffix}
-        - done_file: $ready_file
-          _: $submit_cmd $job_file
+        - build --get --silent ${simulator} ${version} ${variant} ${suffix} && export DEP=`$submit_cmd --parsable $job_file`
  
 # benchmark step   
     - name: bench
@@ -50,7 +49,7 @@ step:
         _: slurm,run_benchmark,files,sub_bench_job,scaling_experiment
       do:
         done_file: $ready_file
-        _: $submit_cmd $job_file
+        _: $submit_cmd --dependency=afterok:$$DEP  $job_file
 # analysis step
 analyser:
       name: analyse
