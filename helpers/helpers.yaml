@@ -33,6 +33,7 @@ substituteset:
         - {source: "#READY#", dest: $ready_file}
         - {source: "#JOB_NAME#", dest: Builder_build}
         - {source: "#ACCOUNT#", dest: $account}
+
 parameterset:
   - name: slurm
     parameter:
@@ -42,8 +43,7 @@ parameterset:
       - {name: num_vps, type: int, mode: python, "_": $vps_per_node*$num_nodes}
       - {name: num_tasks_tot, type: int, mode: python, "_": $num_vps // $threads_per_task}
       - {name: ppn, type: int, mode: python, "_": $num_tasks_tot // $num_nodes}
-
-# next is alias to make result table template work
+        # next is alias to make result table template work
       - {name: tasks_per_node, type: int, "_": $ppn}
       - {name: cpus_per_task, type: int, "_": $threads_per_task}
       - {name: totVPs, type: int, mode: python, "_": $num_vps}
@@ -52,7 +52,14 @@ parameterset:
       - {name: err_file, "_": stderr}
       - {name: out_file, "_": stdout}
       - {name: partition_, "_": $partition}
-
+  - name: slurm_build
+    parameter:
+      - {name: submit_cmd, "_": sbatch }
+      - {name: job_file, "_": job.slurm }
+      - {name: ready_file, "_": ready}
+      - {name: err_file, "_": stderr}
+      - {name: out_file, "_": stdout}
+      - {name: partition_, "_": $partition}
   - name: run_benchmark
     parameter:
       - {name: job_name, type: string, "_": benchmark}
