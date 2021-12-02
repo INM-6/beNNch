@@ -1,8 +1,8 @@
 parameterset:
     - name: file_paths
       parameter:
-       - {name: base_path, type: string, _: "p/project/cjinb33/kurth3/nest_benchmarking_framework"}  # absolute path to main repository
-       - {name: model_path, type: string, _: "p/project/cjinb33/kurth3/nest_benchmarking_framework/models/Potjans_2014"}  # absolute path to microcircuit model, e.g., <BASE_PATH>/models/Potjans_2014
+       - {name: base_path, type: string, _: "/p/home/jusers/haghighimood1/jusuf/exahome/ACA-bench/TMP1/nest_benchmarking_framework"}  # absolute path to main repository
+       - {name: model_path, type: string, _: "/p/home/jusers/haghighimood1/jusuf/exahome/ACA-bench/TMP1/nest_benchmarking_framework/models/Potjans_2014"}  # absolute path to microcircuit model, e.g., <BASE_PATH>/models/Potjans_2014
     - name: model_parameters
       parameter:
        - {name: model_name, type: string, _: "microcircuit"}  # for identifying the model, can be any unique string
@@ -28,8 +28,8 @@ parameterset:
        - {name: affinity, type: string, _: "--cpu-bind=threads --distribution=block:cyclic:fcyclic"}  # processor affinity/pinning
     - name: software_parameters
       parameter:
-       - {name: modules, _: "nest-simulator/3.0"}  # modules to be loaded before execution
        - {name: simulator, _: "nest-simulator"}    # simulator to be benchmarked
-       - {name: version, _: "2.20.1"}                 # version simulator to be benchmarked
+       - {name: version, _: "3.0-bm"}                 # version simulator to be benchmarked
        - {name: variant, _: "default"}               # variant of version
-       - {name: suffix, _: "my"}               # variant of version
+       - {name: suffix, _: ""}               # variant of version
+       - {name: buildermod, _: "/p/home/jusers/haghighimood1/jusuf/modules"}

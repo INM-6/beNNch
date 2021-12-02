@@ -14,7 +14,7 @@ substituteset:
         - {source: "#TIME#", dest: $walltime_}
         - {source: "#ERRPATH#", dest: $err_file}
         - {source: "#OUTPATH#", dest: $out_file}
-        - {source: "#COMMANDS#", dest: $exec}
+        - {source: "#COMMANDS#", dest: $exec_bench}
         - {source: "#READY#", dest: $ready_file}
         - {source: "#JOB_NAME#", dest: $job_name}
         - {source: "#ACCOUNT#", dest: $account}
@@ -29,7 +29,7 @@ substituteset:
         - {source: "#TIME#", dest: "00:15:00"}
         - {source: "#ERRPATH#", dest: $err_file}
         - {source: "#OUTPATH#", dest: $out_file}
-        - {source: "#COMMANDS#", dest: $exec}
+        - {source: "#COMMANDS#", dest: $exec_build}
         - {source: "#READY#", dest: $ready_file}
         - {source: "#JOB_NAME#", dest: Builder_build}
         - {source: "#ACCOUNT#", dest: $account}
@@ -64,12 +64,23 @@ parameterset:
     parameter:
       - {name: job_name, type: string, "_": benchmark}
       -
-       name: exec
+       name: exec_bench
        separator: ;
        _:
-        module load $simulator/$version/$variant_$suffix 
-        module load $modules
-
+        module use $buildermod
+        
+        if [ -z "$suffix" ]
+        
+        then
+        
+           module load $simulator/$version/$variant
+        
+        else
+        
+           module load $simulator/$version/$variant_$suffix
+        
+        fi
+        
         export OMP_NUM_THREADS=$threads_per_task
 
         ${optional_run_command}
@@ -110,7 +121,7 @@ parameterset:
     parameter:
       - {name: job_name, type: string, "_": benchmark}
       -
-       name: exec
+       name: exec_build
        separator: ;
        _:
         build -s $simulator $version $variant $suffix
