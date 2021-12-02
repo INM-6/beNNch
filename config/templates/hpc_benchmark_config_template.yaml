@@ -21,10 +21,11 @@ parameterset:
        - {name: walltime, type: string, _: "WALLTIME"}  # wall time for the job in format hh:mm:ss
        - {name: num_nodes, type: int, _: "NUM_NODES"}  # number of nodes, accepts a list in the format a,b,c,... for generating multiple runs
        - {name: threads_per_task, type: int, _: "THREADS_PER_TASK"}  # number of threads per task, accepts a list in the format a,b,c,... for generating multiple runs
-       - {name: modules, _: "nest-simulator/3.0"}  # modules to be loaded before execution
+       - {name: affinity, type: string, _: "--cpu-bind=threads --distribution=block:cyclic:fcyclic"}  # processor affinity/pinning
+    - name: software_parameters
+      parameter:
        - {name: simulator, _: "nest-simulator"}  # simulator to be installed (plan file must be provided)
        - {name: version, _: "VERSION"}  # simulator version
        - {name: variant, _: "default"}  # version variant
        - {name: suffix, _: ""}  # custom suffix for identification of simulator installation
-       
-       - {name: affinity, type: string, _: "--cpu-bind=threads --distribution=block:cyclic:fcyclic --hint=nomultithread"}  # processor affinity/pinning
+       - {name: buildermod, _: ""} # absolute path to Builder modules folder
