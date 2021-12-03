@@ -1,3 +1,21 @@
+"""
+NEST Benchmarking Framework - Unified execution, collection, analysis and
+comparison of neural network simulation benchmarks.
+Copyright (C) 2021 Forschungszentrum Juelich GmbH, INM-6
+
+This program is free software: you can redistribute it and/or modify it under
+the terms of the GNU General Public License as published by the Free Software
+Foundation, either version 3 of the License, or (at your option) any later
+version.
+This program is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+PARTICULAR PURPOSE. See the GNU General Public License for more details.
+You should have received a copy of the GNU General Public License along with
+this program. If not, see <https://www.gnu.org/licenses/>.
+
+SPDX-License-Identifier: GPL-3.0-or-later
+"""
+
 import numpy as np
 import benchplot as bp
 from matplotlib import pyplot as plt
@@ -117,13 +135,10 @@ def plot(scaling_type, timer_hash, timer_file, save_path):
                          ],
                          )
 
-        ax1.set_ylabel(r'real-time factor $T_{\mathrm{wall}}/$'
-                       r'$T_{\mathrm{model}}$')
+        ax1.set_ylabel(r'$T_{\mathrm{wall}}$ [s] for $T_{\mathrm{model}} =$'
+                       + f'{np.unique(B.df.model_time_sim.values)[0]} s')
         ax1.set_xlabel('number of vps')
-        handles1, labels1 = ax1.get_legend_handles_labels()
-        ax1.legend(handles1[::-1], labels1[::-1])
-        ax2.legend(handles2[::-1], labels2[::-1], loc='upper right')
-        ax2.set_ylabel(r'relative wall time $[\%]$')
+        ax2.set_ylabel(r'$T_{\mathrm{wall}}$ [%]')
         B.merge_legends(ax1, ax2)
 
         plt.savefig(f'{save_path}/{timer_hash}.png', dpi=600)

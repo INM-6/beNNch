@@ -1,3 +1,21 @@
+"""
+NEST Benchmarking Framework - Unified execution, collection, analysis and
+comparison of neural network simulation benchmarks.
+Copyright (C) 2021 Forschungszentrum Juelich GmbH, INM-6
+
+This program is free software: you can redistribute it and/or modify it under
+the terms of the GNU General Public License as published by the Free Software
+Foundation, either version 3 of the License, or (at your option) any later
+version.
+This program is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+PARTICULAR PURPOSE. See the GNU General Public License for more details.
+You should have received a copy of the GNU General Public License along with
+this program. If not, see <https://www.gnu.org/licenses/>.
+
+SPDX-License-Identifier: GPL-3.0-or-later
+"""
+
 parameterset:
     - name: file_paths
       parameter:
@@ -21,7 +39,7 @@ parameterset:
        - {name: walltime, type: string, _: "WALLTIME"}  # wall time for the job in format hh:mm:ss
        - {name: num_nodes, type: int, _: "NUM_NODES"}  # number of nodes, accepts a list in the format a,b,c,... for generating multiple runs
        - {name: threads_per_task, type: int, _: "THREADS_PER_TASK"}  # number of threads per task, accepts a list in the format a,b,c,... for generating multiple runs
-       - {name: affinity, type: string, _: "--cpu-bind=threads --distribution=block:cyclic:fcyclic"}  # processor affinity/pinning
+       - {name: affinity, type: string, separator: ";", _: "--cpu-bind=verbose,threads --distribution=block:cyclic:fcyclic --hint=nomultithread"}  # processor affinity/pinning
     - name: software_parameters
       parameter:
        - {name: simulator, _: "nest-simulator"}  # simulator to be installed (plan file must be provided)
