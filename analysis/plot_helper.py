@@ -117,13 +117,10 @@ def plot(scaling_type, timer_hash, timer_file, save_path):
                          ],
                          )
 
-        ax1.set_ylabel(r'real-time factor $T_{\mathrm{wall}}/$'
-                       r'$T_{\mathrm{model}}$')
+        ax1.set_ylabel(r'$T_{\mathrm{wall}}$ [s] for $T_{\mathrm{model}} =$'
+                       + f'{np.unique(B.df.model_time_sim.values)[0]} s')
         ax1.set_xlabel('number of vps')
-        handles1, labels1 = ax1.get_legend_handles_labels()
-        ax1.legend(handles1[::-1], labels1[::-1])
-        ax2.legend(handles2[::-1], labels2[::-1], loc='upper right')
-        ax2.set_ylabel(r'relative wall time $[\%]$')
+        ax2.set_ylabel(r'$T_{\mathrm{wall}}$ [%]')
         B.merge_legends(ax1, ax2)
 
         plt.savefig(f'{save_path}/{timer_hash}.png', dpi=600)
