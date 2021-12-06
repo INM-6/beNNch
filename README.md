@@ -42,7 +42,7 @@ SPDX-License-Identifier: GPL-3.0-or-later
 
 ```bash
 git submodule init
-git submodule update
+git submodule update --remote
 ```
 
 - Install benchplot as Python module:
