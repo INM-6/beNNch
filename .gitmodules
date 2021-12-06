@@ -10,5 +10,3 @@
 	path = plot
 	url = https://github.com/INM-6/benchplot.git
 	branch = main
-[submodule "result"]
-	branch = main
