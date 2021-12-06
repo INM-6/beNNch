@@ -45,6 +45,7 @@ recordables = {
     'lstopo': 'lstopo --of ascii {outdir}/{name}',
     'getconf': 'getconf -a',
     'ulimit': 'ulimit -a',
+    'modules': 'module list',
 }
 
 
