@@ -45,13 +45,6 @@ git submodule init
 git submodule update
 ```
 
-+ For the git submodules `models` and `plot`, you can checkout the latest version of the respective git repositories if needed, e.g.:
-```bash
-cd models
-git checkout main
-git pull origin main
-```
-
 - Install benchplot as Python module:
 
 ```bash
