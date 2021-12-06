@@ -42,6 +42,10 @@ SPDX-License-Identifier: GPL-3.0-or-later
 
 ```bash
 git submodule init
+```
+  + _optional: if you want to change the url of any of the submodules (requires `git v2.25.0`):_  
+  `git submodule set-url -- <submodule> <new_url>` 
+```bash
 git submodule update --remote
 ```
 
