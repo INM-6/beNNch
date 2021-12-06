@@ -39,7 +39,7 @@ parameterset:
       - {name: submit_cmd, "_": sbatch }
       - {name: job_file, "_": job.slurm }
       # - {name: nodes, type: int, "_": $num_nodes }
-      - {name: num_vps_tot, type: int, mode: python, "_": $tasks_per_node * $threads_per_tasks * $num_nodes}
+      - {name: num_vps_tot, type: int, mode: python, "_": $tasks_per_node * $threads_per_task * $num_nodes}
       - {name: num_tasks_tot, type: int, mode: python, "_": $tasks_per_node * $num_nodes}
 
 # next is alias to make result table template work
