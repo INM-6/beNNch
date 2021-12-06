@@ -42,14 +42,11 @@ SPDX-License-Identifier: GPL-3.0-or-later
 
 ```bash
 git submodule init
-git submodule update
 ```
-
-+ For the git submodules `models` and `plot`, you can checkout the latest version of the respective git repositories if needed, e.g.:
+  + _optional: if you want to change the url of any of the submodules (requires `git v2.25.0`):_  
+  `git submodule set-url -- <submodule> <new_url>` 
 ```bash
-cd models
-git checkout main
-git pull origin main
+git submodule update --remote
 ```
 
 - Install benchplot as Python module:
