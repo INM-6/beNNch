@@ -22,11 +22,11 @@ substituteset:
     iofile: {in: $job_file.in, out: $job_file}
     sub:
       - {source: "#PARTITION#", dest: $partition}
-      - {source: "#NODES#", dest: $nodes}
+      - {source: "#NODES#", dest: $num_nodes}
       - {source: "#NTASKS#", dest: $num_tasks_tot}
-      - {source: "#NTASKS_PER_NODE#", dest: $ppn}
-      - {source: "#CPUS_PER_TASK#", dest: $cpus_per_task}
-      - {source: "#TIME#", dest: $walltime_}
+      - {source: "#NTASKS_PER_NODE#", dest: $tasks_per_node}
+      - {source: "#CPUS_PER_TASK#", dest: $threads_per_task}
+      - {source: "#TIME#", dest: $walltime}
       - {source: "#ERRPATH#", dest: $err_file}
       - {source: "#OUTPATH#", dest: $out_file}
       - {source: "#COMMANDS#", dest: $exec}
@@ -38,20 +38,13 @@ parameterset:
     parameter:
       - {name: submit_cmd, "_": sbatch }
       - {name: job_file, "_": job.slurm }
-      - {name: nodes, type: int, "_": $num_nodes }
-      - {name: num_vps, type: int, mode: python, "_": $vps_per_node*$num_nodes}
-      - {name: num_tasks_tot, type: int, mode: python, "_": $num_vps // $threads_per_task}
-      - {name: ppn, type: int, mode: python, "_": $num_tasks_tot // $num_nodes}
+      - {name: num_vps_tot, type: int, mode: python, "_": $tasks_per_node * $threads_per_task * $num_nodes}
+      - {name: num_tasks_tot, type: int, mode: python, "_": $tasks_per_node * $num_nodes}
 
 # next is alias to make result table template work
-      - {name: tasks_per_node, type: int, "_": $ppn}
-      - {name: cpus_per_task, type: int, "_": $threads_per_task}
-      - {name: totVPs, type: int, mode: python, "_": $num_vps}
-      - {name: walltime_, "_": $walltime}
       - {name: ready_file, "_": ready}
       - {name: err_file, "_": stderr}
       - {name: out_file, "_": stdout}
-      - {name: partition_, "_": $partition}
 
   - name: run_benchmark
     parameter:
@@ -67,8 +60,7 @@ parameterset:
         srun -n 1 --nodes 1 python ${base_path}/helpers/collect_timer_data.py ${log_path}
         srun -n 1 --nodes 1 python ${base_path}/helpers/cpu_logging.py ${jube_wp_abspath}
         cat >job.json <<EOT
-        {"vps_per_node":"${vps_per_node}",
-        "num_nodes":"${num_nodes}",
+        {"num_nodes":"${num_nodes}",
         "tasks_per_node":"${tasks_per_node}",
         "threads_per_task":"${threads_per_task}",
         "affinity":"${affinity}",
