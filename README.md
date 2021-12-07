@@ -71,6 +71,9 @@ _Note that if you are using the latest JUBE version 2.4.1, the following export 
 export JUBE_INCLUDE_PATH="<PATH_TO_REPO>config/:helpers/"
 ```
 
+- [Builder](https://github.com/INM-6/Builder)
+  + see Builder documentation for installation guid
+
 - Python 3.X
 
 ### Models
@@ -105,6 +108,20 @@ Copy and fill also the parameter file with model-specific parameters:
 ```bash
 cp config/templates/<model>_config_template.yaml config/<model>_config.yaml
 ```
+
+In the config file, you can specificy the ```software```, its ```version``` in a specific ```variant``` (allowing to install the software with different dependencies) you want to benchmark. For convinience, you may also add a ```suffix```.
+To install the software, you need to configure Builder by adding:
+```
+path/to/Builder/plans/software/
+```
+Here you have to create a ```common``` file explicating the necessary steps of the installation.
+Moreover, you have to add a plan file for the ```variant``` of the software you want to benchmark and a module file template:
+```
+path/to/Builder/plans/software/version/{variant, variant.module}
+```
+In ```variant```, you state the source location of the software as well as the chosen dependencies.
+See as an example the ```nest-simulator```  in Builder.
+
 
 ### Run benchmarks
 
