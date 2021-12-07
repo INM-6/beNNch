@@ -42,7 +42,6 @@ step:
     - name: build
       export: true
       use:
-      - model_commands
       - from: user_config.yaml
         _: user_config
       - from: multi-area-model_2_config.yaml

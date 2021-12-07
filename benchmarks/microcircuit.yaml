@@ -25,7 +25,7 @@ outpath: ../../benchmark_results/microcircuit
 parameterset:
      name: model_commands
      parameter:
-         - {name: run_file, type: string, _: bm_run_microcircuit.py}
+         - {name: run_file, type: string, _: "$jube_wp_abspathbm_run_microcircuit.py"}
          - {name: log_path, type: string, _: "${jube_wp_abspath}/data"}          
 fileset:
 # load and copy model-specific files
@@ -65,7 +65,6 @@ step:
     - name: build
       export: true
       use:
-      - model_commands
       - from: user_config.yaml
         _: user_config
       - from: microcircuit_config.yaml
