@@ -71,6 +71,9 @@ _Note that if you are using the latest JUBE version 2.4.1, the following export 
 export JUBE_INCLUDE_PATH="<PATH_TO_REPO>config/:helpers/"
 ```
 
+- [Builder](https://github.com/INM-6/Builder)
+  + see Builder documentation for installation guide
+
 - Python 3.X
 
 ### Models
@@ -106,6 +109,26 @@ Copy and fill also the parameter file with model-specific parameters:
 cp config/templates/<model>_config_template.yaml config/<model>_config.yaml
 ```
 
+In the model config file, you can specify the ```software``` (i.e. the simulator), its ```version```, and a ```variant``` (allowing to install the software with different dependencies) you want to benchmark. For example: `software = nest-simulator`, `version = 3.0`, `variant = gcc9.3`. For convenience, you may also add a ```suffix```.  
+To install software for which a plan file does not yet exist (e.g. a new dependency or simulator), you need to configure Builder by adding a ```common``` file explicating the necessary steps of installation that is shared between all variants to
+
+```bash
+<path/to/Builder>/plans/<software>/commons
+```
+
+Note that Builder already provides a `common` file for `nest-simulator`.  
+If the `common` file for the simulator or software you wish to install already exists and you only want to add a new version or variant, add both a plan file and a module file template to
+
+```bash
+<path/to/Builder>/plans/<software>/<version>/<{variant, variant.module}>
+```
+
+In ```variant```, you state the source location of the software as well as the chosen dependencies.
+If you use the `module` system for loading dependencies, add the corresponding `module load` commands to this file.
+See as an example the ```nest-simulator``` plan files that Builder ships with.  
+_Specific to NEST benchmarking: don't forget to include `-Dwith-detailed-timers=ON` in the `CMAKEFLAGS` if you want to have access to C++ level timers._
+
+
 ### Run benchmarks
 
 The JUBE benchmarking scripts can be found in `benchmarks/`.
@@ -125,7 +148,7 @@ First, create a new instance of the analysis configuration with
 cp analysis/analysis_config_template.py analysis/analysis_config.py
 ```
 Here, fill in
-- whether the scaling benchmark runs across threads or nodes. This sets up a quick, glanceable plot of the benchmark to confirm that no substatial errors occurred. The framework provides defaults for plotting timers across `nodes` and `threads`, but alternatives can be readily implemented by adding to `analysis/plot_helpers.py`.
+- whether the scaling benchmark runs across threads or nodes. This sets up a quick, glanceable plot of the benchmark to confirm that no substantial errors occurred. The framework provides defaults for plotting timers across `nodes` and `threads`, but alternatives can be readily implemented by adding to `analysis/plot_helpers.py`.
 - the path to the JUBE output (usually the same as the `outpath` of the `<benchmark>` in `benchmarks/<model>`)
 
 To start the analysis, execute
