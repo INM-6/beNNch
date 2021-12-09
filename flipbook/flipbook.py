@@ -73,7 +73,7 @@ def make_notebook(outPath: str, timer_hashes, attributes_to_display):
 
     nb['cells'] = cells
 
-    fname = 'slideshow.ipynb'
+    fname = 'flipbook.ipynb'
     with open(os.path.join(outPath, fname), 'w') as _:
         nbformat.write(nb, _)
 
@@ -98,9 +98,9 @@ if __name__ == '__main__':
              save_path='./plots'
              )
     make_notebook('./', timer_hashes, attributes_to_display)
-    os.system("jupyter nbconvert --inplace --execute slideshow.ipynb")
-    os.system("jupyter nbconvert --to slides slideshow.ipynb "
+    os.system("jupyter nbconvert --inplace --execute flipbook.ipynb")
+    os.system("jupyter nbconvert --to slides flipbook.ipynb "
               + "--TemplateExporter.exclude_input=True "
               + "--SlidesExporter.reveal_transition='none'")
-    os.system("rm slideshow.ipynb")
+    os.system("rm flipbook.ipynb")
     # os.system("rm -r ./plots")

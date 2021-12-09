@@ -20,11 +20,22 @@ SPDX-License-Identifier: GPL-3.0-or-later
 
 ## Repository structure
 
-*config* contains user configuration file templates to be copied and adapted.
+| directory      | description |
+|--------   |-------------|
+| analysis    | JUBE analysis script, config and helpers |
+| benchmarks  | JUBE benchmark scripts for select neuroscientific models |
+| config      | templates for user configuration files to be copied and adapted |
+| flipbook      | Python script for generating a comparative flip book |
+| helpers     | JUBE helper functions and parameter sets. |
+| models      | git submodule; the linked repository (`https://github.com/INM-6/benchmark-models`) contains NEST network models adapted to work with the benchmarking framework |
+| plot        | git submodule; the linked repository (`https://github.com/INM-6/benchplot`) contains predefined plotting routines designed to process the performance results and provide a standardized plotting format |
+| results     | git submodule; the repository linked by default (`https://gin.g-node.org/nest/benchmark-results.git`) is private. To see how to change this link to your own results repository, see the optional step in **Initialization**. Make sure your repository works with `git-annex`. |
+
+<!-- *config* contains user configuration file templates to be copied and adapted.
 
 *benchmarks* contains benchmark scripts to run benchmarks via JUBE.
 
-*helpers* contains helper JUBE parametersets.
+*helpers* contains helper JUBE parameter sets.
 
 *analysis* contains JUBE analysis script, config and helpers.
 
@@ -32,8 +43,8 @@ SPDX-License-Identifier: GPL-3.0-or-later
 
 *plot* is a git submodule; the linked repository (`https://github.com/INM-6/benchplot`) contains predefined plotting routines designed to process the performance results and provide a standardized plotting format.
 
-*results* TODO
-
+*results* is a git submodule; the repository linked by default (`https://gin.g-node.org/nest/benchmark-results.git`) is private. To see how to change this link to your own results repository, see the optional step in **Initialization**. Make sure your repository works with `git-annex`.
+ -->
 ## Using the framework
 
 ### Initialization
@@ -65,7 +76,7 @@ tar -xzf git-annex-standalone-amd64.tar.gz
 export PATH=$PATH:<install_path>/git-annex.linux
 ```
 - [JUBE](https://www.fz-juelich.de/ias/jsc/EN/Expertise/Support/Software/JUBE/_node.html)  
-_Note that if you are using the latest JUBE version 2.4.1, the following export command is required for executing benchmarks due to a known bug. Once the bug is fixed, the export will become unnecessary and the documentation here will be updated accordingly._
+_Note that if you are using the JUBE version 2.4.1 or lower, the following export command is required for executing benchmarks due to a known bug. Once the bug is fixed, the export will become unnecessary and the documentation here will be updated accordingly._
 
 ```bash
 export JUBE_INCLUDE_PATH="<PATH_TO_REPO>config/:helpers/"
