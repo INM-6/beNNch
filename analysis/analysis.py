@@ -18,10 +18,14 @@ SPDX-License-Identifier: GPL-3.0-or-later
 
 import os
 import sys
+import yaml
 
 from analysis_helper import shell, shell_return, load, git_annex
-from analysis_config import scaling_type, jube_bench_path
 from plot_helper import plot
+
+with open('analysis_config.yaml') as analysis_config:
+    scaling_type, jube_bench_path = yaml.load(
+        analysis_config, Loader=yaml.FullLoader)
 
 jube_id = str(sys.argv[1])
 base_path = os.path.join(jube_bench_path, jube_id.zfill(6))
