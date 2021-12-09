@@ -31,20 +31,6 @@ SPDX-License-Identifier: GPL-3.0-or-later
 | plot        | git submodule; the linked repository (`https://github.com/INM-6/benchplot`) contains predefined plotting routines designed to process the performance results and provide a standardized plotting format |
 | results     | git submodule; the repository linked by default (`https://gin.g-node.org/nest/benchmark-results.git`) is private. To see how to change this link to your own results repository, see the optional step in **Initialization**. Make sure your repository works with `git-annex`. |
 
-<!-- *config* contains user configuration file templates to be copied and adapted.
-
-*benchmarks* contains benchmark scripts to run benchmarks via JUBE.
-
-*helpers* contains helper JUBE parameter sets.
-
-*analysis* contains JUBE analysis script, config and helpers.
-
-*models* is a git submodule; the linked repository (`https://github.com/INM-6/benchmark-models`) contains NEST network models adapted to work with the benchmarking framework.
-
-*plot* is a git submodule; the linked repository (`https://github.com/INM-6/benchplot`) contains predefined plotting routines designed to process the performance results and provide a standardized plotting format.
-
-*results* is a git submodule; the repository linked by default (`https://gin.g-node.org/nest/benchmark-results.git`) is private. To see how to change this link to your own results repository, see the optional step in **Initialization**. Make sure your repository works with `git-annex`.
- -->
 ## Using the framework
 
 ### Initialization
