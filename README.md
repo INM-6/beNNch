@@ -196,9 +196,9 @@ To "go back" a view, execute
 ```bash
 git annex vpop
 ```
-After choosing which benchmarks to display via filtering above and ordering them via `<differing_metadata>`, you can create a slideshow of all plots with
+After choosing which benchmarks to display via filtering above and ordering them via `<differing_metadata>`, you can create a flip book of all plots with
 ```bash
-python ../slideshow/slideshow.py <scaling_type> <bullet_1> <bullet_2> ...
+python ../flipbook/flipbook.py <scaling_type> <bullet_1> <bullet_2> ...
 ```
 with an arbitrarily long list of bullet items (consisting of metadata keys) that appear as bullet points on the slides for comparison. `<scaling_type>` defines the style of plotting, c.f. section on [Analyze Benchmarks](#analyze-benchmarks).
 
