@@ -1,5 +1,5 @@
 """
-NEST Benchmarking Framework - Unified execution, collection, analysis and
+# beNNch - Unified execution, collection, analysis and
 comparison of neural network simulation benchmarks.
 Copyright (C) 2021 Forschungszentrum Juelich GmbH, INM-6
 
