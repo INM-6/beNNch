@@ -22,14 +22,14 @@ SPDX-License-Identifier: GPL-3.0-or-later
 
 | directory      | description |
 |--------   |-------------|
-| analysis    | JUBE analysis script, config and helpers |
-| benchmarks  | JUBE benchmark scripts for select neuroscientific models |
-| config      | templates for user configuration files to be copied and adapted |
-| flipbook      | Python script for generating a comparative flip book |
-| helpers     | JUBE helper functions and parameter sets. |
-| models      | git submodule; the linked repository (`https://github.com/INM-6/beNNch-models`) contains NEST network models adapted to work with `beNNch` |
-| plot        | git submodule; the linked repository (`https://github.com/INM-6/beNNch-plot`) contains predefined plotting routines designed to process the performance results and provide a standardized plotting format |
-| results     | git submodule; the repository linked by default (`https://gin.g-node.org/nest/beNNch-results.git`) is private. To see how to change this link to your own results repository, see the optional step in **Initialization**. Make sure your repository works with `git-annex`. |
+| [analysis](./analysis/)    | JUBE analysis script, config and helpers |
+| [benchmarks](./benchmarks/)  | JUBE benchmark scripts for select neuroscientific models |
+| [config](./config/)      | templates for user configuration files to be copied and adapted |
+| [flipbook](./flipbook/)      | Python script for generating a comparative flip book |
+| [helpers](./helpers/)     | JUBE helper functions and parameter sets. |
+| [models](./models/)      | git submodule; the linked repository (`https://github.com/INM-6/beNNch-models`) contains NEST network models adapted to work with `beNNch` |
+| [plot](./plot/)        | git submodule; the linked repository (`https://github.com/INM-6/beNNch-plot`) contains predefined plotting routines designed to process the performance results and provide a standardized plotting format |
+| [results](./results/)     | git submodule; the repository linked by default (`https://gin.g-node.org/nest/beNNch-results.git`) is private. To see how to change this link to your own results repository, see the optional step in **Initialization**. Make sure your repository works with `git-annex`. |
 
 ## User guide
 
