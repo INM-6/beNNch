@@ -18,8 +18,6 @@ SPDX-License-Identifier: GPL-3.0-or-later
 
 # beNNch
 
-## Repository structure
-
 | directory      | description |
 |--------   |-------------|
 | [analysis](./analysis/)    | scripts for data and metadata analysis |
