@@ -18,21 +18,16 @@ SPDX-License-Identifier: GPL-3.0-or-later
 
 # beNNch
 
-## Repository structure
-
-*config* contains user configuration file templates to be copied and adapted.
-
-*benchmarks* contains benchmark scripts to run benchmarks via JUBE.
-
-*helpers* contains helper JUBE parametersets.
-
-*analysis* contains JUBE analysis script, config and helpers.
-
-*models* is a git submodule; the linked repository (`https://github.com/INM-6/beNNch-models`) contains NEST network models adapted to work with `beNNch`.
-
-*plot* is a git submodule; the linked repository (`https://github.com/INM-6/beNNch-plot`) contains predefined plotting routines designed to process the performance results and provide a standardized plotting format.
-
-*results* TODO
+| directory      | description |
+|--------   |-------------|
+| [analysis](./analysis/)    | scripts for data and metadata analysis |
+| [benchmarks](./benchmarks/)  | JUBE benchmark scripts for select neuroscientific models |
+| [config](./config/)      | templates for user configuration files to be copied and adapted |
+| [flipbook](./flipbook/)    | script for generating a comparative flip book |
+| [helpers](./helpers/)     | JUBE helper functions and parameter sets |
+| [models](./models/)      | git submodule; the linked repository (`https://github.com/INM-6/beNNch-models`) contains NEST network models adapted to work with `beNNch` |
+| [plot](./plot/)        | git submodule; the linked repository (`https://github.com/INM-6/beNNch-plot`) contains predefined plotting routines designed to process the performance results and provide a standardized plotting format |
+| [results](./results/)     | git submodule; the repository linked by default (`https://gin.g-node.org/nest/beNNch-results.git`) is private. To see how to change this link to your own results repository, see the optional step in **Initialization**. Make sure your repository works with `git-annex`. |
 
 ## User guide
 
@@ -65,7 +60,7 @@ tar -xzf git-annex-standalone-amd64.tar.gz
 export PATH=$PATH:<install_path>/git-annex.linux
 ```
 - [JUBE](https://www.fz-juelich.de/ias/jsc/EN/Expertise/Support/Software/JUBE/_node.html)  
-_Note that if you are using the latest JUBE version 2.4.1, the following export command is required for executing benchmarks due to a known bug. Once the bug is fixed, the export will become unnecessary and the documentation here will be updated accordingly._
+_Note that if you are using the JUBE version 2.4.1 or lower, the following export command is required for executing benchmarks due to a known bug. Once the bug is fixed, the export will become unnecessary and the documentation here will be updated accordingly._
 
 ```bash
 export JUBE_INCLUDE_PATH="<PATH_TO_REPO>config/:helpers/"
@@ -199,9 +194,9 @@ To "go back" a view, execute
 ```bash
 git annex vpop
 ```
-After choosing which benchmarks to display via filtering above and ordering them via `<differing_metadata>`, you can create a slideshow of all plots with
+After choosing which benchmarks to display via filtering above and ordering them via `<differing_metadata>`, you can create a flip book of all plots with
 ```bash
-python ../slideshow/slideshow.py <scaling_type> <bullet_1> <bullet_2> ...
+python ../flipbook/flipbook.py <scaling_type> <bullet_1> <bullet_2> ...
 ```
 with an arbitrarily long list of bullet items (consisting of metadata keys) that appear as bullet points on the slides for comparison. `<scaling_type>` defines the style of plotting, c.f. section on [Analyze Benchmarks](#analyze-benchmarks).
 
