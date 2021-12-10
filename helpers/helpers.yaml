@@ -1,4 +1,4 @@
-# NEST Benchmarking Framework - Unified execution, collection, analysis and
+# beNNch - Unified execution, collection, analysis and
 # comparison of neural network simulation benchmarks.
 # Copyright (C) 2021 Forschungszentrum Juelich GmbH, INM-6
 
@@ -23,7 +23,7 @@ substituteset:
       sub:
         - {source: "#PARTITION#", dest: $partition}
         - {source: "#NODES#", dest: $num_nodes}
-        - {source: "#NTASKS#", dest: $num_tasks_tot}
+        - {source: "#NTASKS#", dest: $num_tasks}
         - {source: "#NTASKS_PER_NODE#", dest: $tasks_per_node}
         - {source: "#CPUS_PER_TASK#", dest: $threads_per_task}
         - {source: "#TIME#", dest: $walltime}
@@ -50,12 +50,12 @@ substituteset:
         - {source: "#ACCOUNT#", dest: $account}
 
 parameterset:
-  - name: slurm
+  - name: slurm_bench
     parameter:
       - {name: submit_cmd, "_": sbatch }
       - {name: job_file, "_": job.slurm }
-      - {name: num_vps_tot, type: int, mode: python, "_": $tasks_per_node * $threads_per_task * $num_nodes}
-      - {name: num_tasks_tot, type: int, mode: python, "_": $tasks_per_node * $num_nodes}
+      - {name: num_vps, type: int, mode: python, "_": $tasks_per_node * $threads_per_task * $num_nodes}
+      - {name: num_tasks, type: int, mode: python, "_": $tasks_per_node * $num_nodes}
         # next is alias to make result table template work
       - {name: ready_file, "_": ready}
       - {name: err_file, "_": stderr}

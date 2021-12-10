@@ -1,5 +1,5 @@
 <!-- 
-NEST Benchmarking Framework - Unified execution, collection, analysis and
+beNNch - Unified execution, collection, analysis and
 comparison of neural network simulation benchmarks.
 Copyright (C) 2021 Forschungszentrum Juelich GmbH, INM-6
 
@@ -16,7 +16,7 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 SPDX-License-Identifier: GPL-3.0-or-later
 -->
 
-# NEST Benchmarking Framework
+# beNNch
 
 ## Repository structure
 
@@ -27,11 +27,11 @@ SPDX-License-Identifier: GPL-3.0-or-later
 | config      | templates for user configuration files to be copied and adapted |
 | flipbook      | Python script for generating a comparative flip book |
 | helpers     | JUBE helper functions and parameter sets. |
-| models      | git submodule; the linked repository (`https://github.com/INM-6/benchmark-models`) contains NEST network models adapted to work with the benchmarking framework |
-| plot        | git submodule; the linked repository (`https://github.com/INM-6/benchplot`) contains predefined plotting routines designed to process the performance results and provide a standardized plotting format |
-| results     | git submodule; the repository linked by default (`https://gin.g-node.org/nest/benchmark-results.git`) is private. To see how to change this link to your own results repository, see the optional step in **Initialization**. Make sure your repository works with `git-annex`. |
+| models      | git submodule; the linked repository (`https://github.com/INM-6/beNNch-models`) contains NEST network models adapted to work with `beNNch` |
+| plot        | git submodule; the linked repository (`https://github.com/INM-6/beNNch-plot`) contains predefined plotting routines designed to process the performance results and provide a standardized plotting format |
+| results     | git submodule; the repository linked by default (`https://gin.g-node.org/nest/beNNch-results.git`) is private. To see how to change this link to your own results repository, see the optional step in **Initialization**. Make sure your repository works with `git-annex`. |
 
-## Using the framework
+## User guide
 
 ### Initialization
 
@@ -145,7 +145,7 @@ First, create a new instance of the analysis configuration with
 cp analysis/analysis_config_template.py analysis/analysis_config.py
 ```
 Here, fill in
-- whether the scaling benchmark runs across threads or nodes. This sets up a quick, glanceable plot of the benchmark to confirm that no substantial errors occurred. The framework provides defaults for plotting timers across `nodes` and `threads`, but alternatives can be readily implemented by adding to `analysis/plot_helpers.py`.
+- whether the scaling benchmark runs across threads or nodes. This sets up a quick, glanceable plot of the benchmark to confirm that no substantial errors occurred. `beNNch` provides defaults for plotting timers across `nodes` and `threads`, but alternatives can be readily implemented by adding to `analysis/plot_helpers.py`.
 - the path to the JUBE output (usually the same as the `outpath` of the `<benchmark>` in `benchmarks/<model>`)
 
 To start the analysis, execute
@@ -207,13 +207,13 @@ with an arbitrarily long list of bullet items (consisting of metadata keys) that
   + [issue](https://github.com/jupyter/nbconvert/issues/1394) with a recent version of `nbconvert`, try to install version `5.6.1` instead (e.g. `pip install nbconvert==5.6.1 --user`)
 
 ___
-## Developing the framework
+## Developer guide
 
 ### Add a new model
 
 `benchmarks/template.yaml` provides a template for a JUBE benchmarking script and can be used as a starting point for adding a new model. Here, only the marked section needs to be adapted. As a reference, see the implementation of the microcircuit in `benchmarks/microcircuit.yaml`.
 
-In addition, minor modifications to a regular network model need to be made in order to comply with the framework's standards. In particular, this concerns how JUBE feeds the configuration parameters to the network and how JUBE reads the performance measurement output.
+In addition, minor modifications to a regular network model need to be made in order to comply with `beNNch`'s standards. In particular, this concerns how JUBE feeds the configuration parameters to the network and how JUBE reads the performance measurement output.
 
 #### Input
 
@@ -221,4 +221,4 @@ A new model needs to be able to receive input from JUBE for setting parameters. 
 
 #### Output
 
-As current releases of NEST (including 2.14.1, 2.20.2 and 3.0+) include timers on the C++ level for measuring the simulation performance, the model only needs to output this information in a way compliant with the framework. This can be done via adding a call to the `logging` function defined in `models/Potjans_2014/bm_helpers.py`. Note that this also provides the optional functionality to include python level timers as well as memory information.
+As current releases of NEST (including 2.14.1, 2.20.2 and 3.0+) include timers on the C++ level for measuring the simulation performance, the model only needs to output this information in a way compliant with `beNNch`. This can be done via adding a call to the `logging` function defined in `models/Potjans_2014/bm_helpers.py`. Note that this also provides the optional functionality to include python level timers as well as memory information.
