@@ -1,4 +1,4 @@
-# NEST Benchmarking Framework - Unified execution, collection, analysis and
+# beNNch - Unified execution, collection, analysis and
 # comparison of neural network simulation benchmarks.
 # Copyright (C) 2021 Forschungszentrum Juelich GmbH, INM-6
 
@@ -50,7 +50,7 @@ substituteset:
         - {source: "#ACCOUNT#", dest: $account}
 
 parameterset:
-  - name: slurm
+  - name: slurm_bench
     parameter:
       - {name: submit_cmd, "_": sbatch }
       - {name: job_file, "_": job.slurm }

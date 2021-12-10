@@ -7,7 +7,6 @@
 .ipynb_checkpoints
 
 # user config files
-.multi-area-model_*_*.xml
 *_config.xml
 *_config.yaml
 *_config.py
