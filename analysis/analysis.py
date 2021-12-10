@@ -24,7 +24,7 @@ import yaml
 from analysis_helper import shell, shell_return, load, git_annex
 from plot_helper import plot
 
-with open('../analysis/analysis_config.yaml') as analysis_config_file:
+with open('../config/analysis_config.yaml') as analysis_config_file:
     config = yaml.load(analysis_config_file, Loader=yaml.FullLoader)
 
 jube_id = str(sys.argv[1])
