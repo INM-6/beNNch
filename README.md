@@ -220,3 +220,7 @@ A new model needs to be able to receive input from JUBE for setting parameters. 
 #### Output
 
 As current releases of NEST (including 2.14.1, 2.20.2 and 3.0+) include timers on the C++ level for measuring the simulation performance, the model only needs to output this information in a way compliant with `beNNch`. This can be done via adding a call to the `logging` function defined in `models/Potjans_2014/bm_helpers.py`. Note that this also provides the optional functionality to include python level timers as well as memory information.
+
+## How to cite beNNch
+
+We recommend to provide a link to this repository with the hash of the respective commit.
