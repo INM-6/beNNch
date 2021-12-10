@@ -50,7 +50,7 @@ substituteset:
         - {source: "#ACCOUNT#", dest: $account}
 
 parameterset:
-  - name: slurm
+  - name: slurm_bench
     parameter:
       - {name: submit_cmd, "_": sbatch }
       - {name: job_file, "_": job.slurm }

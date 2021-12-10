@@ -72,7 +72,7 @@ step:
       - from: hpc_benchmark_2_config.yaml
         _: file_paths,model_parameters,machine_parameters
       - from: helpers.yaml
-        _: slurm,run_benchmark,files,sub_bench_job,scaling_experiment,init_job_file_variables
+        _: slurm_bench,run_benchmark,files,sub_bench_job,scaling_experiment,init_job_file_variables
       do:
         done_file: $ready_file
         _: $submit_cmd --dependency=afterok:$$DEP $job_file
