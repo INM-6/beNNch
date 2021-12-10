@@ -1,6 +1,22 @@
 #!/usr/bin/env python
 # encoding: utf8
 
+# beNNch - Unified execution, collection, analysis and
+# comparison of neural network simulation benchmarks.
+# Copyright (C) 2021 Forschungszentrum Juelich GmbH, INM-6
+
+# This program is free software: you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation, either version 3 of the License, or (at your option) any later
+# version.
+# This program is distributed in the hope that it will be useful, but WITHOUT ANY
+# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+# PARTICULAR PURPOSE. See the GNU General Public License for more details.
+# You should have received a copy of the GNU General Public License along with
+# this program. If not, see <https://www.gnu.org/licenses/>.
+
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 import os
 import sys
 import time
@@ -77,7 +93,8 @@ class Recorder(object):
                 with Popen(shlex.split(command.format(**parameters)),
                            stdout=PIPE, stderr=PIPE, stdin=DEVNULL) as infile:
                     try:
-                        (stdout_data, stderr_data) = infile.communicate(timeout=self.timeout)
+                        (stdout_data, stderr_data) = infile.communicate(
+                            timeout=self.timeout)
                     except TimeoutExpired:
                         log.warning(
                             "%s: process did not finish in time! Output will be"
@@ -98,7 +115,8 @@ class Recorder(object):
                             errfile.write(stderr_data)
                             if self.errors_fatal:
                                 log.fatal("ERRORS are configured to be fatal.")
-                                raise ValueError("Process wrote errors to STDERR!")
+                                raise ValueError(
+                                    "Process wrote errors to STDERR!")
                     iotime = time.time()
             except CalledProcessError as e:
                 log.error("%s: called process failed! retrun code: %d",
