@@ -18,21 +18,29 @@ SPDX-License-Identifier: GPL-3.0-or-later
 
 import os
 import sys
+import glob
+import yaml
 
 from analysis_helper import shell, shell_return, load, git_annex
-from analysis_config import scaling_type, jube_bench_path
 from plot_helper import plot
 
+with open('../config/analysis_config.yaml') as analysis_config_file:
+    config = yaml.load(analysis_config_file, Loader=yaml.FullLoader)
+
 jube_id = str(sys.argv[1])
-base_path = os.path.join(jube_bench_path, jube_id.zfill(6))
+base_path = os.path.join(config['jube_outpath'], jube_id.zfill(6))
 uuidgen_hash = shell_return('uuidgen')
 shell(
-    f'module load JUBE; jube analyse {jube_bench_path} --id {jube_id};'
-    + f' jube result {jube_bench_path} --id {jube_id} > '
-    + f'{base_path}/{uuidgen_hash}.csv')
+    f"module load JUBE; jube analyse {config['jube_outpath']} --id {jube_id};"
+    + f" jube result {config['jube_outpath']} --id {jube_id} > "
+    + os.path.join(base_path, uuidgen_hash + ".csv"))
 
-cpu_info = load(os.path.join(base_path, '000000_bench/work', 'cpu.json'))
-job_info = load(os.path.join(base_path, '000000_bench/work', 'job.json'))
+# take the job and cpu info from first bench job, assuming all nodes are equal
+bench_path = glob.glob(os.path.join(base_path, '*_bench/work'))
+bench_path.sort()
+
+cpu_info = load(os.path.join(bench_path[0], 'cpu.json'))
+job_info = load(os.path.join(bench_path[0], 'job.json'))
 
 git_annex(cpu_info=cpu_info,
           job_info=job_info,
@@ -40,8 +48,9 @@ git_annex(cpu_info=cpu_info,
           base_path=base_path)
 
 plot(
-    scaling_type=scaling_type,
+    scaling_type=config['scaling_type'],
     timer_hash=uuidgen_hash,
-    timer_file=f'{jube_bench_path}/{jube_id.zfill(6)}/{uuidgen_hash}.csv',
-    save_path=f'{jube_bench_path}/{jube_id.zfill(6)}'
+    timer_file=os.path.join(
+        config['jube_outpath'], jube_id.zfill(6), uuidgen_hash + ".csv"),
+    save_path=os.path.join(config['jube_outpath'], jube_id.zfill(6))
 )

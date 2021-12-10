@@ -142,7 +142,7 @@ JUBE displays a table summarizing the submitted job(s) and the corresponding `jo
 
 First, create a new instance of the analysis configuration with
 ```bash
-cp analysis/analysis_config_template.py analysis/analysis_config.py
+cp config/templates/analysis_config_template.yaml config/analysis_config.yaml
 ```
 Here, fill in
 - whether the scaling benchmark runs across threads or nodes. This sets up a quick, glanceable plot of the benchmark to confirm that no substantial errors occurred. `beNNch` provides defaults for plotting timers across `nodes` and `threads`, but alternatives can be readily implemented by adding to `analysis/plot_helpers.py`.
