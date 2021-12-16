@@ -18,6 +18,11 @@ SPDX-License-Identifier: GPL-3.0-or-later
 
 # beNNch
 
+Unified execution, collection, analysis and comparison of neural network simulation benchmarks.
+See the accompanying [GitHub Page](https://inm-6.github.io/beNNch) for a demo output of `beNNch`.
+
+## Structure
+
 | directory      | description |
 |--------   |-------------|
 | [analysis](./analysis/)    | scripts for data and metadata analysis |
@@ -166,6 +171,7 @@ git annex sync
 ```
 
 ### Get remote benchmark results
+
 ```bash
 cd results
 ```
