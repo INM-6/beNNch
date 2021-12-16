@@ -16,7 +16,7 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 SPDX-License-Identifier: GPL-3.0-or-later
 -->
 
-# GitHub page of beNNch
+# GitHub Page of beNNch
 
 [beNNch](https://github.com/INM-6/beNNch) is a modular benchmarking framework for neural network simulations. This accompanying webpage illustrates the benefit of a standardized presentation of benchmark results that `beNNch` implements. 
 
