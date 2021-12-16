@@ -85,8 +85,9 @@ for logfile in all_logfiles:
     with open(logfile, 'r') as fn:
         log = {}
         for line in fn:
-            key, value = line.split(' ')
-            log[key] = float(value)
+            key, value, *_ = line.split(' ')
+            if key in metrics + metrics_sum:
+                log[key] = float(value)
 
         for m in d:
             try:
