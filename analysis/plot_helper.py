@@ -17,7 +17,7 @@ SPDX-License-Identifier: GPL-3.0-or-later
 """
 
 import numpy as np
-import benchplot as bp
+import bennchplot as bp
 from matplotlib import pyplot as plt
 import matplotlib.gridspec as gridspec
 import matplotlib.transforms as mtransforms
@@ -33,7 +33,7 @@ def plot(scaling_type, timer_hash, timer_file, save_path):
         }
 
         # Instantiate class
-        B = bp.BenchPlot(**args)
+        B = bp.Plot(**args)
 
         # Plotting
         widths = [1, 1]
@@ -112,7 +112,7 @@ def plot(scaling_type, timer_hash, timer_file, save_path):
         }
 
         # Instantiate class
-        B = bp.BenchPlot(**args)
+        B = bp.Plot(**args)
 
         # Plotting
         widths = [1]
