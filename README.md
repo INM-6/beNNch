@@ -18,8 +18,31 @@ SPDX-License-Identifier: GPL-3.0-or-later
 
 # beNNch
 
-Unified execution, collection, analysis and comparison of neural network simulation benchmarks.
-See the accompanying [GitHub Page](https://inm-6.github.io/beNNch) for a demo output of `beNNch`.
+Computational efficiency is essential to simulate complex neuronal networks and study long-term effects such as learning.
+The scaling performance of neuronal network simulators on high-performance computing systems can be assessed with benchmark simulations.
+However, maintaining comparability of benchmark results across different systems, software environments, network models, and researchers from potentially different labs poses a challenge.
+`beNNch` tackles this challenge by implementing a unified, modular workflow for configuring, executing, and analyzing such benchmarks.
+The software framework builds around the [JUBE Benchmarking Environment](https://www.fz-juelich.de/ias/jsc/EN/Expertise/Support/Software/JUBE/_node.html), installs simulation software, provides an interface to benchmark models, automates data and metadata annotation, and accounts for storage and presentation of results.
+
+For more details on the conceptual ideas behind `beNNch`, refer to our preprint:
+
+"A Modular Workflow for Performance Benchmarking of Neuronal Network Simulations"
+
+Jasper Albers, Jari Pronold, Anno Kurth, Stine Brekke Vennemo, Kaveh Haghighi Mood, Alexander Patronis, Dennis Terhorst, Jakob Jordan, Susanne Kunkel, Tom Tetzlaff, Markus Diesmann, Johanna Senk
+
+https://arxiv.org/abs/2112.09018
+
+![](multi-area-model_5faa0e9c.png)
+Example `beNNch` output (data from Figure 5C of Albers et al., 2021):
+Strong-scaling performance of the [multi-area model](https://github.com/INM-6/multi-area-model) simulated with the neuronal network simulator [NEST](https://www.nest-simulator.org) on JURECA-DC.
+The left graph shows the absolute wall-clock time measured with Python-level timers for both network construction and state propagation.
+Error bars indicate variability across three simulation repeats with different random seeds.
+The top right graph displays the real-time factor defined as wall-clock time normalized by the model time.
+Built-in timers resolve four different phases of the state propagation: update, collocation, communication, and delivery.
+Pink error bars show the same variability of state propagation as the left graph.
+The lower right graph shows the relative contribution of these phases to the state-propagation time.
+
+See the accompanying [GitHub Page](https://inm-6.github.io/beNNch) for further `beNNch` results in flip-book format.
 
 ## Structure
 
