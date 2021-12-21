@@ -29,7 +29,7 @@ For more details on the conceptual ideas behind `beNNch`, refer to our preprint 
 Jasper Albers, Jari Pronold, Anno Kurth, Stine Brekke Vennemo, Kaveh Haghighi Mood, Alexander Patronis, Dennis Terhorst, Jakob Jordan, Susanne Kunkel, Tom Tetzlaff, Markus Diesmann, Johanna Senk (2021)
 
 ![](multi-area-model_5faa0e9c.png)
-***Example `beNNch` output (data from Figure 5C of Albers et al., 2021):
+***Example `beNNch` output (Figure 5C of Albers et al., 2021):
 Strong-scaling performance of the [multi-area model](https://github.com/INM-6/multi-area-model) simulated with the neuronal network simulator [NEST](https://www.nest-simulator.org) on JURECA-DC.**
 The left graph shows the absolute wall-clock time measured with Python-level timers for both network construction and state propagation.
 Error bars indicate variability across three simulation repeats with different random seeds.
