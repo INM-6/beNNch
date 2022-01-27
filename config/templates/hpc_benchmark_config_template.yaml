@@ -18,12 +18,11 @@ parameterset:
     - name: file_paths
       parameter:
        - {name: base_path, type: string, _: BASE_PATH}  # path where main repository is stored
-       - {name: model_path, type: string, _: MODEL_PATH}  # path where the multi-area model is stored
-       - {name: data_path, type: string, _: DATA_PATH}  # path where the simulation files are copied and the simulation output is stored
+       - {name: model_path, type: string, _: MODEL_PATH} # absolute path to the HPC benchmark, e.g., <BASE_PATH>/models/hpc_benchmark
+
     - name: model_parameters
       parameter:
        - {name: model_name, type: string, _: "hpc-benchmark"}  # for identifying the model, can be any unique string
-       - {name: network_state, type: string, _: ""}  # empty for hpc benchmark
        - {name: model_time_sim, type: float, _: "1000."}  # biological time to be simulated in ms
        - {name: model_time_presim, type: float, _: "500."}  # presimulation time for avoiding initial transients in ms
        - {name: scale_N, type: float, _: "1."}  # scaling the number of neurons, 1. -> original model
