@@ -14,5 +14,5 @@
 
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-scaling_type: "" # scaling type as used by analysis/plot_helper.py
+scaling_type: "" # scaling type as used by analysis/plot_helper.py. Can either be "nodes" or "threads"
 jube_outpath: "" # path to jube benchmarking output, should the same as the 'outpath' defined in benchmarks/<your_model>.yaml

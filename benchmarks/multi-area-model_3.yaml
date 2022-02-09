@@ -33,7 +33,7 @@ parameterset:
          _: 
           data_folder_hash=`uuidgen`
 
-          srun -n 1 python ${model_path}/run_benchmark_createParams.py ${scale} ${totVPs} ${model_time_sim} ${scale_K} ${data_path} ${data_folder_hash} ${network_state} ${rng_seed} ${model_time_presim} ${record_spikes}
+          srun -n 1 python ${model_path}/run_benchmark_createParams.py ${scale} ${num_vps} ${model_time_sim} ${scale_K} ${data_path} ${data_folder_hash} ${network_state} ${rng_seed} ${model_time_presim} ${record_spikes}
       
         - {name: log_path, type: string, _: "${data_path}/${data_folder_hash}/recordings"}
 
