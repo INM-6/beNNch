@@ -55,6 +55,10 @@ See also the accompanying [GitHub Page](https://inm-6.github.io/beNNch) for furt
 
 ## User guide
 
+### Community discussion
+
+We organize a discussion with a focus on both community usage and development synchronization. For details regarding space-time coordinates, contact [Jasper Albers](mailto:j.albers@fz-juelich.de?subject=[beNNch]%20Community%20Discussion%20Meeting).
+
 ### Initialization
 
 - Download git submodules:
