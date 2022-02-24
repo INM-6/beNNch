@@ -52,7 +52,7 @@ def make_notebook(outPath: str, timer_hashes, attributes_to_display):
         'skip': ["import sys",
                  "import os",
                  "sys.path.insert(1, os.path.join(sys.path[0], '..'))",
-                 "from slideshow.slideshow import display_plot"],
+                 "from flipbook.flipbook import display_plot"],
         'slide': [f"display_plot('{timer_hashes[0]}', "
                   + "'./plots', "
                   + f"{attributes_to_display})"],
