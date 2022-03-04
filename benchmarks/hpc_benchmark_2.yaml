@@ -14,10 +14,10 @@
 
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-# include-path: # not working due to a bug in JUBE. Uncomment after next release! 
-#   path: 
-#    - ../helpers/
-#    - ../config/
+include-path: 
+  path: 
+   - ../helpers/
+   - ../config/
 
 # model-specific name and output path
 name: HPC
