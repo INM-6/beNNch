@@ -88,11 +88,8 @@ tar -xzf git-annex-standalone-amd64.tar.gz
 export PATH=$PATH:<install_path>/git-annex.linux
 ```
 - [JUBE](https://www.fz-juelich.de/ias/jsc/EN/Expertise/Support/Software/JUBE/_node.html)  
-_Note that if you are using the JUBE version 2.4.1 or lower, the following export command is required for executing benchmarks due to a known bug. Once the bug is fixed, the export will become unnecessary and the documentation here will be updated accordingly._
+_Note that  JUBE version 2.4.2 or later is necessary_
 
-```bash
-export JUBE_INCLUDE_PATH="<PATH_TO_REPO>config/:helpers/"
-```
 
 - [Builder](https://github.com/INM-6/Builder)
   + see Builder documentation for installation guide
