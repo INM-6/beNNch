@@ -86,6 +86,9 @@ parameterset:
         srun ${affinity} python ${run_file} ${run_args}
         srun -n 1 --nodes 1 python ${base_path}/helpers/collect_timer_data.py ${log_path}
         srun -n 1 --nodes 1 python ${base_path}/helpers/cpu_logging.py ${jube_wp_abspath}
+        cd ${model_path}
+        model_git_commit_hash=$(git rev-parse HEAD)
+        cd -
         cat >job.json <<EOT
         {"num_nodes":"${num_nodes}",
         "tasks_per_node":"${tasks_per_node}",
@@ -96,6 +99,7 @@ parameterset:
         "simulator-variant":"${variant}",
         "simulator-suffix":"${suffix}",
         "model_name":"${model_name}",
+        "model_git_commit_hash":"${model_git_commit_hash}",
         "network_state":"${network_state}",
         "record_spikes":"${record_spikes}",
         "scaling_type":"${scaling_type}"
