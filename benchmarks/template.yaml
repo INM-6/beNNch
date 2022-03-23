@@ -15,7 +15,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 include-path:
-  path: 
+  path:
    - ../helpers/
    - ../config/
 
@@ -28,7 +28,7 @@ parameterset:
      name: model_commands
      parameter:
          - {name: run_file, type: string, _: <network_simulation_file>.py}
-         - {name: log_path, type: string, _: "${jube_wp_abspath}/data"}          
+         - {name: log_path, type: string, _: "${jube_wp_abspath}/data"}
 fileset:
 # load and copy model-specific files
      name: model_files
@@ -39,7 +39,7 @@ fileset:
 # file to the target patterns that JUBE will search for in the
 # simulation files. The pattern file is bm_run_microcircuit.py which is
 # also the wrapper file for the actual microcircuit simulation. The
-# source pattern will be replaced by the value contained in dest 
+# source pattern will be replaced by the value contained in dest
 substituteset:
       name: simulation_substitutions
       iofile: {in: <network_simulation_file>, out: <network_simulation_file>}
@@ -90,8 +90,8 @@ analyser:
         step: bench
         file: timer_data.txt
 
-# result step 
-# TODO add more information to table, e.g., affinity, local_spike_counter 
+# result step
+# TODO add more information to table, e.g., affinity, local_spike_counter
 # TODO also add hash as in microcircuit_jube_benches, name could be hash (fix file extension from .dat to .csv)
 result:
       name: result

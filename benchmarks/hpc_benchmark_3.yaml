@@ -14,8 +14,8 @@
 
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-include-path:  
-  path: 
+include-path:
+  path:
    - ../helpers/
    - ../config/
 
@@ -30,7 +30,7 @@ parameterset:
 fileset:
 # load and copy model-specific files
     name: model_files
-    copy: 
+    copy:
       - $model_path/hpc_benchmark_3.py
 
 # This subsituteset maps the parameters that were defined in this yaml
@@ -49,7 +49,7 @@ substituteset:
       - {source: "{rng_seed}", dest: $rng_seed}
 
 step:
-# build step 
+# build step
     - name: build
       export: true
       use:

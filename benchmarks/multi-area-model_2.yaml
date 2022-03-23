@@ -14,15 +14,15 @@
 
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-include-path: 
-  path: 
+include-path:
+  path:
    - ../helpers/
    - ../config/
 
 # model-specific name and output path
 name: MAM
 outpath: ../../benchmark_results/MAM
-# model configuration 
+# model configuration
 parameterset:
      name: model_commands
      parameter:
@@ -30,15 +30,15 @@ parameterset:
         - {name: run_args, type: string, _: "${data_path} ${data_folder_hash} ${network_state}"}
         -
          name: optional_run_command
-         _: 
+         _:
           data_folder_hash=`uuidgen`
 
           srun -n 1 --nodes 1 python ${model_path}/run_benchmark_createParams.py ${scale} ${num_vps} ${model_time_sim} ${scale_K} ${data_path} ${data_folder_hash} ${network_state} ${rng_seed} ${model_time_presim} ${record_spikes}
-      
+
         - {name: log_path, type: string, _: "${data_path}/${data_folder_hash}/recordings"}
 
 step:
-# build step 
+# build step
     - name: build
       export: true
       use:
@@ -50,8 +50,8 @@ step:
         _: slurm_build,run_build,files,sub_build_job
       do:
         - build --get --silent ${simulator} ${version} ${variant} ${suffix} && export DEP=`$submit_cmd --parsable $job_file`
- 
-# benchmark step   
+
+# benchmark step
     - name: bench
       depend: build
       use:

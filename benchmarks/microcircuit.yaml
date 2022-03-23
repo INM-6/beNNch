@@ -14,8 +14,8 @@
 
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-include-path: 
-  path: 
+include-path:
+  path:
    - ../helpers/
    - ../config/
 
@@ -26,7 +26,7 @@ parameterset:
      name: model_commands
      parameter:
          - {name: run_file, type: string, _: "${jube_wp_abspath}/bm_run_microcircuit.py"}
-         - {name: log_path, type: string, _: "${jube_wp_abspath}/data"}          
+         - {name: log_path, type: string, _: "${jube_wp_abspath}/data"}
 fileset:
 # load and copy model-specific files
      name: model_files
@@ -43,7 +43,7 @@ fileset:
 # file to the target patterns that JUBE will search for in the
 # simulation files. The pattern file is bm_run_microcircuit.py which is
 # also the wrapper file for the actual microcircuit simulation. The
-# source pattern will be replaced by the value contained in dest 
+# source pattern will be replaced by the value contained in dest
 substituteset:
       name: simulation_substitutions
       iofile: {in: bm_run_microcircuit.py, out: bm_run_microcircuit.py}
@@ -88,7 +88,7 @@ step:
       - model_files,simulation_substitutions
       do:
         done_file: $ready_file
-        _: $submit_cmd --dependency=afterok:$$DEP $job_file 
+        _: $submit_cmd --dependency=afterok:$$DEP $job_file
 
 # analysis step
 analyser:
@@ -100,7 +100,7 @@ analyser:
         step: bench
         file: timer_data.txt
 
-# result step 
+# result step
 result:
       name: result
       use: analyse
