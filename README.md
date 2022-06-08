@@ -133,7 +133,7 @@ In the model config file, you can specify the ```software``` (i.e. the simulator
 To install software for which a plan file does not yet exist (e.g. a new dependency or simulator), you need to configure Builder by adding a ```common``` file explicating the necessary steps of installation that is shared between all variants to
 
 ```bash
-<path/to/Builder>/plans/<software>/commons
+<path/to/Builder>/plans/<software>/common
 ```
 
 Note that Builder already provides a `common` file for `nest-simulator`.  
