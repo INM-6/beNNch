@@ -4,5 +4,5 @@ pandas
 pyyaml
 IPython
 nbformat
-nbconvert==6.1.0
+nbconvert==6.3.0
 jupyter
