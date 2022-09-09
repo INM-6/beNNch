@@ -20,6 +20,37 @@ SPDX-License-Identifier: GPL-3.0-or-later
 
 This guide serves to illustrate an example walk-through of a typical beNNch use case. Where the README in the repository is designed to be generally applicable, this guide is created to be explicit and walk through a concrete example.
 
+## Prerequisites
+
+### Step 0: Install NEST as a module with Builder
+
+Install [Builder](https://github.com/INM-6/Builder) as per instructions in the README. In practice, one often isn't concerned with testing each nest installation. In case you are confident that these tests are unnecessary, you can skip them by commenting out `build_install_test` at the end of `build.sh`, speeding up the installation process significantly.  
+Builder works with so-called plan files. A few sample files for different NEST versions are provided by Builder in `Builder/plans/nest-simulator/`. If you want to create a new installation, follow these steps:
+
+#### Step 0.1: Create new plan file
+Duplicate the folder of the NEST version that is closest to the one you want to install. For example, if you want to install NEST 3.3, duplicate the folder for NEST 3.0 and change the name. Note that the name does not need to correspond to an official release.
+
+#### Step 0.2: Select version to install
+Change the URL in `Builder/plans/nest-simulator/<your_new_version>/default` to where the source code can be found. If you want to test a custom NEST version that lives on your own branch, you can specify the link to the zip file (go to your branch, click on "Code", and right-click "Download ZIP" to obtain the link).
+
+#### Step 0.3: Installation options
+Configure cmake flags for the installation by introducing a new variable in `Builder/plans/nest-simulator/<your_new_version>/default`:
+
+```
+CONFIGURE_OPTIONS+=" -Dwith-mpi=ON -Dwith-ltdl=OFF -DCMAKE_CXX_COMPILER=g++-11 -DCMAKE_C_COMPILER=gcc-11 -Dwith-boost=ON"
+```
+Note that these are example values; check the [NEST documentation](https://nest-simulator.readthedocs.io/en/stable/installation/cmake_options.html) on which options exist.
+
+#### Step 0.4: Build NEST
+Build NEST by executing `build nest-simulator <your_new_version>`.
+
+#### Step 0.5: Load NEST as a module
+You should be able to load NEST via `module load nest-simulator/<your_new_version>`. If your module system isn't able to locate the NEST module, you might need to add the path to your modules (the one you specified during the Builder setup in `~/.buildrc`) to your MODULEPATH by adding 
+```
+export MODULEPATH="<your_module_path>:$MODULEPATH"
+```
+to your `.bashrc`/`.zshrc`.
+
 ## Configuration
 
 ### Step 1: Configuring the benchmark
@@ -35,7 +66,7 @@ which in our case is
 module load nest-simulator/3.2-bm/default
 ```
 
-See the section ["First steps: configure your simulation" of the beNNch README](https://github.com/INM-6/beNNch#first-steps-configure-your-simulation) on how to install a simulator such that it is `module load`able using Builder.
+See the section ["First steps: configure your simulation" of the beNNch README](https://github.com/INM-6/beNNch#first-steps-configure-your-simulation) on how to install a simulator such that it is `module load`able using Builder, or Step 0 in this guide for a specific example of installing NEST in such a way.
 
 
 ## Simulation
