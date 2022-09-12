@@ -24,12 +24,11 @@ However, maintaining comparability of benchmark results across different systems
 **`beNNch` tackles this challenge by implementing a unified, modular workflow for configuring, executing, and analyzing such benchmarks.**  
 The software framework builds around the [JUBE Benchmarking Environment](https://www.fz-juelich.de/ias/jsc/EN/Expertise/Support/Software/JUBE/_node.html), installs simulation software, provides an interface to benchmark models, automates data and metadata annotation, and accounts for storage and presentation of results.
 
-For more details on the conceptual ideas behind `beNNch`, refer to our preprint ( https://arxiv.org/abs/2112.09018 ):  
-"A Modular Workflow for Performance Benchmarking of Neuronal Network Simulations"  
-Jasper Albers, Jari Pronold, Anno Kurth, Stine Brekke Vennemo, Kaveh Haghighi Mood, Alexander Patronis, Dennis Terhorst, Jakob Jordan, Susanne Kunkel, Tom Tetzlaff, Markus Diesmann, Johanna Senk (2021)
+For more details on the conceptual ideas behind `beNNch`, refer to our paper:  
+> Albers J, Pronold J, Kurth AC, Vennemo SB, Haghighi Mood K, Patronis A, Terhorst D, Jordan J, Kunkel S, Tetzlaff T, Diesmann M and Senk J (2022) A Modular Workflow for Performance Benchmarking of Neuronal Network Simulations. Front. Neuroinform. 16:837549. doi: [10.3389/fninf.2022.837549](https://doi.org/10.3389/fninf.2022.837549)  
 
 ![](multi-area-model_5faa0e9c.png)
-***Example `beNNch` output (Figure 5C of Albers et al., 2021):
+***Example `beNNch` output (Figure 5C of Albers et al., 2022):
 Strong-scaling performance of the [multi-area model](https://github.com/INM-6/multi-area-model) simulated with the neuronal network simulator [NEST](https://www.nest-simulator.org) on JURECA-DC.**
 The left graph shows the absolute wall-clock time measured with Python-level timers for both network construction and state propagation.
 Error bars indicate variability across three simulation repeats with different random seeds.
@@ -249,4 +248,7 @@ As current releases of NEST (including 2.14.1, 2.20.2 and 3.0+) include timers o
 
 ## How to cite beNNch
 
-We recommend to provide a link to this repository with the hash of the respective commit.
+Please cite our paper:  
+> Albers J, Pronold J, Kurth AC, Vennemo SB, Haghighi Mood K, Patronis A, Terhorst D, Jordan J, Kunkel S, Tetzlaff T, Diesmann M and Senk J (2022) A Modular Workflow for Performance Benchmarking of Neuronal Network Simulations. Front. Neuroinform. 16:837549. doi: [10.3389/fninf.2022.837549](https://doi.org/10.3389/fninf.2022.837549)
+
+To refer to a specific version of beNNch, name the release or provide a link to this repository with the hash of the respective commit.
