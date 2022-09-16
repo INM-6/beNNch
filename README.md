@@ -54,9 +54,13 @@ See also the accompanying [GitHub Page](https://inm-6.github.io/beNNch) for furt
 
 ## User guide
 
-### Community discussion
+There are two distinct sets of instructions on how to install beNNch:
 
-We organize a discussion with a focus on both community usage and development synchronization. For details regarding space-time coordinates, contact [Jasper Albers](mailto:j.albers@fz-juelich.de?subject=[beNNch]%20Community%20Discussion%20Meeting).
+- the general documentation provided by the [User guide](https://github.com/INM-6/beNNch#user-guide) in this README
+- a [walk-through on our GitHub Page](https://inm-6.github.io/beNNch/walk-through.html)
+
+The former is a set of complete, abstract instructions with general placeholders where the user needs to insert information. The latter focuses on a concrete example and guides the reader with screen-shots while discussing small issues and best practices that have emerged when using beNNch in production. Depending on your previous experience you may find one or the other more intuitive. If set-up problems persist after following both approaches, don't hesitate to get into contact via the [Community discussion](https://github.com/INM-6/beNNch#community-discussion).
+
 
 ### Initialization
 
@@ -228,6 +232,10 @@ with an arbitrarily long list of bullet items (consisting of metadata keys) that
 ### Known issues
 - error `jinja2.exceptions.TemplateNotFound: index.html.j2`
   + [issue](https://github.com/jupyter/nbconvert/issues/1394) with a recent version of `nbconvert`, try to install version `5.6.1` instead (e.g. `pip install nbconvert==5.6.1 --user`)
+
+### Community discussion
+
+We organize a discussion with a focus on both community usage and development synchronization. For details regarding space-time coordinates, contact [Jasper Albers](mailto:j.albers@fz-juelich.de?subject=[beNNch]%20Community%20Discussion%20Meeting).
 
 ___
 ## Developer guide
