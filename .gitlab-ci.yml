@@ -22,7 +22,8 @@ variables:
 stages:          # List of stages for jobs, and their order of execution
   - test
 
-foobar-test:   # This job runs in the test stage.
+foobar-test:
+  when: manual
   stage: test    # It only starts when the job in the build stage completes successfully.
   tags:
     - jurecadc
