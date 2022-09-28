@@ -23,7 +23,7 @@ stages:          # List of stages for jobs, and their order of execution
   - test
 
 foobar-test:
-  when: manual
+  when: manual # play button
   stage: test    # It only starts when the job in the build stage completes successfully.
   tags:
     - jurecadc
