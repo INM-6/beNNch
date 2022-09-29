@@ -33,3 +33,8 @@ foobar-test:
     - sleep 10
     - echo "Code coverage is foobar"
     - hostname
+    - pwd
+    - set
+    - ls -l
+    - rm -rf nest
+
