@@ -23,7 +23,7 @@ variables:
 .JSC-baseenv:
   before_script:
     - module load git
-    - 'export MACHINE="$(< /etc/FZJ/systemname)"'
+    - "export MACHINE=\"$(< /etc/FZJ/systemname)\""
 
 .compute-node:
   extends: [ .JSC-baseenv ]
