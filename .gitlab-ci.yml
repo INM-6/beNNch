@@ -19,6 +19,13 @@ variables:
   tags:
     - jurecadc
     - jacamar
+    - slurm
+
+.juwels:
+  tags:
+    - juwels
+    - jacamar
+    - slurm
 
 .JSC-baseenv:
   before_script:
@@ -39,7 +46,13 @@ variables:
 
 stage-in:
   stage: prepare
-  extends: [ .jureca, .front-node ]
+  parallel:
+    matrix:
+      - MACHINE: jurecadc
+           INCLUDES: [.front-node]
+#      - MACHINE: juwels
+#           INCLUDES: [.front-node]
+  extends: [ .${MACHINE}, *${INCLUDES} ]
   script:
     - hostname
     - ls -l
@@ -56,7 +69,7 @@ stage-in:
     #- git clone --depth 1 https://github.com/nest/nest-simulator
     #- rm -rf nest-simulator
 
-Runsomething:
+Benchmarking:
   stage: test    # It only starts when the job in the build stage completes successfully.
   extends: [ .jureca, .compute-node ]
   tags:
