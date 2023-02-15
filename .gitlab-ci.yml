@@ -40,14 +40,14 @@ stage-in:
 
 .debug:
   before_script:
-    - echo $WORKSPACE
-    - echo $REPO_DIRS
-    - echo $BUILD_PATH
-    - echo $INSTALL_PATH
-    - echo $MODULE_PATH
-    - echo $STAGEIN_DIRS
-    - echo $STAGEOUT_DIRS
-    - echo $RESULT_SYNC_URL
+    - 'echo $WORKSPACE'
+    - 'echo $REPO_DIRS'
+    - 'echo $BUILD_PATH'
+    - 'echo $INSTALL_PATH'
+    - 'echo $MODULE_PATH'
+    - 'echo $STAGEIN_DIRS'
+    - 'echo $STAGEOUT_DIRS'
+    - 'echo $RESULT_SYNC_URL'
 
 Runsomething:
   stage: test    # It only starts when the job in the build stage completes successfully.
@@ -58,15 +58,15 @@ Runsomething:
   script:
     - set -eo pipefail
     - set -x
-    - echo "Workflow configured with the following base settings:"
-    - echo "WORKSPACE: $WORKSPACE"
-    - echo "REPO_DIRS: $REPO_DIRS"
-    - echo "BUILD_PATH: $BUILD_PATH"
-    - echo "INSTALL_PATH: $INSTALL_PATH"
-    - echo "MODULE_PATH: $MODULE_PATH"
-    - echo "STAGEIN_DIRS: $STAGEIN_DIRS"
-    - echo "STAGEOUT_DIRS: $STAGEOUT_DIRS"
-    - echo "RESULT_SYNC_URL: $RESULT_SYNC_URL"
+    - 'echo "Workflow configured with the following base settings:"'
+    - 'echo "WORKSPACE: $WORKSPACE"'
+    - 'echo "REPO_DIRS: $REPO_DIRS"'
+    - 'echo "BUILD_PATH: $BUILD_PATH"'
+    - 'echo "INSTALL_PATH: $INSTALL_PATH"'
+    - 'echo "MODULE_PATH: $MODULE_PATH"'
+    - 'echo "STAGEIN_DIRS: $STAGEIN_DIRS"'
+    - 'echo "STAGEOUT_DIRS: $STAGEOUT_DIRS"'
+    - 'echo "RESULT_SYNC_URL: $RESULT_SYNC_URL"'
     - hostname
     - pwd
     - set
