@@ -1,5 +1,11 @@
 
-default:
+stages:
+  - prepare
+  - test
+  - finalize
+
+
+.workspace:
   variables:
     WORKSPACE: "ci-bennch"
     REPO_DIRS: "$PROJECT/$WORKSPACE"
@@ -9,12 +15,6 @@ default:
     STAGEIN_DIRS: "$DATA/$WORKSPACE/transit-in"
     STAGEOUT_DIRS: "$DATA/$WORKSPACE/transit-in"
     RESULT_SYNC_URL: "https://gin.g-node.org/nest/beNNch-results.git"
-
-
-stages:
-  - prepare
-  - test
-  - finalize
 
 .jureca:
   tags:
@@ -48,7 +48,7 @@ stage-in:
 
 Runsomething:
   stage: test    # It only starts when the job in the build stage completes successfully.
-  extends: [ .debug ]
+  extends: [ .workspace, .debug ]
   tags:
     - jurecadc
     - jacamar
