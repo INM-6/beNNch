@@ -7,12 +7,12 @@ stages:
 
 variables:
   WORKSPACE: "ci-bennch"
-  REPO_DIRS: "\$PROJECT/$WORKSPACE"
-  BUILD_PATH: "\$SCRATCH/$WORKSPACE"
-  INSTALL_PATH: "\$USERSOFTWARE_djinb33/$WORKSPACE/\$MACHINE/install"
-  MODULE_PATH: "\$USERSOFTWARE_djinb33/$WORKSPACE/\$MACHINE/modules"
-  STAGEIN_DIRS: "\$DATA/$WORKSPACE/transit-in"
-  STAGEOUT_DIRS: "\$DATA/$WORKSPACE/transit-in"
+  REPO_DIRS: "$PROJECT/$WORKSPACE"
+  BUILD_PATH: "$SCRATCH/$WORKSPACE"
+  INSTALL_PATH: "$USERSOFTWARE_djinb33/$WORKSPACE/$MACHINE/install"
+  MODULE_PATH: "$USERSOFTWARE_djinb33/$WORKSPACE/$MACHINE/modules"
+  STAGEIN_DIRS: "$DATA/$WORKSPACE/transit-in"
+  STAGEOUT_DIRS: "$DATA/$WORKSPACE/transit-in"
   RESULT_SYNC_URL: "https://gin.g-node.org/nest/beNNch-results.git"
 
 .jureca:
@@ -23,7 +23,7 @@ variables:
 .JSC-baseenv:
   before_script:
     - module load git
-    - "export MACHINE=\"$(< /etc/FZJ/systemname)\""
+    #- "export MACHINE=\"$(< /etc/FZJ/systemname)\""
 
 .compute-node:
   extends: [ .JSC-baseenv ]
@@ -41,6 +41,10 @@ stage-in:
   stage: prepare
   extends: [ .jureca, .front-node ]
   script:
+    - hostname
+    - ls -l
+    - set
+    - pwd
     - 'echo $WORKSPACE'
     - 'echo $REPO_DIRS'
     - 'echo $BUILD_PATH'
@@ -49,10 +53,6 @@ stage-in:
     - 'echo $STAGEIN_DIRS'
     - 'echo $STAGEOUT_DIRS'
     - 'echo $RESULT_SYNC_URL'
-    - hostname
-    - ls -l
-    - set
-    - pwd
     - git clone --depth 1 https://github.com/nest/nest-simulator
     - rm -rf nest-simulator
 
@@ -63,8 +63,12 @@ Runsomething:
     - jurecadc
     - jacamar
   script:
-    - set -eo pipefail
-    - set -x
+    - hostname
+    - ls -l
+    - set
+    - pwd
+    #- set -eo pipefail
+    #- set -x
     - 'echo "Workflow configured with the following base settings:"'
     - 'echo "WORKSPACE: $WORKSPACE"'
     - 'echo "REPO_DIRS: $REPO_DIRS"'
@@ -74,7 +78,3 @@ Runsomething:
     - 'echo "STAGEIN_DIRS: $STAGEIN_DIRS"'
     - 'echo "STAGEOUT_DIRS: $STAGEOUT_DIRS"'
     - 'echo "RESULT_SYNC_URL: $RESULT_SYNC_URL"'
-    - hostname
-    - pwd
-    - set
-    - ls -l
