@@ -11,7 +11,7 @@ variables:
   BUILD_PATH: "$SCRATCH/$WORKSPACE"
   INSTALL_PATH: "$USERSOFTWARE_djinb33/$WORKSPACE/$MACHINE/install"
   MODULE_PATH: "$USERSOFTWARE_djinb33/$WORKSPACE/$MACHINE/modules"
-  STAGEIN_DIRS: "$DATA/$WORKSPACE/transit-in"
+  STAGEIN_DIRS: "\$DATA/$WORKSPACE/transit-in"
   STAGEOUT_DIRS: "$DATA/$WORKSPACE/transit-in"
   RESULT_SYNC_URL: "https://gin.g-node.org/nest/beNNch-results.git"
 
