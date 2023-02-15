@@ -1,39 +1,69 @@
-# This file is a template, and might need editing before it works on your project.
-# This is a sample GitLab CI/CD configuration file that should run without any modifications.
-# It demonstrates a basic 3 stage CI/CD pipeline. Instead of real tests or scripts,
-# it uses echo commands to simulate the pipeline execution.
-#
-# A pipeline is composed of independent jobs that run scripts, grouped into stages.
-# Stages run in sequential order, but jobs within stages run in parallel.
-#
-# For more information, see: https://docs.gitlab.com/ee/ci/yaml/index.html#stages
-#
-# You can copy and paste this template into a new `.gitlab-ci.yml` file.
-# You should not add this template to an existing `.gitlab-ci.yml` file by using the `include:` keyword.
-#
-# To contribute improvements to CI/CD templates, please follow the Development guide at:
-# https://docs.gitlab.com/ee/development/cicd/templates.html
-# This specific template is located at:
-# https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Getting-Started.gitlab-ci.yml
 
-variables:
-  SCHEDULER_PARAMETERS: --account jinb33 --partition dc-gpu --time 00:01:00 --gres=gpu:1 -n 1
+default:
+  variables:
+    WORKSPACE: "ci-bennch"
+    REPO_DIRS: "$PROJECT/$WORKSPACE"
+    BUILD_PATH: "$SCRATCH/$WORKSPACE"
+    INSTALL_PATH: "$USERSOFTWARE/$WORKSPACE/$MACHINE/install"
+    MODULE_PATH: "$USERSOFTWARE/$WORKSPACE/$MACHINE/modules"
+    STAGEIN_DIRS: "$DATA/$WORKSPACE/transit-in"
+    STAGEOUT_DIRS: "$DATA/$WORKSPACE/transit-in"
+    RESULT_SYNC_URL: "https://gin.g-node.org/nest/beNNch-results.git"
 
-stages:          # List of stages for jobs, and their order of execution
+
+stages:
+  - prepare
   - test
+  - finalize
 
-foobar-test:
-  when: manual # play button
+.jureca:
+  tags:
+    - jurecadc
+    - jacamar
+
+.compute-node:
+  variables:
+    #SCHEDULER_PARAMETERS: --account jinb33 --partition dc-gpu --time 00:01:00 --gres=gpu:1 -n 1
+    SCHEDULER_PARAMETERS: --account jinb33 --time 00:01:00 -n 1
+
+.front-node:
+  variables:
+    #SCHEDULER_PARAMETERS: --account jinb33 --partition dc-gpu --time 00:01:00 --gres=gpu:1 -n 1
+    SCHEDULER_PARAMETERS: --account jinb33 --partition interactive --time 00:01:00 -n 1
+
+stage-in:
+  stage: prepare
+  extends: [.jureca]
+
+.debug:
+  before_script:
+    - echo $WORKSPACE
+    - echo $REPO_DIRS
+    - echo $BUILD_PATH
+    - echo $INSTALL_PATH
+    - echo $MODULE_PATH
+    - echo $STAGEIN_DIRS
+    - echo $STAGEOUT_DIRS
+    - echo $RESULT_SYNC_URL
+
+Runsomething:
   stage: test    # It only starts when the job in the build stage completes successfully.
+  extends: [ .debug ]
   tags:
     - jurecadc
     - jacamar
   script:
     - set -eo pipefail
     - set -x
-    - echo "Running unit tests... This will take about 60 seconds."
-    - sleep 10
-    - echo "Code coverage is foobar"
+    - echo "Workflow configured with the following base settings:"
+    - echo "WORKSPACE: $WORKSPACE"
+    - echo "REPO_DIRS: $REPO_DIRS"
+    - echo "BUILD_PATH: $BUILD_PATH"
+    - echo "INSTALL_PATH: $INSTALL_PATH"
+    - echo "MODULE_PATH: $MODULE_PATH"
+    - echo "STAGEIN_DIRS: $STAGEIN_DIRS"
+    - echo "STAGEOUT_DIRS: $STAGEOUT_DIRS"
+    - echo "RESULT_SYNC_URL: $RESULT_SYNC_URL"
     - hostname
     - pwd
     - set
