@@ -52,7 +52,7 @@ stage-in:
     - ls -l
     - set
     - pwd
-    - git clone --depth 0 https://github.com/nest/nest-simulator
+    - git clone --depth 1 https://github.com/nest/nest-simulator
     - rm -rf nest-simulator
 
 Runsomething:
