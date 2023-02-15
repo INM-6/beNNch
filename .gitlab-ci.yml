@@ -33,6 +33,10 @@ variables:
 stage-in:
   stage: prepare
   extends: [.jureca]
+  script:
+    - hostname
+    - git clone --depth 0 https://github.com/nest/nest-simulator
+    - rm -rf nest-simulator
 
 .debug:
   before_script:
