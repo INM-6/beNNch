@@ -28,7 +28,7 @@ variables:
 .front-node:
   variables:
     #SCHEDULER_PARAMETERS: --account jinb33 --partition dc-gpu --time 00:01:00 --gres=gpu:1 -n 1
-    SCHEDULER_PARAMETERS: --account jinb33 --partition interactive --time 00:01:00 -n 1
+    SCHEDULER_PARAMETERS: "--account jinb33 $(hostname >&2) --partition dc-cpu --time 00:01:00 -n 1"
 
 stage-in:
   stage: prepare
