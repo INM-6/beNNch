@@ -51,7 +51,7 @@ stage-in:
 
 Runsomething:
   stage: test    # It only starts when the job in the build stage completes successfully.
-  extends: [ .debug, .jureca, .compute_node ]
+  extends: [ .debug, .jureca, .compute-node ]
   tags:
     - jurecadc
     - jacamar
