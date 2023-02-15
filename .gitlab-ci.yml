@@ -32,7 +32,7 @@ variables:
 
 stage-in:
   stage: prepare
-  extends: [.jureca]
+  extends: [ .jureca, .front-node ]
   script:
     - hostname
     - git clone --depth 0 https://github.com/nest/nest-simulator
@@ -51,7 +51,7 @@ stage-in:
 
 Runsomething:
   stage: test    # It only starts when the job in the build stage completes successfully.
-  extends: [ .debug ]
+  extends: [ .debug, .jureca, .compute_node ]
   tags:
     - jurecadc
     - jacamar
