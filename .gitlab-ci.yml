@@ -7,12 +7,12 @@ stages:
 # These variables are resolved when the job is built, so some environment variables are not available
 variables:
   WORKSPACE: "ci-bennch"
-  REPO_DIRS: "$PROJECT/$WORKSPACE"
-  BUILD_PATH: "$SCRATCH/$WORKSPACE"
-  INSTALL_PATH: "$USERSOFTWARE_djinb33/$WORKSPACE/$MACHINE/install"
-  MODULE_PATH: "$USERSOFTWARE_djinb33/$WORKSPACE/$MACHINE/modules"
+  REPO_DIRS: "$$PROJECT/$WORKSPACE"
+  BUILD_PATH: "$$SCRATCH/$WORKSPACE"
+  INSTALL_PATH: "$$USERSOFTWARE_djinb33/$WORKSPACE/$$MACHINE/install"
+  MODULE_PATH: "$$USERSOFTWARE_djinb33/$WORKSPACE/$$MACHINE/modules"
   STAGEIN_DIRS: "$(date)/$WORKSPACE/transit-in"
-  STAGEOUT_DIRS: "$DATA/$WORKSPACE/transit-in"
+  STAGEOUT_DIRS: "$$DATA/$WORKSPACE/transit-in"
   RESULT_SYNC_URL: "https://gin.g-node.org/nest/beNNch-results.git"
 
 .jureca:
@@ -50,14 +50,21 @@ stage-in:
     matrix:
       - MACHINE: jurecadc
            INCLUDES: [.front-node]
-#      - MACHINE: juwels
-#           INCLUDES: [.front-node]
+      - MACHINE: juwels
+           INCLUDES: [.front-node]
   extends: [ .${MACHINE}, *${INCLUDES} ]
+  rules:
+    - if: $(MACHINE) == jurecadc
   script:
     - hostname
     - ls -l
     - set
     - pwd
+    - 'eval $BUILD_PATH'
+    - 'eval $INSTALL_PATH'
+    - 'eval $MODULE_PATH'
+    - 'eval $STAGEIN_DIRS'
+    - 'eval $STAGEOUT_DIRS'
     - 'echo $WORKSPACE'
     - 'echo $REPO_DIRS'
     - 'echo $BUILD_PATH'
