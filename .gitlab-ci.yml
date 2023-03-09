@@ -1,0 +1,18 @@
+stages:
+  - test
+
+Debug:
+  stage: test
+  variables:
+    SCHEDULER_PARAMETERS: --account jinb33 --time 00:01:00 -n 1
+  tags:
+    - jurecadc
+    - jacamar
+    - slurm
+  script:
+    - hostname
+    - ls -l
+    - set
+    - pwd
+    - echo $SLURMD_NODENAME
+    - echo $SLURM_NODELIST
