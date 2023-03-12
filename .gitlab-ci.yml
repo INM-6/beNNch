@@ -1,18 +1,31 @@
-stages:
-  - test
+stages: [ preparation, benchmarking]
 
-Debug:
-  stage: test
+
+Preparation:
+  image: bitnami/git
+  stage: preparation
+  script:
+    - git clone --single-branch --branch master --depth 1 https://github.com/nest/nest-simulator.git repository
+  artifacts:
+    paths:
+      - repository/
+    exclude:
+      - repository/.git/
+    when: on_success
+  tags:
+    - public-docker
+
+
+Benchmarking:
+  stage: benchmarking
+  dependencies:
+    - Preparation
+  script:
+    - ls -a
   variables:
     SCHEDULER_PARAMETERS: --account jinb33 --time 00:01:00 -n 1
   tags:
     - jurecadc
     - jacamar
     - slurm
-  script:
-    - hostname
-    - ls -l
-    - set
-    - pwd
-    - echo $SLURMD_NODENAME
-    - echo $SLURM_NODELIST
+
