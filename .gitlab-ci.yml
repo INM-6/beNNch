@@ -21,7 +21,7 @@ Benchmarking:
   dependencies:
     - Preparation
   script:
-    - ls -a
+    - ls repository/
   variables:
     SCHEDULER_PARAMETERS: --account jinb33 --time 00:01:00 -n 1
   tags:
