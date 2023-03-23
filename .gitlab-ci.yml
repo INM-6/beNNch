@@ -5,13 +5,10 @@ stages: [ debug ]
     - echo first
 
 Preparation:
-  extends: [ .debug-script, .debug-script2 ]
   stage: debug
   script:
+    - !reference [ .debug-script, script ]
+    - !reference [ .debug-script2, script ]
     - echo second
   tags:
     - public-docker
-
-.debug-script2:
-  script:
-    - echo third
