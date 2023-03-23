@@ -1,31 +1,17 @@
-stages: [ preparation, benchmarking]
+stages: [ debug ]
 
+.debug-script:
+  script:
+    - echo first
 
 Preparation:
-  image: bitnami/git
-  stage: preparation
+  extends: [ .debug-script, .debug-script2 ]
+  stage: debug
   script:
-    - git clone --single-branch --branch master --depth 1 https://github.com/nest/nest-simulator.git repository
-  artifacts:
-    paths:
-      - repository/
-    exclude:
-      - repository/.git/
-    when: on_success
+    - echo second
   tags:
     - public-docker
 
-
-Benchmarking:
-  stage: benchmarking
-  dependencies:
-    - Preparation
+.debug-script2:
   script:
-    - ls repository/
-  variables:
-    SCHEDULER_PARAMETERS: --account jinb33 --time 00:01:00 -n 1
-  tags:
-    - jurecadc
-    - jacamar
-    - slurm
-
+    - echo third
