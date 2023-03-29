@@ -15,9 +15,8 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 include-path:
-  path:
-   - ../helpers/
-   - ../config/
+  - ../helpers/
+  - ../config/
 
 # model-specific name and output path
 name: HPC
