@@ -22,7 +22,6 @@
 #SBATCH -e #ERRPATH#
 #SBATCH --nodes=#NODES#
 #SBATCH --ntasks-per-node=#NTASKS_PER_NODE#
-#SBATCH --cpus-per-task=#CPUS_PER_TASK#
 #SBATCH --time=#TIME#
 #SBATCH --exclusive
 #SBATCH --account=#ACCOUNT#

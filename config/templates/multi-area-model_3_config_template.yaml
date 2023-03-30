@@ -39,7 +39,7 @@ parameterset:
        - {name: tasks_per_node, type: int, _: "TASKS_PER_NODE"}  # number of (MPI) tasks per node, accepts a list in the format a,b,c,... for generating multiple runs
        - {name: threads_per_task, type: int, _: "THREADS_PER_TASK"}  # number of threads per task, accepts a list in the format a,b,c,... for generating multiple runs
        - {name: walltime, type: string, _: "WALLTIME"}  # wall time for the job in format hh:mm:ss
-       - {name: affinity, type: string, separator: ";", _: "--cpu-bind=verbose,threads --distribution=block:cyclic:fcyclic --hint=nomultithread"}  # processor affinity/pinning
+       - {name: affinity, type: string, separator: ";", _: "--cpu-bind=verbose,threads --distribution=block:cyclic:fcyclic --threads-per-core=1"}  # processor affinity/pinning
     - name: software_parameters
       parameter:            
        - {name: simulator, _: "nest-simulator"}  # simulator to be installed (plan file must be provided)

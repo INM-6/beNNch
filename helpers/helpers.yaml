@@ -25,7 +25,6 @@ substituteset:
         - {source: "#NODES#", dest: $num_nodes}
         - {source: "#NTASKS#", dest: $num_tasks}
         - {source: "#NTASKS_PER_NODE#", dest: $tasks_per_node}
-        - {source: "#CPUS_PER_TASK#", dest: $threads_per_task}
         - {source: "#TIME#", dest: $walltime}
         - {source: "#ERRPATH#", dest: $err_file}
         - {source: "#OUTPATH#", dest: $out_file}
@@ -40,7 +39,6 @@ substituteset:
         - {source: "#NODES#", dest: 1}
         - {source: "#NTASKS#", dest: 1}
         - {source: "#NTASKS_PER_NODE#", dest: 1}
-        - {source: "#CPUS_PER_TASK#", dest: 16}
         - {source: "#TIME#", dest: "00:15:00"}
         - {source: "#ERRPATH#", dest: $err_file}
         - {source: "#OUTPATH#", dest: $out_file}
@@ -82,8 +80,11 @@ parameterset:
            module load $simulator/$version/$variant_$suffix
         fi
         export OMP_NUM_THREADS=$threads_per_task
+        export OMP_DISPLAY_ENV=VERBOSE
+        export OMP_DISPLAY_AFFINITY=TRUE
+        export OMP_PROC_BIND=TRUE
         ${optional_run_command}
-        srun ${affinity} python ${run_file} ${run_args}
+        srun --cpus-per-task=${threads_per_task} ${affinity} python ${run_file} ${run_args}
         srun -n 1 --nodes 1 python ${base_path}/helpers/collect_timer_data.py ${log_path}
         srun -n 1 --nodes 1 python ${base_path}/helpers/cpu_logging.py ${jube_wp_abspath}
         cd ${model_path}
