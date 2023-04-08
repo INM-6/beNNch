@@ -60,7 +60,7 @@ Validate Input:
           exit 1
         fi
       done
-    - 'git clone --single-branch --branch=$SOURCE_BRANCH --depth=1 $SOURCE_REPO repository'
+    - 'git clone --single-branch --branch=$SIMULATOR_BRANCH --depth=1 $SIMULATOR_REPO repository'
     - 'git clone --single-branch --branch=$CONFIG_BRANCH --depth=1 $CONFIG_REPO config_repository'
     - 'python -m pip install pyyaml'
     - 'echo $MACHINES'
