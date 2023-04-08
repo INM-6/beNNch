@@ -13,12 +13,9 @@ variables:
     - jacamar
     - slurm
 
-.base-init:
-  - |+
-    module load Stages/2023 Python/3.10.4 PyYAML/6.0
-
 .environment-init:
   - |+
+    module load Stages/2023 Python/3.10.4 PyYAML/6.0
     jutil env activate -p $CB_JURECA_PROJECT
 
 .preparation-init:

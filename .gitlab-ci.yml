@@ -32,7 +32,7 @@ variables:
     description: "[Optional] Comma-seperated list of the names of all models which should be run."
 
 
-.machines: &machines_anchor [ "jureca", "hifis" ]
+.machines: &machines_anchor [ "jureca" ]
 
 # Only run pipelines manually triggered from the web
 workflow:
@@ -48,7 +48,7 @@ Validate Input:
   stage: validate
   image: python:3-alpine
   variables:
-    MACHINES: "jureca,hifis"  # TODO: Check if the anchor can be used here somehow to avoid duplication
+    MACHINES: "jureca"  # TODO: Check if the anchor can be used here somehow to avoid duplication
   script:
     - 'apk update && apk add git'
     - |+

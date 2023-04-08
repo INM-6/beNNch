@@ -12,8 +12,12 @@ variables:
 
 # Requires git, python3 and pyyaml
 .prepare-benchmarks:
-  # TODO: Check if this can be moved to variables as well
-  # - BUILD_PATH: $(eval $BUILD_PATH)
+  # Move all artifacts to user data directory
+  artifacts:
+    - |+
+      mv $CI_PROJECT_DIR/repository $USER_DATA_DIR/repository
+      mv $CI_PROJECT_DIR/config_repository $USER_DATA_DIR/config_repository
+      mv $CI_PROJECT_DIR/model_repos $USER_DATA_DIR/model_repos
   environment-variables:
     - 'export USER_DATA_DIR=$TEMP_DIR/$USER/$(date +%s)'
     - 'eval WORKSPACE_DIR=$WORKSPACE_DIR'
@@ -32,25 +36,22 @@ variables:
     - 'eval SCHEDULER_PARAMETERS=$SCHEDULER_PARAMETERS'
   apt-requirements:
     - |+
-      REQUIREMENTS=$(python3 $CI_PROJECT_DIR/.gitlab-ci/scripts/get_requirements_from_config.py apt ${USER_DATA_DIR}/config_repository $MACHINE)
+      REQUIREMENTS=$(python3 $CI_PROJECT_DIR/.gitlab-ci/scripts/get_requirements_from_config.py apt ${USER_DATA_DIR}/config_repository/$CONFIG_PATH $MACHINE)
       if [ ! -z "$REQUIREMENTS" ] ; then
         apt-get install -y $REQUIREMENTS
       fi
   pip-requirements:
     - |+
-      REQUIREMENTS=$(python3 $CI_PROJECT_DIR/.gitlab-ci/scripts/get_requirements_from_config.py pip ${USER_DATA_DIR}/config_repository $MACHINE)
+      REQUIREMENTS=$(python3 $CI_PROJECT_DIR/.gitlab-ci/scripts/get_requirements_from_config.py pip ${USER_DATA_DIR}/config_repository/$CONFIG_PATH $MACHINE)
       if [ ! -z "$REQUIREMENTS" ] ; then
         pip3 install --user $REQUIREMENTS
       fi
   modules-requirements:
     - |+
-      REQUIREMENTS=$(python3 $CI_PROJECT_DIR/.gitlab-ci/scripts/get_requirements_from_config.py modules ${USER_DATA_DIR}/config_repository $MACHINE)
+      REQUIREMENTS=$(python3 $CI_PROJECT_DIR/.gitlab-ci/scripts/get_requirements_from_config.py modules ${USER_DATA_DIR}/config_repository/$CONFIG_PATH $MACHINE)
       if [ ! -z "$REQUIREMENTS" ] ; then
         module load $REQUIREMENTS
-      fi
-  prerequisites:
-    - 'git clone --single-branch --branch=$SIMULATOR_BRANCH --depth=1 $SIMULATOR_REPO $SIMULATOR_REPO_DIR'
-    - 'git clone --single-branch --branch=$CONFIG_BRANCH --depth=1 $CONFIG_REPO $USER_DATA_DIR/config_repository'
+      fi'
   configs:
     - |+
       'rm -rf $BENNCH_DIR/config/* $BENNCH_DIR/benchmarks/*'
@@ -60,7 +61,7 @@ variables:
     - 'cd $BENNCH_DIR'
     - 'ls'
     - 'git submodule set-url -- results $RESULTS_REPO_URL'
-    - 'git submodule set-branch --branch $RESULTS_BRANCH -- results'
+    - 'git submodule set-branch --branch=$RESULTS_BRANCH -- results'
     - 'cat .gitmodules'
     - 'git submodule update --depth=1 --init --recursive --remote -- results'
   analysis:

@@ -15,19 +15,14 @@ Benchmarking:
     BUILDER_BUILD_DIR: "$$USER_DATA_DIR/Builder/build"
     BUILDER_LOG_DIR: "$$USER_DATA_DIR/Builder/log/"
   before_script:
-    - 'echo "--- BEFORE_SCRIPT ---"'
-    - 'echo $SLURMD_NODENAME'
-    # Load all modules required for continuous benchmarking in general
-    - !reference [ .base-init ]
-    - 'python $CI_PROJECT_DIR/.gitlab-ci/scripts/get_project_name.py $USER_DATA_DIR/config_repository $MACHINE'
-    # Prepare environment
+    # Load all modules required for continuous benchmarking in general and prepare environment
     - !reference [ .environment-init ]
     # Load all environment variables
     - !reference [ .prepare-benchmarks, environment-variables ]
+    # Move all artifacts to user data directory
+    - !reference [ .prepare-benchmarks, artifacts ]
     # Load modules on login node required for benchmark preparation
     - !reference [ .preparation-init ]
-    # Get all the data specified by the user (repos and configs)
-    - !reference [ .prepare-benchmarks, prerequisites ]
     # Install all pip packages into venv specified in config file
     # TODO: Create venv. Where though?
     - !reference [ .prepare-benchmarks, pip-requirements ]
