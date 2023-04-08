@@ -21,7 +21,7 @@ variables:
     description: "Branch of result repository to upload benchmark results to."
     value: master
   RESULTS_PATH:
-    description:
+    description: "Path to results directory relative to results repository root."
   WORKSPACE:
     description: "Benchmarking CI workflow type. Valid options are: 'production' or 'development'."
     value: "production"
@@ -31,9 +31,7 @@ variables:
     description: "[Optional] Comma-seperated list of the names of all models which should be run."
 
 
-.machines: &machines_anchor
-  - jureca
-  - hifis
+.machines: &machines_anchor [ "jureca", "hifis" ]
 
 # Only run pipelines manually triggered from the web
 workflow:
@@ -49,7 +47,7 @@ Validate Input:
   stage: validate
   image: python/3-alpine
   variables:
-    MACHINES: *machines_anchor
+    MACHINES: "jureca,hifis"  # TODO: Check if the anchor can be used here somehow to avoid duplication
   script:
     - |+
       # Make some values were provided for all mandatory variables
