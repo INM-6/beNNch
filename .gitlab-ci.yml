@@ -1,14 +1,60 @@
-stages: [ debug ]
+variables:
+  SIMULATOR_REPO:
+    description: "Simulator repository to use for benchmarking."
+    value: "https://github.com/nest/nest-simulator.git"
+  SIMULATOR_BRANCH:
+    description: "Simulator repository branch to use for benchmarking."
+    value: "master"
+  CONFIG_REPO:
+    description: "Configuration repository to use for benchmarking."
+    value: "https://github.com/JanVogelsang/CI-Bennch-config.git"
+  CONFIG_BRANCH:
+    description: "Configuration repository branch to use for benchmarking."
+    value: "main"
+  CONFIG_PATH:
+    description: "Path to configuration file (e.g. config.yml) relative to the config repository root."
+    value: "config.yml"
+  RESULTS_REPO_URL:
+    description: "Repository to upload benchmark results to."
+    value: "https://gin.g-node.org/Janvog/CI-Bennch-results-devel.git"
+  RESULTS_BRANCH:
+    description: "Branch of result repository to upload benchmark results to."
+    value: master
+  WORKSPACE:
+    description: "Benchmarking CI workflow type. Valid options are: 'production' or 'development'."
+    value: "production"
+  MASTER_RUNNER_TAG:
+    description: "[Optional] Tag for the gitlab runner that should manage the run (i.e., the preparation and collecting the results)."
+  EXTRA_CMAKE_FLAGS:
+    description: "[Optional] Any extra CMake flags which should be used to compile NEST."
 
-.debug-script:
-  script:
-    - echo first
 
-Preparation:
-  stage: debug
+
+# Only run pipelines manually triggered from the web
+workflow:
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "web"'
+
+
+stages: [ validate, benchmarking ]
+
+
+Validate Input:
+  stage: validate
   script:
-    - !reference [ .debug-script, script ]
-    - !reference [ .debug-script2, script ]
-    - echo second
-  tags:
-    - public-docker
+    - ''  # if $SOURCE_REPO && $SOURCE_BRANCH'  # Make sure the repository variable was assigned some value by the user
+
+
+Benchmarking:
+  stage: benchmarking
+  # when: manual  # Allow users to manually trigger every machine independently
+  allow_failure: false
+  parallel:
+    matrix:  # Add all machines here for which configurations exist. TODO: Add option to specify the runner
+      # - MACHINE: hifis
+      - MACHINE: jureca
+  trigger:
+    strategy: depend
+    include: .gitlab-ci/machine-configs/${MACHINE}.yml
+    forward:
+      pipeline_variables: true
