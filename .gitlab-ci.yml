@@ -44,18 +44,16 @@ Validate Input:
     - ''  # if $SOURCE_REPO && $SOURCE_BRANCH'  # Make sure the repository variable was assigned some value by the user
 
 
-# Benchmarking:
-#   stage: benchmarking
-#   # when: manual  # Allow users to manually trigger every machine independently
-#   allow_failure: false
-#   parallel:
-#     matrix:  # Add all machines here for which configurations exist. TODO: Add option to specify the runner
-#       # - MACHINE: hifis
-#       - MACHINE: jureca
-#   trigger:
-#     strategy: depend
-#     include: .gitlab-ci/machine-configs/${MACHINE}.yml
-#     forward:
-      # pipeline_variables: true
-include:
-  - .gitlab-ci/machine-configs/jureca.yml
+Benchmarking:
+  stage: benchmarking
+  # when: manual  # Allow users to manually trigger every machine independently
+  allow_failure: false
+  parallel:
+    matrix:  # Add all machines here for which configurations exist. TODO: Add option to specify the runner
+      # - MACHINE: hifis
+      - MACHINE: jureca
+  trigger:
+    strategy: depend
+    include: .gitlab-ci/machine-configs/${MACHINE}.yml
+    forward:
+      pipeline_variables: true
