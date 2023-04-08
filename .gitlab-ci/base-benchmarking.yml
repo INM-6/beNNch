@@ -19,6 +19,7 @@ variables:
     - 'eval BUILDER_INSTALL_DIR=$BUILDER_INSTALL_DIR'
     - 'eval BUILDER_BUILD_DIR=$BUILDER_BUILD_DIR'
     - 'eval BUILDER_LOG_DIR=$BUILDER_LOG_DIR'
+    - 'eval SCHEDULER_PARAMETERS=$SCHEDULER_PARAMETERS'
   apt-requirements:
     - |+
       REQUIREMENTS=$(python3 $CI_PROJECT_DIR/.gitlab-ci/scripts/get_requirements_from_config.py apt ${USER_DATA_DIR}/config_repository $MACHINE)
