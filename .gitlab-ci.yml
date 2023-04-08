@@ -23,6 +23,8 @@ variables:
   WORKSPACE:
     description: "Benchmarking CI workflow type. Valid options are: 'production' or 'development'."
     value: "production"
+  JURECA_ACCOUNT:
+    value: "jinb33"
   EXTRA_CMAKE_FLAGS:
     description: "[Optional] Any extra CMake flags which should be used to compile NEST."
 
@@ -52,6 +54,7 @@ Benchmarking:
     matrix:  # Add all machines here for which configurations exist. TODO: Add option to specify the runner
       # - MACHINE: hifis
       - MACHINE: jureca
+        RUNNER_ACCOUNT: ${$(echo $MACHINE | tr 'a-z' 'A-Z')_ACCOUNT}
   trigger:
     strategy: depend
     include: .gitlab-ci/machine-configs/${MACHINE}.yml
