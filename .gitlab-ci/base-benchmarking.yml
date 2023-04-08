@@ -1,0 +1,92 @@
+variables:
+  SIMULATOR_REPO_DIR: "$WORKSPACE_DIR/repository/"
+
+# Requires git, python3 and pyyaml
+.prepare-benchmarks:
+  # TODO: Check if this can be moved to variables as well
+  # - BUILD_PATH: $(eval $BUILD_PATH)
+  environment-variables:
+    - 'eval WORKSPACE_DIR=$WORKSPACE_DIR'
+    - 'eval BENNCH_DIR=$BENNCH_DIR'
+    - 'eval USER_DATA_DIR=$USER_DATA_DIR'
+    - 'eval SIMULATOR_REPO_DIR=$SIMULATOR_REPO_DIR'
+    - 'eval RESULTS_DIR=$RESULTS_DIR'
+    - 'eval BUILDER_DIR=$BUILDER_DIR'
+    - 'eval BUILDER_MODULES_DIR=$BUILDER_MODULES_DIR'
+    - 'eval BUILDER_PLANFILE_DIR=$BUILDER_PLANFILE_DIR'
+    - 'eval BUILDER_PACKAGE_DIR=$BUILDER_PACKAGE_DIR'
+    - 'eval BUILDER_SOURCE_DIR=$BUILDER_SOURCE_DIR'
+    - 'eval BUILDER_INSTALL_DIR=$BUILDER_INSTALL_DIR'
+    - 'eval BUILDER_BUILD_DIR=$BUILDER_BUILD_DIR'
+    - 'eval BUILDER_LOG_DIR=$BUILDER_LOG_DIR'
+  apt-requirements:
+    - |+
+      REQUIREMENTS=$(python3 $CI_PROJECT_DIR/.gitlab-ci/scripts/get_requirements_from_config.py apt ${USER_DATA_DIR}/config_repository $MACHINE)
+      if [ ! -z "$REQUIREMENTS" ] ; then
+        apt-get install -y $REQUIREMENTS
+      fi
+  pip-requirements:
+    - |+
+      REQUIREMENTS=$(python3 $CI_PROJECT_DIR/.gitlab-ci/scripts/get_requirements_from_config.py pip ${USER_DATA_DIR}/config_repository $MACHINE)
+      if [ ! -z "$REQUIREMENTS" ] ; then
+        pip3 install --user $REQUIREMENTS
+      fi
+  modules-requirements:
+    - |+
+      REQUIREMENTS=$(python3 $CI_PROJECT_DIR/.gitlab-ci/scripts/get_requirements_from_config.py modules ${USER_DATA_DIR}/config_repository $MACHINE)
+      if [ ! -z "$REQUIREMENTS" ] ; then
+        module load $REQUIREMENTS
+      fi
+  prerequisites:
+    - 'git clone --single-branch --branch=$SIMULATOR_BRANCH --depth=1 $SIMULATOR_REPO $SIMULATOR_REPO_DIR'
+    - 'git clone --single-branch --branch=$CONFIG_BRANCH --depth=1 $CONFIG_REPO $USER_DATA_DIR/config_repository'
+  configs:
+    - 'rm -rf $BENNCH_DIR/config/* $BENNCH_DIR/benchmarks/*'
+    - 'python3 $CI_PROJECT_DIR/.gitlab-ci/scripts/patch_configs.py $USER_DATA_DIR/config_repository $BENNCH_DIR/benchmarks $BENNCH_DIR/config/$MACHINE $BUILDER_MODULES_DIR $BENNCH_DIR $USER_DATA_DIR/model_repos $MACHINE'
+  results:
+    # Set result repository
+    - 'cd $BENNCH_DIR'
+    - 'ls'
+    - 'git submodule set-url -- results $RESULTS_REPO_URL'
+    - 'git submodule set-branch --branch $RESULTS_BRANCH -- results'
+    - 'cat .gitmodules'
+    - 'git submodule update --depth=1 --init --recursive --remote -- results'
+  analysis:
+    - 'cd $BENNCH_DIR'
+    - 'git submodule update --depth=1 --init --recursive --remote -- plot'
+
+
+# Requires jube
+.run-benchmarks:
+  - 'cd $BENNCH_DIR/benchmarks'
+  - |+
+      # TODO: This builds the simulator for each model, one should only call Jube once here and combine the benchmarks for all models
+      for benchmark in cb_*${MACHINE}.yml; do
+        # jube-autorun -r "--hide-animation -e --outpath=$RESULTS_DIR --include-path=$BENNCH_DIR/config/$MACHINE" $benchmark & pid=$!
+        # PID_LIST+=" $pid";
+        # jube run -e --hide-animation --outpath=$RESULTS_DIR --include-path=$BENNCH_DIR/config/$MACHINE $benchmark
+        jube-autorun -p "120" -r "--hide-animation -e --outpath=$RESULTS_DIR --include-path=$BENNCH_DIR/config/$MACHINE" $benchmark
+      done
+      cat $RESULTS_DIR/000000/000000_build/work/stdout
+      cat $RESULTS_DIR/000000/000000_build/work/stderr
+      cat $RESULTS_DIR/000000/000001_bench/work/stdout
+      cat $RESULTS_DIR/000000/000001_bench/work/stderr
+      scontrol show job 1
+      # wait $PID_LIST
+  # Move results to directory
+  - 'cat jube_job_output.txt'
+
+# Requires git, git-annex
+.results:
+  analysis:
+    # Perform analysis on all benchmark results
+    - 'cd $BENNCH_DIR/results'
+    - |+
+        for benchmark_result_id in 0*/ ; do
+          echo 'scaling_type: "nodes"\njube_outpath: "$RESULTS_DIR"' > config/analysis_config.yaml
+          python ../analysis/analysis.py benchmark_result_id
+          echo 'scaling_type: "threads"\njube_outpath: "$RESULTS_DIR"' > config/analysis_config.yaml
+          python ../analysis/analysis.py benchmark_result_id
+        done
+  upload:
+    - 'git annex sync'
