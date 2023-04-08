@@ -1,6 +1,15 @@
 variables:
   SIMULATOR_REPO_DIR: "$WORKSPACE_DIR/repository/"
 
+.base-benchmarking:
+  needs:
+    - pipeline: $PARENT_PIPELINE_ID
+      job: "Validate Input"
+      artifacts: true
+  when: manual
+  rules:
+    - if: $MACHINES =~ $MACHINE  # Only make benchmark for machine runnable if configuration was provided for it
+
 # Requires git, python3 and pyyaml
 .prepare-benchmarks:
   # TODO: Check if this can be moved to variables as well
