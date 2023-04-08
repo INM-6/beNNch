@@ -38,6 +38,7 @@ stages: [ validate, benchmarking ]
 
 
 Validate Input:
+  tags: [ "public-docker" ]
   stage: validate
   script:
     - ''  # if $SOURCE_REPO && $SOURCE_BRANCH'  # Make sure the repository variable was assigned some value by the user
@@ -45,8 +46,6 @@ Validate Input:
 
 Benchmarking:
   stage: benchmarking
-  tags:
-    - "public-docker"
   # when: manual  # Allow users to manually trigger every machine independently
   allow_failure: false
   parallel:
