@@ -4,7 +4,8 @@ variables:
   TEMP_DIR: "$$SCRATCH/ci-bennch/$WORKSPACE/jureca/userdata"           # Directory to temporary files accessible from both login and compute nodes
   WORKSPACE_DIR: "$$USERSOFTWARE_djinb33/ci-bennch/$WORKSPACE/jureca"  # Directory to persistent files accessible from both login and compute nodes
   BUILDER_DIR: "$$WORKSPACE_DIR/builder/"                              # Path to builder installation
-  SCHEDULER_PARAMETERS: "--account=$CB_JURECA_RUNNER_ACCOUNT --time=00:03:00 --nodes=1"
+  # SCHEDULER_PARAMETERS: "--account=$CB_JURECA_RUNNER_ACCOUNT --time=00:03:00 --nodes=1"
+  SCHEDULER_PARAMETERS: "--account=$CB_JURECA_RUNNER_ACCOUNT --nodes=1"
 
 
 .config:
