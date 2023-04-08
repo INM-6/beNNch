@@ -27,7 +27,7 @@ variables:
   - 'wget "http://downloads.kitenet.net/git-annex/linux/current/git-annex-standalone-amd64.tar.gz" -O git-annex.tar.gz -q'
   - 'tar -xzf git-annex.tar.gz -C git-annex --strip-components 1'
   - 'rm git-annex.tar.gz'
-  - 'export PATH=$PATH:${USER_DATA_DIR}/git-annex'
+  - 'export PATH=$PATH:$USER_DATA_DIR/git-annex'
 
 .benchmarks-init:
   # TODO: Load builder, make sure builder planfile dir is a custom one in userdata (for every ci-bennch run)
