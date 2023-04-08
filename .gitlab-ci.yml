@@ -53,13 +53,12 @@ Validate Input:
     - |+
       # Make some values were provided for all mandatory variables
       for var in SIMULATOR_REPO SIMULATOR_BRANCH CONFIG_REPO CONFIG_BRANCH CONFIG_PATH RESULTS_REPO_URL RESULTS_BRANCH RESULTS_PATH WORKSPACE ; do
-        echo "var $(eval \$$var)"
-        if [ -z $(eval \$$var) ] ; then
+        echo "var $(eval \$var)"
+        if [ -z $(eval \$var) ] ; then
           echo "No value provided for variable ${var}!"
           exit 1
         fi
       done
-    - 'exit 1'
     - 'git clone --single-branch --branch=$SOURCE_BRANCH --depth=1 $SOURCE_REPO repository'
     - 'git clone --single-branch --branch=$CONFIG_BRANCH --depth=1 $CONFIG_REPO config_repository'
     - 'python -m pip install pyyaml'
