@@ -54,7 +54,10 @@ Benchmarking:
     matrix:  # Add all machines here for which configurations exist. TODO: Add option to specify the runner
       # - MACHINE: hifis
       - MACHINE: jureca
-        RUNNER_ACCOUNT: ${$(echo $MACHINE | tr 'a-z' 'A-Z')_ACCOUNT}
+        MACHINE_RUNNER_ACCOUNT: ${$(echo $MACHINE | tr 'a-z' 'A-Z')_ACCOUNT}
+  variables:
+    MACHINE: $MACHINE
+    RUNNER_ACCOUNT: $MACHINE_RUNNER_ACCOUNT
   trigger:
     strategy: depend
     include: .gitlab-ci/machine-configs/${MACHINE}.yml
