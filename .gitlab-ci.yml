@@ -83,7 +83,7 @@ Trigger:
   stage: benchmarking
   allow_failure: true
   needs:
-    - job: "validate"
+    - job: "Validate Input"
       artifacts: true
   parallel:
     matrix:  # Add all machines here for which configurations exist. TODO: Add option to specify the runner
