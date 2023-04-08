@@ -15,33 +15,38 @@ variables:
     - slurm
 
 .base-init:
-  - 'module load Stages/2023 Python/3.10.4 PyYAML/6.0'
+  - |+
+    module load Stages/2023 Python/3.10.4 PyYAML/6.0
 
 .environment-init:
-  - 'jutil env activate -p $PROJECT_NAME'
+  - |+
+    jutil env activate -p $PROJECT_NAME
 
 .preparation-init:
-  - 'module load git'
-  - # Install git-annex
-  - 'cd $USER_DATA_DIR'
-  - 'wget "http://downloads.kitenet.net/git-annex/linux/current/git-annex-standalone-amd64.tar.gz" -O git-annex.tar.gz -q'
-  - 'tar -xzf git-annex.tar.gz -C git-annex --strip-components 1'
-  - 'rm git-annex.tar.gz'
-  - 'export PATH=$PATH:$USER_DATA_DIR/git-annex'
+  - |+
+    module load git
+    # Install git-annex
+    cd $USER_DATA_DIR
+    wget "http://downloads.kitenet.net/git-annex/linux/current/git-annex-standalone-amd64.tar.gz" -O git-annex.tar.gz -q
+    tar -xzf git-annex.tar.gz -C git-annex --strip-components 1
+    rm git-annex.tar.gz
+    export PATH=$PATH:$USER_DATA_DIR/git-annex
 
 .benchmarks-init:
-  # TODO: Load builder, make sure builder planfile dir is a custom one in userdata (for every ci-bennch run)
-  - 'module load Jube/2.5.1'
+  - |+
+    module load Jube/2.5.1
 
 .analysis-init:
-  - 'module load Stages/2023 Python/3.10.4 SciPy-bundle/2022.05 matplotlib/3.5.2'
-  # Bennchplot package
-  - 'cd $USER_DATA_DIR'
-  - 'python -m venv --system-site-packages ci-bennch-env'
-  - 'source ci-bennch-env/bin/activate'
-  - 'cd $BENNCH_DIR'
-  - 'pip install -e plot --user'
+  - |+
+    module load Stages/2023 Python/3.10.4 SciPy-bundle/2022.05 matplotlib/3.5.2
+    # Bennchplot package
+    cd $USER_DATA_DIR
+    python -m venv --system-site-packages ci-bennch-env
+    source ci-bennch-env/bin/activate
+    cd $BENNCH_DIR
+    pip install -e plot --user
 
 .results-init:
-  - 'module load git'
-  - 'export PATH=$PATH:${USER_DATA_DIR}/git-annex'
+  - |+
+    module load git
+    export PATH=$PATH:${USER_DATA_DIR}/git-annex
