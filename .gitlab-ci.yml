@@ -23,9 +23,6 @@ variables:
   WORKSPACE:
     description: "Benchmarking CI workflow type. Valid options are: 'production' or 'development'."
     value: "production"
-  MASTER_RUNNER_TAG:
-    description: "[Optional] Tag for the gitlab runner that should manage the run (i.e., the preparation and collecting the results)."
-    value: "public-docker"
   EXTRA_CMAKE_FLAGS:
     description: "[Optional] Any extra CMake flags which should be used to compile NEST."
 
@@ -47,6 +44,7 @@ Validate Input:
 
 
 Benchmarking:
+  tags: [ "public-docker" ]
   stage: benchmarking
   # when: manual  # Allow users to manually trigger every machine independently
   allow_failure: false
