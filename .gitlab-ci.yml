@@ -31,7 +31,9 @@ variables:
     description: "[Optional] Comma-seperated list of the names of all models which should be run."
 
 
-.machines: [ jureca, hifis ]
+.machines: &machines_anchor
+  - jureca
+  - hifis
 
 # Only run pipelines manually triggered from the web
 workflow:
@@ -47,7 +49,7 @@ Validate Input:
   stage: validate
   image: python/3-alpine
   variables:
-    MACHINES: !reference [ .machines ]
+    MACHINES: *machines_anchor
   script:
     - |+
       # Make some values were provided for all mandatory variables
@@ -82,7 +84,8 @@ Trigger:
   allow_failure: true
   parallel:
     matrix:  # Add all machines here for which configurations exist. TODO: Add option to specify the runner
-      - MACHINE: !reference [ .machines ]
+      # - MACHINE: !reference [ .machines ]
+      - MACHINE: *machines_anchor
   trigger:
     include: .gitlab-ci/machine-configs/${MACHINE}.yml
     forward:
