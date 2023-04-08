@@ -49,10 +49,12 @@ Validate Input:
   variables:
     MACHINES: "jureca,hifis"  # TODO: Check if the anchor can be used here somehow to avoid duplication
   script:
+    - /bin/bash
     - |+
       # Make some values were provided for all mandatory variables
       for var in SIMULATOR_REPO SIMULATOR_BRANCH CONFIG_REPO CONFIG_BRANCH CONFIG_PATH RESULTS_REPO_URL RESULTS_BRANCH RESULTS_PATH WORKSPACE ; do
-        echo $var ${!var}
+        echo $var
+        echo ${!var}
         if [ -z ${!var} ] ; then
           echo "No value provided for variable ${var}!"
           exit 1
