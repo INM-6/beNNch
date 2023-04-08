@@ -16,6 +16,7 @@ Benchmarking:
     BUILDER_BUILD_DIR: "$$USER_DATA_DIR/Builder/build"
     BUILDER_LOG_DIR: "$$USER_DATA_DIR/Builder/log/"
   before_script:
+    - 'echo $MACHINE'
     # Load all modules required for continuous benchmarking in general
     - !reference [ .base-init ]
     - 'export $PROJECT_NAME=$(python $CI_PROJECT_DIR/.gitlab-ci/scripts/get_project_name.py) $USER_DATA_DIR/config_repository $MACHINE'
@@ -39,6 +40,7 @@ Benchmarking:
     # Get bennchplot repository
     - !reference [ .prepare-benchmarks, analysis ]
   script:
+    - 'echo $MACHINE'
     # Load all environment variables
     - !reference [ .prepare-benchmarks, environment-variables ]
     # Load modules on compute node required for benchmarks
