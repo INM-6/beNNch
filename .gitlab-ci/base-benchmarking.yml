@@ -33,6 +33,21 @@ variables:
     - 'eval BUILDER_INSTALL_DIR=$BUILDER_INSTALL_DIR'
     - 'eval BUILDER_BUILD_DIR=$BUILDER_BUILD_DIR'
     - 'eval BUILDER_LOG_DIR=$BUILDER_LOG_DIR'
+  create-dirs:
+    - 'mkdir -p USER_DATA_DIR'
+    - 'mkdir -p WORKSPACE_DIR'
+    - 'mkdir -p BENNCH_DIR'
+    - 'mkdir -p USER_DATA_DIR'
+    - 'mkdir -p SIMULATOR_REPO_DIR'
+    - 'mkdir -p RESULTS_DIR'
+    - 'mkdir -p BUILDER_DIR'
+    - 'mkdir -p BUILDER_MODULES_DIR'
+    - 'mkdir -p BUILDER_PLANFILE_DIR'
+    - 'mkdir -p BUILDER_PACKAGE_DIR'
+    - 'mkdir -p BUILDER_SOURCE_DIR'
+    - 'mkdir -p BUILDER_INSTALL_DIR'
+    - 'mkdir -p BUILDER_BUILD_DIR'
+    - 'mkdir -p BUILDER_LOG_DIR'
   apt-requirements:
     - |+
       REQUIREMENTS=$(python3 $CI_PROJECT_DIR/.gitlab-ci/scripts/get_requirements_from_config.py apt ${USER_DATA_DIR}/config_repository/$CONFIG_PATH $MACHINE)
