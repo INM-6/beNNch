@@ -45,7 +45,7 @@ stages: [ validate, benchmarking ]
 Validate Input:
   tags: [ "public-docker" ]  # any shared runner with internet connection and support for alpine image
   stage: validate
-  image: python/3-alpine
+  image: python:3-alpine
   variables:
     MACHINES: "jureca,hifis"  # TODO: Check if the anchor can be used here somehow to avoid duplication
   script:
