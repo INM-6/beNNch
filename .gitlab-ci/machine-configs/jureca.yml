@@ -17,6 +17,7 @@ variables:
   - |+
     module load Stages/2023 Python/3.10.4 PyYAML/6.0
     jutil env activate -p $CB_JURECA_PROJECT
+    ls -a $CI_PROJECT_DIR
 
 .preparation-init:
   - |+

@@ -19,7 +19,7 @@ variables:
       mv $CI_PROJECT_DIR/config_repository $USER_DATA_DIR/config_repository
       mv $CI_PROJECT_DIR/model_repos $USER_DATA_DIR/model_repos
   environment-variables:
-    - 'export USER_DATA_DIR=$TEMP_DIR/$USER/$(date +%s)'
+    - 'eval USER_DATA_DIR=$TEMP_DIR/$USER/$(date +%s)'
     - 'eval WORKSPACE_DIR=$WORKSPACE_DIR'
     - 'eval BENNCH_DIR=$BENNCH_DIR'
     - 'eval USER_DATA_DIR=$USER_DATA_DIR'
