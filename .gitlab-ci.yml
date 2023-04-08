@@ -20,15 +20,18 @@ variables:
   RESULTS_BRANCH:
     description: "Branch of result repository to upload benchmark results to."
     value: master
+  RESULTS_PATH:
+    description:
   WORKSPACE:
     description: "Benchmarking CI workflow type. Valid options are: 'production' or 'development'."
     value: "production"
-  JURECA_RUNNER_ACCOUNT:
-    value: "jinb33"
   EXTRA_CMAKE_FLAGS:
     description: "[Optional] Any extra CMake flags which should be used to compile NEST."
+  CB_MODELS:
+    description: "[Optional] Comma-seperated list of the names of all models which should be run."
 
 
+.machines: [ jureca, hifis ]
 
 # Only run pipelines manually triggered from the web
 workflow:
@@ -40,10 +43,38 @@ stages: [ validate, benchmarking ]
 
 
 Validate Input:
-  tags: [ "public-docker" ]
+  tags: [ "public-docker" ]  # any shared runner with internet connection and support for alpine image
   stage: validate
+  image: python/3-alpine
+  variables:
+    MACHINES: !reference [ .machines ]
   script:
-    - ''  # if $SOURCE_REPO && $SOURCE_BRANCH'  # Make sure the repository variable was assigned some value by the user
+    - |+
+      # Make some values were provided for all mandatory variables
+      for var in SIMULATOR_REPO SIMULATOR_BRANCH CONFIG_REPO CONFIG_BRANCH CONFIG_PATH RESULTS_REPO_URL RESULTS_BRANCH RESULTS_PATH WORKSPACE ; do
+        if [ -z ${!var} ] ; then
+          echo "No value provided for variable ${var}!"
+          exit 1
+        fi
+      done
+    - 'apk update && apk add git'
+    - 'git clone --single-branch --branch $SOURCE_BRANCH --depth 1 $SOURCE_REPO repository'
+    - 'git clone --single-branch --branch $CONFIG_BRANCH --depth 1 $CONFIG_REPO config_repository'
+    - 'python -m pip install pyyaml'
+    - 'echo $MACHINES'
+    - 'python $CI_PROJECT_DIR/.gitlab-ci/scripts/prepare_machines.py config_repository/$CONFIG_PATH model_repos $MACHINES variables.env'
+  artifacts:
+    paths:
+      - "repository"
+      - "config_repository"
+      - "model_repos"
+    exclude:
+      - "*/*/.git"
+    reports:
+      dotenv:
+        - "variables.env"
+    when: on_success
+
 
 
 Trigger:
@@ -51,9 +82,7 @@ Trigger:
   allow_failure: true
   parallel:
     matrix:  # Add all machines here for which configurations exist. TODO: Add option to specify the runner
-      - MACHINE: hifis
-      - MACHINE: jureca
-      #   RUNNER_TAGS: [ jureca ]
+      - MACHINE: !reference [ .machines ]
   trigger:
     include: .gitlab-ci/machine-configs/${MACHINE}.yml
     forward:

@@ -7,13 +7,15 @@ import shutil
 import yaml
 
 
-config_dir = sys.argv[1]
+config_file_path = sys.argv[1]
 jube_output_dir = sys.argv[2]
 config_output_dir = sys.argv[3]
 builder_modules_dir = sys.argv[4]
 bennch_dir = sys.argv[5]
 model_repos_dir = sys.argv[6]
 machine = sys.argv[7]
+
+config_dir = os.path.dirname(config_file_path)
 
 
 # Get all configurations which should be overwritten from environment variables
@@ -24,7 +26,7 @@ for env_var_key, env_var_value in os.environ.items():
         config_overwrites.append((env_var_key[4:].split("__"), env_var_value))
 
 
-with open(os.path.join(config_dir, 'config.yml')) as config_file:
+with open(config_file_path) as config_file:
     config = yaml.safe_load(config_file)
 
 combined_configs = dict()
@@ -44,22 +46,13 @@ for model_name, benchmark_configs in config["benchmarks"].items():
 
     combined_configs[model_name] = dict()
 
-    # Clone model repository into temporary location
-    model_temp_dir = os.path.join(model_repos_dir, "tmp", model_name)
-    subprocess.run(["git", "clone", "--depth=1", "--single-branch", "--branch=" + benchmark_configs["branch"], benchmark_configs["repository"], model_temp_dir])
-    # Copy relevant part of the repository to final destination
-    model_repo_dir = os.path.join(model_repos_dir, model_name)
-    shutil.copytree(os.path.join(model_temp_dir, benchmark_configs["model_path"]), model_repo_dir)
-    # Remove temporary repository again
-    shutil.rmtree(model_temp_dir)
-
     # File paths
     combined_config = {"parameterset": [
     {
         "name": "file_paths",
         "parameter": [
             {"name": "base_path", "type": "string", "_": os.path.abspath(bennch_dir)},
-            {"name": "model_path", "type": "string", "_": os.path.abspath(model_repo_dir)}
+            {"name": "model_path", "type": "string", "_": os.path.abspath(os.path.join(model_repos_dir, model_name))}
         ]
     }]}
 
