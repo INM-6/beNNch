@@ -80,6 +80,9 @@ Validate Input:
 Trigger:
   stage: benchmarking
   allow_failure: true
+  needs:
+    - job: "validate"
+      artifacts: true
   parallel:
     matrix:  # Add all machines here for which configurations exist. TODO: Add option to specify the runner
       # - MACHINE: !reference [ .machines ]
