@@ -44,7 +44,7 @@ Validate Input:
 
 
 Benchmarking:
-  tags: [ "public-docker" ]
+  tag: [ "public-docker" ]
   stage: benchmarking
   # when: manual  # Allow users to manually trigger every machine independently
   allow_failure: false
