@@ -5,7 +5,6 @@ include:
 Benchmarking:
   extends: [ .config ]
   variables:
-    USER_DATA_DIR: "$$TEMP_DIR/$$USER/$$(date +%s)"
     BENNCH_DIR: "$$USER_DATA_DIR/bennch"
     RESULTS_DIR: "$$USER_DATA_DIR/results"
     BUILDER_MODULES_DIR: "$$USER_DATA_DIR/modules"

@@ -6,6 +6,7 @@ variables:
   # TODO: Check if this can be moved to variables as well
   # - BUILD_PATH: $(eval $BUILD_PATH)
   environment-variables:
+    - 'export USER_DATA_DIR=$TEMP_DIR/$USER/$(date +%s)'
     - 'eval WORKSPACE_DIR=$WORKSPACE_DIR'
     - 'eval BENNCH_DIR=$BENNCH_DIR'
     - 'eval USER_DATA_DIR=$USER_DATA_DIR'
