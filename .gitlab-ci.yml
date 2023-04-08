@@ -53,7 +53,7 @@ Validate Input:
     - |+
       # Make some values were provided for all mandatory variables
       for var in SIMULATOR_REPO SIMULATOR_BRANCH CONFIG_REPO CONFIG_BRANCH CONFIG_PATH RESULTS_REPO_URL RESULTS_BRANCH RESULTS_PATH WORKSPACE ; do
-        echo "var \$$var"
+        echo "$(eval \$$var)"
         if [ -z $(eval \$var) ] ; then
           echo "No value provided for variable ${var}!"
           exit 1
