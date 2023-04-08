@@ -19,9 +19,10 @@ variables:
     value: "https://gin.g-node.org/Janvog/CI-Bennch-results-devel.git"
   RESULTS_BRANCH:
     description: "Branch of result repository to upload benchmark results to."
-    value: master
+    value: "master"
   RESULTS_PATH:
     description: "Path to results directory relative to results repository root."
+    value: "."
   WORKSPACE:
     description: "Benchmarking CI workflow type. Valid options are: 'production' or 'development'."
     value: "production"
