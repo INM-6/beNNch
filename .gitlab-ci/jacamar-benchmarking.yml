@@ -21,7 +21,7 @@ Preparation:
   extends: [ .machine-selection, .base-benchmarking, .config ]
   script: [ ':' ]
   variables:
-    SCHEDULER_PARAMETERS: "--account=$RUNNER_ACCOUNT --time=00:00:01 --nodes=1"
+    SCHEDULER_PARAMETERS: "--account=$CB_RUNNER_ACCOUNT --time=00:00:01 --nodes=1"
   artifacts:
     reports:
       dotenv: benchmark_variables.env
