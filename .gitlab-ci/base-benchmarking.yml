@@ -56,7 +56,7 @@ variables:
       REQUIREMENTS=$(python3 $CI_PROJECT_DIR/.gitlab-ci/scripts/get_requirements_from_config.py modules ${USER_DATA_DIR}/config_repository/$CONFIG_PATH $MACHINE)
       if [ ! -z "$REQUIREMENTS" ] ; then
         module load $REQUIREMENTS
-      fi'
+      fi
   configs:
     - |+
       ls
