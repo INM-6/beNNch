@@ -1,8 +1,19 @@
 include:
   local: .gitlab-ci/base-benchmarking.yml
 
-
 stages: [ preparation, benchmarks ]
+
+variables:
+  BENNCH_DIR: "$$USER_DATA_DIR/bennch"
+  RESULTS_DIR: "$$USER_DATA_DIR/results"
+  BUILDER_MODULES_DIR: "$$USER_DATA_DIR/modules"
+  BUILDER_PLANFILE_DIR: "$$USER_DATA_DIR/Builder/plans"
+  BUILDER_PACKAGE_DIR: "$$USER_DATA_DIR/Builder/cache/packages"
+  BUILDER_SOURCE_DIR: "$$USER_DATA_DIR/Builder/cache/src"
+  BUILDER_INSTALL_DIR: "$$USER_DATA_DIR/install"
+  BUILDER_BUILD_DIR: "$$USER_DATA_DIR/Builder/build"
+  BUILDER_LOG_DIR: "$$USER_DATA_DIR/Builder/log/"
+  GIT_ANNEX_DIR: "$$USER_DATA_DIR/git-annex"
 
 
 Preparation:
@@ -60,16 +71,6 @@ Preparation:
 Benchmarking:
   extends: [ .config ]
   stage: benchmarks
-  variables:
-    BENNCH_DIR: "$$USER_DATA_DIR/bennch"
-    RESULTS_DIR: "$$USER_DATA_DIR/results"
-    BUILDER_MODULES_DIR: "$$USER_DATA_DIR/modules"
-    BUILDER_PLANFILE_DIR: "$$USER_DATA_DIR/Builder/plans"
-    BUILDER_PACKAGE_DIR: "$$USER_DATA_DIR/Builder/cache/packages"
-    BUILDER_SOURCE_DIR: "$$USER_DATA_DIR/Builder/cache/src"
-    BUILDER_INSTALL_DIR: "$$USER_DATA_DIR/install"
-    BUILDER_BUILD_DIR: "$$USER_DATA_DIR/Builder/build"
-    BUILDER_LOG_DIR: "$$USER_DATA_DIR/Builder/log/"
   script:
     # Load all modules required for continuous benchmarking in general and prepare environment
     - !reference [ .environment-init ]
