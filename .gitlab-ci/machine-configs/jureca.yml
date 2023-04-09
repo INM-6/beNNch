@@ -22,7 +22,8 @@ variables:
   - |+
     module load Stages/2023 git
     # Install git-annex
-    wget "http://downloads.kitenet.net/git-annex/linux/current/git-annex-standalone-amd64.tar.gz" -O ${GIT_ANNEX_DIR}.tar.gz -q
+    cd $USER_DATA_DIR
+    wget "http://downloads.kitenet.net/git-annex/linux/current/git-annex-standalone-amd64.tar.gz" -O git-annex.tar.gz -q
     tar -xzf git-annex.tar.gz -C $GIT_ANNEX_DIR --strip-components 1
     rm git-annex.tar.gz
     export PATH=$PATH:$GIT_ANNEX_DIR
