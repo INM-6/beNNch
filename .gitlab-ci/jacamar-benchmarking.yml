@@ -18,7 +18,7 @@ variables:
 
 Preparation:
   stage: preparation
-  extends: [ .base-benchmarking, .config ]
+  extends: [ .machine-selection, .base-benchmarking, .config ]
   script: [ ':' ]
   variables:
     SCHEDULER_PARAMETERS: "--account=$CB_JURECA_RUNNER_ACCOUNT --time=00:00:01 --nodes=1"
@@ -69,7 +69,7 @@ Preparation:
     - 'cp $CI_PROJECT_DIR/.gitlab-ci/templates/nest-builder-module $BUILDER_PLANFILE_DIR/nest-simulator/benchmarking/default.module'
 
 Benchmarking:
-  extends: [ .config ]
+  extends: [ .base-benchmarking, .config ]
   stage: benchmarks
   script:
     # Load all modules required for continuous benchmarking in general and prepare environment

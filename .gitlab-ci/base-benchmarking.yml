@@ -7,6 +7,8 @@ variables:
     - pipeline: $PARENT_PIPELINE_ID
       job: "Validate Input"
       artifacts: true
+
+.machine-selection:
   when: manual
   rules:
     - if: $CB_MACHINES =~ $MACHINE  # Only make benchmark for machine runnable if configuration was provided for it
