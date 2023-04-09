@@ -77,23 +77,26 @@ variables:
 
 # Requires jube
 .run-benchmarks:
-  - 'cd $BENNCH_DIR/benchmarks'
   - |+
-      # TODO: This builds the simulator for each model, one should only call Jube once here and combine the benchmarks for all models
-      for benchmark in cb_*${MACHINE}.yml; do
-        # jube-autorun -r "--hide-animation -e --outpath=$RESULTS_DIR --include-path=$BENNCH_DIR/config/$MACHINE" $benchmark & pid=$!
-        # PID_LIST+=" $pid";
-        # jube run -e --hide-animation --outpath=$RESULTS_DIR --include-path=$BENNCH_DIR/config/$MACHINE $benchmark
-        jube-autorun -p "120" -r "--hide-animation -e --outpath=$RESULTS_DIR --include-path=$BENNCH_DIR/config/$MACHINE" $benchmark
-      done
-      cat $RESULTS_DIR/000000/000000_build/work/stdout
-      cat $RESULTS_DIR/000000/000000_build/work/stderr
-      cat $RESULTS_DIR/000000/000001_bench/work/stdout
-      cat $RESULTS_DIR/000000/000001_bench/work/stderr
-      scontrol show job 1
-      # wait $PID_LIST
+    cd $BENNCH_DIR/benchmarks
+    ls -a
+    # TODO: This builds the simulator for each model, one should only call Jube once here and combine the benchmarks for all models
+    for benchmark in cb_*${MACHINE}.yml ; do
+      # jube-autorun -p "60" -r "--hide-animation -e --outpath=$RESULTS_DIR --include-path=$BENNCH_DIR/config/$MACHINE" $benchmark & pid=$!
+      # PID_LIST+=" $pid";
+      # jube run -e --hide-animation --outpath=$RESULTS_DIR --include-path=$BENNCH_DIR/config/$MACHINE $benchmark
+      jube-autorun -p "60" -r "--hide-animation -e --outpath=$RESULTS_DIR --include-path=$BENNCH_DIR/config/$MACHINE" $benchmark
+    done
+    cat $RESULTS_DIR/000000/000000_build/work/stdout
+    cat $RESULTS_DIR/000000/000000_build/work/stderr
+    cat $RESULTS_DIR/000000/000001_bench/work/stdout
+    cat $RESULTS_DIR/000000/000001_bench/work/stderr
+    scontrol show job 1
+    # wait $PID_LIST
   # Move results to directory
   - 'cat jube_job_output.txt'
+  - 'ls -lisaR $RESULTS_DIR'
+  - 'exit 1'
 
 # Requires git, git-annex
 .results:
