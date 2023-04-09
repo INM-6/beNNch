@@ -90,7 +90,7 @@ Trigger:
       # - MACHINE: !reference [ .machines ]
       - MACHINE: *machines_anchor
   trigger:
-    strategy: depends
+    strategy: depend
     include: .gitlab-ci/machine-configs/${MACHINE}.yml
     forward:
       pipeline_variables: true
