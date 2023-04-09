@@ -39,9 +39,11 @@ if models:
 if not os.path.exists(config_output_dir):
     os.makedirs(config_output_dir)
 
+print("Benchmarks:", config["benchmarks"])
 for model_name, benchmark_configs in config["benchmarks"].items():
     # Skip benchmarks defined in config which were not explicitly requested to be benchmarked
     if models and model_name not in models:
+        print("Skipping config file generation for model " + model_name)
         continue
 
     combined_configs[model_name] = dict()
@@ -84,6 +86,7 @@ for model_name, benchmark_configs in config["benchmarks"].items():
     for machine_name, machine_config_path in model_config["machines"].items():
         # Only generate config for the machine this script runs on
         if machine_name != machine:
+            print("Skipping config file generation for machine " + machine_name)
             continue
 
         combined_configs[model_name][machine_name] = copy.deepcopy(combined_config)
@@ -121,8 +124,8 @@ for model_name, benchmark_configs in config["benchmarks"].items():
         # Dump config file
         with open(os.path.join(config_output_dir, os.path.basename(model_config_path)), 'w') as outfile:
             yaml.dump(combined_config, outfile, default_flow_style=False)
-        print(os.path.join(config_output_dir, os.path.basename(model_config_path)))
-        print(combined_config)
+        print("Config path:", os.path.join(config_output_dir, os.path.basename(model_config_path)))
+        print("Config:", combined_config)
 
 # Generate, patch, and dump user config
 user_config = {"parameterset": {"name": "user_config", "parameter": 
