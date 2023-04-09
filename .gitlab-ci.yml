@@ -89,7 +89,7 @@ Trigger:
       - CB_MACHINE: *machines_anchor
   trigger:
     # strategy: depend
-    include: .gitlab-ci/machine-configs/${MACHINE}.yml
+    include: .gitlab-ci/machine-configs/${CB_MACHINE}.yml
     forward:
       pipeline_variables: true
   variables:
