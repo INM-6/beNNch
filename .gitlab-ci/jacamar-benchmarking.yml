@@ -39,10 +39,10 @@ Preparation:
     - 'source $USER_DATA_DIR/benchmarking-env/bin/activate'
     # Install all pip packages into venv specified in config file
     - !reference [ .prepare-benchmarks, pip-requirements ]
-    # Patch configuration files
-    - !reference [ .prepare-benchmarks, configs ]
     # Get latest bennch version
     - 'git clone --depth=1 --single-branch https://github.com/INM-6/beNNch.git $BENNCH_DIR'
+    # Patch configuration files
+    - !reference [ .prepare-benchmarks, configs ]
     # Prepare Builder
     - 'echo "Workflow configured with the following base settings:"'
     - 'echo "WORKSPACE: $WORKSPACE"'
