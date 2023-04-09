@@ -6,6 +6,7 @@ variables:
   BUILDER_DIR: "$$WORKSPACE_DIR/builder/"                              # Path to builder installation
   CB_RUNNER_ACCOUNT: $CB_JURECA_RUNNER_ACCOUNT
   CB_PROJECT: $CB_JURECA_PROJECT
+  MACHINE: $CB_MACHINE
 
 
 .config:
@@ -17,7 +18,7 @@ variables:
 .environment-init:
   - |+
     module load Stages/2023 Python/3.10.4 PyYAML/6.0
-    jutil env activate -p $CB_JURECA_PROJECT
+    jutil env activate -p $CB_PROJECT
 
 .preparation-init:
   - |+

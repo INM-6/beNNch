@@ -63,7 +63,6 @@ Validate Input:
     - 'git clone --single-branch --branch=$SIMULATOR_BRANCH --depth=1 $SIMULATOR_REPO repository'
     - 'git clone --single-branch --branch=$CONFIG_BRANCH --depth=1 $CONFIG_REPO config_repository'
     - 'python -m pip install pyyaml'
-    - 'echo $MACHINES'
     - 'python $CI_PROJECT_DIR/.gitlab-ci/scripts/prepare_machines.py config_repository/$CONFIG_PATH model_repos $MACHINES variables.env'
   artifacts:
     paths:
@@ -87,7 +86,7 @@ Trigger:
   parallel:
     matrix:  # Add all machines here for which configurations exist. TODO: Add option to specify the runner
       # - MACHINE: !reference [ .machines ]
-      - MACHINE: *machines_anchor
+      - CB_MACHINE: *machines_anchor
   trigger:
     # strategy: depend
     include: .gitlab-ci/machine-configs/${MACHINE}.yml
