@@ -8,6 +8,7 @@ stages: [ preparation, benchmarks ]
 Preparation:
   stage: preparation
   extends: [ .base-benchmarking ]
+  script: []
   after_script:
     # Load all modules required for continuous benchmarking in general and prepare environment
     - !reference [ .environment-init ]
