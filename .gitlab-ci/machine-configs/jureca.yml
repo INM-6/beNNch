@@ -30,7 +30,7 @@ variables:
 
 .benchmarks-init:
   - |+
-    module load Jube/2.5.1
+    module load JUBE/2.5.1
 
 .analysis-init:
   - |+
