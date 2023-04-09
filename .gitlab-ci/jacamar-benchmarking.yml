@@ -9,7 +9,8 @@ Preparation:
   stage: preparation
   extends: [ .base-benchmarking ]
   script: [ ':' ]
-  SCHEDULER_PARAMETERS: "--account=$CB_JURECA_RUNNER_ACCOUNT --time=00:00:01 --nodes=1"
+  variables:
+    SCHEDULER_PARAMETERS: "--account=$CB_JURECA_RUNNER_ACCOUNT --time=00:00:01 --nodes=1"
   after_script:
     # Load all modules required for continuous benchmarking in general and prepare environment
     - !reference [ .environment-init ]
