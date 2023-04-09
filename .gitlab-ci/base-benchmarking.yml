@@ -1,7 +1,8 @@
 variables:
-  SIMULATOR_REPO_DIR: "$WORKSPACE_DIR/repository/"
+  SIMULATOR_REPO_DIR: "$USER_DATA_DIR/repository/"
 
 .base-benchmarking:
+  allow_failure: false
   needs:
     - pipeline: $PARENT_PIPELINE_ID
       job: "Validate Input"
@@ -34,20 +35,7 @@ variables:
     - 'eval BUILDER_BUILD_DIR=$BUILDER_BUILD_DIR'
     - 'eval BUILDER_LOG_DIR=$BUILDER_LOG_DIR'
   create-dirs:
-    - 'mkdir -p USER_DATA_DIR'
-    - 'mkdir -p WORKSPACE_DIR'
-    - 'mkdir -p BENNCH_DIR'
-    - 'mkdir -p USER_DATA_DIR'
-    - 'mkdir -p SIMULATOR_REPO_DIR'
-    - 'mkdir -p RESULTS_DIR'
-    - 'mkdir -p BUILDER_DIR'
-    - 'mkdir -p BUILDER_MODULES_DIR'
-    - 'mkdir -p BUILDER_PLANFILE_DIR'
-    - 'mkdir -p BUILDER_PACKAGE_DIR'
-    - 'mkdir -p BUILDER_SOURCE_DIR'
-    - 'mkdir -p BUILDER_INSTALL_DIR'
-    - 'mkdir -p BUILDER_BUILD_DIR'
-    - 'mkdir -p BUILDER_LOG_DIR'
+    - 'mkdir -p $USER_DATA_DIR $WORKSPACE_DIR $SIMULATOR_REPO_DIR $BENNCH_DIR $BUILDER_DIR $BUILDER_MODULES_DIR $BUILDER_PLANFILE_DIR $BUILDER_PACKAGE_DIR $BUILDER_SOURCE_DIR $BUILDER_INSTALL_DIR $BUILDER_BUILD_DIR $BUILDER_LOG_DIR'
   apt-requirements:
     - |+
       REQUIREMENTS=$(python3 $CI_PROJECT_DIR/.gitlab-ci/scripts/get_requirements_from_config.py apt ${USER_DATA_DIR}/config_repository/$CONFIG_PATH $MACHINE)

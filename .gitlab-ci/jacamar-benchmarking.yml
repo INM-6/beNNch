@@ -2,19 +2,13 @@ include:
   local: .gitlab-ci/base-benchmarking.yml
 
 
-Benchmarking:
-  extends: [ .base-benchmarking, .config ]
-  variables:
-    BENNCH_DIR: "$$USER_DATA_DIR/bennch"
-    RESULTS_DIR: "$$USER_DATA_DIR/results"
-    BUILDER_MODULES_DIR: "$$USER_DATA_DIR/modules"
-    BUILDER_PLANFILE_DIR: "$$USER_DATA_DIR/Builder/plans"
-    BUILDER_PACKAGE_DIR: "$$USER_DATA_DIR/Builder/cache/packages"
-    BUILDER_SOURCE_DIR: "$$USER_DATA_DIR/Builder/cache/src"
-    BUILDER_INSTALL_DIR: "$$USER_DATA_DIR/install"
-    BUILDER_BUILD_DIR: "$$USER_DATA_DIR/Builder/build"
-    BUILDER_LOG_DIR: "$$USER_DATA_DIR/Builder/log/"
-  before_script:
+stages: [ preparation, benchmarks ]
+
+
+Preparation:
+  stages: preparation
+  extends: [ .base-benchmarking ]
+  after_script:
     # Load all modules required for continuous benchmarking in general and prepare environment
     - !reference [ .environment-init ]
     # Load all environment variables
@@ -23,31 +17,19 @@ Benchmarking:
     - !reference [ .prepare-benchmarks, create-dirs ]
     # Move all artifacts to user data directory
     - !reference [ .prepare-benchmarks, artifacts ]
-    # Load modules on login node required for benchmark preparation
+    # Load all modules required for preparation stage
     - !reference [ .preparation-init ]
+    # Create python venv
+    - 'python -m venv $USER_DATA_DIR/benchmarking-env'
+    # Activate python venv
+    - 'source $USER_DATA_DIR/benchmarking-env/bin/activate'
     # Install all pip packages into venv specified in config file
-    # TODO: Create venv. Where though?
     - !reference [ .prepare-benchmarks, pip-requirements ]
     # Patch configuration files
     - !reference [ .prepare-benchmarks, configs ]
     # Get latest bennch version
     - 'git clone --depth=1 --single-branch https://github.com/INM-6/beNNch.git $BENNCH_DIR'
-    # Prepare results repository
-    - !reference [ .prepare-benchmarks, results ]
-    # Get bennchplot repository
-    - !reference [ .prepare-benchmarks, analysis ]
-  script:
-    - 'echo "--- SCRIPT ---"'
-    - 'echo $SLURMD_NODENAME'
-    # Load all environment variables
-    - !reference [ .prepare-benchmarks, environment-variables ]
-    # Load modules on compute node required for benchmarks
-    - !reference [ .benchmarks-init ]  # General machine-specific modules
-    - !reference [ .prepare-benchmarks, modules-requirements ]  # Benchmark-specific modules (for this specific machine)
-    - hostname
-    - ls -l
-    - set
-    - pwd
+    # Prepare Builder
     - 'echo "Workflow configured with the following base settings:"'
     - 'echo "WORKSPACE: $WORKSPACE"'
     - 'echo "BUILD_PATH: $BUILD_PATH"'
@@ -56,10 +38,7 @@ Benchmarking:
     - 'echo "BENNCH_DIR: $BENNCH_DIR"'
     - 'echo "USER_DATA_DIR: $USER_DATA_DIR"'
     - 'echo "RESULTS_DIR: $RESULTS_DIR"'
-    - 'export MODULEPATH=$BUILDER_MODULES_DIR:$MODULEPATH'  # TODO: Probably not necessary due to "module use" in bennch
-    - mkdir -p $USER_DATA_DIR
-    # Prepare Builder directories
-    - 'mkdir -p $BUILDER_MODULES_DIR $BUILDER_PLANFILE_DIR $BUILDER_PACKAGE_DIR $BUILDER_SOURCE_DIR $BUILDER_INSTALL_DIR $BUILDER_BUILD_DIR $BUILDER_LOG_DIR'
+    # - 'export MODULEPATH=$BUILDER_MODULES_DIR:$MODULEPATH'  # TODO: Probably not necessary due to "module use" in bennch
     # Prepare Builder .buildrc
     - |+
       echo PLANFILE_PATH="$BUILDER_PLANFILE_DIR" > $HOME/.buildrc
@@ -74,12 +53,41 @@ Benchmarking:
     - 'mkdir -p $BUILDER_PLANFILE_DIR/nest-simulator/benchmarking/'
     - 'cp $CI_PROJECT_DIR/.gitlab-ci/templates/nest-builder-template $BUILDER_PLANFILE_DIR/nest-simulator/benchmarking/default'
     - 'cp $CI_PROJECT_DIR/.gitlab-ci/templates/nest-builder-module $BUILDER_PLANFILE_DIR/nest-simulator/benchmarking/default.module'
+
+Benchmarking:
+  extends: [ .config ]
+  stages: benchmarks
+  variables:
+    BENNCH_DIR: "$$USER_DATA_DIR/bennch"
+    RESULTS_DIR: "$$USER_DATA_DIR/results"
+    BUILDER_MODULES_DIR: "$$USER_DATA_DIR/modules"
+    BUILDER_PLANFILE_DIR: "$$USER_DATA_DIR/Builder/plans"
+    BUILDER_PACKAGE_DIR: "$$USER_DATA_DIR/Builder/cache/packages"
+    BUILDER_SOURCE_DIR: "$$USER_DATA_DIR/Builder/cache/src"
+    BUILDER_INSTALL_DIR: "$$USER_DATA_DIR/install"
+    BUILDER_BUILD_DIR: "$$USER_DATA_DIR/Builder/build"
+    BUILDER_LOG_DIR: "$$USER_DATA_DIR/Builder/log/"
+  script:
+    # Load all modules required for continuous benchmarking in general and prepare environment
+    - !reference [ .environment-init ]
+    # Load all environment variables
+    - !reference [ .prepare-benchmarks, environment-variables ]
+    # Load modules on for benchmark preparation and execution
+    - !reference [ .benchmarks-init ]
+    # Load modules on compute node required for benchmarks
+    - !reference [ .prepare-benchmarks, modules-requirements ]  # Benchmark-specific modules (for this specific machine)
+    # Activate python venv
+    - 'source $USER_DATA_DIR/benchmarking-env/bin/activate'
     # Run benchmarks
     - !reference [ .run-benchmarks ]
-    # Analyze results
-    - !reference [ .results, analysis ]
 
   after_script:
+    # Prepare results repository
+    - !reference [ .prepare-benchmarks, results ]
+    # Get bennchplot repository
+    - !reference [ .prepare-benchmarks, analysis ]
+    # Analyze results
+    - !reference [ .results, analysis ]
     - |+
       if [ $CI_JOB_STATUS != 'success' ] ; then
         echo "The benchmarking process was not successful, exiting without uploading results..."
