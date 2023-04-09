@@ -1,5 +1,5 @@
 variables:
-  SIMULATOR_REPO_DIR: "$USER_DATA_DIR/repository/"
+  SIMULATOR_REPO_DIR: "$$USER_DATA_DIR/repository/"
 
 .base-benchmarking:
   allow_failure: false
