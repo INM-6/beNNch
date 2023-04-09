@@ -66,9 +66,8 @@ variables:
   results:
     # Set result repository
     - 'cd $BENNCH_DIR'
-    - 'ls'
     - 'git submodule set-url -- results $RESULTS_REPO_URL'
-    - 'git submodule set-branch --branch=$RESULTS_BRANCH -- results'
+    - 'git submodule set-branch --branch $RESULTS_BRANCH -- results'
     - 'cat .gitmodules'
     - 'git submodule update --depth=1 --init --recursive --remote -- results'
   analysis:
