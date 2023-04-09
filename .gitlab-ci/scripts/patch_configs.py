@@ -23,7 +23,7 @@ config_overwrites = list()
 for env_var_key, env_var_value in os.environ.items():
     if env_var_key.startswith("CB_"):
         # TODO: Think about a good format for overwrites
-        config_overwrites.append((env_var_key[4:].split("__"), env_var_value))
+        config_overwrites.append((env_var_key[3:].split("__"), env_var_value))
 
 
 with open(config_file_path) as config_file:
@@ -98,20 +98,20 @@ for model_name, benchmark_configs in config["benchmarks"].items():
                 "parameter": machine_config["machine_parameters"]
             })
 
-        # Patch configuration using environment variables
-        to_remove = list()
-        for i, overwrite in enumerate(config_overwrites):
-            try:
-                to_overwrite = combined_config["parameterset"]
-                for key_part in overwrite[0][:-1]:
-                    to_overwrite = to_overwrite[key_part]
-                to_overwrite[key_part[-1]] = overwrite[1]
-                to_remove.append(i)
-            except:
-                pass
-        # Remove all overwrites which have been successfully applied
-        for i in to_remove:
-            del config_overwrites[i]
+        # TODO: Patch configuration using environment variables
+        # to_remove = list()
+        # for i, overwrite in enumerate(config_overwrites):
+        #     try:
+        #         to_overwrite = combined_config["parameterset"]
+        #         for key_part in overwrite[0][:-1]:
+        #             to_overwrite = to_overwrite[key_part]
+        #         to_overwrite[key_part[-1]] = overwrite[1]
+        #         to_remove.append(i)
+        #     except:
+        #         pass
+        # # Remove all overwrites which have been successfully applied
+        # for i in to_remove:
+        #     del config_overwrites[i]
 
         # Write out configuration and jube files
         # Dump Jube file

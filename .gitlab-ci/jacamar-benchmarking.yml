@@ -22,11 +22,21 @@ Preparation:
   script: [ ':' ]
   variables:
     SCHEDULER_PARAMETERS: "--account=$CB_JURECA_RUNNER_ACCOUNT --time=00:00:01 --nodes=1"
+  artifacts:
+    reports:
+      dotenv: benchmark_variables.env
   after_script:
     # Load all modules required for continuous benchmarking in general and prepare environment
     - !reference [ .environment-init ]
     # Load all environment variables
     - !reference [ .prepare-benchmarks, environment-variables ]
+    - |+
+      eval ACCOUNT_TMP=CB_$(echo $MACHINE | tr '[a-z]' '[A-Z]')_RUNNER_ACCOUNT
+      eval PROJECT_TMP=CB_$(echo $MACHINE | tr '[a-z]' '[A-Z]')_PROJECT
+      for var in ACCOUNT_TMP PROJECT_TMP USER_DATA_DIR WORKSPACE_DIR BENNCH_DIR USER_DATA_DIR SIMULATOR_REPO_DIR RESULTS_DIR BUILDER_DIR BUILDER_MODULES_DIR BUILDER_PLANFILE_DIR BUILDER_PACKAGE_DIR BUILDER_SOURCE_DIR BUILDER_INSTALL_DIR BUILDER_BUILD_DIR BUILDER_LOG_DIR GIT_ANNEX_DIR ; do
+        eval val=\$$var
+        echo "${var}=${val}" >> $CI_PROJECT_DIR/benchmark_variables.env
+      done
     # Create all required directories
     - !reference [ .prepare-benchmarks, create-dirs ]
     # Move all artifacts to user data directory
@@ -69,13 +79,14 @@ Preparation:
     - 'cp $CI_PROJECT_DIR/.gitlab-ci/templates/nest-builder-module $BUILDER_PLANFILE_DIR/nest-simulator/benchmarking/default.module'
 
 Benchmarking:
-  extends: [ .base-benchmarking, .config ]
+  extends: [ .config ]
+  needs:
+    - job: "Preparation"
+      artifacts: true
   stage: benchmarks
   script:
     # Load all modules required for continuous benchmarking in general and prepare environment
     - !reference [ .environment-init ]
-    # Load all environment variables
-    - !reference [ .prepare-benchmarks, environment-variables ]
     # Load modules on for benchmark preparation and execution
     - !reference [ .benchmarks-init ]
     # Load modules on compute node required for benchmarks
