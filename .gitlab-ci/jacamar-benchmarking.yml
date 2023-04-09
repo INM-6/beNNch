@@ -90,7 +90,6 @@ Benchmarking:
   variables:
     SCHEDULER_PARAMETERS: "--account=$CB_RUNNER_ACCOUNT --time=00:10:00 --nodes=1"
   script:
-    - 'set -euxo pipefail'
     # Load all modules required for continuous benchmarking in general and prepare environment
     - !reference [ .environment-init ]
     # Load modules on for benchmark preparation and execution

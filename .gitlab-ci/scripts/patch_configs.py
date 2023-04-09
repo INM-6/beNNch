@@ -121,6 +121,8 @@ for model_name, benchmark_configs in config["benchmarks"].items():
         # Dump config file
         with open(os.path.join(config_output_dir, os.path.basename(model_config_path)), 'w') as outfile:
             yaml.dump(combined_config, outfile, default_flow_style=False)
+        print(os.path.join(config_output_dir, os.path.basename(model_config_path)))
+        print(combined_config)
 
 # Generate, patch, and dump user config
 user_config = {"parameterset": {"name": "user_config", "parameter": 
