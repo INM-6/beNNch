@@ -21,7 +21,7 @@ Preparation:
   extends: [ .machine-selection, .base-benchmarking, .config ]
   script: [ ':' ]
   variables:
-    SCHEDULER_PARAMETERS: "--account=$CB_JURECA_RUNNER_ACCOUNT --time=00:00:01 --nodes=1"
+    SCHEDULER_PARAMETERS: "--account=$RUNNER_ACCOUNT --time=00:00:01 --nodes=1"
   artifacts:
     reports:
       dotenv: benchmark_variables.env
@@ -31,9 +31,7 @@ Preparation:
     # Load all environment variables
     - !reference [ .prepare-benchmarks, environment-variables ]
     - |+
-      eval ACCOUNT_TMP=CB_$(echo $MACHINE | tr '[a-z]' '[A-Z]')_RUNNER_ACCOUNT
-      eval PROJECT_TMP=CB_$(echo $MACHINE | tr '[a-z]' '[A-Z]')_PROJECT
-      for var in ACCOUNT_TMP PROJECT_TMP USER_DATA_DIR WORKSPACE_DIR BENNCH_DIR USER_DATA_DIR SIMULATOR_REPO_DIR RESULTS_DIR BUILDER_DIR BUILDER_MODULES_DIR BUILDER_PLANFILE_DIR BUILDER_PACKAGE_DIR BUILDER_SOURCE_DIR BUILDER_INSTALL_DIR BUILDER_BUILD_DIR BUILDER_LOG_DIR GIT_ANNEX_DIR ; do
+      for var in CB_RUNNER_ACCOUNT CB_PROJECT USER_DATA_DIR WORKSPACE_DIR BENNCH_DIR USER_DATA_DIR SIMULATOR_REPO_DIR RESULTS_DIR BUILDER_DIR BUILDER_MODULES_DIR BUILDER_PLANFILE_DIR BUILDER_PACKAGE_DIR BUILDER_SOURCE_DIR BUILDER_INSTALL_DIR BUILDER_BUILD_DIR BUILDER_LOG_DIR GIT_ANNEX_DIR ; do
         eval val=\$$var
         echo "${var}=${val}" >> $CI_PROJECT_DIR/benchmark_variables.env
       done
@@ -84,6 +82,8 @@ Benchmarking:
     - job: "Preparation"
       artifacts: true
   stage: benchmarks
+  variables:
+    SCHEDULER_PARAMETERS: "--account=$CB_RUNNER_ACCOUNT --time=00:10:00 --nodes=1"
   script:
     # Load all modules required for continuous benchmarking in general and prepare environment
     - !reference [ .environment-init ]
