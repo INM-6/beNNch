@@ -17,13 +17,15 @@ variables:
 .prepare-benchmarks:
   # Move all artifacts to user data directory
   artifacts:
+    - 'ls $CI_PROJECT_DIR'
+    - 'ls $CI_PROJECT_DIR/repository'
+    - 'ls $USER_DATA_DIR'
     - |+
-      ls $CI_PROJECT_DIR
-      ls $CI_PROJECT_DIR/repository
-      ls $$USER_DATA_DIR
       mv $CI_PROJECT_DIR/repository $USER_DATA_DIR/repository
       mv $CI_PROJECT_DIR/config_repository $USER_DATA_DIR/config_repository
       mv $CI_PROJECT_DIR/model_repos $USER_DATA_DIR/model_repos
+    - 'ls $USER_DATA_DIR'
+    - 'ls $USER_DATA_DIR/repository'
   environment-variables:
     - 'eval USER_DATA_DIR=$TEMP_DIR/$USER/$(date +%s)'
     - 'eval WORKSPACE_DIR=$WORKSPACE_DIR'
