@@ -30,6 +30,7 @@ variables:
     description: "[Optional] Any extra CMake flags which should be used to compile NEST."
   CB_MODELS:
     description: "[Optional] Comma-seperated list of the names of all models which should be run."
+    value: "hpc_benchmark"
 
 
 .machines: &machines_anchor [ "jureca" ]
