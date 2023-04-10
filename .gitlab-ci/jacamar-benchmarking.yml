@@ -95,7 +95,10 @@ Benchmarking:
     - !reference [ .benchmarks-init ]
     - 'mkdir -p $USER_DATA_DIR/bin'
     - 'ln -s $BUILDER_DIR/build.sh $USER_DATA_DIR/bin/build'
-    - 'export PATH=$USER_DATA_DIR/bin:PATH'
+    - 'export PATH=PATH:$USER_DATA_DIR/bin'
+    - 'echo $PATH'
+    - 'python --version'
+    - 'python3 --version'
     # Load modules on compute node required for benchmarks
     - !reference [ .prepare-benchmarks, modules-requirements ]  # Benchmark-specific modules (for this specific machine)
     # Activate python venv
@@ -108,6 +111,8 @@ Benchmarking:
         echo "The benchmarking process was not successful, exiting without uploading results..."
         exit 1
       fi
+    # Load all modules required for continuous benchmarking in general and prepare environment
+    - !reference [ .environment-init ]
     # Prepare results repository
     - !reference [ .prepare-benchmarks, results ]
     # Get bennchplot repository
