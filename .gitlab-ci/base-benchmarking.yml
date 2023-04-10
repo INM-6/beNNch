@@ -70,11 +70,14 @@ variables:
     - 'cd $BENNCH_DIR'
     - 'git submodule set-url -- results $RESULTS_REPO_URL'
     - 'git submodule set-branch --branch $RESULTS_BRANCH -- results'
-    - 'cat .gitmodules'
     - 'git submodule update --depth=1 --init --recursive --remote -- results'
   analysis:
+    # Bennchplot package
     - 'cd $BENNCH_DIR'
     - 'git submodule update --depth=1 --init --recursive --remote -- plot'
+    # TODO: Should this really be always installed or is this up to the user?
+    - |+
+      pip install -e plot --user
 
 
 # Requires jube
@@ -94,13 +97,22 @@ variables:
 .results:
   analysis:
     # Perform analysis on all benchmark results
-    - 'cd $BENNCH_DIR/results'
+    - 'mkdir -p $BENNCH_DIR/results/$RESULTS_PATH'
+    - 'cd $BENNCH_DIR/results/$RESULTS_PATH'
     - |+
         for benchmark_result_id in 0*/ ; do
-          echo 'scaling_type: "nodes"\njube_outpath: "$RESULTS_DIR"' > config/analysis_config.yaml
-          python3 ../analysis/analysis.py benchmark_result_id
-          echo 'scaling_type: "threads"\njube_outpath: "$RESULTS_DIR"' > config/analysis_config.yaml
-          python3 ../analysis/analysis.py benchmark_result_id
+          echo -e 'scaling_type: "nodes"\njube_outpath: "$RESULTS_DIR"' > $BENNCH_DIR/config/analysis_config.yaml
+          python3 $BENNCH_DIR/analysis/analysis.py benchmark_result_id
+          echo -e 'scaling_type: "threads"\njube_outpath: "$RESULTS_DIR"' > $BENNCH_DIR/config/analysis_config.yaml
+          python3 $BENNCH_DIR/analysis/analysis.py benchmark_result_id
         done
   upload:
+    # Upload benchmark results
+    - 'cd $BENNCH_DIR/results/$RESULTS_PATH'
     - 'git annex sync'
+  flipbook:
+    # Add another stage which can be triggered manually to create flipbooks with additional configuration
+    - |+
+      python3 $BENNCH_DIR/flipbook/flipbook.py nodes <bullet_1> <bullet_2> ...
+    - |+
+      python3 $BENNCH_DIR/flipbook/flipbook.py threads <bullet_1> <bullet_2> ...

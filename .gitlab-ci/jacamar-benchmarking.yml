@@ -33,7 +33,7 @@ Preparation:
     - !reference [ .prepare-benchmarks, environment-variables ]
     - |+
       # TODO: Probably not needed
-      for var in CB_RUNNER_ACCOUNT CB_PROJECT USER_DATA_DIR WORKSPACE_DIR BENNCH_DIR USER_DATA_DIR SIMULATOR_REPO_DIR RESULTS_DIR BUILDER_DIR BUILDER_MODULES_DIR BUILDER_PLANFILE_DIR BUILDER_PACKAGE_DIR BUILDER_SOURCE_DIR BUILDER_INSTALL_DIR BUILDER_BUILD_DIR BUILDER_LOG_DIR GIT_ANNEX_DIR CONFIG_DIR MODELS_DIR ; do
+      for var in CB_RUNNER_ACCOUNT CB_PROJECT USER_DATA_DIR WORKSPACE_DIR BENNCH_DIR USER_DATA_DIR SIMULATOR_REPO_DIR RESULTS_DIR RESULTS_REPO_URL RESULTS_BRANCH RESULTS_PATH BUILDER_DIR BUILDER_MODULES_DIR BUILDER_PLANFILE_DIR BUILDER_PACKAGE_DIR BUILDER_SOURCE_DIR BUILDER_INSTALL_DIR BUILDER_BUILD_DIR BUILDER_LOG_DIR GIT_ANNEX_DIR CONFIG_DIR MODELS_DIR ; do
         eval val=\$$var
         echo "${var}=${val}" >> $CI_PROJECT_DIR/benchmark_variables.env
       done
@@ -44,7 +44,7 @@ Preparation:
     # Load all modules required for preparation stage
     - !reference [ .preparation-init ]
     # Create python venv
-    - 'python -m venv $USER_DATA_DIR/benchmarking-env'
+    - 'python -m venv --system-site-packages $USER_DATA_DIR/benchmarking-env'
     # Activate python venv
     - 'source $USER_DATA_DIR/benchmarking-env/bin/activate'
     # Install all pip packages into venv specified in config file
@@ -107,20 +107,13 @@ Benchmarking:
       fi
     # Load all modules required for continuous benchmarking in general and prepare environment
     - !reference [ .environment-init ]
+    # Load modules on login node required for result uploading
+    - !reference [ .results-init ]
     # Prepare results repository
     - !reference [ .prepare-benchmarks, results ]
     # Get bennchplot repository
     - !reference [ .prepare-benchmarks, analysis ]
     # Analyze results
     - !reference [ .results, analysis ]
-    - |+
-      if [ $CI_JOB_STATUS != 'success' ] ; then
-        echo "The benchmarking process was not successful, exiting without uploading results..."
-        exit 1
-      fi
-    # Load all environment variables
-    - !reference [ .prepare-benchmarks, environment-variables ]
-    # Load modules on login node required for result uploading
-    - !reference [ .results-init ]
     # Upload analyzed results to specified repository
     - !reference [ .results, upload ]

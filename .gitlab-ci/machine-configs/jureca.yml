@@ -41,13 +41,7 @@ variables:
 
 .analysis-init:
   - |+
-    module load Stages/2023 Python/3.10.4 SciPy-bundle/2022.05 matplotlib/3.5.2
-    # Bennchplot package
-    cd $USER_DATA_DIR
-    python -m venv --system-site-packages ci-bennch-env
-    source ci-bennch-env/bin/activate
-    cd $BENNCH_DIR
-    pip install -e plot --user
+    module load Stages/2023 Python/3.10.4 PyYAML/6.0 SciPy-bundle/2022.05 matplotlib/3.5.2
 
 .results-init:
   - |+
