@@ -59,8 +59,6 @@ variables:
       fi
   configs:
     - |+
-      ls
-      pwd
       rm -rf $BENNCH_DIR/config/* $BENNCH_DIR/benchmarks/*
       python3 $CI_PROJECT_DIR/.gitlab-ci/scripts/patch_configs.py $USER_DATA_DIR/config_repository/$CONFIG_PATH $BENNCH_DIR/benchmarks $BENNCH_DIR/config/$MACHINE $BUILDER_MODULES_DIR $BENNCH_DIR $USER_DATA_DIR/model_repos $MACHINE
   results:
