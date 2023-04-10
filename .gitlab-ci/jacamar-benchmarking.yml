@@ -50,7 +50,7 @@ Preparation:
     # Install all pip packages into venv specified in config file
     - !reference [ .prepare-benchmarks, pip-requirements ]
     # Get latest bennch version
-    - 'git clone --depth=1 --single-branch https://github.com/INM-6/beNNch.git $BENNCH_DIR'
+    - 'git clone --depth=1 --single-branch https://github.com/JanVogelsang/beNNch.git $BENNCH_DIR'
     # Patch configuration files
     - !reference [ .prepare-benchmarks, configs ]
     # Prepare Builder
