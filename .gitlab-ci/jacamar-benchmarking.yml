@@ -21,7 +21,7 @@ variables:
 
 Preparation:
   stage: preparation
-  extends: [ .machine-selection, .base-benchmarking, . ]
+  extends: [ .machine-selection, .base-benchmarking, .preparation-tags ]
   artifacts:
     reports:
       dotenv: benchmark_variables.env
@@ -81,7 +81,7 @@ Preparation:
     - 'cp $CI_DIR/templates/nest-builder-module $BUILDER_PLANFILE_DIR/nest-simulator/benchmarking/default.module'
 
 Benchmarking:
-  extends: [ .config ]
+  extends: [ .benchmark-tags ]
   needs:
     - job: "Preparation"
       artifacts: true
