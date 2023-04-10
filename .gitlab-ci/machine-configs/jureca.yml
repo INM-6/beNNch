@@ -32,7 +32,7 @@ variables:
 
 .benchmarks-init:
   - |+
-    module load JUBE/2.5.1
+    module load JUBE/2.5.1 git
 
 .analysis-init:
   - |+
