@@ -70,7 +70,9 @@ Validate Input:
       - "config_repository"
       - "model_repos"
     exclude:
-      - "*/*/.git"
+      - "repository/.git"
+      - "config_repository/.git"
+      - "model_repos/*/.git"
     reports:
       dotenv:
         - "variables.env"
