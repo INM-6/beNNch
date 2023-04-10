@@ -76,7 +76,6 @@ Preparation:
       echo MODULE_INSTALL_PATH="$BUILDER_MODULES_DIR" >> $HOME/.buildrc
       echo LOG_PATH="$BUILDER_LOG_DIR" >> $HOME/.buildrc
     # Prepare nest installation (builder plan)
-    - 'alias build=/p/usersoftware/djinb33/ci-bennch/Builder/build.sh'
     - 'mkdir -p $BUILDER_PLANFILE_DIR/nest-simulator/benchmarking/'
     - 'cp $CI_PROJECT_DIR/.gitlab-ci/templates/nest-builder-template $BUILDER_PLANFILE_DIR/nest-simulator/benchmarking/default'
     - 'cp $CI_PROJECT_DIR/.gitlab-ci/templates/nest-builder-module $BUILDER_PLANFILE_DIR/nest-simulator/benchmarking/default.module'
@@ -94,6 +93,7 @@ Benchmarking:
     - !reference [ .environment-init ]
     # Load modules on for benchmark preparation and execution
     - !reference [ .benchmarks-init ]
+    - 'alias build=/p/usersoftware/djinb33/ci-bennch/Builder/build.sh'
     # Load modules on compute node required for benchmarks
     - !reference [ .prepare-benchmarks, modules-requirements ]  # Benchmark-specific modules (for this specific machine)
     # Activate python venv
