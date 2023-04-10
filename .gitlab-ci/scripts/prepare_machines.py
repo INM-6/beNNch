@@ -23,20 +23,27 @@ models = os.environ.get("CB_MODELS", [])
 if models:
     models = models.split(",")
 
+models_tmp_dir = os.path.join(model_repos_dir, "tmp")
+if not os.path.exists(models_tmp_dir):
+    os.makedirs(models_tmp_dir)
+
+model_temp_dirs = dict()
+for repo_alias, repo in config["repositories"].items():
+    # Clone model repository into temporary location
+    model_temp_dirs[repo_alias] = os.path.join(models_tmp_dir, repo_alias)
+    subprocess.run(["git", "clone", "--depth=1", "--single-branch", "--branch=" + repo["branch"], repo["url"], model_temp_dirs[repo_alias]])
 
 for model_name, benchmark_configs in config["benchmarks"].items():
     # Skip benchmarks defined in config which were not explicitly requested to be benchmarked
     if models and model_name not in models:
         continue
-
-    # Clone model repository into temporary location
-    model_temp_dir = os.path.join(model_repos_dir, "tmp", model_name)
-    subprocess.run(["git", "clone", "--depth=1", "--single-branch", "--branch=" + benchmark_configs["branch"], benchmark_configs["repository"], model_temp_dir])
+    
     # Copy relevant part of the repository to final destination
     model_repo_dir = os.path.join(model_repos_dir, model_name)
-    shutil.copytree(os.path.join(model_temp_dir, benchmark_configs["model_path"]), model_repo_dir)
-    # Remove temporary repository again
-    shutil.rmtree(model_temp_dir)
+    shutil.copytree(os.path.join(model_temp_dirs[benchmark_configs["repository"]], benchmark_configs["model_dir"]), model_repo_dir)
+
+# Remove temporary repositories again
+shutil.rmtree(models_temp_dir)
 
 with open(variables_env_path, 'w') as variables_env:
     out_machines = list()

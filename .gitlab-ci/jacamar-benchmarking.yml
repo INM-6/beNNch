@@ -69,7 +69,6 @@ Preparation:
     - 'echo "BENNCH_DIR: $BENNCH_DIR"'
     - 'echo "USER_DATA_DIR: $USER_DATA_DIR"'
     - 'echo "RESULTS_DIR: $RESULTS_DIR"'
-    # - 'export MODULEPATH=$BUILDER_MODULES_DIR:$MODULEPATH'  # TODO: Probably not necessary due to "module use" in bennch
     # Prepare Builder .buildrc
     - |+
       echo PLANFILE_PATH="$BUILDER_PLANFILE_DIR" > $HOME/.buildrc
