@@ -12,11 +12,13 @@ variables:
   tags:
     - shell
     - jurecadc
+    - jacamar
 
 .benchmark-tags:
   tags:
     - compute
     - jurecadc
+    - jacamar
 
 .environment-init:
   - |+
