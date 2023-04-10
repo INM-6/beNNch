@@ -12,7 +12,6 @@ variables:
   tags:
     - shell
     - jurecadc
-    - jacamar
 
 .benchmark-tags:
   tags:
