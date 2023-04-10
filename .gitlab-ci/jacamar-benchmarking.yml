@@ -83,7 +83,7 @@ Benchmarking:
       artifacts: true
   stage: benchmarks
   variables:
-    SCHEDULER_PARAMETERS: "--account=$CB_RUNNER_ACCOUNT --time=00:10:00 --nodes=1"
+    SCHEDULER_PARAMETERS: "--account=$CB_RUNNER_ACCOUNT --time=00:30:00 --nodes=1"
   script:
     # Load all modules required for continuous benchmarking in general and prepare environment
     - !reference [ .environment-init ]
