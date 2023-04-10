@@ -45,7 +45,8 @@ stages: [ validate, benchmarking ]
 
 
 Validate Input:
-  tags: [ "shell" ]  # any runner with internet connection and support for alpine image
+  # TODO: Is it better to use a shared runner?
+  tags: [ "shell", "jureca" ]  # any runner with internet connection and support for alpine image
   stage: validate
   image: python:3-alpine
   variables:
