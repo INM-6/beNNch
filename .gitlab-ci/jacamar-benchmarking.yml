@@ -6,6 +6,8 @@ stages: [ preparation, benchmarks ]
 variables:
   BENNCH_DIR: "$$USER_DATA_DIR/bennch"
   RESULTS_DIR: "$$USER_DATA_DIR/results"
+  CONFIG_DIR: "$$USER_DATA_DIR/configs"
+  MODELS_DIR: "$$USER_DATA_DIR/models"
   BUILDER_MODULES_DIR: "$$USER_DATA_DIR/modules"
   BUILDER_PLANFILE_DIR: "$$USER_DATA_DIR/Builder/plans"
   BUILDER_PACKAGE_DIR: "$$USER_DATA_DIR/Builder/cache/packages"
@@ -14,6 +16,7 @@ variables:
   BUILDER_BUILD_DIR: "$$USER_DATA_DIR/Builder/build"
   BUILDER_LOG_DIR: "$$USER_DATA_DIR/Builder/log/"
   GIT_ANNEX_DIR: "$$USER_DATA_DIR/git-annex"
+  MACHINE: $CB_MACHINE
 
 
 Preparation:
@@ -36,7 +39,8 @@ Preparation:
     # Load all environment variables
     - !reference [ .prepare-benchmarks, environment-variables ]
     - |+
-      for var in CB_RUNNER_ACCOUNT CB_PROJECT USER_DATA_DIR WORKSPACE_DIR BENNCH_DIR USER_DATA_DIR SIMULATOR_REPO_DIR RESULTS_DIR BUILDER_DIR BUILDER_MODULES_DIR BUILDER_PLANFILE_DIR BUILDER_PACKAGE_DIR BUILDER_SOURCE_DIR BUILDER_INSTALL_DIR BUILDER_BUILD_DIR BUILDER_LOG_DIR GIT_ANNEX_DIR ; do
+      # TODO: Probably not needed
+      for var in CB_RUNNER_ACCOUNT CB_PROJECT USER_DATA_DIR WORKSPACE_DIR BENNCH_DIR USER_DATA_DIR SIMULATOR_REPO_DIR RESULTS_DIR BUILDER_DIR BUILDER_MODULES_DIR BUILDER_PLANFILE_DIR BUILDER_PACKAGE_DIR BUILDER_SOURCE_DIR BUILDER_INSTALL_DIR BUILDER_BUILD_DIR BUILDER_LOG_DIR GIT_ANNEX_DIR CONFIG_DIR MODELS_DIR ; do
         eval val=\$$var
         echo "${var}=${val}" >> $CI_PROJECT_DIR/benchmark_variables.env
       done
@@ -77,8 +81,8 @@ Preparation:
       echo LOG_PATH="$BUILDER_LOG_DIR" >> $HOME/.buildrc
     # Prepare nest installation (builder plan)
     - 'mkdir -p $BUILDER_PLANFILE_DIR/nest-simulator/benchmarking/'
-    - 'cp $CI_PROJECT_DIR/.gitlab-ci/templates/nest-builder-template $BUILDER_PLANFILE_DIR/nest-simulator/benchmarking/default'
-    - 'cp $CI_PROJECT_DIR/.gitlab-ci/templates/nest-builder-module $BUILDER_PLANFILE_DIR/nest-simulator/benchmarking/default.module'
+    - 'cp $CI_DIR/templates/nest-builder-template $BUILDER_PLANFILE_DIR/nest-simulator/benchmarking/default'
+    - 'cp $CI_DIR/templates/nest-builder-module $BUILDER_PLANFILE_DIR/nest-simulator/benchmarking/default.module'
 
 Benchmarking:
   extends: [ .config ]

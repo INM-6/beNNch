@@ -6,7 +6,6 @@ variables:
   BUILDER_DIR: "$$WORKSPACE_DIR/builder/"                              # Path to builder installation
   CB_RUNNER_ACCOUNT: $CB_JURECA_RUNNER_ACCOUNT
   CB_PROJECT: $CB_JURECA_PROJECT
-  MACHINE: $CB_MACHINE
 
 
 .config:
