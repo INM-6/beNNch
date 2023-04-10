@@ -1,6 +1,7 @@
 include: .gitlab-ci/jacamar-benchmarking.yml
 
 variables:
+  # TODO: Instead of USERSOFTWARE_djinb33, use a place which can be accessed by anyone independent of account
   TEMP_DIR: "$$SCRATCH/ci-bennch/$WORKSPACE/jureca/userdata"           # Directory to temporary files accessible from both login and compute nodes
   WORKSPACE_DIR: "$$USERSOFTWARE_djinb33/ci-bennch/$WORKSPACE/jureca"  # Directory to persistent files accessible from both login and compute nodes
   BUILDER_DIR: "$$WORKSPACE_DIR/builder/"                              # Path to builder installation
