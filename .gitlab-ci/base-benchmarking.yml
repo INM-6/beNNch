@@ -77,7 +77,8 @@ variables:
 .run-benchmarks:
   - |+
     cd $BENNCH_DIR/benchmarks
-    ls -a
+    echo $PATH
+    ls -lisaR $USER_DATA_DIR
     # TODO: This builds the simulator for each model, one should only call Jube once here and combine the benchmarks for all models
     for benchmark in cb_*${MACHINE}.yml ; do
       # jube-autorun -p "60" -r "--hide-animation -e --outpath=$RESULTS_DIR --include-path=$BENNCH_DIR/config/$MACHINE" $benchmark & pid=$!
@@ -104,9 +105,9 @@ variables:
     - |+
         for benchmark_result_id in 0*/ ; do
           echo 'scaling_type: "nodes"\njube_outpath: "$RESULTS_DIR"' > config/analysis_config.yaml
-          python ../analysis/analysis.py benchmark_result_id
+          python3 ../analysis/analysis.py benchmark_result_id
           echo 'scaling_type: "threads"\njube_outpath: "$RESULTS_DIR"' > config/analysis_config.yaml
-          python ../analysis/analysis.py benchmark_result_id
+          python3 ../analysis/analysis.py benchmark_result_id
         done
   upload:
     - 'git annex sync'

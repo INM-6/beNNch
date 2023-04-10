@@ -95,7 +95,7 @@ Benchmarking:
     - !reference [ .benchmarks-init ]
     - 'mkdir -p $USER_DATA_DIR/bin'
     - 'ln -s $BUILDER_DIR/build.sh $USER_DATA_DIR/bin/build'
-    - 'export PATH=$PATH:$USER_DATA_DIR/bin'
+    - 'export PATH=$USER_DATA_DIR/bin:$PATH'
     # Load modules on compute node required for benchmarks
     - !reference [ .prepare-benchmarks, modules-requirements ]  # Benchmark-specific modules (for this specific machine)
     # Activate python venv
