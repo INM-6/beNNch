@@ -127,13 +127,19 @@ for model_name, benchmark_configs in config["benchmarks"].items():
         print("Config path:", os.path.join(config_output_dir, os.path.basename(model_config_path)))
         print("Config:", combined_config)
 
+for conf in combined_configs.values():
+    if len(conf) > 0:
+        break
+else:
+    print("No config for any model provided for this machine, aborting...")
+    exit(1)
+
 # Generate, patch, and dump user config
 user_config = {"parameterset": {"name": "user_config", "parameter": 
     [{"name": "account", "type": "string", "_": config["user_config"][machine]["account"]},
     {"name": "email_address", "type": "string", "_": config["user_config"][machine]["email_address"]},
     {"name": "partition", "type": "string", "_": config["user_config"][machine]["partition"]}]
 }}
-    
 
 # Patch configuration using environment variables
 to_remove = list()
