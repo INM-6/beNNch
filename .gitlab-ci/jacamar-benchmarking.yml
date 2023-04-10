@@ -25,12 +25,8 @@ Preparation:
   artifacts:
     reports:
       dotenv: benchmark_variables.env
+    when: on_success
   script:
-    - |+
-      if [ $CI_JOB_STATUS != 'success' ] ; then
-        echo "Unexpected error, aborting..."
-        exit 1
-      fi
     # Load all modules required for continuous benchmarking in general and prepare environment
     - !reference [ .environment-init ]
     # Load all environment variables
