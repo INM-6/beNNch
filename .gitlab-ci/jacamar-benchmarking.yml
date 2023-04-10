@@ -21,14 +21,11 @@ variables:
 
 Preparation:
   stage: preparation
-  extends: [ .machine-selection, .base-benchmarking, .config ]
-  variables:
-    SCHEDULER_PARAMETERS: "--account=$CB_RUNNER_ACCOUNT --time=00:00:01 --nodes=1"
+  extends: [ .machine-selection, .base-benchmarking, . ]
   artifacts:
     reports:
       dotenv: benchmark_variables.env
-  script: [ ':' ]
-  after_script:
+  script:
     - |+
       if [ $CI_JOB_STATUS != 'success' ] ; then
         echo "Unexpected error, aborting..."

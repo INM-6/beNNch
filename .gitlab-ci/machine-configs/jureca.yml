@@ -8,12 +8,15 @@ variables:
   CB_RUNNER_ACCOUNT: $CB_JURECA_RUNNER_ACCOUNT
   CB_PROJECT: $CB_JURECA_PROJECT
 
-
-.config:
+.preparation-tags:
   tags:
+    - shell
     - jurecadc
-    - jacamar
-    - slurm
+
+.benchmark-tags:
+  tags:
+    - compute
+    - jurecadc
 
 .environment-init:
   - |+
