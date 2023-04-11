@@ -64,7 +64,7 @@ variables:
   configs:
     - |+
       rm -rf $BENNCH_DIR/config/* $BENNCH_DIR/benchmarks/*
-      python3 $SCRIPTS_DIR/patch_configs.py ${CONFIG_DIR}/$CONFIG_PATH $BENNCH_DIR/benchmarks $BENNCH_DIR/config/$MACHINE $BUILDER_MODULES_DIR $BENNCH_DIR $MODELS_DIR $MACHINE
+      python3 $SCRIPTS_DIR/patch_configs.py ${CONFIG_DIR}/$CONFIG_PATH $BENNCH_DIR/benchmarks $BENNCH_DIR/config/$MACHINE $BUILDER_MODULES_DIR $BENNCH_DIR $MODELS_DIR $SIMULATOR_BRANCH $MACHINE
   results:
     # Set result repository
     - 'cd $BENNCH_DIR'

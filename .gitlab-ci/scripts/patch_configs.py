@@ -13,7 +13,8 @@ config_output_dir = sys.argv[3]
 builder_modules_dir = sys.argv[4]
 bennch_dir = sys.argv[5]
 model_repos_dir = sys.argv[6]
-machine = sys.argv[7]
+simulator_branch = sys.argv[7]
+machine = sys.argv[8]
 
 config_dir = os.path.dirname(config_file_path)
 
@@ -64,7 +65,7 @@ for model_name, benchmark_configs in config["benchmarks"].items():
             "name": "software_parameters",
             "parameter": [
                 {"name": "simulator", "_": "nest-simulator"},
-                {"name": "version", "_": "benchmarking"},
+                {"name": "version", "_": simulator_branch},
                 {"name": "variant", "_": "default"},
                 {"name": "suffix", "_": ""},
                 {"name": "buildermod", "_": builder_modules_dir}

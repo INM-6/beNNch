@@ -72,9 +72,9 @@ Preparation:
       echo MODULE_INSTALL_PATH="$BUILDER_MODULES_DIR" >> $HOME/.buildrc
       echo LOG_PATH="$BUILDER_LOG_DIR" >> $HOME/.buildrc
     # Prepare nest installation (builder plan)
-    - 'mkdir -p $BUILDER_PLANFILE_DIR/nest-simulator/benchmarking/'
-    - 'cp $CI_DIR/templates/nest-builder-template $BUILDER_PLANFILE_DIR/nest-simulator/benchmarking/default'
-    - 'cp $CI_DIR/templates/nest-builder-module $BUILDER_PLANFILE_DIR/nest-simulator/benchmarking/default.module'
+    - 'mkdir -p $BUILDER_PLANFILE_DIR/nest-simulator/$SIMULATOR_BRANCH/'
+    - 'cp $CI_DIR/templates/nest-builder-template $BUILDER_PLANFILE_DIR/nest-simulator/$SIMULATOR_BRANCH/default'
+    - 'cp $CI_DIR/templates/nest-builder-module $BUILDER_PLANFILE_DIR/nest-simulator/$SIMULATOR_BRANCH/default.module'
 
 Benchmarking:
   extends: [ .benchmark-tags ]
