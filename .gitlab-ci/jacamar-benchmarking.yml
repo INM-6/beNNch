@@ -83,7 +83,7 @@ Benchmarking:
       artifacts: true
   stage: benchmarks
   artifacts:
-    path:
+    paths:
       - "flipbook-nodes.slides.html"
       - "flipbook-threads.slides.html"
     when: on_success
