@@ -106,12 +106,15 @@ variables:
     # Perform analysis on all benchmark results
     - 'mkdir -p $BENNCH_DIR/results/$RESULTS_PATH'
     - 'cd $BENNCH_DIR/results/$RESULTS_PATH'
+    - 'echo $RESULTS_DIR'
     - |+
-        echo -e 'scaling_type: "nodes"\njube_outpath: "$RESULTS_DIR"' > $BENNCH_DIR/config/analysis_config.yaml
+        echo 'scaling_type: "nodes"' > $BENNCH_DIR/config/analysis_config.yaml
+        eval echo 'jube_outpath: "$RESULTS_DIR"' >> $BENNCH_DIR/config/analysis_config.yaml
         for benchmark_result_id in $RESULTS_DIR/* ; do  
           python3 $BENNCH_DIR/analysis/analysis.py $(basename $benchmark_result_id)
         done
-        echo -e 'scaling_type: "threads"\njube_outpath: "$RESULTS_DIR"' > $BENNCH_DIR/config/analysis_config.yaml
+        echo 'scaling_type: "threads"' > $BENNCH_DIR/config/analysis_config.yaml
+        eval echo 'jube_outpath: "$RESULTS_DIR"' >> $BENNCH_DIR/config/analysis_config.yaml
         for benchmark_result_id in $RESULTS_DIR/* ; do
           python3 $BENNCH_DIR/analysis/analysis.py $(basename $benchmark_result_id)
         done
