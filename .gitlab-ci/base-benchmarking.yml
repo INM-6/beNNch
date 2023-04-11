@@ -121,7 +121,10 @@ variables:
     # - 'git annex sync'
   flipbook:
     # Add another stage which can be triggered manually to create flipbooks with additional configuration
+    - 'cd $BENNCH_DIR/results/$RESULTS_PATH'
     - |+
       python3 $BENNCH_DIR/flipbook/flipbook.py nodes
+      mv $BENNCH_DIR/results/$RESULTS_PATH/flipbook.slides.html $CI_PROJECT_DIR/flipbook-nodes.slides.html
     - |+
       python3 $BENNCH_DIR/flipbook/flipbook.py threads
+      mv $BENNCH_DIR/results/$RESULTS_PATH/flipbook.slides.html $CI_PROJECT_DIR/flipbook-threads.slides.html

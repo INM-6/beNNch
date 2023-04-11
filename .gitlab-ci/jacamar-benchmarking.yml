@@ -82,6 +82,11 @@ Benchmarking:
     - job: "Preparation"
       artifacts: true
   stage: benchmarks
+  artifacts:
+    path:
+      - "flipbook-nodes.slides.html"
+      - "flipbook-threads.slides.html"
+    when: on_success
   # variables:
     # TODO: How much time is really required here? Should it just be the same as the time provided for the longest benchmark? But the scheduling will take time as well. Maybe don't run anything on the compute node at all and just schedule the job on the login node.
     # SCHEDULER_PARAMETERS: "--account=$CB_RUNNER_ACCOUNT --time=00:30:00 --nodes=1"
