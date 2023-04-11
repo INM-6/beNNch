@@ -105,14 +105,19 @@ variables:
   analysis:
     # Perform analysis on all benchmark results
     - 'mkdir -p $BENNCH_DIR/results/$RESULTS_PATH'
-    - 'cd $BENNCH_DIR/results/$RESULTS_PATH'
-    - 'echo $RESULTS_DIR'
     - |+
+        cd $BENNCH_DIR/results/$RESULTS_PATH
+        mkdir nodes
+        cd nodes
         echo 'scaling_type: "nodes"' > $BENNCH_DIR/config/analysis_config.yaml
         eval echo 'jube_outpath: "$RESULTS_DIR"' >> $BENNCH_DIR/config/analysis_config.yaml
         for benchmark_result_id in $RESULTS_DIR/* ; do  
           python3 $BENNCH_DIR/analysis/analysis.py $(basename $benchmark_result_id)
         done
+    - |+
+        cd $BENNCH_DIR/results/$RESULTS_PATH
+        mkdir threads
+        cd threads
         echo 'scaling_type: "threads"' > $BENNCH_DIR/config/analysis_config.yaml
         eval echo 'jube_outpath: "$RESULTS_DIR"' >> $BENNCH_DIR/config/analysis_config.yaml
         for benchmark_result_id in $RESULTS_DIR/* ; do
@@ -120,14 +125,17 @@ variables:
         done
   upload:
     # TODO: Upload benchmark results
-    - 'cd $BENNCH_DIR/results/$RESULTS_PATH'
+    - 'cd $BENNCH_DIR/results/$RESULTS_PATH/nodes'
+    # - 'git annex sync'
+    - 'cd $BENNCH_DIR/results/$RESULTS_PATH/threads'
     # - 'git annex sync'
   flipbook:
     # Add another stage which can be triggered manually to create flipbooks with additional configuration
-    - 'cd $BENNCH_DIR/results/$RESULTS_PATH'
     - |+
-      python3 $BENNCH_DIR/flipbook/flipbook.py nodes
+      cd $BENNCH_DIR/results/$RESULTS_PATH/nodes
+      python3 $BENNCH_DIR/flipbook/flipbook.py nodes total_memory_per_node
       mv $BENNCH_DIR/results/$RESULTS_PATH/flipbook.slides.html $CI_PROJECT_DIR/flipbook-nodes.slides.html
     - |+
-      python3 $BENNCH_DIR/flipbook/flipbook.py threads
+      cd $BENNCH_DIR/results/$RESULTS_PATH/threads
+      python3 $BENNCH_DIR/flipbook/flipbook.py threads total_memory_per_node
       mv $BENNCH_DIR/results/$RESULTS_PATH/flipbook.slides.html $CI_PROJECT_DIR/flipbook-threads.slides.html
