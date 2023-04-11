@@ -73,7 +73,7 @@ variables:
     - 'git submodule update --depth=1 --init --recursive --remote -- results'
     - 'cd results'
     - 'git pull origin $RESULTS_BRANCH'
-    - 'git checkout origin $RESULTS_BRANCH'
+    - 'git checkout $RESULTS_BRANCH'
     # - 'git annex init'
     # - 'git annex sync'
   analysis:
@@ -93,7 +93,7 @@ variables:
     cd $BENNCH_DIR/benchmarks
     # TODO: This builds the simulator for each model, one should only call Jube once here and combine the benchmarks for all models
     for benchmark in cb_*${MACHINE}.yml ; do
-      jube-autorun -p "60" -r "--hide-animation -e --outpath=$RESULTS_DIR --include-path=$BENNCH_DIR/config/$MACHINE" $benchmark & pid=$!
+      jube-autorun -p "20" -r "--hide-animation -e --outpath=$RESULTS_DIR --include-path=$BENNCH_DIR/config/$MACHINE" $benchmark & pid=$!
       PID_LIST+=" $pid";
       # jube run -e --hide-animation --outpath=$RESULTS_DIR --include-path=$BENNCH_DIR/config/$MACHINE $benchmark
       # jube-autorun -p "60" -r "--hide-animation -e --outpath=$RESULTS_DIR --include-path=$BENNCH_DIR/config/$MACHINE" $benchmark
