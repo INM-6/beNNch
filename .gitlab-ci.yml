@@ -16,7 +16,7 @@ variables:
     value: "config.yml"
   RESULTS_REPO_URL:
     description: "Repository to upload benchmark results to."
-    value: "https://gin.g-node.org/Janvog/CI-Bennch-results-devel.git"
+    value: "https://janvog:$GIN_GNODE_TOKEN@gin.g-node.org/Janvog/CI-Bennch-results-devel.git"
   RESULTS_BRANCH:
     description: "Branch of result repository to upload benchmark results to."
     value: "master"

@@ -27,7 +27,7 @@ variables:
 
 .preparation-init:
   - |+
-    module load Stages/2023 git
+    module load Stages/2023 git/2.36.0-nodocs
     # Install git-annex
     cd $USER_DATA_DIR
     wget "http://downloads.kitenet.net/git-annex/linux/current/git-annex-standalone-amd64.tar.gz" -O git-annex.tar.gz -q
@@ -37,13 +37,9 @@ variables:
 
 .benchmarks-init:
   - |+
-    module load JUBE/2.5.1 git
-
-.analysis-init:
-  - |+
-    module load Stages/2023 Python/3.10.4 PyYAML/6.0 SciPy-bundle/2022.05 matplotlib/3.5.2
+    module load JUBE/2.5.1 git/2.36.0-nodocs
 
 .results-init:
   - |+
-    module load git
-    export PATH=$PATH:${USER_DATA_DIR}/git-annex
+    module load Stages/2023 Python/3.10.4 PyYAML/6.0 SciPy-bundle/2022.05 matplotlib/3.5.2 git/2.36.0-nodocs
+    export PATH=$PATH:$GIT_ANNEX_DIR
