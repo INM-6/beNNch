@@ -109,6 +109,8 @@ Benchmarking:
     - !reference [ .environment-init ]
     # Load modules on login node required for result uploading
     - !reference [ .results-init ]
+    # Activate python venv
+    - 'source $USER_DATA_DIR/benchmarking-env/bin/activate'
     # Prepare results repository
     - !reference [ .prepare-benchmarks, results ]
     # Get bennchplot repository
@@ -117,3 +119,6 @@ Benchmarking:
     - !reference [ .results, analysis ]
     # Upload analyzed results to specified repository
     - !reference [ .results, upload ]
+    # Generate flipbook
+    - 'pip install --user nbformat'
+    - !reference [ .results, flipbook ]
