@@ -151,9 +151,9 @@ variables:
     - 'export PYTHONPATH=$BENNCH_DIR:$PYTHONPATH'
     - |+
       cd $BENNCH_DIR/results/nodes
-      python3 $BENNCH_DIR/flipbook/flipbook.py nodes total_memory_per_node
+      python3 $BENNCH_DIR/flipbook/flipbook.py nodes
       mv flipbook.slides.html $CI_PROJECT_DIR/flipbook-nodes.slides.html
     - |+
       cd $BENNCH_DIR/results/threads
-      python3 $BENNCH_DIR/flipbook/flipbook.py threads total_memory_per_node
+      python3 $BENNCH_DIR/flipbook/flipbook.py threads
       mv flipbook.slides.html $CI_PROJECT_DIR/flipbook-threads.slides.html
