@@ -98,8 +98,8 @@ variables:
       # jube run -e --hide-animation --outpath=$RESULTS_DIR --include-path=$BENNCH_DIR/config/$MACHINE $benchmark
       # jube-autorun -p "60" -r "--hide-animation -e --outpath=$RESULTS_DIR --include-path=$BENNCH_DIR/config/$MACHINE" $benchmark
     done
-  - 'cat $RESULTS_DIR/000000/000000_build/work/stdout'
   - 'wait $PID_LIST'
+  - 'cat $RESULTS_DIR/000000/000000_build/work/stdout'
 
 # Requires git, git-annex
 .results:
