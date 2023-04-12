@@ -1,7 +1,7 @@
 variables:
   SIMULATOR_REPO:
     description: "Simulator repository to use for benchmarking."
-    value: "https://github.com/nest/nest-simulator.git"
+    value: "https://github.com/JanVogelsang/nest-simulator"
   SIMULATOR_BRANCH:
     description: "Simulator repository branch to use for benchmarking."
     value: "master"
