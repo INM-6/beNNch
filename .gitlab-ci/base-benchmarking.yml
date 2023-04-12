@@ -113,7 +113,7 @@ variables:
         for benchmark_result_id in $RESULTS_DIR/* ; do  
           python3 $BENNCH_DIR/analysis/analysis.py $(basename $benchmark_result_id)
           mv *.csv nodes/
-          mv *.tar.gz nodes/
+          mv *.tgz nodes/
         done
     - |+
         cd $BENNCH_DIR/results/$RESULTS_PATH
@@ -123,7 +123,7 @@ variables:
         for benchmark_result_id in $RESULTS_DIR/* ; do
           python3 $BENNCH_DIR/analysis/analysis.py $(basename $benchmark_result_id)
           mv *.csv threads/
-          mv *.tar.gz threads/
+          mv *.tgz threads/
         done
   upload:
     # TODO: Upload benchmark results
