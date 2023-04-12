@@ -143,8 +143,8 @@ variables:
       mv *.csv $BENNCH_DIR/results/$RESULTS_PATH/nodes/
     - |+
       cd $BENNCH_DIR/results
-      mv $BENNCH_DIR/results/$RESULTS_PATH/threads`/*.csv .
+      mv $BENNCH_DIR/results/$RESULTS_PATH/threads/*.csv .
       python3 $BENNCH_DIR/flipbook/flipbook.py threads total_memory_per_node
       mv flipbook.slides.html flipbook-threads.slides.html
       cp flipbook-threads.slides.html $CI_PROJECT_DIR/flipbook-threads.slides.html
-      mv *.csv $BENNCH_DIR/results/$RESULTS_PATH/threads`/
+      mv *.csv $BENNCH_DIR/results/$RESULTS_PATH/threads/
