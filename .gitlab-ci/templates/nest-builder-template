@@ -83,7 +83,4 @@ module_install () {
             -e 's%__NOT_BUILDER_DOLLAR__%$%g' \
                 > "${module_path}"
     fi
-
-    PYTHON_SITEPKG="/python$(python -c "import sys; print(sys.version_info.major, sys.version_info.minor, sep='.')")/site-packages"
-    sed -i "s|.*PYTHONPATH.*|&$PYTHON_SITEPKG|" "$module_path"
 }
