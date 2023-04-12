@@ -75,7 +75,7 @@ variables:
     - 'git pull origin $RESULTS_BRANCH'
     - 'git checkout $RESULTS_BRANCH'
     - 'git annex init'
-    # - 'git annex sync'
+    - 'git annex sync'
   analysis:
     # Bennchplot package
     - 'cd $BENNCH_DIR'
@@ -106,6 +106,7 @@ variables:
   analysis:
     # Perform analysis on all benchmark results
     - 'mkdir -p $BENNCH_DIR/results/$RESULTS_PATH'
+    # TODO: Modify bennch to write the analysis results in desired directory directly, without having to move them afterwards
     - |+
         cd $BENNCH_DIR/results
         mkdir $BENNCH_DIR/results/$RESULTS_PATH/nodes
@@ -130,7 +131,6 @@ variables:
         eval echo 'jube_outpath: "$RESULTS_DIR"' >> $BENNCH_DIR/config/analysis_config.yaml
         for benchmark_result_id in $RESULTS_DIR/* ; do
           python3 $BENNCH_DIR/analysis/analysis.py $(basename $benchmark_result_id)
-          
           for csv_file in *.csv ; do
             ln -rs $(readlink -f $csv_file) $BENNCH_DIR/results/$RESULTS_PATH/threads/$csv_file
             rm $csv_file
@@ -141,11 +141,10 @@ variables:
           done
         done
   upload:
-    # TODO: Upload benchmark results
-    - 'cd $BENNCH_DIR/results/$RESULTS_PATH/nodes'
-    # - 'git annex sync'
-    - 'cd $BENNCH_DIR/results/$RESULTS_PATH/threads'
-    # - 'git annex sync'
+    # Upload benchmark results
+    - 'cd $BENNCH_DIR/results/'
+    - 'git annex add $RESULTS_PATH/threads $RESULTS_PATH/nodes'
+    - 'git annex sync'
   flipbook:
     # TODO: Add another stage which can be triggered manually to create flipbooks with additional configuration
     - 'export PYTHONPATH=$BENNCH_DIR:$PYTHONPATH'

@@ -5,7 +5,7 @@ stages: [ preparation, benchmarks ]
 
 variables:
   BENNCH_DIR: "$$USER_DATA_DIR/bennch"
-  RESULTS_DIR: "$$USER_DATA_DIR/results"
+  RESULTS_DIR: "$$USER_DATA_DIR/jube_results"
   CONFIG_DIR: "$$USER_DATA_DIR/configs"
   MODELS_DIR: "$$USER_DATA_DIR/models"
   BUILDER_MODULES_DIR: "$$USER_DATA_DIR/modules"
