@@ -45,13 +45,11 @@ setenv          NEST_DATA_DIR           \$INSTALLDIR/share/nest
 setenv          NEST_DOC_DIR            \$INSTALLDIR/share/doc/nest
 
 # The path where NEST looks for user modules.
-# TODO: Use lib or lib64 depending on architecture
-setenv          NEST_MODULE_PATH        \$INSTALLDIR/lib64/nest
+setenv          NEST_MODULE_PATH        [glob -directory \$INSTALLDIR/ -type d lib*/nest/]
 
 # The path where the PyNEST bindings are installed.
 setenv          NEST_PYTHON_PREFIX      \$INSTALLDIR
 
-# TODO: Use lib or lib64 depending on architecture
-prepend-path    PYTHONPATH              \$INSTALLDIR/lib64
+prepend-path    PYTHONPATH              [glob -directory \$INSTALLDIR/ -type d lib*/python*/site-packages/]
 prepend-path    PATH                    \$INSTALLDIR/bin
 #prepend-path    LD_LIBRARY_PATH  \$INSTALLDIR/lib64
