@@ -152,8 +152,8 @@ variables:
     - |+
       cd $BENNCH_DIR/results/nodes
       python3 $BENNCH_DIR/flipbook/flipbook.py nodes
-      mv flipbook.slides.html $CI_PROJECT_DIR/flipbook-nodes.slides.html
+      mv flipbook.slides.html $CI_PROJECT_DIR/${SIMULATOR_BRANCH}-nodes.slides.html
     - |+
       cd $BENNCH_DIR/results/threads
       python3 $BENNCH_DIR/flipbook/flipbook.py threads
-      mv flipbook.slides.html $CI_PROJECT_DIR/flipbook-threads.slides.html
+      mv flipbook.slides.html $CI_PROJECT_DIR/${SIMULATOR_BRANCH}-threads.slides.html
