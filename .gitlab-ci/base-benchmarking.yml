@@ -107,24 +107,24 @@ variables:
     # Perform analysis on all benchmark results
     - 'mkdir -p $BENNCH_DIR/results/$RESULTS_PATH'
     - |+
-        cd $BENNCH_DIR/results/$RESULTS_PATH
-        mkdir nodes
+        cd $BENNCH_DIR/results
+        mkdir $BENNCH_DIR/results/$RESULTS_PATH/nodes
         echo 'scaling_type: "nodes"' > $BENNCH_DIR/config/analysis_config.yaml
         eval echo 'jube_outpath: "$RESULTS_DIR"' >> $BENNCH_DIR/config/analysis_config.yaml
         for benchmark_result_id in $RESULTS_DIR/* ; do  
           python3 $BENNCH_DIR/analysis/analysis.py $(basename $benchmark_result_id)
-          mv *.csv nodes/
-          mv *.tgz nodes/
+          mv *.csv $BENNCH_DIR/results/$RESULTS_PATH/nodes
+          mv *.tgz $BENNCH_DIR/results/$RESULTS_PATH/nodes
         done
     - |+
-        cd $BENNCH_DIR/results/$RESULTS_PATH
-        mkdir threads
+        cd $BENNCH_DIR/results
+        mkdir $BENNCH_DIR/results/$RESULTS_PATH/threads
         echo 'scaling_type: "threads"' > $BENNCH_DIR/config/analysis_config.yaml
         eval echo 'jube_outpath: "$RESULTS_DIR"' >> $BENNCH_DIR/config/analysis_config.yaml
         for benchmark_result_id in $RESULTS_DIR/* ; do
           python3 $BENNCH_DIR/analysis/analysis.py $(basename $benchmark_result_id)
-          mv *.csv threads/
-          mv *.tgz threads/
+          mv *.csv $BENNCH_DIR/results/$RESULTS_PATH/threads
+          mv *.tgz $BENNCH_DIR/results/$RESULTS_PATH/threads
         done
   upload:
     # TODO: Upload benchmark results
@@ -135,10 +135,16 @@ variables:
   flipbook:
     # Add another stage which can be triggered manually to create flipbooks with additional configuration
     - |+
-      cd $BENNCH_DIR/results/$RESULTS_PATH/nodes
+      cd $BENNCH_DIR/results
+      mv $BENNCH_DIR/results/$RESULTS_PATH/nodes/*.csv .
       python3 $BENNCH_DIR/flipbook/flipbook.py nodes total_memory_per_node
-      mv $BENNCH_DIR/results/$RESULTS_PATH/flipbook.slides.html $CI_PROJECT_DIR/flipbook-nodes.slides.html
+      mv flipbook.slides.html flipbook-nodes.slides.html
+      cp flipbook-nodes.slides.html $CI_PROJECT_DIR/flipbook-nodes.slides.html
+      mv *.csv $BENNCH_DIR/results/$RESULTS_PATH/nodes/
     - |+
-      cd $BENNCH_DIR/results/$RESULTS_PATH/threads
+      cd $BENNCH_DIR/results
+      mv $BENNCH_DIR/results/$RESULTS_PATH/threads`/*.csv .
       python3 $BENNCH_DIR/flipbook/flipbook.py threads total_memory_per_node
-      mv $BENNCH_DIR/results/$RESULTS_PATH/flipbook.slides.html $CI_PROJECT_DIR/flipbook-threads.slides.html
+      mv flipbook.slides.html flipbook-threads.slides.html
+      cp flipbook-threads.slides.html $CI_PROJECT_DIR/flipbook-threads.slides.html
+      mv *.csv $BENNCH_DIR/results/$RESULTS_PATH/threads`/
