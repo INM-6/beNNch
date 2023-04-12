@@ -113,8 +113,15 @@ variables:
         eval echo 'jube_outpath: "$RESULTS_DIR"' >> $BENNCH_DIR/config/analysis_config.yaml
         for benchmark_result_id in $RESULTS_DIR/* ; do  
           python3 $BENNCH_DIR/analysis/analysis.py $(basename $benchmark_result_id)
-          mv *.csv $BENNCH_DIR/results/$RESULTS_PATH/nodes
-          mv *.tgz $BENNCH_DIR/results/$RESULTS_PATH/nodes
+          # Move symlinks
+          for csv_file in *.csv ; do
+            ln -rs $(readlink -f $csv_file) $BENNCH_DIR/results/$RESULTS_PATH/nodes/$csv_file
+            rm $csv_file
+          done
+          for tgz_file in *.tgz ; do
+            ln -rs $(readlink -f $tgz_file) $BENNCH_DIR/results/$RESULTS_PATH/nodes/$tgz_file
+            rm $tgz_file
+          done
         done
     - |+
         cd $BENNCH_DIR/results
@@ -123,8 +130,15 @@ variables:
         eval echo 'jube_outpath: "$RESULTS_DIR"' >> $BENNCH_DIR/config/analysis_config.yaml
         for benchmark_result_id in $RESULTS_DIR/* ; do
           python3 $BENNCH_DIR/analysis/analysis.py $(basename $benchmark_result_id)
-          mv *.csv $BENNCH_DIR/results/$RESULTS_PATH/threads
-          mv *.tgz $BENNCH_DIR/results/$RESULTS_PATH/threads
+          
+          for csv_file in *.csv ; do
+            ln -rs $(readlink -f $csv_file) $BENNCH_DIR/results/$RESULTS_PATH/threads/$csv_file
+            rm $csv_file
+          done
+          for tgz_file in *.tgz ; do
+            ln -rs $(readlink -f $tgz_file) $BENNCH_DIR/results/$RESULTS_PATH/threads/$tgz_file
+            rm $tgz_file
+          done
         done
   upload:
     # TODO: Upload benchmark results
