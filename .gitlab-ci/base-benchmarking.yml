@@ -75,7 +75,6 @@ variables:
     - 'git pull origin $RESULTS_BRANCH'
     - 'git checkout $RESULTS_BRANCH'
     - 'git annex init'
-    - 'git annex sync'
   analysis:
     # Bennchplot package
     - 'cd $BENNCH_DIR'
