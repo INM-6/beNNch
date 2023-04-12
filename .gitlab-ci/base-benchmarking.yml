@@ -140,8 +140,8 @@ variables:
   upload:
     # Upload benchmark results
     - 'cd $BENNCH_DIR/results/'
-    - 'git annex add .'
-    - 'git annex sync --content'
+    # - 'git annex add .'
+    # - 'git annex sync --content'
     # - 'git annex copy --to=origin --auto'
   flipbook:
     # TODO: Add another stage which can be triggered manually to create flipbooks with additional configuration
