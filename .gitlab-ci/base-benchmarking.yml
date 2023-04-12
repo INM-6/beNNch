@@ -74,7 +74,7 @@ variables:
     - 'cd results'
     - 'git pull origin $RESULTS_BRANCH'
     - 'git checkout $RESULTS_BRANCH'
-    # - 'git annex init'
+    - 'git annex init'
     # - 'git annex sync'
   analysis:
     # Bennchplot package
@@ -133,18 +133,13 @@ variables:
     - 'cd $BENNCH_DIR/results/$RESULTS_PATH/threads'
     # - 'git annex sync'
   flipbook:
-    # Add another stage which can be triggered manually to create flipbooks with additional configuration
+    # TODO: Add another stage which can be triggered manually to create flipbooks with additional configuration
+    - 'export PYTHONPATH=$BENNCH_DIR:$PYTHONPATH'
     - |+
-      cd $BENNCH_DIR/results
-      mv $BENNCH_DIR/results/$RESULTS_PATH/nodes/*.csv .
+      cd $BENNCH_DIR/results/nodes
       python3 $BENNCH_DIR/flipbook/flipbook.py nodes total_memory_per_node
-      mv flipbook.slides.html flipbook-nodes.slides.html
-      cp flipbook-nodes.slides.html $CI_PROJECT_DIR/flipbook-nodes.slides.html
-      mv *.csv $BENNCH_DIR/results/$RESULTS_PATH/nodes/
+      mv flipbook.slides.html $CI_PROJECT_DIR/flipbook-nodes.slides.html
     - |+
-      cd $BENNCH_DIR/results
-      mv $BENNCH_DIR/results/$RESULTS_PATH/threads/*.csv .
+      cd $BENNCH_DIR/results/threads
       python3 $BENNCH_DIR/flipbook/flipbook.py threads total_memory_per_node
-      mv flipbook.slides.html flipbook-threads.slides.html
-      cp flipbook-threads.slides.html $CI_PROJECT_DIR/flipbook-threads.slides.html
-      mv *.csv $BENNCH_DIR/results/$RESULTS_PATH/threads/
+      mv flipbook.slides.html $CI_PROJECT_DIR/flipbook-threads.slides.html
