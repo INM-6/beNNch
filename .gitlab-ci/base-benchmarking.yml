@@ -104,12 +104,10 @@ variables:
 # Requires git, git-annex
 .results:
   analysis:
-    # Perform analysis on all benchmark results
-    - 'mkdir -p $BENNCH_DIR/results/$RESULTS_PATH'
+    - 'cd $BENNCH_DIR/results'
+    - 'mkdir -p $BENNCH_DIR/results/$RESULTS_PATH/nodes'
     # TODO: Modify bennch to write the analysis results in desired directory directly, without having to move them afterwards
     - |+
-        cd $BENNCH_DIR/results
-        mkdir $BENNCH_DIR/results/$RESULTS_PATH/nodes
         echo 'scaling_type: "nodes"' > $BENNCH_DIR/config/analysis_config.yaml
         eval echo 'jube_outpath: "$RESULTS_DIR"' >> $BENNCH_DIR/config/analysis_config.yaml
         for benchmark_result_id in $RESULTS_DIR/* ; do  
@@ -124,9 +122,9 @@ variables:
             rm $tgz_file
           done
         done
+    - 'cd $BENNCH_DIR/results'
+    - 'mkdir -p $BENNCH_DIR/results/$RESULTS_PATH/threads'
     - |+
-        cd $BENNCH_DIR/results
-        mkdir $BENNCH_DIR/results/$RESULTS_PATH/threads
         echo 'scaling_type: "threads"' > $BENNCH_DIR/config/analysis_config.yaml
         eval echo 'jube_outpath: "$RESULTS_DIR"' >> $BENNCH_DIR/config/analysis_config.yaml
         for benchmark_result_id in $RESULTS_DIR/* ; do
