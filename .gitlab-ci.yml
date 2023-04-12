@@ -28,6 +28,7 @@ variables:
     value: "production"
   EXTRA_CMAKE_FLAGS:
     description: "[Optional] Any extra CMake flags which should be used to compile NEST."
+    value: '-Dwith-optimize="-O3;-funroll-loops"'
   CB_MODELS:
     description: "[Optional] Comma-seperated list of the names of all models which should be run."
     value: "hpc_benchmark"
