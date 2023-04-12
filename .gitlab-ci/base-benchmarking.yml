@@ -108,20 +108,22 @@ variables:
     - |+
         cd $BENNCH_DIR/results/$RESULTS_PATH
         mkdir nodes
-        cd nodes
         echo 'scaling_type: "nodes"' > $BENNCH_DIR/config/analysis_config.yaml
         eval echo 'jube_outpath: "$RESULTS_DIR"' >> $BENNCH_DIR/config/analysis_config.yaml
         for benchmark_result_id in $RESULTS_DIR/* ; do  
           python3 $BENNCH_DIR/analysis/analysis.py $(basename $benchmark_result_id)
+          mv *.csv nodes/
+          mv *.tar.gz nodes/
         done
     - |+
         cd $BENNCH_DIR/results/$RESULTS_PATH
         mkdir threads
-        cd threads
         echo 'scaling_type: "threads"' > $BENNCH_DIR/config/analysis_config.yaml
         eval echo 'jube_outpath: "$RESULTS_DIR"' >> $BENNCH_DIR/config/analysis_config.yaml
         for benchmark_result_id in $RESULTS_DIR/* ; do
           python3 $BENNCH_DIR/analysis/analysis.py $(basename $benchmark_result_id)
+          mv *.csv threads/
+          mv *.tar.gz threads/
         done
   upload:
     # TODO: Upload benchmark results
