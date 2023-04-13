@@ -82,6 +82,8 @@ variables:
       git submodule set-url -- plot "https://github.com/JanVogelsang/beNNch-plot.git"
     - 'git submodule update --depth=1 --init --recursive --remote -- plot'
     # TODO: Should this really be always installed or is this up to the user/machine?
+    - 'pip list'
+    - 'echo $PYTHONPATH'
     - |+
       pip install -e plot --user
 
@@ -140,7 +142,7 @@ variables:
   upload:
     # Upload benchmark results
     - 'cd $BENNCH_DIR/results/'
-    # - 'git annex add .'
+    - 'git annex add .'
     # - 'git annex sync --content'
     # - 'git annex copy --to=origin --auto'
   flipbook:
