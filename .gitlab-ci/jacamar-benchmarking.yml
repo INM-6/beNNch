@@ -32,12 +32,6 @@ Preparation:
     - !reference [ .environment-init ]
     # Load all environment variables
     - !reference [ .prepare-benchmarks, environment-variables ]
-    - |+
-      # TODO: Probably not needed
-      for var in CB_RUNNER_ACCOUNT CB_PROJECT USER_DATA_DIR WORKSPACE_DIR BENNCH_DIR USER_DATA_DIR SIMULATOR_REPO SIMULATOR_BRANCH SIMULATOR_REPO_DIR RESULTS_DIR RESULTS_REPO_URL RESULTS_BRANCH RESULTS_PATH BUILDER_DIR BUILDER_MODULES_DIR BUILDER_PLANFILE_DIR BUILDER_PACKAGE_DIR BUILDER_SOURCE_DIR BUILDER_INSTALL_DIR BUILDER_BUILD_DIR BUILDER_LOG_DIR GIT_ANNEX_DIR CONFIG_DIR MODELS_DIR ; do
-        eval val=\$$var
-        echo "${var}=${val}" >> $CI_PROJECT_DIR/benchmark_variables.env
-      done
     # Create all required directories
     - !reference [ .prepare-benchmarks, create-dirs ]
     # Move all artifacts to user data directory
@@ -64,14 +58,15 @@ Preparation:
     - 'echo "USER_DATA_DIR: $USER_DATA_DIR"'
     - 'echo "RESULTS_DIR: $RESULTS_DIR"'
     # Prepare Builder .buildrc
+    - 'BUILDER_CONFIG_PATH=$USER_DATA_DIR/.buildrc'
     - |+
-      echo PLANFILE_PATH="$BUILDER_PLANFILE_DIR" > $HOME/.buildrc
-      echo PACKAGE_CACHE="$BUILDER_PACKAGE_DIR" >> $HOME/.buildrc
-      echo SOURCE_PATH="$BUILDER_SOURCE_DIR" >> $HOME/.buildrc
-      echo BUILD_PATH="$BUILDER_BUILD_DIR" >> $HOME/.buildrc
-      echo TARGET_PATH="$BUILDER_INSTALL_DIR" >> $HOME/.buildrc
-      echo MODULE_INSTALL_PATH="$BUILDER_MODULES_DIR" >> $HOME/.buildrc
-      echo LOG_PATH="$BUILDER_LOG_DIR" >> $HOME/.buildrc
+      echo PLANFILE_PATH="$BUILDER_PLANFILE_DIR" > $BUILDER_CONFIG_PATH
+      echo PACKAGE_CACHE="$BUILDER_PACKAGE_DIR" >> $BUILDER_CONFIG_PATH
+      echo SOURCE_PATH="$BUILDER_SOURCE_DIR" >> $BUILDER_CONFIG_PATH
+      echo BUILD_PATH="$BUILDER_BUILD_DIR" >> $BUILDER_CONFIG_PATH
+      echo TARGET_PATH="$BUILDER_INSTALL_DIR" >> $BUILDER_CONFIG_PATH
+      echo MODULE_INSTALL_PATH="$BUILDER_MODULES_DIR" >> $BUILDER_CONFIG_PATH
+      echo LOG_PATH="$BUILDER_LOG_DIR" >> $BUILDER_CONFIG_PATH
     - 'mkdir -p $USER_DATA_DIR/bin'
     - 'ln -s $BUILDER_DIR/build.sh $USER_DATA_DIR/bin/build'
     - 'export PATH=$USER_DATA_DIR/bin:$PATH'
@@ -79,6 +74,11 @@ Preparation:
     - 'mkdir -p $BUILDER_PLANFILE_DIR/nest-simulator/$SIMULATOR_BRANCH/'
     - 'cp $CI_DIR/templates/nest-builder-template $BUILDER_PLANFILE_DIR/nest-simulator/$SIMULATOR_BRANCH/default'
     - 'cp $CI_DIR/templates/nest-builder-module $BUILDER_PLANFILE_DIR/nest-simulator/$SIMULATOR_BRANCH/default.module'
+    - |+
+      for var in CB_RUNNER_ACCOUNT CB_PROJECT USER_DATA_DIR WORKSPACE_DIR BENNCH_DIR USER_DATA_DIR SIMULATOR_REPO SIMULATOR_BRANCH SIMULATOR_REPO_DIR RESULTS_DIR RESULTS_REPO_URL RESULTS_BRANCH RESULTS_PATH BUILDER_DIR BUILDER_MODULES_DIR BUILDER_PLANFILE_DIR BUILDER_PACKAGE_DIR BUILDER_SOURCE_DIR BUILDER_INSTALL_DIR BUILDER_BUILD_DIR BUILDER_LOG_DIR GIT_ANNEX_DIR CONFIG_DIR MODELS_DIR BUILDER_CONFIG_PATH ; do
+        eval val=\$$var
+        echo "${var}=${val}" >> $CI_PROJECT_DIR/benchmark_variables.env
+      done
 
 Benchmarking:
   tags: !reference [ .benchmark-tags ]
