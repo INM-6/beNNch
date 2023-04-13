@@ -155,3 +155,5 @@ variables:
       cd $BENNCH_DIR/results/threads
       python3 $BENNCH_DIR/flipbook/flipbook.py threads num_nodes threads_per_task
       mv flipbook.slides.html $CI_PROJECT_DIR/${SIMULATOR_BRANCH}-threads.slides.html
+
+  # TODO: Add another job at the end which collects the artifacts of all downstream pipelines and combines them into a single archive
