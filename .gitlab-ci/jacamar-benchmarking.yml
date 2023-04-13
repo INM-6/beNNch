@@ -117,12 +117,12 @@ Benchmarking:
     - !reference [ .environment-init ]
     # Load modules on login node required for result uploading
     - !reference [ .results-init ]
+    # Activate python venv (after loading modules to use venv interpreter)
+    - 'source $USER_DATA_DIR/benchmarking-env/bin/activate'
     # Prepare results repository
     - !reference [ .prepare-benchmarks, results ]
     # Get bennchplot repository
     - !reference [ .prepare-benchmarks, analysis ]
-    # Activate python venv (after loading modules to use venv interpreter)
-    - 'source $USER_DATA_DIR/benchmarking-env/bin/activate'
     # Analyze results
     - !reference [ .results, analysis ]
     # Upload analyzed results to specified repository
