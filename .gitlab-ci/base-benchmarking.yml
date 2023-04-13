@@ -138,7 +138,8 @@ variables:
           done
         done
   upload:
-    # Upload benchmark results
+    # TODO: Collect metadata about the pipeline (config, etc.)
+    # TODO: Upload benchmark results
     - 'cd $BENNCH_DIR/results/'
     - 'git annex add .'
     # - 'git annex sync --content'
