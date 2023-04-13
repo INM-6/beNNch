@@ -82,8 +82,6 @@ variables:
       git submodule set-url -- plot "https://github.com/JanVogelsang/beNNch-plot.git"
     - 'git submodule update --depth=1 --init --recursive --remote -- plot'
     # TODO: Should this really be always installed or is this up to the user/machine?
-    - 'pip list'
-    - 'echo $PYTHONPATH'
     - 'pip install -e plot'
 
 
