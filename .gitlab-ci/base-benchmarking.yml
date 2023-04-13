@@ -13,7 +13,8 @@ variables:
 .machine-selection:
   when: manual
   rules:
-    - if: $CB_MACHINES =~ $CB_MACHINE  # Only make benchmark for machine runnable if configuration was provided for it
+    # Only make benchmark for machine runnable if configuration was provided for it
+    - if: $CB_MACHINES =~ $CB_MACHINE
 
 # Requires git, python3 and pyyaml
 .prepare-benchmarks:
