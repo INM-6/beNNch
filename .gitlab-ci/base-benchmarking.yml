@@ -53,7 +53,7 @@ variables:
     - |+
       REQUIREMENTS=$(python3 $SCRIPTS_DIR/get_requirements_from_config.py pip ${CONFIG_DIR}/$CONFIG_PATH $MACHINE)
       if [ ! -z "$REQUIREMENTS" ] ; then
-        pip3 install --user $REQUIREMENTS
+        pip3 install $REQUIREMENTS
       fi
   modules-requirements:
     - |+
@@ -85,7 +85,7 @@ variables:
     - 'pip list'
     - 'echo $PYTHONPATH'
     - |+
-      pip install -e plot --user
+      pip install -e plot
 
 
 # Requires jube

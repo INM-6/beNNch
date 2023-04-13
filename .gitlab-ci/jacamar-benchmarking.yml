@@ -125,5 +125,5 @@ Benchmarking:
     # Upload analyzed results to specified repository
     - !reference [ .results, upload ]
     # Generate flipbook
-    - 'pip install --user nbformat'
+    - 'pip install nbformat'
     - !reference [ .results, flipbook ]
