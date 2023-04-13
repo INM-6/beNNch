@@ -9,16 +9,14 @@ variables:
   CB_PROJECT: $CB_JURECA_PROJECT
 
 .preparation-tags:
-  tags:
-    - shell
-    - jurecadc
-    - jacamar
+  - shell
+  - jurecadc
+  - jacamar
 
 .benchmark-tags:
-  tags:
-    - shell  # compute
-    - jurecadc
-    - jacamar
+  - shell  # compute
+  - jurecadc
+  - jacamar
 
 .environment-init:
   - |+

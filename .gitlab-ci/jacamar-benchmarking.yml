@@ -21,7 +21,8 @@ variables:
 
 Preparation:
   stage: preparation
-  extends: [ .machine-selection, .base-benchmarking, .preparation-tags ]
+  extends: [ .machine-selection, .base-benchmarking ]
+  tags: !reference [ .preparation-tags ]
   artifacts:
     reports:
       dotenv: benchmark_variables.env
@@ -71,13 +72,16 @@ Preparation:
       echo TARGET_PATH="$BUILDER_INSTALL_DIR" >> $HOME/.buildrc
       echo MODULE_INSTALL_PATH="$BUILDER_MODULES_DIR" >> $HOME/.buildrc
       echo LOG_PATH="$BUILDER_LOG_DIR" >> $HOME/.buildrc
+    - 'mkdir -p $USER_DATA_DIR/bin'
+    - 'ln -s $BUILDER_DIR/build.sh $USER_DATA_DIR/bin/build'
+    - 'export PATH=$USER_DATA_DIR/bin:$PATH'
     # Prepare nest installation (builder plan)
     - 'mkdir -p $BUILDER_PLANFILE_DIR/nest-simulator/$SIMULATOR_BRANCH/'
     - 'cp $CI_DIR/templates/nest-builder-template $BUILDER_PLANFILE_DIR/nest-simulator/$SIMULATOR_BRANCH/default'
     - 'cp $CI_DIR/templates/nest-builder-module $BUILDER_PLANFILE_DIR/nest-simulator/$SIMULATOR_BRANCH/default.module'
 
 Benchmarking:
-  extends: [ .benchmark-tags ]
+  tags: !reference [ .benchmark-tags ]
   needs:
     - job: "Preparation"
       artifacts: true
@@ -95,11 +99,10 @@ Benchmarking:
     - !reference [ .environment-init ]
     # Load modules on for benchmark preparation and execution
     - !reference [ .benchmarks-init ]
-    - 'mkdir -p $USER_DATA_DIR/bin'
-    - 'ln -s $BUILDER_DIR/build.sh $USER_DATA_DIR/bin/build'
+    # Load user-defined modules on compute node required for benchmarks
+    - !reference [ .prepare-benchmarks, modules-requirements ]
+    # Add builder to path
     - 'export PATH=$USER_DATA_DIR/bin:$PATH'
-    # Load modules on compute node required for benchmarks
-    - !reference [ .prepare-benchmarks, modules-requirements ]  # Benchmark-specific modules (for this specific machine)
     # Activate python venv
     - 'source $USER_DATA_DIR/benchmarking-env/bin/activate'
     # Run benchmarks
