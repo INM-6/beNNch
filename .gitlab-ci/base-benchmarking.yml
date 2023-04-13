@@ -84,8 +84,7 @@ variables:
     # TODO: Should this really be always installed or is this up to the user/machine?
     - 'pip list'
     - 'echo $PYTHONPATH'
-    - |+
-      pip install -e plot
+    - 'pip install -e plot'
 
 
 # Requires jube
