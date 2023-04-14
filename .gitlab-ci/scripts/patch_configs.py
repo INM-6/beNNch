@@ -40,7 +40,6 @@ if models:
 if not os.path.exists(config_output_dir):
     os.makedirs(config_output_dir)
 
-print("Benchmarks:", config["benchmarks"])
 for model_name, benchmark_configs in config["benchmarks"].items():
     # Skip benchmarks defined in config which were not explicitly requested to be benchmarked
     if models and model_name not in models:
