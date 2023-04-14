@@ -84,7 +84,7 @@ variables:
     - 'git submodule update --depth=1 --init --recursive --remote -- plot'
     # TODO: Should this really be always installed or is this up to the user/machine?
     - 'cd $BENNCH_DIR/plot'
-    - 'pip install .'
+    - 'pip install -e .'
 
 
 # Requires jube
