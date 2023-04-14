@@ -1,4 +1,7 @@
 variables:
+  BENCHMARK_NAME:
+    description: "Label given to the CI pipeline to identify a benchmark."
+    value: "[unlabeled benchmark]"
   SIMULATOR_REPO:
     description: "Simulator repository to use for benchmarking."
     value: "https://github.com/JanVogelsang/nest-simulator"
@@ -33,6 +36,9 @@ variables:
     description: "[Optional] Comma-seperated list of the names of all models which should be run."
     value: "hpc_benchmark"
 
+
+workflow:
+  name: $PIPELINE_NAME
 
 .machines: &machines_anchor [ "jureca" ]
 
