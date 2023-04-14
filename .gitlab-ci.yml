@@ -41,7 +41,7 @@ variables:
 
 # Only run pipelines manually triggered from the web
 workflow:
-  name: $PIPELINE_NAME
+  name: $BENCHMARK_NAME
   rules:
     - if: '$CI_PIPELINE_SOURCE == "web"'
 
