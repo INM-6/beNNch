@@ -50,6 +50,7 @@ shutil.rmtree(models_tmp_dir)
 with open(variables_env_path, 'w') as variables_env:
     out_machines = list()
     for machine, machine_conf in config["user_config"].items():
+        out_machines.append(machine)
         variables_env.write(f"CB_{machine.upper()}_PROJECT={machine_conf.get('project', '')}\n")
         variables_env.write(f"CB_{machine.upper()}_RUNNER_ACCOUNT={machine_conf.get('account', '')}\n")
 
