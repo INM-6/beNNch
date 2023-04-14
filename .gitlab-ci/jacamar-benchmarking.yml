@@ -90,6 +90,7 @@ Benchmarking:
     paths:
       - ${SIMULATOR_BRANCH}-nodes.slides.html
       - ${SIMULATOR_BRANCH}-threads.slides.html
+      - configs
     when: on_success
   # variables:
     # TODO: How much time is really required here? Should it just be the same as the time provided for the longest benchmark? But the scheduling will take time as well. Maybe don't run anything on the compute node at all and just schedule the job on the login node.
@@ -130,3 +131,4 @@ Benchmarking:
     # Generate flipbook
     - 'pip install nbformat'
     - !reference [ .results, flipbook ]
+    - 'cp $BENNCH_DIR/config/$MACHINE $CI_PROJECT_DIR/configs'
