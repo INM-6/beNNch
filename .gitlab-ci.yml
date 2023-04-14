@@ -37,13 +37,11 @@ variables:
     value: "hpc_benchmark"
 
 
-workflow:
-  name: $PIPELINE_NAME
-
 .machines: &machines_anchor [ "jureca" ]
 
 # Only run pipelines manually triggered from the web
 workflow:
+  name: $PIPELINE_NAME
   rules:
     - if: '$CI_PIPELINE_SOURCE == "web"'
 
