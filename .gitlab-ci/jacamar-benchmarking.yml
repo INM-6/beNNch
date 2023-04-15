@@ -122,7 +122,8 @@ Benchmarking:
     - !reference [ .results-init ]
     # Activate python venv (after loading modules to use venv interpreter)
     - 'source $USER_DATA_DIR/benchmarking-env/bin/activate'
-    - 'pip install ipykernel nbformat nbconvert'
+    - 'pip install --ignore-installed ipykernel nbformat nbconvert'
+    - 'python3 -m ipykernel install --name=benchmarking-env'
     # Prepare results repository
     - !reference [ .prepare-benchmarks, results ]
     # Get bennchplot repository
