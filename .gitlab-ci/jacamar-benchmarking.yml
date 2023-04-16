@@ -122,8 +122,6 @@ Benchmarking:
     - !reference [ .results-init ]
     # Activate python venv (after loading modules to use venv interpreter)
     - 'source $USER_DATA_DIR/benchmarking-env/bin/activate'
-    - 'pip install --ignore-installed ipykernel jupyter nbformat nbconvert'
-    - 'python3 -m ipykernel install --name=benchmarking-env'
     # Prepare results repository
     - !reference [ .prepare-benchmarks, results ]
     # Get bennchplot repository
@@ -133,5 +131,6 @@ Benchmarking:
     # Upload analyzed results to specified repository
     - !reference [ .results, upload ]
     # Generate flipbook
-    - 'pip install nbformat'
+    - 'pip install --ignore-installed ipykernel jupyter nbformat nbconvert'
+    - 'python3 -m ipykernel install --name=benchmarking-env'
     - !reference [ .results, flipbook ]
