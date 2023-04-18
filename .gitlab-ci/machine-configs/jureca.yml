@@ -4,7 +4,8 @@ variables:
   # TODO: Instead of USERSOFTWARE_djinb33, use a place which can be accessed by anyone independent of account
   TEMP_DIR: "$$SCRATCH/ci-bennch/$WORKSPACE/jureca/userdata"           # Directory to temporary files accessible from both login and compute nodes
   WORKSPACE_DIR: "$$USERSOFTWARE_djinb33/ci-bennch/$WORKSPACE/jureca"  # Directory to persistent files accessible from both login and compute nodes
-  BUILDER_DIR: "$$WORKSPACE_DIR/builder/"                              # Path to builder installation
+  BUILDER_DIR: "$$WORKSPACE_DIR/builder"                               # Path to builder installation
+  GIT_ANNEX_DIR: "$$WORKSPACE_DIR/git-annex"                           # Path to git-annex
   CB_RUNNER_ACCOUNT: $CB_JURECA_RUNNER_ACCOUNT
   CB_PROJECT: $CB_JURECA_PROJECT
 
@@ -26,11 +27,6 @@ variables:
 .preparation-init:
   - |+
     module load Stages/2023 git/2.36.0-nodocs
-    # Install git-annex
-    cd $USER_DATA_DIR
-    wget "http://downloads.kitenet.net/git-annex/linux/current/git-annex-standalone-amd64.tar.gz" -O git-annex.tar.gz -q
-    tar -xzf git-annex.tar.gz -C $GIT_ANNEX_DIR --strip-components 1
-    rm git-annex.tar.gz
     export PATH=$PATH:$GIT_ANNEX_DIR
 
 .benchmarks-init:
