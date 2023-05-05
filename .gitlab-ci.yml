@@ -1,7 +1,10 @@
 variables:
-  BENCHMARK_NAME:
+  BENCHMARK_LABEL:
     description: "Label given to the CI pipeline to identify a benchmark."
     value: "[unlabeled benchmark]"
+  BENCHMARK_ID:
+    description: "Alphanumeric ID for the benchmark denoting the name under which the benchmark results are stored."
+    value: "benchmark"
   SIMULATOR_REPO:
     description: "Simulator repository to use for benchmarking."
     value: "https://github.com/JanVogelsang/nest-simulator"
@@ -41,7 +44,7 @@ variables:
 
 # Only run pipelines manually triggered from the web
 workflow:
-  name: $BENCHMARK_NAME
+  name: $BENCHMARK_LABEL
   rules:
     - if: '$CI_PIPELINE_SOURCE == "web"'
 
@@ -60,7 +63,7 @@ Validate Input:
     - 'apk update && apk add git'
     - |+
       # Make some values were provided for all mandatory variables
-      for var in BENCHMARK_NAME SIMULATOR_REPO SIMULATOR_BRANCH CONFIG_REPO CONFIG_BRANCH CONFIG_PATH RESULTS_REPO_URL RESULTS_BRANCH RESULTS_PATH WORKSPACE ; do
+      for var in BENCHMARK_ID SIMULATOR_REPO SIMULATOR_BRANCH CONFIG_REPO CONFIG_BRANCH CONFIG_PATH RESULTS_REPO_URL RESULTS_BRANCH RESULTS_PATH WORKSPACE ; do
         eval val=\$$var
         if [ -z $val ] ; then
           echo "No value provided for variable ${var}!"
