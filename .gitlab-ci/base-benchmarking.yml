@@ -94,12 +94,12 @@ variables:
     set -euox pipefail
     # TODO: This builds the simulator for each model, one should only call Jube once here and combine the benchmarks for all models
     for benchmark in cb_*${MACHINE}.yml ; do
-      jube-autorun -p "20" -r "--hide-animation -e --outpath=$RESULTS_DIR --include-path=$BENNCH_DIR/config/$MACHINE" $benchmark & pid=$!
-      PID_LIST+=" $pid";
-      # jube run -e --hide-animation --outpath=$RESULTS_DIR --include-path=$BENNCH_DIR/config/$MACHINE $benchmark
-      # jube-autorun -p "60" -r "--hide-animation -e --outpath=$RESULTS_DIR --include-path=$BENNCH_DIR/config/$MACHINE" $benchmark
+      # jube-autorun -p "20" -r "--hide-animation -e --outpath=$RESULTS_DIR --include-path=$BENNCH_DIR/config/$MACHINE" $benchmark & pid=$!
+      # PID_LIST+=" $pid";
+      jube-autorun -p "60" -r "--hide-animation -e --outpath=$RESULTS_DIR --include-path=$BENNCH_DIR/config/$MACHINE" $benchmark
     done
-  - 'wait $PID_LIST'
+  # TODO: Running jube-autorun twice doesn't seem to work (maybe not in the same directory only?)
+  # - 'wait $PID_LIST'
   - 'cat $RESULTS_DIR/000000/000000_build/work/stdout'
   - 'cat $RESULTS_DIR/000000/000000_build/work/stderr'
 
