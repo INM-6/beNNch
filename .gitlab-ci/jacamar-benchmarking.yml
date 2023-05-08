@@ -131,6 +131,9 @@ Benchmarking:
     # Upload analyzed results to specified repository
     - !reference [ .results, upload ]
     # Generate flipbook
-    - 'pip install --ignore-installed ipykernel jupyter nbformat nbconvert'
-    - 'python3 -m ipykernel install --name=benchmarking-env'
+    # TODO: Fix
+    # - 'pip install --ignore-installed ipykernel jupyter nbformat nbconvert'
+    # - 'python3 -m ipykernel install --name=benchmarking-env'
     - !reference [ .results, flipbook ]
+    - 'chmod -R 777 $USER_DATA_DIR/bennch/results/.git'  # Todo: Probably not required, needs fix
+    - 'rm -rf $USER_DATA_DIR'
