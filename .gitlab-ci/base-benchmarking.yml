@@ -91,7 +91,6 @@ variables:
 .run-benchmarks:
   - |+
     cd $BENNCH_DIR/benchmarks
-    set -euox pipefail
     # TODO: This builds the simulator for each model, one should only call Jube once here and combine the benchmarks for all models
     for benchmark in cb_*${MACHINE}.yml ; do
       # jube-autorun -p "20" -r "--hide-animation -e --outpath=$RESULTS_DIR --include-path=$BENNCH_DIR/config/$MACHINE" $benchmark & pid=$!
