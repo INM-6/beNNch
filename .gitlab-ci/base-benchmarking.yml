@@ -76,29 +76,24 @@ variables:
     - 'git pull origin $RESULTS_BRANCH'
     - 'git checkout $RESULTS_BRANCH'
     - 'git annex init'
-  analysis:
-    # Bennchplot package
-    - 'cd $BENNCH_DIR'
-    - |+
-      git submodule set-url -- plot "https://github.com/JanVogelsang/beNNch-plot.git"
-    - 'git submodule update --depth=1 --init --recursive --remote -- plot'
-    # TODO: Should this really be always installed or is this up to the user/machine?
-    - 'cd $BENNCH_DIR/plot'
-    - 'pip install -e .'
 
 
 # Requires jube
 .run-benchmarks:
+  # TODO: This builds the simulator for each benchmark. Instead build it once, set the correct paths, and use it in all benchmark runs
   - |+
     cd $BENNCH_DIR/benchmarks
-    # TODO: This builds the simulator for each model, one should only call Jube once here and combine the benchmarks for all models
     for benchmark in cb_*${MACHINE}.yml ; do
       # jube-autorun -p "20" -r "--hide-animation -e --outpath=$RESULTS_DIR --include-path=$BENNCH_DIR/config/$MACHINE" $benchmark & pid=$!
       # PID_LIST+=" $pid";
-      jube-autorun -p "60" -r "--hide-animation -e --outpath=$RESULTS_DIR --include-path=$BENNCH_DIR/config/$MACHINE" $benchmark
+      jube run --hide-animation -e --outpath=$RESULTS_DIR --include-path=$BENNCH_DIR/config/$MACHINE $benchmark
     done
-  # TODO: Running jube-autorun twice doesn't seem to work (maybe not in the same directory only?)
-  # - 'wait $PID_LIST'
+  - |+
+    while [ `jube status --id=all $RESULTS_DIR` = "RUNNING" ] ; do
+      sleep 30
+      jube continue --id=all
+    done
+  - 'jube analyse --id=all'
   - 'cat $RESULTS_DIR/000000/000000_build/work/stdout'
   - 'cat $RESULTS_DIR/000000/000000_build/work/stderr'
 
