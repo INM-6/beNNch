@@ -89,7 +89,7 @@ variables:
       jube run --hide-animation -e --outpath=$RESULTS_DIR --include-path=$BENNCH_DIR/config/$MACHINE $benchmark
     done
   - |+
-    while [ `jube status --id=all $RESULTS_DIR` = "RUNNING" ] ; do
+    while [ `jube status --id=all $RESULTS_DIR | grep "RUNNING" | wc -l` -ne 0 ] ; do
       sleep 30
       jube continue --id=all --hide-animation $RESULTS_DIR
     done
