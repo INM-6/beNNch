@@ -118,10 +118,12 @@ Benchmarking:
       fi
     # Load all modules required for continuous benchmarking in general and prepare environment
     - !reference [ .environment-init ]
-    # Load modules on login node required for result uploading and make git-annex and bennchplot available (also in Jupyter)
+    # Load modules on login node required for result uploading and make git-annex available
     - !reference [ .results-init ]
     # Activate python venv (after loading modules to use venv interpreter)
     - 'source $USER_DATA_DIR/benchmarking-env/bin/activate'
+    # aMakend bennchplot available (also in Jupyter)
+    - 'export PYTHONPATH=$PYTHONPATH:$BENNCHPLOT_DIR'
     # Prepare results repository
     - !reference [ .prepare-benchmarks, results ]
     # Analyze results
