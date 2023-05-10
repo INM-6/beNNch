@@ -81,8 +81,8 @@ variables:
 # Requires jube
 .run-benchmarks:
   # TODO: This builds the simulator for each benchmark. Instead build it once, set the correct paths, and use it in all benchmark runs
+  - 'cd $BENNCH_DIR/benchmarks'
   - |+
-    cd $BENNCH_DIR/benchmarks
     for benchmark in cb_*${MACHINE}.yml ; do
       # jube-autorun -p "20" -r "--hide-animation -e --outpath=$RESULTS_DIR --include-path=$BENNCH_DIR/config/$MACHINE" $benchmark & pid=$!
       # PID_LIST+=" $pid";
@@ -91,7 +91,7 @@ variables:
   - |+
     while [ `jube status --id=all $RESULTS_DIR` = "RUNNING" ] ; do
       sleep 30
-      jube continue --id=all
+      jube continue --id=all --hide-animation
     done
   - 'jube analyse --id=all'
   - 'cat $RESULTS_DIR/000000/000000_build/work/stdout'
