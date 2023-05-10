@@ -122,7 +122,10 @@ Benchmarking:
     - !reference [ .results-init ]
     # Activate python venv (after loading modules to use venv interpreter)
     - 'source $USER_DATA_DIR/benchmarking-env/bin/activate'
-    # aMakend bennchplot available (also in Jupyter)
+    # Make bennchplot available (also in Jupyter)
+    - 'echo $BENNCHPLOT_DIR'
+    - 'eval BENNCHPLOT_DIR=$BENNCHPLOT_DIR'
+    - 'echo $BENNCHPLOT_DIR'
     - 'export PYTHONPATH=$PYTHONPATH:$BENNCHPLOT_DIR'
     # Prepare results repository
     - !reference [ .prepare-benchmarks, results ]
