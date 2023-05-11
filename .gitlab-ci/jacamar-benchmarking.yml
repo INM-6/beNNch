@@ -71,7 +71,7 @@ Preparation:
     - 'ln -s $BUILDER_DIR/build.sh $USER_DATA_DIR/bin/build'
     - 'export PATH=$USER_DATA_DIR/bin:$PATH'
     # Prepare nest installation (builder plan)
-    - 'mkdir -p $BUILDER_PLANFILE_DIR/nest-simulator/$SIMULATOR_BRANCH/'
+    - 'mkdir -p $BUILDER_PLANFILE_DIR/nest-simulator/$SIMULATOR_BRANCH/benchmarking'
     - 'cp $CI_DIR/templates/nest-builder-template $BUILDER_PLANFILE_DIR/nest-simulator/$SIMULATOR_BRANCH/default'
     - 'cp $CI_DIR/templates/nest-builder-module $BUILDER_PLANFILE_DIR/nest-simulator/$SIMULATOR_BRANCH/default.module'
     - |+
@@ -102,6 +102,7 @@ Benchmarking:
     - 'export PATH=$USER_DATA_DIR/bin:$PATH'
     # Activate python venv
     - 'source $USER_DATA_DIR/benchmarking-env/bin/activate'
+    # Build simulator
     - !reference [ .prepare-benchmarks, build ]
   after_script:
     - |+
