@@ -93,9 +93,16 @@ Benchmarking:
       - configs
     when: on_success
   # variables:
-    # TODO: How much time is really required here? Should it just be the same as the time provided for the longest benchmark? But the scheduling will take time as well. Maybe don't run anything on the compute node at all and just schedule the job on the login node.
-    # SCHEDULER_PARAMETERS: "--account=$CB_RUNNER_ACCOUNT --time=00:30:00 --nodes=1"
+    # TODO: How much time is really required here? Should this also be a config parameter maybe?
+    SCHEDULER_PARAMETERS: "--account=$CB_RUNNER_ACCOUNT --time=00:15:00 --nodes=1"
   script:
+    - !reference [ .prepare-benchmarks, build ]
+  after_script:
+    - |+
+      if [ $CI_JOB_STATUS != 'success' ] ; then
+        echo "Compilation not successful, exiting without running benchmarks..."
+        exit 1
+      fi
     # Copy configs for archiving as artifacts
     - 'cp -r $BENNCH_DIR/config/$MACHINE $CI_PROJECT_DIR/configs'
     # Load all modules required for continuous benchmarking in general and prepare environment
@@ -110,12 +117,6 @@ Benchmarking:
     - 'source $USER_DATA_DIR/benchmarking-env/bin/activate'
     # Run benchmarks
     - !reference [ .run-benchmarks ]
-  after_script:
-    - |+
-      if [ $CI_JOB_STATUS != 'success' ] ; then
-        echo "The benchmarking process was not successful, exiting without uploading results..."
-        exit 1
-      fi
     # Load all modules required for continuous benchmarking in general and prepare environment
     - !reference [ .environment-init ]
     # Load modules on login node required for result uploading and make git-annex available
