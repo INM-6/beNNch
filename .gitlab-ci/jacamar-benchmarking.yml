@@ -71,7 +71,7 @@ Preparation:
     - 'ln -s $BUILDER_DIR/build.sh $USER_DATA_DIR/bin/build'
     - 'export PATH=$USER_DATA_DIR/bin:$PATH'
     # Prepare nest installation (builder plan)
-    - 'mkdir -p $BUILDER_PLANFILE_DIR/nest-simulator/$SIMULATOR_BRANCH/benchmarking'
+    - 'mkdir -p $BUILDER_PLANFILE_DIR/nest-simulator/$SIMULATOR_BRANCH'
     - 'cp $CI_DIR/templates/nest-builder-template $BUILDER_PLANFILE_DIR/nest-simulator/$SIMULATOR_BRANCH/default'
     - 'cp $CI_DIR/templates/nest-builder-module $BUILDER_PLANFILE_DIR/nest-simulator/$SIMULATOR_BRANCH/default.module'
     - |+
