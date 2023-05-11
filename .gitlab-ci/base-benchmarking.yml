@@ -92,7 +92,7 @@ variables:
       sleep 30
       jube continue --id=all --hide-animation $RESULTS_DIR
     done
-  - 'jube analyse --id=all' $RESULTS_DIR
+  - 'jube analyse --id=all $RESULTS_DIR'
 
 # Requires git, git-annex
 .results:
