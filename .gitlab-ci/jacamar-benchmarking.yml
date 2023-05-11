@@ -102,6 +102,8 @@ Benchmarking:
     - 'export PATH=$USER_DATA_DIR/bin:$PATH'
     # Activate python venv
     - 'source $USER_DATA_DIR/benchmarking-env/bin/activate'
+    # Load user-defined modules on compute node required for benchmarks
+    - !reference [ .prepare-benchmarks, modules-requirements ]
     # Build simulator
     - !reference [ .prepare-benchmarks, build ]
   after_script:
