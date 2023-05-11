@@ -16,7 +16,7 @@ variables:
   - jacamar
 
 .benchmark-tags:
-  - shell  # compute
+  - compute
   - jurecadc
   - jacamar
 
