@@ -92,7 +92,7 @@ Benchmarking:
       - ${SIMULATOR_BRANCH}-threads.slides.html
       - configs
     when: on_success
-  # variables:
+  variables:
     # TODO: How much time is really required here? Should this also be a config parameter maybe?
     SCHEDULER_PARAMETERS: "--account=$CB_RUNNER_ACCOUNT --time=00:15:00 --nodes=1"
   script:
