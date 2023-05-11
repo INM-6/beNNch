@@ -85,8 +85,6 @@ variables:
   - 'cd $BENNCH_DIR/benchmarks'
   - |+
     for benchmark in cb_*${MACHINE}.yml ; do
-      # jube-autorun -p "20" -r "--hide-animation -e --outpath=$RESULTS_DIR --include-path=$BENNCH_DIR/config/$MACHINE" $benchmark & pid=$!
-      # PID_LIST+=" $pid";
       jube run --hide-animation -e --outpath=$RESULTS_DIR --include-path=$BENNCH_DIR/config/$MACHINE $benchmark
     done
   - |+
@@ -94,7 +92,7 @@ variables:
       sleep 30
       jube continue --id=all --hide-animation $RESULTS_DIR
     done
-  - 'jube analyse --id=all'
+  - 'jube analyse --id=all' $RESULTS_DIR
 
 # Requires git, git-annex
 .results:
