@@ -78,8 +78,7 @@ variables:
     - 'git annex init'
   build:
     # TODO: Make this generic to not only work for NEST
-    - build nest-simulator $SIMULATOR_BRANCH
-
+    - build -f nest-simulator $SIMULATOR_BRANCH
 
 # Requires jube
 .run-benchmarks:
