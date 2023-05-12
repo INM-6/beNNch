@@ -128,7 +128,7 @@ Benchmarking:
     - 'source $USER_DATA_DIR/benchmarking-env/bin/activate'
     # Make bennchplot available (also in Jupyter)
     - 'echo $BENNCHPLOT_DIR'
-    - 'eval BENNCHPLOT_DIR=$BENNCHPLOT_DIR'
+    - 'eval BENNCHPLOT_DIR="$BENNCHPLOT_DIR"'
     - 'echo $BENNCHPLOT_DIR'
     - 'export PYTHONPATH=$PYTHONPATH:$BENNCHPLOT_DIR'
     # Prepare results repository
