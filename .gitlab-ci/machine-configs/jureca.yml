@@ -24,11 +24,11 @@ variables:
   - |+
     module load Stages/2023 Python/3.10.4 PyYAML/6.0
     jutil env activate -p $CB_PROJECT
+    export PATH=$PATH:$GIT_ANNEX_DIR
 
 .preparation-init:
   - |+
     module load Stages/2023 git/2.36.0-nodocs
-    export PATH=$PATH:$GIT_ANNEX_DIR
 
 .benchmarks-init:
   - |+
@@ -37,4 +37,3 @@ variables:
 .results-init:
   - |+
     module load Stages/2023 Python/3.10.4 PyYAML/6.0 SciPy-bundle/2022.05 matplotlib/3.5.2 git/2.36.0-nodocs IPython/8.5.0
-    export PATH=$PATH:$GIT_ANNEX_DIR
