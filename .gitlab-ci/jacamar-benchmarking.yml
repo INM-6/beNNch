@@ -112,8 +112,6 @@ Benchmarking:
         echo "Compilation not successful, exiting without running benchmarks..."
         exit 1
       fi
-    # Copy configs for archiving as artifacts
-    - 'cp -r $BENNCH_DIR/config/$MACHINE $CI_PROJECT_DIR/configs'
     # Load all modules required for continuous benchmarking in general and prepare environment
     - !reference [ .environment-init ]
     # Load modules on for benchmark execution
@@ -124,8 +122,6 @@ Benchmarking:
     - 'source $USER_DATA_DIR/benchmarking-env/bin/activate'
     # Run benchmarks
     - !reference [ .run-benchmarks ]
-    # Load all modules required for continuous benchmarking in general and prepare environment
-    - !reference [ .environment-init ]
     # Load modules on login node required for result uploading and make git-annex available
     - !reference [ .results-init ]
     # Activate python venv (after loading modules to use venv interpreter)
@@ -142,9 +138,8 @@ Benchmarking:
     # Upload analyzed results to specified repository
     - !reference [ .results, upload ]
     # Generate flipbook
-    # TODO: Fix
-    # - 'pip install --ignore-installed ipykernel jupyter nbformat nbconvert'
-    # - 'python3 -m ipykernel install --name=benchmarking-env'
     - !reference [ .results, flipbook ]
+    # Copy configs for archiving as artifacts
+    - 'cp -r $BENNCH_DIR/config/$MACHINE $CI_PROJECT_DIR/configs'
     - 'chmod -R 777 $USER_DATA_DIR/bennch/results/.git'  # Todo: Probably not required, needs fix
-    - 'rm -rf $USER_DATA_DIR'
+    # - 'rm -rf $USER_DATA_DIR'
