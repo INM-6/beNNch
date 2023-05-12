@@ -90,7 +90,10 @@ variables:
   - |+
     while [ "$(jube status --id=all "$RESULTS_DIR" | grep "RUNNING" | wc -l)" -ne 0 ] ; do
       sleep 30
-      jube continue --error --id=all --hide-animation "$RESULTS_DIR" && echo "continue done" || echo "failed with return code $?"
+      jube continue --error --id=all --hide-animation "$RESULTS_DIR" && echo "continue done" || echo "continue failed with return code $?"
+      jube status --id=all "$RESULTS_DIR" && echo "status done" || echo "status failed with return code $?
+      jube status --id=all "$RESULTS_DIR" | grep "RUNNING" && echo "status done" || echo "status failed with return code $?
+      jube status --id=all "$RESULTS_DIR" | grep "RUNNING" | wc -l && echo "status done" || echo "status failed with return code $?
     done
   - 'jube analyse --id=all "$RESULTS_DIR"'
 
