@@ -88,7 +88,7 @@ variables:
       jube run --hide-animation -e --outpath=$RESULTS_DIR --include-path=$BENNCH_DIR/config/$MACHINE $benchmark
     done
   - |+
-    while [ "$(jube status --id=all "$RESULTS_DIR" | grep "RUNNING" | wc -l)" -ne 0 ] ; do
+    while [ "$(jube status --id=all "$RESULTS_DIR" | grep -q "RUNNING")" ] ; do
       sleep 30
       jube continue --error --id=all --hide-animation "$RESULTS_DIR" && echo "continue done" || echo "continue failed with return code $?"
       jube status --id=all "$RESULTS_DIR" && echo "status done" || echo "status failed with return code $?"
