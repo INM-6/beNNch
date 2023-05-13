@@ -91,7 +91,7 @@ variables:
     while jube status --id=all "$RESULTS_DIR" | grep -q "RUNNING" ; do
       sleep 20 || echo "sleep $?"
       jube continue --error --id=all --hide-animation "$RESULTS_DIR" || echo "continue $?"
-      jube status --id=all "$RESULTS_DIR" echo "jube $?"
+      jube status --id=all "$RESULTS_DIR" || echo "jube $?"
       jube status --id=all "$RESULTS_DIR" | grep -q "RUNNING" || echo "status $?"
       sleep 10
     done

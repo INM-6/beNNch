@@ -1,3 +1,5 @@
+# Scan the configuration file for all repositories and clone them.
+# Collect all machines for which benchmarks should be run and save them to an environment variable.
 
 import sys
 import os

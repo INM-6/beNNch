@@ -1,3 +1,5 @@
+# Create a single configuration file for a specific benchmark by collecting all required information from various places.
+
 import sys
 import os
 import copy

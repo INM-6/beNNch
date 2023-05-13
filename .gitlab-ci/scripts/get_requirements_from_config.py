@@ -1,3 +1,5 @@
+# Read all requirements from the configuration file and return them.
+
 import sys
 import os
 
