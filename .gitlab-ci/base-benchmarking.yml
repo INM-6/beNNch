@@ -89,10 +89,11 @@ variables:
     done
   - |+
     while jube status --id=all "$RESULTS_DIR" | grep -q "RUNNING" ; do
-      sleep 30
-      jube continue --error --id=all --hide-animation "$RESULTS_DIR" || echo "continue $?"
-      jube status --id=all "$RESULTS_DIR" || echo "jube $?"
-      jube status --id=all "$RESULTS_DIR" | grep -q "RUNNING" || echo "status $?"
+      sleep 20
+      jube continue --error --id=all --hide-animation "$RESULTS_DIR" && echo "continue $?" || echo "continue $?"
+      jube status --id=all "$RESULTS_DIR" && echo "jube $?" || echo "jube $?"
+      jube status --id=all "$RESULTS_DIR" | grep -q "RUNNING" && echo "status $?" || echo "status $?"
+      sleep 10
     done
   - 'jube analyse --id=all "$RESULTS_DIR"'
 
