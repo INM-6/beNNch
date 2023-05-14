@@ -1,5 +1,23 @@
-# Scan the configuration file for all repositories and clone them.
-# Collect all machines for which benchmarks should be run and save them to an environment variable.
+"""
+Copyright (C) 2023 Forschungszentrum Juelich GmbH, INM-6
+
+This program is free software: you can redistribute it and/or modify it under
+the terms of the GNU General Public License as published by the Free Software
+Foundation, either version 3 of the License, or (at your option) any later
+version.
+This program is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+PARTICULAR PURPOSE. See the GNU General Public License for more details.
+You should have received a copy of the GNU General Public License along with
+this program. If not, see <https://www.gnu.org/licenses/>.
+
+SPDX-License-Identifier: GPL-3.0-or-later
+"""
+
+"""
+Scan the configuration file for all repositories and clone them.
+Collect all machines for which benchmarks should be run and save them to an environment variable.
+"""
 
 import sys
 import os
@@ -57,3 +75,4 @@ with open(variables_env_path, 'w') as variables_env:
         variables_env.write(f"CB_{machine.upper()}_RUNNER_ACCOUNT={machine_conf.get('account', '')}\n")
 
     variables_env.write(f"CB_MACHINES={','.join(out_machines)}\n")
+    variables_env.write(f"CB_DEPENDENCIES={config['dependencies']}")

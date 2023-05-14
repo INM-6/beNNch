@@ -1,7 +1,6 @@
 #!/bin/bash
 #
-# Builder – Compile scripts for local installs of software packages.
-# Copyright (C) 2020 Forschungszentrum Jülich GmbH, INM-6
+# Copyright (C) 2023 Forschungszentrum Jülich GmbH, INM-6
 #
 # Builder is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by

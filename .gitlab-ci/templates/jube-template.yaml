@@ -1,6 +1,4 @@
-# beNNch - Unified execution, collection, analysis and
-# comparison of neural network simulation benchmarks.
-# Copyright (C) 2021 Forschungszentrum Juelich GmbH, INM-6
+# Copyright (C) 2023 Forschungszentrum Juelich GmbH, INM-6
 
 # This program is free software: you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -14,34 +12,85 @@
 
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-include-path:
-  - ../helpers/
-  - ../config/
-
-outpath: ../../benchmark_results/
-
 parameterset:
-  name: model_commands
+  - name: bench_parameters
+    parameter:
+      - {name: scale, mode: python, type: float, "_": $scale_N*$num_nodes if "$scaling_type" == "weak" else $scale_N}
+      - {name: num_vps, type: int, mode: python, "_": $tasks_per_node * $threads_per_task * $num_nodes}
+      - {name: num_tasks, type: int, mode: python, "_": $tasks_per_node * $num_nodes}
+  - name: run_benchmark
+    parameter:
+      -
+       name: exec_bench
+       separator: ;
+       _: |
+        module use $buildermod
+        if [ -z "$suffix" ]
+        then
+           module load $simulator/$version/$variant
+        else
+           module load $simulator/$version/$variant_$suffix
+        fi
+        export OMP_NUM_THREADS=$threads_per_task
+        export OMP_DISPLAY_ENV=VERBOSE
+        export OMP_DISPLAY_AFFINITY=TRUE
+        export OMP_PROC_BIND=TRUE
+        ${optional_run_command}
+        srun --cpus-per-task=${threads_per_task} ${affinity} python ${run_file} ${run_args}
+        srun -n 1 --nodes 1 python ${base_path}/helpers/collect_timer_data.py ${log_path}
+        srun -n 1 --nodes 1 python ${base_path}/helpers/cpu_logging.py ${jube_wp_abspath}
+        cd ${model_path}
+        model_git_commit_hash=$(git rev-parse HEAD)
+        cd -
+        cat >job.json <<EOT
+        {"num_nodes":"${num_nodes}",
+        "tasks_per_node":"${tasks_per_node}",
+        "threads_per_task":"${threads_per_task}",
+        "affinity":"${affinity}",
+        "simulator":"${simulator}",
+        "simulator-version":"${version}",
+        "simulator-variant":"${variant}",
+        "simulator-suffix":"${suffix}",
+        "model_name":"${model_name}",
+        "model_git_commit_hash":"${model_git_commit_hash}",
+        "network_state":"${network_state}",
+        "record_spikes":"${record_spikes}",
+        "scaling_type":"${scaling_type}"
+        }
+        EOT
+        metadata_uuid=$(uuidgen)
+        srun -n 1 --nodes 1 python ${base_path}/helpers/metadata_archive.py ${jube_wp_abspath}/${metadata_uuid}
+        cp ${jube_wp_abspath}/stderr ${jube_wp_abspath}/${metadata_uuid}
+        tar -czf ${metadata_uuid}.tgz -C ${jube_wp_abspath} ${metadata_uuid}
+        rm -r ${jube_wp_abspath}/${metadata_uuid}
 
 fileset:
-  name: model_files
+  name: bench_files
+  copy: 
+    - job.slurm.in
 
 substituteset:
-  name: model_substitutions
+  - name: slurm_jobfile
+    iofile: {in: job.slurm.in, out: job.slurm}
+    sub:
+      - {source: "#PARTITION#", dest: $partition}
+      - {source: "#NODES#", dest: $num_nodes}
+      - {source: "#NTASKS_PER_NODE#", dest: $tasks_per_node}
+      - {source: "#TIME#", dest: $walltime}
+      - {source: "#COMMANDS#", dest: $exec_bench}
+      - {source: "#ACCOUNT#", dest: $account}
 
 step:
   - name: bench
     use:
-    - model_commands, model_files, model_substitutions
-    - from: user_config.yaml
-      _: user_config
-    - from: MODEL_CONFIG
-      _: file_paths,model_parameters,machine_parameters,software_parameters
-    - from: helpers.yaml
-      _: slurm_bench,run_benchmark,files,sub_bench_job,scaling_experiment,init_job_file_variables
-    do:
-      done_file: $ready_file
-      _: $submit_cmd $job_file
+      - bench_parameters, bench_files, bench_substitutions, slurm_jobfile
+      - from: user_config.yaml
+        _: user_config
+      - from: MODEL_CONFIG
+        _: file_paths,model_parameters,machine_parameters,software_parameters
+      do:
+        done_file: ready
+        _: sbatch job.slurm
 
 analyser:
   name: analyse

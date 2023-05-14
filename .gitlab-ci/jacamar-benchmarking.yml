@@ -1,3 +1,20 @@
+# Copyright (C) 2023 Forschungszentrum Jülich GmbH, INM-6
+#
+# Builder is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# Builder is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Builder.  If not, see <https://www.gnu.org/licenses/>.
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 include:
   local: .gitlab-ci/base-benchmarking.yml
 
@@ -40,6 +57,7 @@ Preparation:
     - !reference [ .preparation-init ]
     # Create python venv
     - 'python -m venv --system-site-packages $USER_DATA_DIR/benchmarking-env'
+    - 'pip install git+ssh://git@github.com/INM-6/gather-metadata.git'
     # Activate python venv
     - 'source $USER_DATA_DIR/benchmarking-env/bin/activate'
     # Install all pip packages into venv specified in config file
@@ -75,7 +93,7 @@ Preparation:
     - 'cp $CI_DIR/templates/nest-builder-template $BUILDER_PLANFILE_DIR/nest-simulator/$SIMULATOR_BRANCH/default'
     - 'cp $CI_DIR/templates/nest-builder-module $BUILDER_PLANFILE_DIR/nest-simulator/$SIMULATOR_BRANCH/default.module'
     - |+
-      for var in CB_RUNNER_ACCOUNT CB_PROJECT USER_DATA_DIR WORKSPACE_DIR BENNCH_DIR USER_DATA_DIR SIMULATOR_REPO SIMULATOR_BRANCH SIMULATOR_REPO_DIR RESULTS_DIR RESULTS_REPO_URL RESULTS_BRANCH RESULTS_PATH BUILDER_DIR BUILDER_MODULES_DIR BUILDER_PLANFILE_DIR BUILDER_PACKAGE_DIR BUILDER_SOURCE_DIR BUILDER_INSTALL_DIR BUILDER_BUILD_DIR BUILDER_LOG_DIR GIT_ANNEX_DIR CONFIG_DIR MODELS_DIR BUILDER_CONFIG_PATH ; do
+      for var in CB_RUNNER_ACCOUNT CB_PROJECT CB_DEPENDENCIES USER_DATA_DIR WORKSPACE_DIR BENNCH_DIR USER_DATA_DIR SIMULATOR_REPO SIMULATOR_BRANCH SIMULATOR_REPO_DIR RESULTS_DIR RESULTS_REPO_URL RESULTS_BRANCH RESULTS_PATH BUILDER_DIR BUILDER_MODULES_DIR BUILDER_PLANFILE_DIR BUILDER_PACKAGE_DIR BUILDER_SOURCE_DIR BUILDER_INSTALL_DIR BUILDER_BUILD_DIR BUILDER_LOG_DIR GIT_ANNEX_DIR CONFIG_DIR MODELS_DIR BUILDER_CONFIG_PATH ; do
         eval val=\$$var
         echo "${var}=${val}" >> $CI_PROJECT_DIR/benchmark_variables.env
       done
