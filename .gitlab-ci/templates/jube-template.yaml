@@ -19,106 +19,43 @@ include-path:
   - ../config/
 
 outpath: ../../benchmark_results/
-parameterset:
-      name: model_commands
-fileset:
-# load and copy model-specific files
-    name: model_files
-    copy:
-      - $model_path/hpc_benchmark.py
 
-# This subsituteset maps the parameters that were defined in this yaml
-# file to the target patterns that JUBE will search for in the
-# simulation files. The pattern file is hpc_benchmark.py. The
-# source pattern will be replaced by the values.
+parameterset:
+  name: model_commands
+
+fileset:
+  name: model_files
+
 substituteset:
-      name: model_substitutions
-      iofile: {in: hpc_benchmark.py, out: hpc_benchmark.py}
-      sub:
-      - {source: "{num_vps}", dest: $num_vps}
-      - {source: "{record_spikes}", dest: $record_spikes}
-      - {source: "{model_time_sim}", dest: $model_time_sim}
-      - {source: "{model_time_presim}", dest: $model_time_presim}
-      - {source: "{N_SCALING}", dest: $scale}
-      - {source: "{rng_seed}", dest: $rng_seed}
+  name: model_substitutions
 
 step:
-# build step
-    - name: build
-      export: true
-      use:
-      - from: user_config.yaml
-        _: user_config
-      - from: hpc_benchmark_config.yml
-        _: file_paths,model_parameters,software_parameters
-      - from: helpers.yaml
-        _: slurm_build,run_build,files,sub_build_job
-      do:
-        - build --get --silent ${simulator} ${version} ${variant} ${suffix} && export DEP=`$submit_cmd --parsable $job_file`
+  - name: bench
+    use:
+    - model_commands, model_files, model_substitutions
+    - from: user_config.yaml
+      _: user_config
+    - from: MODEL_CONFIG
+      _: file_paths,model_parameters,machine_parameters,software_parameters
+    - from: helpers.yaml
+      _: slurm_bench,run_benchmark,files,sub_bench_job,scaling_experiment,init_job_file_variables
+    do:
+      done_file: $ready_file
+      _: $submit_cmd $job_file
 
-# benchmark step
-    - name: bench
-      depend: build
-      use:
-      - model_commands, model_files, model_substitutions
-      - from: user_config.yaml
-        _: user_config
-      - from: hpc_benchmark_config.yml
-        _: file_paths,model_parameters,machine_parameters,software_parameters
-      - from: helpers.yaml
-        _: slurm_bench,run_benchmark,files,sub_bench_job,scaling_experiment,init_job_file_variables
-      do:
-        done_file: $ready_file
-        _: $submit_cmd --dependency=afterok:$$DEP  $job_file
-# analysis step
 analyser:
-      name: analyse
-      use:
-        - from: helpers.yaml
-          _: timer_pattern
-      analyse:
-        step: bench
-        file: timer_data.txt
+  name: analyse
+  use:
+    - from: helpers.yaml
+      _: timer_pattern
+  analyse:
+    step: bench
+    file: timer_data.txt
 
-# result step
 result:
-      name: result
-      use: analyse
-      table:
-        name: result_table
-        style: csv
-        sort: number
-        column:
-        - rng_seed
-        - num_nodes
-        - threads_per_task
-        - tasks_per_node
-        - model_time_sim
-        - wall_time_create
-        - wall_time_connect
-        - wall_time_sim
-        - wall_time_phase_collocate
-        - wall_time_phase_communicate
-        - wall_time_phase_deliver
-        - wall_time_phase_update
-        - wall_time_communicate_target_data
-        - wall_time_gather_spike_data
-        - wall_time_gather_target_data
-        - wall_time_communicate_prepare
-        - py_time_kernel_prepare
-        - py_time_network_local
-        - py_time_network_global
-        - py_time_simulate
-        - py_time_presimulate
-        - py_time_network_prepare
-        - py_time_create
-        - py_time_connect_area
-        - py_time_connect_cc
-        - py_time_connect
-        - base_memory
-        - network_memory
-        - init_memory
-        - total_memory
-        - num_connections
-        - local_spike_counter
-        - e_counter
+  name: result
+  use: analyse
+  table:
+    name: result_table
+    style: csv
+    sort: number
