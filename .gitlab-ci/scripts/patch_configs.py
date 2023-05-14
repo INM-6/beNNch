@@ -28,13 +28,10 @@ import yaml
 
 
 config_file_path = sys.argv[1]
-jube_output_dir = sys.argv[2]
-config_output_dir = sys.argv[3]
-builder_modules_dir = sys.argv[4]
-bennch_dir = sys.argv[5]
-model_repos_dir = sys.argv[6]
-simulator_branch = sys.argv[7]
-machine = sys.argv[8]
+config_output_dir = sys.argv[2]
+builder_modules_dir = sys.argv[3]
+simulator_branch = sys.argv[4]
+machine = sys.argv[5]
 
 config_dir = os.path.dirname(config_file_path)
 
@@ -67,16 +64,7 @@ for model_name, benchmark_configs in config["benchmarks"].items():
         continue
 
     combined_configs[model_name] = dict()
-
-    # File paths
-    combined_config = {"parameterset": [
-    {
-        "name": "file_paths",
-        "parameter": [
-            {"name": "base_path", "type": "string", "_": os.path.abspath(bennch_dir)},
-            {"name": "model_path", "type": "string", "_": os.path.abspath(os.path.join(model_repos_dir, model_name))}
-        ]
-    }]}
+    combined_config = {"parameterset": list()}
 
     # Software parameters
     combined_config["parameterset"].append(
@@ -90,8 +78,7 @@ for model_name, benchmark_configs in config["benchmarks"].items():
                 {"name": "buildermod", "_": builder_modules_dir}
             ]
         })
-    
-    model_jube_path = os.path.join(config_dir, benchmark_configs["jube_path"])
+
     model_config_path = os.path.join(config_dir, benchmark_configs["config_path"])
     with open(model_config_path) as model_config_file:
         model_config = yaml.safe_load(model_config_file)
@@ -121,6 +108,17 @@ for model_name, benchmark_configs in config["benchmarks"].items():
                 "parameter": machine_config["machine_parameters"]
             })
 
+        # User config
+        combined_config["parameterset"].append(
+            {
+                "name": "user_config",
+                "parameter": [
+                    {"name": "account", "type": "string", "_": config["user_config"][machine]["account"]},
+                    {"name": "email_address", "type": "string", "_": config["user_config"][machine]["email_address"]},
+                    {"name": "partition", "type": "string", "_": config["user_config"][machine]["partition"]}
+                ]
+            })
+
         # TODO: Patch configuration using environment variables
         # to_remove = list()
         # for i, overwrite in enumerate(config_overwrites):
@@ -136,16 +134,9 @@ for model_name, benchmark_configs in config["benchmarks"].items():
         # for i in to_remove:
         #     del config_overwrites[i]
 
-        # Write out configuration and jube files
-        # Dump Jube file
-        if not os.path.exists(jube_output_dir):
-            os.makedirs(jube_output_dir)
-        shutil.copyfile(model_jube_path, os.path.join(jube_output_dir, f"cb_{model_name}_{machine_name}.yml"))
         # Dump config file
         with open(os.path.join(config_output_dir, os.path.basename(model_config_path)), 'w') as outfile:
             yaml.dump(combined_config, outfile, default_flow_style=False)
-        print("Config path:", os.path.join(config_output_dir, os.path.basename(model_config_path)))
-        print("Config:", combined_config)
 
 for conf in combined_configs.values():
     if len(conf) > 0:
@@ -153,30 +144,6 @@ for conf in combined_configs.values():
 else:
     print("No config for any model provided for this machine, aborting...")
     exit(1)
-
-# Generate, patch, and dump user config
-user_config = {"parameterset": {"name": "user_config", "parameter": 
-    [{"name": "account", "type": "string", "_": config["user_config"][machine]["account"]},
-    {"name": "email_address", "type": "string", "_": config["user_config"][machine]["email_address"]},
-    {"name": "partition", "type": "string", "_": config["user_config"][machine]["partition"]}]
-}}
-
-# Patch configuration using environment variables
-to_remove = list()
-for i, overwrite in enumerate(config_overwrites):
-    try:
-        to_overwrite = user_config
-        for key_part in overwrite[0][:-1]:
-            to_overwrite = to_overwrite[key_part]
-        to_overwrite[key_part[-1]] = overwrite[1]
-        to_remove.append(i)
-    except:
-        pass
-for i in to_remove:
-    del config_overwrites[i]
-
-with open(os.path.join(config_output_dir, "user_config.yaml"), 'w') as outfile:
-    yaml.dump(user_config, outfile, default_flow_style=False) 
 
 # Check for any leftover (unapplied) overwrites
 for overwrite_key, overwrite_value in config_overwrites:

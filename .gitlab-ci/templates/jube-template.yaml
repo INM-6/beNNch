@@ -65,9 +65,9 @@ parameterset:
         rm -r ${jube_wp_abspath}/${metadata_uuid}
 
 fileset:
-  name: bench_files
-  copy: 
-    - job.slurm.in
+  - name: bench_files
+    copy: 
+      - job.slurm.in
 
 substituteset:
   - name: slurm_jobfile
@@ -84,10 +84,8 @@ step:
   - name: bench
     use:
       - bench_parameters, bench_files, bench_substitutions, slurm_jobfile
-      - from: user_config.yaml
-        _: user_config
       - from: MODEL_CONFIG
-        _: file_paths,model_parameters,machine_parameters,software_parameters
+        _: user_config, model_parameters, machine_parameters, software_parameters
       do:
         done_file: ready
         _: sbatch job.slurm

@@ -23,6 +23,7 @@ variables:
   WORKSPACE_DIR: "$$USERSOFTWARE_djinb33/ci-bennch/$WORKSPACE/jureca"  # Directory to persistent files accessible from both login and compute nodes
   BUILDER_DIR: "$$WORKSPACE_DIR/builder"                               # Path to builder installation
   GIT_ANNEX_DIR: "$$WORKSPACE_DIR/git-annex"                           # Path to git-annex
+  BENNCH_DIR:"$$WORKSPACE_DIR/bennch"                               # Path to git-annex
   BENNCHPLOT_DIR: "$$WORKSPACE_DIR/bennchplot"                         # Path to beNNch-plot
   CB_RUNNER_ACCOUNT: $CB_JURECA_RUNNER_ACCOUNT
   CB_PROJECT: $CB_JURECA_PROJECT

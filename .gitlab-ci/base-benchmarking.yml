@@ -19,6 +19,7 @@ variables:
   SIMULATOR_REPO_DIR: "$$USER_DATA_DIR/repository/"
   CI_DIR: "$CI_PROJECT_DIR/.gitlab-ci"
   SCRIPTS_DIR: "$CI_DIR/scripts"
+  TEMPLATES_DIR: "$CI_DIR/templates"
 
 .base-benchmarking:
   allow_failure: false
@@ -33,7 +34,7 @@ variables:
     # Only make benchmark for machine runnable if configuration was provided for it
     - if: $CB_MACHINES =~ $CB_MACHINE
 
-# Requires git, python3 and pyyaml
+# Requires git, python3, and pyyaml
 .prepare-benchmarks:
   # Move all artifacts to user data directory
   artifacts:
@@ -59,8 +60,9 @@ variables:
     - 'eval GIT_ANNEX_DIR="$GIT_ANNEX_DIR"'
     - 'eval CONFIG_DIR="$CONFIG_DIR"'
     - 'eval MODELS_DIR="$MODELS_DIR"'
+    - 'eval BENNCHPLOT_DIR="$BENNCHPLOT_DIR"'
   create-dirs:
-    - 'mkdir -p $USER_DATA_DIR $WORKSPACE_DIR $SIMULATOR_REPO_DIR $BENNCH_DIR $BUILDER_DIR $BUILDER_MODULES_DIR $BUILDER_PLANFILE_DIR $BUILDER_PACKAGE_DIR $BUILDER_SOURCE_DIR $BUILDER_INSTALL_DIR $BUILDER_BUILD_DIR $BUILDER_LOG_DIR $GIT_ANNEX_DIR $CONFIG_DIR $MODELS_DIR'
+    - 'mkdir -p $USER_DATA_DIR $WORKSPACE_DIR $SIMULATOR_REPO_DIR $BENCHMARKS_DIR/configs/$MACHINE $BENCHMARKS_DIR/jube $BUILDER_MODULES_DIR $BUILDER_PLANFILE_DIR $BUILDER_PACKAGE_DIR $BUILDER_SOURCE_DIR $BUILDER_INSTALL_DIR $BUILDER_BUILD_DIR $BUILDER_LOG_DIR $CONFIG_DIR $MODELS_DIR'
   apt-requirements:
     - |+
       REQUIREMENTS=$(python3 $SCRIPTS_DIR/get_requirements_from_config.py apt ${CONFIG_DIR}/$CONFIG_PATH $MACHINE)
@@ -81,8 +83,7 @@ variables:
       fi
   configs:
     - |+
-      rm -rf $BENNCH_DIR/config/* $BENNCH_DIR/benchmarks/*
-      python3 $SCRIPTS_DIR/patch_configs.py ${CONFIG_DIR}/$CONFIG_PATH $BENNCH_DIR/benchmarks $BENNCH_DIR/config/$MACHINE $BUILDER_MODULES_DIR $BENNCH_DIR $MODELS_DIR $SIMULATOR_BRANCH $MACHINE
+      python3 $SCRIPTS_DIR/patch_configs.py ${CONFIG_DIR}/$CONFIG_PATH $BENCHMARKS_DIR/configs/$MACHINE $BUILDER_MODULES_DIR $SIMULATOR_BRANCH $MACHINE
   results:
     # Set result repository
     - 'cd $BENNCH_DIR'
@@ -93,9 +94,13 @@ variables:
     - 'git pull origin $RESULTS_BRANCH'
     - 'git checkout $RESULTS_BRANCH'
     - 'git annex init'
-  build:
+  build-simulator:
     # TODO: Make this generic to not only work for NEST
-    - build -f nest-simulator $SIMULATOR_BRANCH
+    - 'build -f nest-simulator $SIMULATOR_BRANCH'
+  build-benchmarks:
+    - 
+      # TODO: collect_timer_data, metadata archiving
+      python3 $SCRIPTS_DIR/build_benchmarks.py $TEMPLATES_DIR/jube-template.yml ${CONFIG_DIR}/$CONFIG_PATH $MODELS_DIR $BENCHMARKS_DIR/jube $MACHINE
 
 # Requires jube
 .run-benchmarks:
@@ -114,7 +119,7 @@ variables:
     done
   - 'jube analyse --id=all "$RESULTS_DIR"'
 
-# Requires git, git-annex
+# Requires python3, pyyaml, jupyter, nbconvert, git, and git-annex
 .results:
   analysis:
     - 'cd $BENNCH_DIR/results'
