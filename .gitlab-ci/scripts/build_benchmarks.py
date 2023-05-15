@@ -33,7 +33,7 @@ machine = sys.argv[6]                # name of the machine the benchmark is runn
 
 config_dir = os.path.dirname(config_path)
 
-with(jube_template_path, 'r') as template_file:
+with open(jube_template_path, 'r') as template_file:
     jube_benchmark_template = yaml.safe_load(template_file)
 
 models = os.environ.get("CB_MODELS", [])
@@ -44,7 +44,7 @@ if models:
 if not os.path.exists(config_output_dir):
     os.makedirs(config_output_dir)
 
-with(config_path, 'r') as config_file:
+with open(config_path, 'r') as config_file:
     config = yaml.safe_load(config_file)["benchmarks"]
 
 for model_name, benchmark_configs in config.items():
@@ -55,7 +55,7 @@ for model_name, benchmark_configs in config.items():
     model_config_path = os.path.join(config_dir, benchmark_configs["config_path"])
 
     # Model parameters
-    with(model_config_path, 'r') as benchmark_config_file:
+    with open(model_config_path, 'r') as benchmark_config_file:
         benchmark_config = yaml.safe_load(benchmark_config_file)
         model_parameters = benchmark_config["model_parameters"]
         run_parameters = benchmark_config["run_parameters"]
