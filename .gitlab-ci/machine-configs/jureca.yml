@@ -23,10 +23,10 @@ variables:
   WORKSPACE_DIR: "$$USERSOFTWARE_djinb33/ci-bennch/$WORKSPACE/jureca"  # Directory to persistent files accessible from both login and compute nodes
   BUILDER_DIR: "$$WORKSPACE_DIR/builder"                               # Path to builder installation
   GIT_ANNEX_DIR: "$$WORKSPACE_DIR/git-annex"                           # Path to git-annex
-  BENNCH_DIR:"$$WORKSPACE_DIR/bennch"                               # Path to git-annex
+  BENNCH_DIR: "$$WORKSPACE_DIR/bennch"                                 # Path to bennch
   BENNCHPLOT_DIR: "$$WORKSPACE_DIR/bennchplot"                         # Path to beNNch-plot
-  CB_RUNNER_ACCOUNT: $CB_JURECA_RUNNER_ACCOUNT
-  CB_PROJECT: $CB_JURECA_PROJECT
+  CB_RUNNER_ACCOUNT: "$CB_JURECA_RUNNER_ACCOUNT"
+  CB_PROJECT: "$CB_JURECA_PROJECT"
 
 .preparation-tags:
   - shell
@@ -42,8 +42,8 @@ variables:
   - 'echo "git annex: $GIT_ANNEX_DIR"'
   - |+
     module load Stages/2023 Python/3.10.4 PyYAML/6.0
-    jutil env activate -p $CB_PROJECT
-    export PATH=$PATH:$GIT_ANNEX_DIR
+    jutil env activate -p "$CB_PROJECT"
+    export PATH="$PATH:$GIT_ANNEX_DIR"
 
 .preparation-init:
   - |+
