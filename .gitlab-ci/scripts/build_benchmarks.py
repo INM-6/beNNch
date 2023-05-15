@@ -31,7 +31,7 @@ benchmark_output_dir = sys.argv[4]   # path to directory where all jube benchmar
 scripts_dir = sys.argv[5]            # path to directory where all benchmark helper scripts are located
 machine = sys.argv[6]                # name of the machine the benchmark is running on
 
-config_dir = os.path.dirname(config_file_path)
+config_dir = os.path.dirname(config_path)
 
 with(jube_template_path, 'r') as template_file:
     jube_benchmark_template = yaml.safe_load(template_file)
