@@ -119,7 +119,8 @@ variables:
   - 'jube analyse --id=all "$RESULTS_DIR"'
 
 # TODO
-.metadata: []
+.metadata:
+  - ''
   # - |+
     # cd ${model_path}
     # model_git_commit_hash=$(git rev-parse HEAD)
