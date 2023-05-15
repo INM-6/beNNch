@@ -60,7 +60,7 @@ Preparation:
     - 'source "$USER_DATA_DIR/benchmarking-env/bin/activate"'
     # Install all pip packages into venv specified in config file
     - !reference [ .prepare-benchmarks, pip-requirements ]
-    - 'pip install git+ssh://git@github.com/INM-6/gather-metadata.git'
+    - 'pip install git+https://github.com/INM-6/gather-metadata.git'
     # Patch configuration files
     - !reference [ .prepare-benchmarks, configs ]
     # Prepare Builder .buildrc
