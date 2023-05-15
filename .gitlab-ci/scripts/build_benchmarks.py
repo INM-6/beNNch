@@ -18,7 +18,7 @@ SPDX-License-Identifier: GPL-3.0-or-later
 Construct a jube-yaml file for a benchmark based on the configuration.
 """
 
-import sysy
+import sys
 import os
 
 import yaml
