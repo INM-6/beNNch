@@ -28,7 +28,7 @@ requirement_type = sys.argv[1]
 config_file_path = sys.argv[2]
 machine = sys.argv[3]
 
-with open(os.path.join(os.path.dirname(config_dir), os.environ["CB_DEPENDENCIES"])) as dependencies_file:
+with open(os.path.join(os.path.dirname(config_file_path), os.environ["CB_DEPENDENCIES"])) as dependencies_file:
     requirements = yaml.safe_load(dependencies_file)[machine].get(requirement_type, [])
 
 print(*requirements, sep=" ", end="")
