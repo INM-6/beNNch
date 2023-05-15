@@ -28,7 +28,8 @@ jube_template_path = sys.argv[1]     # path to template of jube benchmark file
 config_path = sys.argv[2]            # path to configuration file of specific benchmark
 benchmark_models_dir = sys.argv[3]   # path to directory of model files for all models
 benchmark_output_dir = sys.argv[4]   # path to directory where all jube benchmark files are placed
-machine = sys.argv[5]                # name of the machine the benchmark is running on
+scripts_dir = sys.argv[5]            # path to directory where all benchmark helper scripts are located
+machine = sys.argv[6]                # name of the machine the benchmark is running on
 
 config_dir = os.path.dirname(config_file_path)
 
@@ -48,7 +49,7 @@ with(config_path, 'r') as config_file:
 
 for model_name, benchmark_configs in config.items():
     if models and model_name not in models:
-        print("Skipping config file generation for model " + model_name)
+        print("Skipping benchmark file generation for model " + model_name)
         continue
 
     model_config_path = os.path.join(config_dir, benchmark_configs["config_path"])
@@ -66,10 +67,12 @@ for model_name, benchmark_configs in config.items():
     # Name and outpath
     jube_benchmark["name"] = next(param["_"] for param in model_parameters if param["name"] == "model_name")
 
+    # TODO: Logpath is currently hardcoded in models
     # Parameterset
     next(p for p in jube_benchmark["parameterset"] if p["name"] == "bench_parameters")["parameter"].extend([
         {"name": "run_file", "type": "string", "_": "${jube_wp_abspath}" + os.sep + model_script_path},
         {"name": "log_path", "type": "string", "_": "${jube_wp_abspath}" + os.sep + run_parameters.get("log_path", "")},
+        {"name": "scripts_dir", "type": "string", "_": scripts_dir},
         {"name": "optional_run_command", "type": "string", "_": run_parameters.get("optional_run_command", "")},
         {"name": "run_args", "type": "string", "_": run_parameters.get("run_args", "")},
         {"name": "model_path", "type": "string", "_": os.path.abspath(benchmark_model_files_dir)}

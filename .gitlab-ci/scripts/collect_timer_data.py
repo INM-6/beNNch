@@ -14,30 +14,32 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 SPDX-License-Identifier: GPL-3.0-or-later
 """
 
+"""
+Writes out measures taken with internal instrumentation of the code.
+MPI processes write to private logfiles. These files are scanned for the timer metrics.
+Their mean is taken and writen into a single text file. This single text file will subsequently be read by JUBE.
+"""
+
 import glob
 import os
 import sys
 
-import numpy as np
+import json
 import yaml
+import numpy as np
 
 
-log_path = sys.argv[1]  # Directory of where simulation data is stored
-config_path = sys.argv[2]  # Path to benchmark configuration
+model_config_path = sys.argv[1]  # path to model config file
+workpackage_path = sys.argv[2]   # path to workpackage files
 
-"""
-This files writes out measures taken with internal instrumentation of the code.
-MPI processes write to private logfiles. These files are scanned for the timer metrics.
-Their mean is taken and writen into a single text file. This single text file can later be read by eg JUBE.
 
-"""
+with open(model_config_path) as model_config_file:
+    config = yaml.safe_load(model_config_file)
 
-with open(config_path) as config_file:
-    config = yaml.safe_load(config_file)
-    metrics = config["metrics"]
-    metrics_sum = config["metrics_sum"]
+metrics = config["metrics"]
+metrics_sum = config["metrics_sum"]
 
-all_logfiles = glob.glob(os.path.join(log_path, '*logfile*'))
+all_logfiles = glob.glob(os.path.join(workpackage_path, config["run_parameters"].get("log_path", ""), '*logfile*'))
 
 d = {key: list() for key in metrics}
 d_sum = {key: list() for key in metrics_sum}
@@ -73,8 +75,20 @@ for m in d_sum:
     else:
         d_sum[m] = np.nan
 
-with open('timer_data.txt', "w") as outF:
+with open('timer_data.txt', "w") as out_file:
     for m in d:
-        outF.write(m + ' ' + str(d[m]) + '\n')
+        out_file.write(m + ' ' + str(d[m]) + '\n')
     for m in d_sum:
-        outF.write(m + ' ' + str(d_sum[m]) + '\n')
+        out_file.write(m + ' ' + str(d_sum[m]) + '\n')
+
+# CPU logging
+cpu_info = [element.strip().replace(' ', '').replace('(', '').replace(')', '')
+            for element in os.popen('lscpu').readlines()]
+
+cpu_info_dict = {}
+for element in cpu_info:
+    key, value = element.split(':')
+    cpu_info_dict[key] = value
+
+with open(os.path.join(workpackage_path, 'cpu.json'), 'w') as f:
+    json.dump(cpu_info_dict, f)

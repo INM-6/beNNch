@@ -32,7 +32,7 @@ variables:
   BUILDER_INSTALL_DIR: "$$USER_DATA_DIR/install"
   BUILDER_BUILD_DIR: "$$USER_DATA_DIR/Builder/build"
   BUILDER_LOG_DIR: "$$USER_DATA_DIR/Builder/log/"
-  MACHINE: $CB_MACHINE
+  MACHINE: "$CB_MACHINE"
 
 
 Preparation:
@@ -55,35 +55,35 @@ Preparation:
     # Load all modules required for preparation stage
     - !reference [ .preparation-init ]
     # Create python venv
-    - 'python -m venv --system-site-packages $USER_DATA_DIR/benchmarking-env'
+    - 'python -m venv --system-site-packages "$USER_DATA_DIR/benchmarking-env"'
     - 'pip install git+ssh://git@github.com/INM-6/gather-metadata.git'
     # Activate python venv
-    - 'source $USER_DATA_DIR/benchmarking-env/bin/activate'
+    - 'source "$USER_DATA_DIR/benchmarking-env/bin/activate"'
     # Install all pip packages into venv specified in config file
     - !reference [ .prepare-benchmarks, pip-requirements ]
     # Patch configuration files
     - !reference [ .prepare-benchmarks, configs ]
     # Prepare Builder .buildrc
-    - 'BUILDER_CONFIG_PATH=$USER_DATA_DIR/.buildrc'
+    - 'BUILDER_CONFIG_PATH="$USER_DATA_DIR/.buildrc"'
     - |+
-      echo PLANFILE_PATH="$BUILDER_PLANFILE_DIR" > $BUILDER_CONFIG_PATH
-      echo PACKAGE_CACHE="$BUILDER_PACKAGE_DIR" >> $BUILDER_CONFIG_PATH
-      echo SOURCE_PATH="$BUILDER_SOURCE_DIR" >> $BUILDER_CONFIG_PATH
-      echo BUILD_PATH="$BUILDER_BUILD_DIR" >> $BUILDER_CONFIG_PATH
-      echo TARGET_PATH="$BUILDER_INSTALL_DIR" >> $BUILDER_CONFIG_PATH
-      echo MODULE_INSTALL_PATH="$BUILDER_MODULES_DIR" >> $BUILDER_CONFIG_PATH
-      echo LOG_PATH="$BUILDER_LOG_DIR" >> $BUILDER_CONFIG_PATH
-    - 'mkdir -p $USER_DATA_DIR/bin'
-    - 'ln -s $BUILDER_DIR/build.sh $USER_DATA_DIR/bin/build'
-    - 'export PATH=$USER_DATA_DIR/bin:$PATH'
+      echo PLANFILE_PATH="$BUILDER_PLANFILE_DIR" > "$BUILDER_CONFIG_PATH"
+      echo PACKAGE_CACHE="$BUILDER_PACKAGE_DIR" >> "$BUILDER_CONFIG_PATH"
+      echo SOURCE_PATH="$BUILDER_SOURCE_DIR" >> "$BUILDER_CONFIG_PATH"
+      echo BUILD_PATH="$BUILDER_BUILD_DIR" >> "$BUILDER_CONFIG_PATH"
+      echo TARGET_PATH="$BUILDER_INSTALL_DIR" >> "$BUILDER_CONFIG_PATH"
+      echo MODULE_INSTALL_PATH="$BUILDER_MODULES_DIR" >> "$BUILDER_CONFIG_PATH"
+      echo LOG_PATH="$BUILDER_LOG_DIR" >> "$BUILDER_CONFIG_PATH"
+    - 'mkdir -p "$USER_DATA_DIR/bin"'
+    - 'ln -s "$BUILDER_DIR/build.sh" "$USER_DATA_DIR/bin/build"'
+    - 'export PATH="$USER_DATA_DIR/bin:$PATH"'
     # Prepare nest installation (builder plan)
-    - 'mkdir -p $BUILDER_PLANFILE_DIR/nest-simulator/$SIMULATOR_BRANCH'
-    - 'cp $TEMPLATES_DIR/nest-builder-template $BUILDER_PLANFILE_DIR/nest-simulator/$SIMULATOR_BRANCH/default'
-    - 'cp $TEMPLATES_DIR/nest-builder-module $BUILDER_PLANFILE_DIR/nest-simulator/$SIMULATOR_BRANCH/default.module'
+    - 'mkdir -p "$BUILDER_PLANFILE_DIR/nest-simulator/$SIMULATOR_BRANCH"'
+    - 'cp "$TEMPLATES_DIR/nest-builder-template" "$BUILDER_PLANFILE_DIR/nest-simulator/$SIMULATOR_BRANCH/default"'
+    - 'cp "$TEMPLATES_DIR/nest-builder-module" "$BUILDER_PLANFILE_DIR/nest-simulator/$SIMULATOR_BRANCH/default.module"'
     - |+
       for var in CB_RUNNER_ACCOUNT CB_PROJECT CB_DEPENDENCIES USER_DATA_DIR WORKSPACE_DIR BENCHMARKS_DIR BENNCH_DIR BENNCHPLOT_DIR USER_DATA_DIR SIMULATOR_REPO SIMULATOR_BRANCH SIMULATOR_REPO_DIR RESULTS_DIR RESULTS_REPO_URL RESULTS_BRANCH RESULTS_PATH BUILDER_DIR BUILDER_MODULES_DIR BUILDER_PLANFILE_DIR BUILDER_PACKAGE_DIR BUILDER_SOURCE_DIR BUILDER_INSTALL_DIR BUILDER_BUILD_DIR BUILDER_LOG_DIR GIT_ANNEX_DIR CONFIG_DIR MODELS_DIR BUILDER_CONFIG_PATH ; do
         eval val=\$$var
-        echo "${var}=${val}" >> $CI_PROJECT_DIR/benchmark_variables.env
+        echo "${var}=${val}" >> "$CI_PROJECT_DIR/benchmark_variables.env"
       done
 
 Benchmarking:
@@ -94,9 +94,9 @@ Benchmarking:
   stage: benchmarks
   artifacts:
     paths:
-      - ${SIMULATOR_BRANCH}-nodes.slides.html
-      - ${SIMULATOR_BRANCH}-threads.slides.html
-      - configs
+      - "${SIMULATOR_BRANCH}-nodes.slides.html"
+      - "${SIMULATOR_BRANCH}-threads.slides.html"
+      - "configs"
     when: on_success
   variables:
     # TODO: How much time is really required here? Should this also be a config parameter maybe?
@@ -126,7 +126,7 @@ Benchmarking:
     # Load user-defined modules on compute node required for benchmarks
     - !reference [ .prepare-benchmarks, modules-requirements ]
     # Activate python venv
-    - 'source $USER_DATA_DIR/benchmarking-env/bin/activate'
+    - 'source "$USER_DATA_DIR/benchmarking-env/bin/activate"'
     # Build benchmark jube file for each model
     - !reference [ .prepare-benchmarks, build-benchmarks ]
     # Run benchmarks
@@ -134,9 +134,9 @@ Benchmarking:
     # Load modules on login node required for result uploading and make git-annex available
     - !reference [ .results-init ]
     # Activate python venv (after loading modules to use venv interpreter)
-    - 'source $USER_DATA_DIR/benchmarking-env/bin/activate'
+    - 'source "$USER_DATA_DIR/benchmarking-env/bin/activate"'
     # Make bennchplot available (also in Jupyter)
-    - 'export PYTHONPATH=$PYTHONPATH:$BENNCHPLOT_DIR'
+    - 'export PYTHONPATH="$PYTHONPATH:$BENNCHPLOT_DIR"'
     # Prepare results repository
     - !reference [ .prepare-benchmarks, results ]
     # Analyze results
@@ -146,6 +146,6 @@ Benchmarking:
     # Generate flipbook
     - !reference [ .results, flipbook ]
     # Copy configs for archiving as artifacts
-    - 'cp -r $BENNCH_DIR/config/$MACHINE $CI_PROJECT_DIR/configs'
-    - 'chmod -R 777 $USER_DATA_DIR/bennch/results/.git'  # Todo: Probably not required, needs fix
+    - 'cp -r "$BENNCH_DIR/config/$MACHINE" "$CI_PROJECT_DIR/configs"'
+    - 'chmod -R 777 "$USER_DATA_DIR/bennch/results/.git"'  # Todo: Probably not required, needs fix
     # - 'rm -rf $USER_DATA_DIR'
