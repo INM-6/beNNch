@@ -82,7 +82,7 @@ variables:
         module load $REQUIREMENTS
       fi
   configs:
-    - 'python3 "$SCRIPTS_DIR/patch_configs.py" "${CONFIG_DIR}/$CONFIG_PATH" "$BENCHMARKS_DIR/configs/$MACHINE" "$BUILDER_MODULES_DIR" "$SIMULATOR_BRANCH" "$MACHINE"''
+    - 'python3 "$SCRIPTS_DIR/patch_configs.py" "${CONFIG_DIR}/$CONFIG_PATH" "$BENCHMARKS_DIR/configs/$MACHINE" "$BUILDER_MODULES_DIR" "$SIMULATOR_BRANCH" "$MACHINE"'
   results:
     # Set result repository
     - 'cd "$BENNCH_DIR"'
