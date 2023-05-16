@@ -107,7 +107,7 @@ variables:
 # Requires jube
 .run-benchmarks:
   - |+
-    for benchmark in "$BENCHMARKS_DIR/cb_"*"${MACHINE}.yml" ; do
+    for benchmark in "$BENCHMARKS_DIR/jube/cb_"*"${MACHINE}.yml" ; do
       jube run --hide-animation -e --outpath="$JUBE_RESULTS_DIR" --include-path="$BENNCH_DIR/config/$MACHINE" $benchmark
     done
   - |+
