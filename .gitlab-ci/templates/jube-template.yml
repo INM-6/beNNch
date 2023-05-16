@@ -33,7 +33,6 @@ parameterset:
           srun --cpus-per-task=${threads_per_task} ${affinity} python ${run_file} ${run_args}
           srun -n 1 --nodes 1 python ${scripts_dir}/collect_timer_data.py ${model_config_path} ${jube_wp_abspath}
 
-
 fileset:
   - name: bench_files
     copy: 
@@ -56,9 +55,9 @@ step:
       - bench_parameters, bench_files, bench_substitutions, slurm_jobfile
       - from: MODEL_CONFIG
         _: user_config, model_parameters, machine_parameters, software_parameters
-      do:
-        done_file: ready
-        _: sbatch job.slurm
+    do:
+      done_file: ready
+      _: sbatch job.slurm
 
 analyser:
   name: analyse
