@@ -89,7 +89,9 @@ for model_name, benchmark_configs in config.items():
     jube_benchmark["substituteset"].append(substitutions)
 
     # Bench step
-    next(u for u in next(b for b in jube_benchmark["step"] if b["name"] == "bench")["use"] if u["from"] == "MODEL_CONFIG")["from"] = os.path.join(config_output_dir, os.path.basename(model_config_path))
+    print(jube_benchmark["step")
+    step = next(b for b in jube_benchmark["step"] if b["name"] == "bench")
+    next(u for u in step["use"] if u["from"] == "MODEL_CONFIG")["from"] = os.path.join(config_output_dir, os.path.basename(model_config_path))
 
     # Analyser and result
     jube_benchmark["result"]["table"]["column"] = metrics + metrics_sum
