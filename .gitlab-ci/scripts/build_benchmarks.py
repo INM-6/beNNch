@@ -68,6 +68,7 @@ for model_name, benchmark_configs in config.items():
 
     # TODO: Logpath is currently hardcoded in models
     # Parameterset
+    benchmark_model_files_dir = os.path.join(benchmark_models_dir, benchmark_configs["model_dir"])
     next(p for p in jube_benchmark["parameterset"] if p["name"] == "bench_parameters")["parameter"].extend([
         {"name": "run_file", "type": "string", "_": "${jube_wp_abspath}" + os.sep + model_script_path},
         {"name": "log_path", "type": "string", "_": "${jube_wp_abspath}" + os.sep + run_parameters.get("log_path", "")},
@@ -92,5 +93,5 @@ for model_name, benchmark_configs in config.items():
     # Analyser and result
     jube_benchmark["result"]["table"]["column"] = metrics + metrics_sum
 
-    with open(os.path.join(benchmark_output_dir, f"cb_{model_name}_{machine_name}.yml"), 'w') as outfile:
+    with open(os.path.join(benchmark_output_dir, f"cb_{model_name}_{machine}.yml"), 'w') as outfile:
         yaml.dump(user_config, outfile, default_flow_style=False) 
