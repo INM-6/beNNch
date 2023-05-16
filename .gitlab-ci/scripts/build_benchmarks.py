@@ -20,6 +20,7 @@ Construct a jube-yaml file for a benchmark based on the configuration.
 
 import sys
 import os
+import copy
 
 import yaml
 
@@ -59,6 +60,8 @@ for model_name, benchmark_configs in config.items():
         metrics_sum = benchmark_config["metrics_sum"]
 
     model_script_path = run_parameters["script_path"]
+
+    jube_benchmark = copy.deepcopy(jube_benchmark_template)
 
     # Name and outpath
     jube_benchmark["name"] = next(param["_"] for param in model_parameters if param["name"] == "model_name")
