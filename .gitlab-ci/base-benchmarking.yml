@@ -48,7 +48,8 @@ variables:
     - 'eval BENNCH_DIR="$BENNCH_DIR"'
     - 'eval USER_DATA_DIR="$USER_DATA_DIR"'
     - 'eval SIMULATOR_REPO_DIR="$SIMULATOR_REPO_DIR"'
-    - 'eval RESULTS_DIR="$RESULTS_DIR"'
+    - 'eval JUBE_RESULTS_DIR="$JUBE_RESULTS_DIR"'
+    - 'eval ANALYSIS_DIR="$ANALYSIS_DIR"'
     - 'eval BUILDER_DIR="$BUILDER_DIR"'
     - 'eval BUILDER_MODULES_DIR="$BUILDER_MODULES_DIR"'
     - 'eval BUILDER_PLANFILE_DIR="$BUILDER_PLANFILE_DIR"'
@@ -63,7 +64,7 @@ variables:
     - 'eval BENNCHPLOT_DIR="$BENNCHPLOT_DIR"'
     - 'eval BENCHMARKS_DIR="$BENCHMARKS_DIR"'
   create-dirs:
-    - 'mkdir -p "$USER_DATA_DIR" "$WORKSPACE_DIR" "$SIMULATOR_REPO_DIR" "$BENCHMARKS_DIR/configs/$MACHINE" "$BENCHMARKS_DIR/jube" "$BUILDER_MODULES_DIR" "$BUILDER_PLANFILE_DIR" "$BUILDER_PACKAGE_DIR" "$BUILDER_SOURCE_DIR" "$BUILDER_INSTALL_DIR" "$BUILDER_BUILD_DIR" "$BUILDER_LOG_DIR" "$CONFIG_DIR" "$MODELS_DIR"'
+    - 'mkdir -p "$USER_DATA_DIR" "$WORKSPACE_DIR" "$SIMULATOR_REPO_DIR" "$BENCHMARKS_DIR/configs/$MACHINE" "$JUBE_RESULTS_DIR" "$ANALYSIS_DIR" "$BENCHMARKS_DIR/jube" "$BUILDER_MODULES_DIR" "$BUILDER_PLANFILE_DIR" "$BUILDER_PACKAGE_DIR" "$BUILDER_SOURCE_DIR" "$BUILDER_INSTALL_DIR" "$BUILDER_BUILD_DIR" "$BUILDER_LOG_DIR" "$CONFIG_DIR" "$MODELS_DIR"'
   apt-requirements:
     - |+
       REQUIREMENTS=$(python3 "$SCRIPTS_DIR/get_requirements_from_config.py" apt "${CONFIG_DIR}/$CONFIG_PATH" "$MACHINE")
@@ -107,18 +108,18 @@ variables:
 .run-benchmarks:
   - |+
     for benchmark in "$BENCHMARKS_DIR/cb_"*"${MACHINE}.yml" ; do
-      jube run --hide-animation -e --outpath="$RESULTS_DIR" --include-path="$BENNCH_DIR/config/$MACHINE" $benchmark
+      jube run --hide-animation -e --outpath="$JUBE_RESULTS_DIR" --include-path="$BENNCH_DIR/config/$MACHINE" $benchmark
     done
   - |+
-    while jube status --id=all "$RESULTS_DIR" | grep -q "RUNNING" ; do
+    while jube status --id=all "$JUBE_RESULTS_DIR" | grep -q "RUNNING" ; do
       sleep 20 || echo "sleep $?"
-      jube continue --error --id=all --hide-animation "$RESULTS_DIR" || echo "continue $?"
-      jube status --id=all "$RESULTS_DIR" || echo "jube $?"
-      jube status --id=all "$RESULTS_DIR" | grep -q "RUNNING" || echo "status $?"
+      jube continue --error --id=all --hide-animation "$JUBE_RESULTS_DIR" || echo "continue $?"
+      jube status --id=all "$JUBE_RESULTS_DIR" || echo "jube $?"
+      jube status --id=all "$JUBE_RESULTS_DIR" | grep -q "RUNNING" || echo "status $?"
       sleep 10
     done
-  - 'python "${SCRIPTS_DIR}/collect_timer_data.py" "${CONFIG_DIR}/$CONFIG_PATH" "$RESULTS_DIR"'
-  - 'jube analyse --id=all "$RESULTS_DIR"'
+  - 'python "${SCRIPTS_DIR}/collect_timer_data.py" "${CONFIG_DIR}/$CONFIG_PATH" "$JUBE_RESULTS_DIR"'
+  - 'jube analyse --id=all "$JUBE_RESULTS_DIR"'
 
 # TODO
 .metadata:
@@ -152,44 +153,18 @@ variables:
 # Requires python3, pyyaml, jupyter, nbconvert, git, and git-annex
 .results:
   analysis:
-    - 'cd "$BENNCH_DIR/results"'
-    - 'mkdir -p "$BENNCH_DIR/results/$RESULTS_PATH/nodes"'
+    - 'mkdir -p "$ANALYSIS_DIR/nodes" "$ANALYSIS_DIR/threads"'
+    - 'export PYTHONPATH="$BENNCH_DIR:$PYTHONPATH"'
     # TODO: Modify bennch to write the analysis results in desired directory directly, without having to move them afterwards
     - |+
-        echo 'scaling_type: "nodes"' > "$BENNCH_DIR/config/analysis_config.yaml"
-        eval echo 'jube_outpath: "$RESULTS_DIR"' >> "$BENNCH_DIR/config/analysis_config.yaml"
-        for benchmark_result_id in "$RESULTS_DIR"/* ; do  
-          python3 "$BENNCH_DIR/analysis/analysis.py" $(basename $benchmark_result_id)
-          # Move symlinks
-          for csv_file in *.csv ; do
-            ln -rs $(readlink -f $csv_file) "$BENNCH_DIR/results/$RESULTS_PATH/nodes/$csv_file"
-            rm $csv_file
-          done
-          for tgz_file in *.tgz ; do
-            ln -rs $(readlink -f $tgz_file) "$BENNCH_DIR/results/$RESULTS_PATH/nodes/$tgz_file"
-            rm $tgz_file
-          done
-        done
-    - 'cd "$BENNCH_DIR/results"'
-    - 'mkdir -p "$BENNCH_DIR/results/$RESULTS_PATH/threads"'
-    - |+
-        echo 'scaling_type: "threads"' > "$BENNCH_DIR/config/analysis_config.yaml"
-        eval echo 'jube_outpath: "$RESULTS_DIR"' >> "$BENNCH_DIR/config/analysis_config.yaml"
-        for benchmark_result_id in "$RESULTS_DIR"/* ; do
-          python3 "$BENNCH_DIR/analysis/analysis.py" $(basename $benchmark_result_id)
-          for csv_file in *.csv ; do
-            ln -rs $(readlink -f $csv_file) "$BENNCH_DIR/results/$RESULTS_PATH/threads/$csv_file"
-            rm $csv_file
-          done
-          for tgz_file in *.tgz ; do
-            ln -rs $(readlink -f $tgz_file) "$BENNCH_DIR/results/$RESULTS_PATH/threads/$tgz_file"
-            rm $tgz_file
-          done
+        for benchmark_result_id in "$JUBE_RESULTS_DIR"/* ; do
+          python3 "$BENNCH_DIR/analysis/analysis.py" "$JUBE_RESULTS_DIR" $(basename $benchmark_result_id) nodes "$ANALYSIS_DIR/nodes"
+          python3 "$BENNCH_DIR/analysis/analysis.py" "$JUBE_RESULTS_DIR" $(basename $benchmark_result_id) threads "$ANALYSIS_DIR/threads"
         done
   upload:
     # TODO: Collect metadata about the pipeline (config, etc.)
     # TODO: Upload benchmark results
-    - 'cd "$BENNCH_DIR/results/"'
+    - 'cd "$ANALYSIS_DIR"'
     - 'git annex add .'
     # - 'git annex sync --content'
     # - 'git annex copy --to=origin --auto'
@@ -197,11 +172,11 @@ variables:
     # TODO: Add another stage which can be triggered manually to create flipbooks with additional configuration
     - 'export PYTHONPATH="$BENNCH_DIR:$PYTHONPATH"'
     - |+
-      cd "$BENNCH_DIR/results/nodes"
+      cd "$ANALYSIS_DIR/nodes"
       python3 "$BENNCH_DIR/flipbook/flipbook.py" nodes num_nodes threads_per_task tasks_per_node
       mv flipbook.slides.html "$CI_PROJECT_DIR/${SIMULATOR_BRANCH}-nodes.slides.html"
     - |+
-      cd "$BENNCH_DIR/results/threads"
+      cd "$ANALYSIS_DIR/threads"
       python3 "$BENNCH_DIR/flipbook/flipbook.py" threads num_nodes threads_per_task tasks_per_node
       mv flipbook.slides.html "$CI_PROJECT_DIR/${SIMULATOR_BRANCH}-threads.slides.html"
 
