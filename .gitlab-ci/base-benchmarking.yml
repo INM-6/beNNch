@@ -103,6 +103,7 @@ variables:
 
 # Requires jube
 .run-benchmarks:
+  - 'cp "TEMPLATES_DIR/job.slurm.in" "$BENCHMARKS_DIR/jube/job.slurm.in"'
   - |+
     for benchmark in "$BENCHMARKS_DIR/jube/cb_"*"${MACHINE}.yml" ; do
       jube run --hide-animation -e --include-path="$BENNCH_DIR/config/$MACHINE" $benchmark
