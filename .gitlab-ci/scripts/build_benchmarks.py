@@ -97,4 +97,4 @@ for model_name, benchmark_configs in config.items():
     jube_benchmark["result"]["table"]["column"] = metrics + metrics_sum
 
     with open(os.path.join(benchmark_output_dir, f"cb_{model_name}_{machine}.yml"), 'w') as outfile:
-        yaml.dump(user_config, outfile, default_flow_style=False) 
+        yaml.dump(jube_benchmark, outfile, default_flow_style=False) 
