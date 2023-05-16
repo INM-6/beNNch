@@ -67,11 +67,11 @@ for model_name, benchmark_configs in config.items():
     jube_benchmark = copy.deepcopy(jube_benchmark_template)
 
     # Name and outpath
-    jube_benchmark["name"] = next(param["_"] for param in model_parameters if param["name"] == "model_name")
+    jube_benchmark["name"] = model_name
 
     # TODO: Logpath is currently hardcoded in models
     # Parameterset
-    benchmark_model_files_dir = os.path.join(benchmark_models_dir, benchmark_configs["model_dir"])
+    benchmark_model_files_dir = os.path.join(benchmark_models_dir, model_name)
     next(p for p in jube_benchmark["parameterset"] if p["name"] == "bench_parameters")["parameter"].extend([
         {"name": "run_file", "type": "string", "_": "${jube_wp_abspath}" + os.sep + model_script_path},
         {"name": "log_path", "type": "string", "_": "${jube_wp_abspath}" + os.sep + run_parameters.get("log_path", "")},
