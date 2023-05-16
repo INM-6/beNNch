@@ -29,8 +29,9 @@ jube_template_path = sys.argv[1]     # path to template of jube benchmark file
 config_path = sys.argv[2]            # path to configuration file of specific benchmark
 benchmark_models_dir = sys.argv[3]   # path to directory of model files for all models
 benchmark_output_dir = sys.argv[4]   # path to directory where all jube benchmark files are placed
-scripts_dir = sys.argv[5]            # path to directory where all benchmark helper scripts are located
-machine = sys.argv[6]                # name of the machine the benchmark is running on
+config_output_dir = sys.argv[5]      # path to directory where all benchmark config files are placed
+scripts_dir = sys.argv[6]            # path to directory where all benchmark helper scripts are located
+machine = sys.argv[7]                # name of the machine the benchmark is running on
 
 config_dir = os.path.dirname(config_path)
 
@@ -88,7 +89,7 @@ for model_name, benchmark_configs in config.items():
     jube_benchmark["substituteset"].append(substitutions)
 
     # Bench step
-    next(u for u in next(b for b in jube_benchmark["step"] if b["name"] == "bench")["use"] if u["from"] == "MODEL_CONFIG")["from"] = benchmark_config_path
+    next(u for u in next(b for b in jube_benchmark["step"] if b["name"] == "bench")["use"] if u["from"] == "MODEL_CONFIG")["from"] = os.path.join(config_output_dir, os.path.basename(model_config_path))
 
     # Analyser and result
     jube_benchmark["result"]["table"]["column"] = metrics + metrics_sum

@@ -98,7 +98,7 @@ variables:
     - 'build -f nest-simulator $SIMULATOR_BRANCH'
   build-benchmarks:
     # TODO: collect_timer_data, metadata archiving
-    - 'python3 "$SCRIPTS_DIR/build_benchmarks.py" "$TEMPLATES_DIR/jube-template.yml" "${CONFIG_DIR}/$CONFIG_PATH" "$MODELS_DIR" "$BENCHMARKS_DIR/jube" "$SCRIPTS_DIR" "$MACHINE"'
+    - 'python3 "$SCRIPTS_DIR/build_benchmarks.py" "$TEMPLATES_DIR/jube-template.yml" "${CONFIG_DIR}/$CONFIG_PATH" "$MODELS_DIR" "$BENCHMARKS_DIR/jube" "$BENCHMARKS_DIR/configs/$MACHINE" "$SCRIPTS_DIR" "$MACHINE"'
 
 # Requires jube
 .run-benchmarks:
