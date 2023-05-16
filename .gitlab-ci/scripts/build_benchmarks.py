@@ -89,7 +89,6 @@ for model_name, benchmark_configs in config.items():
     jube_benchmark["substituteset"].append(substitutions)
 
     # Bench step
-    print(jube_benchmark["step"])
     step = next(b for b in jube_benchmark["step"] if b["name"] == "bench")
     next(u for u in step["use"] if type(u) == dict and u["from"] == "MODEL_CONFIG")["from"] = os.path.join(config_output_dir, os.path.basename(model_config_path))
 

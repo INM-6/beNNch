@@ -105,17 +105,16 @@ variables:
 
 # Requires jube
 .run-benchmarks:
-  - 'cd "$BENNCH_DIR/benchmarks"'
   - |+
-    for benchmark in cb_*"${MACHINE}.yml" ; do
-      jube run --hide-animation -e --outpath=$RESULTS_DIR --include-path=$BENNCH_DIR/config/$MACHINE $benchmark
+    for benchmark in "$BENCHMARKS_DIR/cb_"*"${MACHINE}.yml" ; do
+      jube run --hide-animation -e --outpath="$RESULTS_DIR" --include-path="$BENNCH_DIR/config/$MACHINE" $benchmark
     done
   - |+
     while jube status --id=all "$RESULTS_DIR" | grep -q "RUNNING" ; do
       sleep 20 || echo "sleep $?"
       jube continue --error --id=all --hide-animation "$RESULTS_DIR" || echo "continue $?"
       jube status --id=all "$RESULTS_DIR" || echo "jube $?"
-      jube status --id=all "$RESULTS_DIR"${base_path}/helpers | grep -q "RUNNING" || echo "status $?"
+      jube status --id=all "$RESULTS_DIR" | grep -q "RUNNING" || echo "status $?"
       sleep 10
     done
   - 'python "${SCRIPTS_DIR}/collect_timer_data.py" "${CONFIG_DIR}/$CONFIG_PATH" "$RESULTS_DIR"'
