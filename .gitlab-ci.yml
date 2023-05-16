@@ -33,7 +33,7 @@ variables:
     value: "https://github.com/JanVogelsang/CI-Bennch-config.git"
   CONFIG_BRANCH:
     description: "Configuration repository branch to use for benchmarking."
-    value: "main"
+    value: "debug"
   CONFIG_PATH:
     description: "Path to configuration file (e.g. config.yml) relative to the config repository root."
     value: "config.yml"
@@ -54,7 +54,7 @@ variables:
     value: '-Dwith-optimize=ON'
   CB_MODELS:
     description: "[Optional] Comma-seperated list of the names of all models which should be run."
-    value: "hpc_benchmark"
+    value: "hpc_benchmark,microcircuit"
 
 
 .machines: &machines_anchor [ "jureca" ]

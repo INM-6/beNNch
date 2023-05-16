@@ -53,7 +53,7 @@ step:
   - name: bench
     use:
       - bench_parameters, bench_files, bench_substitutions, slurm_jobfile
-      - from: MODEL_CONFIG
+      - from: $model_config_path
         _: user_config, model_parameters, machine_parameters, software_parameters
     do:
       done_file: ready

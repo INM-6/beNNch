@@ -78,7 +78,8 @@ for model_name, benchmark_configs in config.items():
         {"name": "scripts_dir", "type": "string", "_": scripts_dir},
         {"name": "optional_run_command", "type": "string", "_": run_parameters.get("optional_run_command", "")},
         {"name": "run_args", "type": "string", "_": run_parameters.get("run_args", "")},
-        {"name": "model_path", "type": "string", "_": os.path.abspath(benchmark_model_files_dir)}
+        {"name": "model_path", "type": "string", "_": os.path.abspath(benchmark_model_files_dir)},
+        {"name": "model_config_path", "type": "string", "_": os.path.join(config_output_dir, os.path.basename(model_config_path)}
     ])
 
     # Fileset
@@ -89,10 +90,6 @@ for model_name, benchmark_configs in config.items():
     for param in model_parameters:
         substitutions["sub"].append({"source": '"{' + param["name"] + '}"', "dest": "$" + param["name"]})
     jube_benchmark["substituteset"].append(substitutions)
-
-    # Bench step
-    step = next(b for b in jube_benchmark["step"] if b["name"] == "bench")
-    next(u for u in step["use"] if type(u) == dict and u["from"] == "MODEL_CONFIG")["from"] = os.path.join(config_output_dir, os.path.basename(model_config_path))
 
     # Analyser and result
     jube_benchmark["result"]["table"]["column"] = metrics + metrics_sum
