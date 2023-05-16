@@ -61,9 +61,6 @@ step:
 
 analyser:
   name: analyse
-  use:
-    - from: helpers.yaml
-      _: timer_pattern
   analyse:
     step: bench
     file: timer_data.txt
