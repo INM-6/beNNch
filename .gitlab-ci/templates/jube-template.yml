@@ -34,9 +34,9 @@ parameterset:
           srun -n 1 --nodes 1 python ${scripts_dir}/collect_timer_data.py ${model_config_path} ${jube_wp_abspath}
 
 fileset:
-  - name: bench_files
-    copy: 
-      - job.slurm.in
+  name: bench_files
+  copy: 
+    - job.slurm.in
 
 substituteset:
   - name: slurm_jobfile
