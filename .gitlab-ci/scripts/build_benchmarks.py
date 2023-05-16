@@ -91,7 +91,7 @@ for model_name, benchmark_configs in config.items():
     # Bench step
     print(jube_benchmark["step"])
     step = next(b for b in jube_benchmark["step"] if b["name"] == "bench")
-    next(u for u in step["use"] if u["from"] == "MODEL_CONFIG")["from"] = os.path.join(config_output_dir, os.path.basename(model_config_path))
+    next(u for u in step["use"] if type(u) == dict and u["from"] == "MODEL_CONFIG")["from"] = os.path.join(config_output_dir, os.path.basename(model_config_path))
 
     # Analyser and result
     jube_benchmark["result"]["table"]["column"] = metrics + metrics_sum
