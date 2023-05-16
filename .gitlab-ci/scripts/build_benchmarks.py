@@ -79,7 +79,7 @@ for model_name, benchmark_configs in config.items():
         {"name": "optional_run_command", "type": "string", "_": run_parameters.get("optional_run_command", "")},
         {"name": "run_args", "type": "string", "_": run_parameters.get("run_args", "")},
         {"name": "model_path", "type": "string", "_": os.path.abspath(benchmark_model_files_dir)},
-        {"name": "model_config_path", "type": "string", "_": os.path.join(config_output_dir, os.path.basename(model_config_path)}
+        {"name": "model_config_path", "type": "string", "_": os.path.join(config_output_dir, os.path.basename(model_config_path))}
     ])
 
     # Fileset
