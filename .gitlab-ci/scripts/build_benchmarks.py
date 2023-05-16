@@ -40,10 +40,6 @@ models = os.environ.get("CB_MODELS", [])
 if models:
     models = models.split(",")
 
-# Prepare output directory
-if not os.path.exists(config_output_dir):
-    os.makedirs(config_output_dir)
-
 with open(config_path, 'r') as config_file:
     config = yaml.safe_load(config_file)["benchmarks"]
 
