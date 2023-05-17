@@ -103,7 +103,7 @@ Benchmarking:
   variables:
     # TODO: How much time is really required here? Should this also be a config parameter maybe?
     SCHEDULER_PARAMETERS: "--account=$CB_RUNNER_ACCOUNT --time=00:15:00 --nodes=1"
-    # CI_DEBUG_TRACE: "true"
+    CI_DEBUG_TRACE: "true"
   script:
     # Load all modules required for continuous benchmarking in general and prepare environment
     - !reference [ .environment-init ]
