@@ -71,7 +71,7 @@ for model_name, benchmark_configs in config.items():
 
     # TODO: Logpath is currently hardcoded in models
     # Parameterset
-    benchmark_model_files_dir = os.path.join(benchmark_models_dir, benchmark_configs["model_dir"])
+    benchmark_model_files_dir = os.path.join(benchmark_models_dir, model_name)
     next(p for p in jube_benchmark["parameterset"] if p["name"] == "bench_parameters")["parameter"].extend([
         {"name": "run_file", "type": "string", "_": "${jube_wp_abspath}" + os.sep + model_script_path},
         {"name": "log_path", "type": "string", "_": "${jube_wp_abspath}" + os.sep + run_parameters.get("log_path", "")},
@@ -83,7 +83,7 @@ for model_name, benchmark_configs in config.items():
     ])
 
     # Fileset
-    jube_benchmark["fileset"]["copy"].extend(["$model_path" + os.sep + f for f in os.listdir(benchmark_model_files_dir) if os.path.isfile(os.path.join(benchmark_model_files_dir, f))])
+    jube_benchmark["fileset"]["copy"].extend([os.path.join(benchmark_model_files_dir, f) for f in os.listdir(benchmark_model_files_dir) if os.path.isfile(os.path.join(benchmark_model_files_dir, f))])
 
     # Substituteset
     substitutions = {"name": "bench_substitutions", "iofile": {"in": model_script_path, "out": model_script_path}, "sub": list()}
