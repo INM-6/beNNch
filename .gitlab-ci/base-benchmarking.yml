@@ -171,10 +171,10 @@ variables:
     - |+
       cd "$ANALYSIS_DIR/nodes"
       python3 "$BENNCH_DIR/flipbook/flipbook.py" nodes num_nodes threads_per_task tasks_per_node
-      mv flipbook.slides.html "$CI_PROJECT_DIR/${SIMULATOR_BRANCH}-nodes.slides.html"
+      mv flipbook.slides.html "$CI_PROJECT_DIR/${BENCHMARK_ID}-nodes.slides.html"
     - |+
       cd "$ANALYSIS_DIR/threads"
       python3 "$BENNCH_DIR/flipbook/flipbook.py" threads num_nodes threads_per_task tasks_per_node
-      mv flipbook.slides.html "$CI_PROJECT_DIR/${SIMULATOR_BRANCH}-threads.slides.html"
+      mv flipbook.slides.html "$CI_PROJECT_DIR/${BENCHMARK_ID}-threads.slides.html"
 
   # TODO: Add another job at the end which collects the artifacts of all downstream pipelines and combines them into a single archive
