@@ -116,7 +116,6 @@ variables:
       jube status --id=all "$JUBE_RESULTS_DIR" | grep -q "RUNNING" || echo "status $?"
       sleep 10
     done
-  - 'python "${SCRIPTS_DIR}/collect_timer_data.py" "${CONFIG_DIR}/$CONFIG_PATH" "$JUBE_RESULTS_DIR"'
   - 'jube analyse --id=all "$JUBE_RESULTS_DIR"'
 
 # TODO
