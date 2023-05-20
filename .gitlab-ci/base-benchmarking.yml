@@ -87,13 +87,8 @@ variables:
     - 'python3 "$SCRIPTS_DIR/patch_configs.py" "${CONFIG_DIR}/$CONFIG_PATH" "$BENCHMARKS_DIR/configs/$MACHINE" "$BUILDER_MODULES_DIR" "$SIMULATOR_BRANCH" "$MACHINE"'
   results:
     # Set result repository
-    - 'cd "$BENNCH_DIR"'
-    - 'git submodule set-url -- results "$RESULTS_REPO_URL"'
-    - 'git submodule set-branch --branch "$RESULTS_BRANCH" -- results'
-    - 'git submodule update --depth=1 --init --recursive --remote -- results'
-    - 'cd results'
-    - 'git pull origin "$RESULTS_BRANCH"'
-    - 'git checkout "$RESULTS_BRANCH"'
+    - 'git clone --single-branch --branch="$RESULTS_BRANCH" --depth=1 "$RESULTS_REPO_URL" "$USER_DATA_DIR/results"'
+    - 'cd $USER_DATA_DIR/results'
     - 'git annex init'
   build-simulator:
     # TODO: Make this generic to not only work for NEST
