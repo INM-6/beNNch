@@ -39,7 +39,7 @@ with open(model_config_path) as model_config_file:
 metrics = config["metrics"]
 metrics_sum = config["metrics_sum"]
 
-all_logfiles = glob.glob(os.path.join(workpackage_path, config["run_parameters"].get("log_path", ""), '*logfile*'))
+all_logfiles = glob.glob(os.path.join(workpackage_path, config["log_path"], '*logfile*'))
 
 d = {key: list() for key in metrics}
 d_sum = {key: list() for key in metrics_sum}
