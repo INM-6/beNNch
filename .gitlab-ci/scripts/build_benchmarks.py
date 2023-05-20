@@ -88,7 +88,7 @@ for model_name, benchmark_configs in config.items():
     # Substituteset
     substitutions = {"name": "bench_substitutions", "iofile": {"in": model_script_path, "out": model_script_path}, "sub": list()}
     for param in model_parameters:
-        substitutions["sub"].append({"source": '"{' + param["name"] + '}"', "dest": "$" + param["name"]})
+        substitutions["sub"].append({"source": "{" + param["name"] + "}", "dest": "$" + param["name"]})
     jube_benchmark["substituteset"].append(substitutions)
 
     # Bench step
