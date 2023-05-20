@@ -150,8 +150,8 @@ variables:
     # TODO: Modify bennch to write the analysis results in desired directory directly, without having to move them afterwards
     - |+
         for benchmark_result_id in "$JUBE_RESULTS_DIR"/* ; do
-          python3 "$BENNCH_DIR/analysis/analysis.py" "$JUBE_RESULTS_DIR" $(basename $benchmark_result_id) nodes "$ANALYSIS_DIR/nodes"
-          python3 "$BENNCH_DIR/analysis/analysis.py" "$JUBE_RESULTS_DIR" $(basename $benchmark_result_id) threads "$ANALYSIS_DIR/threads"
+          python3 "$BENNCH_DIR/analysis/analyse.py" "$JUBE_RESULTS_DIR" $(basename $benchmark_result_id) nodes "$ANALYSIS_DIR/nodes"
+          python3 "$BENNCH_DIR/analysis/analyse.py" "$JUBE_RESULTS_DIR" $(basename $benchmark_result_id) threads "$ANALYSIS_DIR/threads"
         done
   upload:
     # TODO: Collect metadata about the pipeline (config, etc.)
