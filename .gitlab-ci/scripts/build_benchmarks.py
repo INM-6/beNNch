@@ -89,6 +89,9 @@ for model_name, benchmark_configs in config.items():
     substitutions = {"name": "bench_substitutions", "iofile": {"in": model_script_path, "out": model_script_path}, "sub": list()}
     for param in model_parameters:
         substitutions["sub"].append({"source": "{" + param["name"] + "}", "dest": "$" + param["name"]})
+    # TODO: How to deal with scale properly?
+    substitutions["sub"].append({"source": "{scale}", "dest": "$scale"})
+    substitutions["sub"].append({"source": "{num_vps}", "dest": "$num_vps"})
     jube_benchmark["substituteset"].append(substitutions)
 
     # Bench step
