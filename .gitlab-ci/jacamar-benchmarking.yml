@@ -109,6 +109,7 @@ Benchmarking:
     - 'export PATH=$USER_DATA_DIR/bin:$PATH'
     # Activate python venv
     - 'source $USER_DATA_DIR/benchmarking-env/bin/activate'
+    - 'pip install jupyter nbconvert'  # TODO
     # Load user-defined modules on compute node required for benchmarks
     - !reference [ .prepare-benchmarks, modules-requirements ]
     # Build simulator
