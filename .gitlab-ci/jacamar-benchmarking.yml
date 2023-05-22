@@ -141,12 +141,10 @@ Benchmarking:
     - 'export PYTHONPATH="$PYTHONPATH:$BENNCHPLOT_DIR"'
     # Prepare results repository
     - !reference [ .prepare-benchmarks, results ]
-    # Analyze results
-    - !reference [ .results, analysis ]
-    # Upload analyzed results to specified repository
-    - !reference [ .results, upload ]
+    # Collect and upload metadata and results
+    - !reference [ .metadata ]
     # Generate flipbook
-    - !reference [ .results, flipbook ]
+    - !reference [ .flipbook ]
     # Copy configs for archiving as artifacts
     - 'cp -r "$BENCHMARKS_DIR/configs/$MACHINE" "$CI_PROJECT_DIR/configs"'
     # - 'chmod -R 777 "$USER_DATA_DIR/bennch/results/.git"'  # Todo: Probably not required, needs fix

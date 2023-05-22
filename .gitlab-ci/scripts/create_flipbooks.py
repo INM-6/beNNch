@@ -132,15 +132,10 @@ def plot_threads(timer_file, save_path):
     plt.savefig(f'{save_path}/threads.png', dpi=600)
 
 
-def make_notebook(plots_dir: str, output_file: str, header: str, timer_hashes, attributes_to_display):
-    nb = nbf.new_notebook()
-    cells = []
-
-
-def display_plot(timer_hash, plot_path, attributes, header, page_number=1):
+display_plot_fn = r"""def display_plot(timer_hash, plot_path, attributes, header, page_number=1):
     display_list = '<left><ul>\n'
     for attribute in attributes:
-        value = os.popen(f'git annex metadata "{timer_hash}.csv" --get {attribute}').read().strip()
+        value = os.popen(f'git annex metadata {timer_hash}.csv --get {attribute}').read().strip()
         display_list += f'  <li>{attribute}: {value}</li>\n'
     display_list += '</ul></left>'
 
@@ -148,12 +143,14 @@ def display_plot(timer_hash, plot_path, attributes, header, page_number=1):
     display(Image(filename=os.path.join(plot_path, timer_hash + '.png')))
     display(HTML(display_list))
     display(HTML(f'<center>page {page_number}</center>'))
+"""
+
+def make_notebook(plots_dir: str, output_file: str, header: str, timer_hashes, attributes_to_display):
+    nb = nbf.new_notebook()
+    cells = []
 
     codes = {
-        'skip': ["import sys",
-                 "import os",
-                 "sys.path.insert(1, os.path.join(sys.path[0], '..'))",
-                 "from flipbook.flipbook import display_plot"],
+        'skip': [display_plot_fn],
         'slide': [f"display_plot('{timer_hashes[0]}', {plots_dir}, {attributes_to_display})"],
         'subslide': []
     }

@@ -112,9 +112,9 @@ variables:
       jube status --id=all "$JUBE_RESULTS_DIR" | grep -q "RUNNING" || echo "status $?"
     done
     echo done
-  - 'jube analyse --id=all "$JUBE_RESULTS_DIR"'
+  - 'jube result --analyse --id=all "$JUBE_RESULTS_DIR"'
 
-# TODO
+# TODO: Collect metadata about the pipeline (config, etc.) and upload via git-annex
 .metadata:
   - ''
   # - |+
@@ -142,32 +142,20 @@ variables:
     # cp ${jube_wp_abspath}/stderr ${jube_wp_abspath}/${metadata_uuid}
     # tar -czf ${metadata_uuid}.tgz -C ${jube_wp_abspath} ${metadata_uuid}
     # rm -r ${jube_wp_abspath}/${metadata_uuid}
-
-# Requires python3, pyyaml, jupyter, nbconvert, git, and git-annex
-.results:
-  analysis:
-    - 'mkdir -p "$ANALYSIS_DIR/nodes" "$ANALYSIS_DIR/threads"'
-    - 'export PYTHONPATH="$BENNCH_DIR:$PYTHONPATH"'
-    # TODO: Modify bennch to write the analysis results in desired directory directly, without having to move them afterwards
-    - |+
-        for benchmark_result_id in "$JUBE_RESULTS_DIR"/* ; do
-          python3 "$BENNCH_DIR/analysis/analyse.py" "$JUBE_RESULTS_DIR" $(basename $benchmark_result_id) nodes "$ANALYSIS_DIR/nodes"
-          python3 "$BENNCH_DIR/analysis/analyse.py" "$JUBE_RESULTS_DIR" $(basename $benchmark_result_id) threads "$ANALYSIS_DIR/threads"
-        done
-  upload:
-    # TODO: Collect metadata about the pipeline (config, etc.)
+    
     # TODO: Upload benchmark results
-    - 'cd "$ANALYSIS_DIR"'
     # - 'git annex add .'
     # - 'git annex sync --content'
     # - 'git annex copy --to=origin --auto'
-  flipbook:
-    # TODO: Add another stage which can be triggered manually to create flipbooks with additional configuration
-    - 'export PYTHONPATH="$BENNCH_DIR:$PYTHONPATH"'
-    - |+
-      for benchmark_name in "$ANALYSIS_DIR"/* ; do
-        python3 "${BENNCH_DIR}/flipbook/flipbook.py" "${ANALYSIS_DIR}/nodes/${benchmark_name}" "${CI_PROJECT_DIR}" "${BENCHMARK_ID}-${benchmark_name}-nodes" nodes "${BENCHMARK_ID}-${benchmark_name}"
-        python3 "${BENNCH_DIR}/flipbook/flipbook.py" "${ANALYSIS_DIR}/threads/${benchmark_name}" "${CI_PROJECT_DIR}" "${BENCHMARK_ID}-${benchmark_name}-threads" threads "${BENCHMARK_ID}-${benchmark_name}"
-      done
+
+# Requires python3, pyyaml, jupyter, nbconvert, git, and git-annex
+.flipbook:
+  # TODO: Add another stage which can be triggered manually to create flipbooks with additional configuration
+  - 'export PYTHONPATH="$BENNCH_DIR:$PYTHONPATH"'
+  - |+
+    for benchmark_name in "$ANALYSIS_DIR"/* ; do
+      python3 "${BENNCH_DIR}/flipbook/flipbook.py" "${ANALYSIS_DIR}/nodes/${benchmark_name}" "${CI_PROJECT_DIR}" "${BENCHMARK_ID}-${benchmark_name}-nodes" nodes "${BENCHMARK_ID}-${benchmark_name}"
+      python3 "${BENNCH_DIR}/flipbook/flipbook.py" "${ANALYSIS_DIR}/threads/${benchmark_name}" "${CI_PROJECT_DIR}" "${BENCHMARK_ID}-${benchmark_name}-threads" threads "${BENCHMARK_ID}-${benchmark_name}"
+    done
 
   # TODO: Add another job at the end which collects the artifacts of all downstream pipelines and combines them into a single archive
