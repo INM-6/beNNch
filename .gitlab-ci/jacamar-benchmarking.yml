@@ -148,6 +148,6 @@ Benchmarking:
     # Generate flipbook
     - !reference [ .results, flipbook ]
     # Copy configs for archiving as artifacts
-    - 'cp -r "$BENNCH_DIR/config/$MACHINE" "$CI_PROJECT_DIR/configs"'
-    - 'chmod -R 777 "$USER_DATA_DIR/bennch/results/.git"'  # Todo: Probably not required, needs fix
+    - 'cp -r "$BENCHMARKS_DIR/configs/$MACHINE" "$CI_PROJECT_DIR/configs"'
+    # - 'chmod -R 777 "$USER_DATA_DIR/bennch/results/.git"'  # Todo: Probably not required, needs fix
     # - 'rm -rf $USER_DATA_DIR'
