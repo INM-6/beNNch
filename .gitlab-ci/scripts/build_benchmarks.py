@@ -61,6 +61,7 @@ for model_name, benchmark_configs in config.items():
         run_parameters = benchmark_config["run_parameters"]
         metrics = benchmark_config["metrics"]
         metrics_sum = benchmark_config["metrics_sum"]
+        all_metrics = metrics + metrics_sum
         result_keys = benchmark_config["results"]
 
     model_script_path = run_parameters["script_path"]
@@ -99,8 +100,13 @@ for model_name, benchmark_configs in config.items():
     step = next(b for b in jube_benchmark["step"] if b["name"] == "bench")
     next(u for u in step["use"] if type(u) == dict and u["from"] == "MODEL_CONFIG")["from"] = os.path.join(config_output_dir, os.path.basename(model_config_path))
 
-    # Analyser and result
-    jube_benchmark["result"]["table"]["column"] = result_keys + metrics + metrics_sum
+    # Analyser
+    jube_benchmark["analyser"]["patternset"]["pattern"] = [
+        {"name": key, "mode": "pattern", "type": "float", "_": key + " $jube_pat_fp"} for key in all_metrics
+    ]
+
+    # Result
+    jube_benchmark["result"]["table"]["column"] = result_keys + all_metrics
 
     with open(os.path.join(benchmark_output_dir, f"cb_{model_name}_{machine}.yml"), 'w') as outfile:
         yaml.dump(jube_benchmark, outfile, default_flow_style=False) 

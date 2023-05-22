@@ -71,4 +71,3 @@ result:
   table:
     name: result_table
     style: csv
-    sort: number
