@@ -157,7 +157,7 @@ variables:
     # TODO: Collect metadata about the pipeline (config, etc.)
     # TODO: Upload benchmark results
     - 'cd "$ANALYSIS_DIR"'
-    - 'git annex add .'
+    # - 'git annex add .'
     # - 'git annex sync --content'
     # - 'git annex copy --to=origin --auto'
   flipbook:
@@ -165,11 +165,11 @@ variables:
     - 'export PYTHONPATH="$BENNCH_DIR:$PYTHONPATH"'
     - |+
       cd "$ANALYSIS_DIR/nodes"
-      python3 "$BENNCH_DIR/flipbook/flipbook.py" nodes num_nodes threads_per_task tasks_per_node
+      python3 "$BENNCH_DIR/flipbook/flipbook.py" nodes
       mv flipbook.slides.html "$CI_PROJECT_DIR/${BENCHMARK_ID}-nodes.slides.html"
     - |+
       cd "$ANALYSIS_DIR/threads"
-      python3 "$BENNCH_DIR/flipbook/flipbook.py" threads num_nodes threads_per_task tasks_per_node
+      python3 "$BENNCH_DIR/flipbook/flipbook.py" threads
       mv flipbook.slides.html "$CI_PROJECT_DIR/${BENCHMARK_ID}-threads.slides.html"
 
   # TODO: Add another job at the end which collects the artifacts of all downstream pipelines and combines them into a single archive
