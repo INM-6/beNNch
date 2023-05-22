@@ -101,9 +101,9 @@ for model_name, benchmark_configs in config.items():
     next(u for u in step["use"] if type(u) == dict and u["from"] == "MODEL_CONFIG")["from"] = os.path.join(config_output_dir, os.path.basename(model_config_path))
 
     # Analyser
-    jube_benchmark["analyser"]["patternset"]["pattern"] = [
+    jube_benchmark["analyser"]["patternset"] = {"pattern": [
         {"name": key, "mode": "pattern", "type": "float", "_": key + " $jube_pat_fp"} for key in all_metrics
-    ]
+    ]}
 
     # Result
     jube_benchmark["result"]["table"]["column"] = result_keys + all_metrics
