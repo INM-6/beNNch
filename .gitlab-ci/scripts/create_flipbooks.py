@@ -97,7 +97,7 @@ def plot_nodes(timer_file, save_path):
     for ax in [ax1, ax2]:
         B.simple_axis(ax)
 
-    plt.savefig(f'{save_path}/nodes.png', dpi=400)
+    plt.savefig(save_path, dpi=400)
 
 
 def plot_threads(timer_file, save_path):
@@ -129,73 +129,70 @@ def plot_threads(timer_file, save_path):
     ax2.set_ylabel(r'$T_{\mathrm{wall}}$ [%]')
     B.merge_legends(ax1, ax2)
 
-    plt.savefig(f'{save_path}/threads.png', dpi=600)
+    plt.savefig(save_path, dpi=600)
 
 
-display_plot_fn = r"""def display_plot(timer_hash, plot_path, attributes, header, page_number=1):
+display_plot_fn = r"""def display_plot(result_table, plot_path, attributes, header, page_number=1):
     display_list = '<left><ul>\n'
     for attribute in attributes:
-        value = os.popen(f'git annex metadata {timer_hash}.csv --get {attribute}').read().strip()
+        value = os.popen(f'git annex metadata result_table --get {attribute}').read().strip()
         display_list += f'  <li>{attribute}: {value}</li>\n'
     display_list += '</ul></left>'
 
     display(HTML(f'<center><header>benchmark: {header}</header></center>'))
-    display(Image(filename=os.path.join(plot_path, timer_hash + '.png')))
+    display(Image(filename=plot_path))
     display(HTML(display_list))
     display(HTML(f'<center>page {page_number}</center>'))
 """
 
-def make_notebook(plots_dir: str, output_file: str, header: str, timer_hashes, attributes_to_display):
+def make_notebook(plot_path: str, output_dir: str, notebook_filename: str, header: str, result_table, attributes_to_display):
     nb = nbf.new_notebook()
     cells = []
 
     codes = {
         'skip': [display_plot_fn],
-        'slide': [f"display_plot('{timer_hashes[0]}', {plots_dir}, {attributes_to_display})"],
+        'slide': [f"display_plot('{result_table}', {plot_path}, {attributes_to_display})"],
         'subslide': []
     }
 
-    page_number = 2
-    for timer_hash in timer_hashes[1:]:
-        codes['subslide'].append(f"display_plot('{timer_hash}', '{plots_dir}', {attributes_to_display}, '{header}', {page_number})")
-        page_number += 1
+    # page_number = 2
+    # for timer_hash in timer_hashes[1:]:
+    #     codes['subslide'].append(f"display_plot('{result_table}', '{plot_path}', {attributes_to_display}, '{header}', {page_number})")
+    #     page_number += 1
     for key, code_list in codes.items():
         for code in code_list:
             cells.append(nbf.new_code_cell(code, metadata={"slideshow": {"slide_type": key}}))
 
     nb['cells'] = cells
 
-    with open(os.path.join(output_file, fname), 'w') as _:
+    notebook_file = os.path.join(output_dir, notebook_filename)
+    with open(notebook_file, 'w') as _:
         nbformat.write(nb, _)
 
-
-if __name__ == '__main__':
-    timer_data_dir = sys.argv[1]
-    output_dir = sys.argv[2]
-    output_filename = sys.argv[3]
-    jube_results_dir = sys.argv[4]
-    header = sys.argv[5]
-    attributes_to_display = sys.argv[6:]
-
-    for benchmark_id in os.listdir(jube_results_dir):
-        result_table = os.path.join(jube_results_dir, benchmark_id, "result", "result_table.dat")
-        
-        benchmark_name = os.popen(f"jube info {jube_outpath} --id {jube_id}").read().split("\n")[1].split(" id")[0][2:]
-
-    plots_dir = os.path.join(timer_data_dir, "plots")
-    os.makedirs(plots_dir)
-
-
-
-        plot(scaling_type=scaling_type,
-             timer_hash=timer_hash,
-             timer_file=csv_file,
-             save_path=plots_dir)
-    notebook_file = os.path.join(timer_data_dir, output_filename + '.ipynb')
-    make_notebook(plots_dir, output_dir, header, timer_hashes, attributes_to_display)
     os.system(f"jupyter nbconvert --inplace --execute {notebook_file}")
     os.system(f"jupyter nbconvert --to slides {notebook_file} --output-dir='{output_dir}'"
               + "--TemplateExporter.exclude_input=True "
               + "--SlidesExporter.reveal_transition='none'")
     os.remove(notebook_file)
-    shutil.rmtree(plots_dir)
+
+
+if __name__ == '__main__':
+    jube_results_dir = sys.argv[1]
+    output_dir = sys.argv[2]
+    benchmark_id = sys.argv[3]
+    attributes_to_display = sys.argv[4:]
+
+    plots_dir = os.path.join(output_dir, "plots")
+    for benchmark_id in os.listdir(jube_results_dir):
+        os.makedirs(plots_dir)
+        
+        result_table = os.path.join(jube_results_dir, benchmark_id, "result", "result_table.dat")
+        
+        benchmark_name = os.popen(f"jube info {jube_outpath} --id {jube_id}").read().split("\n")[1].split(" id")[0][2:]
+
+        plot_nodes(timer_file=result_table, save_path=os.path.join(plots_dir, "nodes.png"))
+        make_notebook(os.path.join(plots_dir, "nodes.png"), output_dir, f"{benchmark_id}_{benchmark_name}_nodes.ipynb", header, attributes_to_display)
+        plot_threads(timer_file=result_table, save_path=os.path.join(plots_dir, "threads.png"))
+        make_notebook(os.path.join(plots_dir, "threads.png"), output_dir, f"{benchmark_id}_{benchmark_name}_threads.ipynb", header, attributes_to_display)
+
+        shutil.rmtree(plots_dir)

@@ -149,6 +149,7 @@ variables:
 # Requires python3, pyyaml, jupyter, nbconvert, git, and git-annex
 .flipbook:
   # TODO: Add another stage which can be triggered manually to create flipbooks with additional configuration
-  - 'python3 "${SCRIPTS_DIR}/create_flipbooks.py" "$JUBE_RESULTS_DIR" "$CI_PROJECT_DIR" "$BENCHMARK_ID"'
+  - 'mkdir "$CI_PROJECT_DIR/flipbooks"'
+  - 'python3 "${SCRIPTS_DIR}/create_flipbooks.py" "$JUBE_RESULTS_DIR" "$CI_PROJECT_DIR/flipbooks" "$BENCHMARK_ID"'
 
   # TODO: Add another job at the end which collects the artifacts of all downstream pipelines and combines them into a single archive

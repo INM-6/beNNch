@@ -95,8 +95,7 @@ Benchmarking:
   stage: benchmarks
   artifacts:
     paths:
-      - "${SIMULATOR_BRANCH}-nodes.slides.html"
-      - "${SIMULATOR_BRANCH}-threads.slides.html"
+      - "flipbooks"
       - "configs"
     when: on_success
   variables:
