@@ -61,6 +61,7 @@ step:
 
 analyser:
   name: analyse
+  use: bench_patternset
   analyse:
     step: bench
     file: timer_data.txt
