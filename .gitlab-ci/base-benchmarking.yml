@@ -45,7 +45,6 @@ variables:
   environment-variables:
     - 'eval USER_DATA_DIR="$TEMP_DIR/$USER/${BENCHMARK_ID}-$(date +%d-%m-%y-%H-%M-%S)"'
     - 'eval WORKSPACE_DIR="$WORKSPACE_DIR"'
-    - 'eval BENNCH_DIR="$BENNCH_DIR"'
     - 'eval USER_DATA_DIR="$USER_DATA_DIR"'
     - 'eval SIMULATOR_REPO_DIR="$SIMULATOR_REPO_DIR"'
     - 'eval JUBE_RESULTS_DIR="$JUBE_RESULTS_DIR"'
@@ -101,7 +100,7 @@ variables:
   - 'cp "$TEMPLATES_DIR/job.slurm.in" "$BENCHMARKS_DIR/jube/job.slurm.in"'
   - |+
     for benchmark in "$BENCHMARKS_DIR/jube/cb_"*"${MACHINE}.yml" ; do
-      jube run --hide-animation -e --include-path="$BENNCH_DIR/config/$MACHINE" $benchmark
+      jube run --hide-animation -e --include-path="$BENCHMARKS_DIR/configs/$MACHINE" $benchmark
     done
   - |+
     shopt
@@ -151,11 +150,6 @@ variables:
 # Requires python3, pyyaml, jupyter, nbconvert, git, and git-annex
 .flipbook:
   # TODO: Add another stage which can be triggered manually to create flipbooks with additional configuration
-  - 'export PYTHONPATH="$BENNCH_DIR:$PYTHONPATH"'
-  - |+
-    for benchmark_name in "$ANALYSIS_DIR"/* ; do
-      python3 "${BENNCH_DIR}/flipbook/flipbook.py" "${ANALYSIS_DIR}/nodes/${benchmark_name}" "${CI_PROJECT_DIR}" "${BENCHMARK_ID}-${benchmark_name}-nodes" nodes "${BENCHMARK_ID}-${benchmark_name}"
-      python3 "${BENNCH_DIR}/flipbook/flipbook.py" "${ANALYSIS_DIR}/threads/${benchmark_name}" "${CI_PROJECT_DIR}" "${BENCHMARK_ID}-${benchmark_name}-threads" threads "${BENCHMARK_ID}-${benchmark_name}"
-    done
+  - 'python3 "${SCRIPTS_DIR}/create_flipbooks.py" "$ANALYSIS_DIR" "$CI_PROJECT_DIR" "$BENCHMARK_ID"'
 
   # TODO: Add another job at the end which collects the artifacts of all downstream pipelines and combines them into a single archive
