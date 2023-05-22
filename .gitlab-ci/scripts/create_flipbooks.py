@@ -132,6 +132,11 @@ def plot_threads(timer_file, save_path):
     plt.savefig(f'{save_path}/threads.png', dpi=600)
 
 
+def make_notebook(plots_dir: str, output_file: str, header: str, timer_hashes, attributes_to_display):
+    nb = nbf.new_notebook()
+    cells = []
+
+
 def display_plot(timer_hash, plot_path, attributes, header, page_number=1):
     display_list = '<left><ul>\n'
     for attribute in attributes:
@@ -144,10 +149,6 @@ def display_plot(timer_hash, plot_path, attributes, header, page_number=1):
     display(HTML(display_list))
     display(HTML(f'<center>page {page_number}</center>'))
 
-
-def make_notebook(plots_dir: str, output_file: str, header: str, timer_hashes, attributes_to_display):
-    nb = nbf.new_notebook()
-    cells = []
     codes = {
         'skip': ["import sys",
                  "import os",
@@ -184,14 +185,11 @@ if __name__ == '__main__':
         
         benchmark_name = os.popen(f"jube info {jube_outpath} --id {jube_id}").read().split("\n")[1].split(" id")[0][2:]
 
-    csv_files = os.popen("find " + timer_data_dir + " -not -path '*/.*' -name '*.csv' | sort").read().strip().split('\n')
-    timer_hashes = []
     plots_dir = os.path.join(timer_data_dir, "plots")
     os.makedirs(plots_dir)
 
-    for csv_file in csv_files:
-        timer_hash = csv_file.split('/')[-1].split('.')[0]
-        timer_hashes.append(timer_hash)
+
+
         plot(scaling_type=scaling_type,
              timer_hash=timer_hash,
              timer_file=csv_file,
