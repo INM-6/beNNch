@@ -106,7 +106,7 @@ variables:
   - |+
     shopt
     while jube status --id=all "$JUBE_RESULTS_DIR" | grep -q "RUNNING" ; do
-      sleep 20 || echo "sleep $?"
+      sleep 5 || echo "sleep $?"
       jube continue --error --id=all --hide-animation "$JUBE_RESULTS_DIR" || echo "continue $?"
       jube status --id=all "$JUBE_RESULTS_DIR" || echo "jube $?"
       jube status --id=all "$JUBE_RESULTS_DIR" | grep -q "RUNNING" || echo "status $?"
