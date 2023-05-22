@@ -165,12 +165,9 @@ variables:
     # TODO: Add another stage which can be triggered manually to create flipbooks with additional configuration
     - 'export PYTHONPATH="$BENNCH_DIR:$PYTHONPATH"'
     - |+
-      cd "$ANALYSIS_DIR/nodes"
-      python3 "$BENNCH_DIR/flipbook/flipbook.py" nodes
-      mv flipbook.slides.html "$CI_PROJECT_DIR/${BENCHMARK_ID}-nodes.slides.html"
-    - |+
-      cd "$ANALYSIS_DIR/threads"
-      python3 "$BENNCH_DIR/flipbook/flipbook.py" threads
-      mv flipbook.slides.html "$CI_PROJECT_DIR/${BENCHMARK_ID}-threads.slides.html"
+      for benchmark_name in "$ANALYSIS_DIR"/* ; do
+        python3 "{$BENNCH_DIR}/flipbook/flipbook.py" "{$ANALYSIS_DIR}/nodes/{$benchmark_name}" "${CI_PROJECT_DIR}" "${BENCHMARK_ID}-${benchmark_name}-nodes" nodes "${BENCHMARK_ID}-${benchmark_name}"
+        python3 "{$BENNCH_DIR}/flipbook/flipbook.py" "{$ANALYSIS_DIR}/threads/{$benchmark_name}" "${CI_PROJECT_DIR}" "${BENCHMARK_ID}-${benchmark_name}-threads" threads "${BENCHMARK_ID}-${benchmark_name}"
+      done
 
   # TODO: Add another job at the end which collects the artifacts of all downstream pipelines and combines them into a single archive
