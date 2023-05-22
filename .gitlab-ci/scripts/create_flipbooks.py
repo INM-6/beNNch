@@ -188,7 +188,7 @@ if __name__ == '__main__':
         
         result_table = os.path.join(jube_results_dir, benchmark_id, "result", "result_table.dat")
         
-        benchmark_name = os.popen(f"jube info {jube_outpath} --id {jube_id}").read().split("\n")[1].split(" id")[0][2:]
+        benchmark_name = os.popen(f"jube info {jube_results_dir} --id {jube_id}").read().split("\n")[1].split(" id")[0][2:]
 
         plot_nodes(timer_file=result_table, save_path=os.path.join(plots_dir, "nodes.png"))
         make_notebook(os.path.join(plots_dir, "nodes.png"), output_dir, f"{benchmark_id}_{benchmark_name}_nodes.ipynb", header, attributes_to_display)
