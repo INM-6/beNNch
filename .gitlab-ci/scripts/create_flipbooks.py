@@ -175,9 +175,14 @@ if __name__ == '__main__':
     timer_data_dir = sys.argv[1]
     output_dir = sys.argv[2]
     output_filename = sys.argv[3]
-    scaling_type = sys.argv[4]
+    jube_results_dir = sys.argv[4]
     header = sys.argv[5]
     attributes_to_display = sys.argv[6:]
+
+    for benchmark_id in os.listdir(jube_results_dir):
+        result_table = os.path.join(jube_results_dir, benchmark_id, "result", "result_table.dat")
+        
+        benchmark_name = os.popen(f"jube info {jube_outpath} --id {jube_id}").read().split("\n")[1].split(" id")[0][2:]
 
     csv_files = os.popen("find " + timer_data_dir + " -not -path '*/.*' -name '*.csv' | sort").read().strip().split('\n')
     timer_hashes = []
