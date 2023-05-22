@@ -166,8 +166,8 @@ variables:
     - 'export PYTHONPATH="$BENNCH_DIR:$PYTHONPATH"'
     - |+
       for benchmark_name in "$ANALYSIS_DIR"/* ; do
-        python3 "{$BENNCH_DIR}/flipbook/flipbook.py" "{$ANALYSIS_DIR}/nodes/{$benchmark_name}" "${CI_PROJECT_DIR}" "${BENCHMARK_ID}-${benchmark_name}-nodes" nodes "${BENCHMARK_ID}-${benchmark_name}"
-        python3 "{$BENNCH_DIR}/flipbook/flipbook.py" "{$ANALYSIS_DIR}/threads/{$benchmark_name}" "${CI_PROJECT_DIR}" "${BENCHMARK_ID}-${benchmark_name}-threads" threads "${BENCHMARK_ID}-${benchmark_name}"
+        python3 "${BENNCH_DIR}/flipbook/flipbook.py" "${ANALYSIS_DIR}/nodes/${benchmark_name}" "${CI_PROJECT_DIR}" "${BENCHMARK_ID}-${benchmark_name}-nodes" nodes "${BENCHMARK_ID}-${benchmark_name}"
+        python3 "${BENNCH_DIR}/flipbook/flipbook.py" "${ANALYSIS_DIR}/threads/${benchmark_name}" "${CI_PROJECT_DIR}" "${BENCHMARK_ID}-${benchmark_name}-threads" threads "${BENCHMARK_ID}-${benchmark_name}"
       done
 
   # TODO: Add another job at the end which collects the artifacts of all downstream pipelines and combines them into a single archive
