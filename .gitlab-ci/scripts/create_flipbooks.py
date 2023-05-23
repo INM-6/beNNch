@@ -20,8 +20,6 @@ import shutil
 
 from nbformat import v4 as nbf
 import nbformat
-from IPython.display import Image
-from IPython.display import HTML
 import numpy as np
 from matplotlib import pyplot as plt
 import matplotlib.gridspec as gridspec
@@ -132,7 +130,9 @@ def plot_threads(timer_file, save_path):
     plt.savefig(save_path, dpi=600)
 
 
-display_plot_fn = r"""def display_plot(result_table, plot_path, attributes, header, page_number=1):
+display_plot_fn = r"""from IPython.display import Image
+from IPython.display import HTML
+def display_plot(result_table, plot_path, attributes, header, page_number=1):
     display_list = '<left><ul>\n'
     for attribute in attributes:
         value = os.popen(f'git annex metadata result_table --get {attribute}').read().strip()
@@ -179,7 +179,7 @@ def make_notebook(plot_path: str, output_dir: str, notebook_filename: str, heade
 if __name__ == '__main__':
     jube_results_dir = sys.argv[1]
     output_dir = sys.argv[2]
-    benchmark_id = sys.argv[3]
+    pipeline_id = sys.argv[3]
     attributes_to_display = sys.argv[4:]
 
     plots_dir = os.path.join(output_dir, "plots")
@@ -191,8 +191,8 @@ if __name__ == '__main__':
         benchmark_name = os.popen(f"jube info {jube_results_dir} --id {benchmark_id}").read().split("\n")[1].split(" id")[0][2:]
 
         plot_nodes(timer_file=result_table, save_path=os.path.join(plots_dir, "nodes.png"))
-        make_notebook(os.path.join(plots_dir, "nodes.png"), output_dir, f"{benchmark_id}_{benchmark_name}_nodes.ipynb", f"{benchmark_id} - {benchmark_name} (nodes)", result_table, attributes_to_display)
+        make_notebook(os.path.join(plots_dir, "nodes.png"), output_dir, f"{pipeline_id}_{benchmark_name}_nodes.ipynb", f"{pipeline_id} - {benchmark_name} (nodes)", result_table, attributes_to_display)
         plot_threads(timer_file=result_table, save_path=os.path.join(plots_dir, "threads.png"))
-        make_notebook(os.path.join(plots_dir, "threads.png"), output_dir, f"{benchmark_id}_{benchmark_name}_threads.ipynb", f"{benchmark_id} - {benchmark_name} (threads)", result_table, attributes_to_display)
+        make_notebook(os.path.join(plots_dir, "threads.png"), output_dir, f"{pipeline_id}_{benchmark_name}_threads.ipynb", f"{pipeline_id} - {benchmark_name} (threads)", result_table, attributes_to_display)
 
         shutil.rmtree(plots_dir)
