@@ -169,10 +169,9 @@ def make_notebook(plot_path: str, output_dir: str, notebook_filename: str, heade
     with open(notebook_file, 'w') as _:
         nbformat.write(nb, _)
 
-    os.system(f"jupyter nbconvert --inplace --execute {notebook_file}")
-    os.system(f"jupyter nbconvert --to slides {notebook_file} --output-dir='{output_dir}'"
-              + "--TemplateExporter.exclude_input=True "
-              + "--SlidesExporter.reveal_transition='none'")
+    os.system(f'jupyter nbconvert --inplace --execute "{notebook_file}"')
+    os.system(f'jupyter nbconvert --to slides "{notebook_file}" --output-dir="{output_dir}" '
+              + '--TemplateExporter.exclude_input=True --SlidesExporter.reveal_transition="none"')
     os.remove(notebook_file)
 
 
