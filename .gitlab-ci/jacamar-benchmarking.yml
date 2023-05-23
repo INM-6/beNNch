@@ -56,7 +56,7 @@ Preparation:
     - !reference [ .preparation-init ]
     # Create python venv
     - 'python -m venv --system-site-packages "$USER_DATA_DIR/benchmarking-env"'
-    - 'pip install jupyter nbconvert'  # TODO
+    - '"$USER_DATA_DIR/benchmarking-env/bin/pip" install jupyter nbconvert'  # TODO
     # Activate python venv
     - 'source "$USER_DATA_DIR/benchmarking-env/bin/activate"'
     # Install all pip packages into venv specified in config file
