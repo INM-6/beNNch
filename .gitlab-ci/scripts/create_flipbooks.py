@@ -151,7 +151,7 @@ def make_notebook(plot_path: str, output_dir: str, notebook_filename: str, heade
 
     codes = {
         'skip': [display_plot_fn],
-        'slide': [f"display_plot('{result_table}', {plot_path}, {attributes_to_display})"],
+        'slide': [f"display_plot('{result_table}', '{plot_path}', {attributes_to_display})"],
         'subslide': []
     }
 
