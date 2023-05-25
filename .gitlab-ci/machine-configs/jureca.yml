@@ -48,6 +48,8 @@ variables:
 .environment-init:
   - 'echo "git annex: $GIT_ANNEX_DIR"'
   - 'module load Stages/2023 Python/3.10.4 PyYAML/6.0'
+  - 'echo $CB_RUNNER_ACCOUNT'
+  - 'echo $CB_DATA_PROJECT'
   - 'jutil env activate -v -p "$CB_DATA_PROJECT"'
   - 'jutil env activate -v -p "$CB_RUNNER_ACCOUNT"'
   - 'export PATH="$PATH:$GIT_ANNEX_DIR"'

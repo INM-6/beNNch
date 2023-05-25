@@ -43,25 +43,11 @@ variables:
       mv "$CI_PROJECT_DIR/config_repository/"* "$CONFIG_DIR"
       mv "$CI_PROJECT_DIR/model_repos/"* "$MODELS_DIR"
   environment-variables:
-    # TODO
     - 'eval USER_DATA_DIR="$TEMP_DIR/$USER/${BENCHMARK_ID}-$(date +%d-%m-%y-%H-%M-%S)"'
-    - 'eval WORKSPACE_DIR="$WORKSPACE_DIR"'
-    - 'eval USER_DATA_DIR="$USER_DATA_DIR"'
-    - 'eval SIMULATOR_REPO_DIR="$SIMULATOR_REPO_DIR"'
-    - 'eval JUBE_RESULTS_DIR="$JUBE_RESULTS_DIR"'
-    - 'eval BUILDER_DIR="$BUILDER_DIR"'
-    - 'eval BUILDER_MODULES_DIR="$BUILDER_MODULES_DIR"'
-    - 'eval BUILDER_PLANFILE_DIR="$BUILDER_PLANFILE_DIR"'
-    - 'eval BUILDER_PACKAGE_DIR="$BUILDER_PACKAGE_DIR"'
-    - 'eval BUILDER_SOURCE_DIR="$BUILDER_SOURCE_DIR"'
-    - 'eval BUILDER_INSTALL_DIR="$BUILDER_INSTALL_DIR"'
-    - 'eval BUILDER_BUILD_DIR="$BUILDER_BUILD_DIR"'
-    - 'eval BUILDER_LOG_DIR="$BUILDER_LOG_DIR"'
-    - 'eval GIT_ANNEX_DIR="$GIT_ANNEX_DIR"'
-    - 'eval CONFIG_DIR="$CONFIG_DIR"'
-    - 'eval MODELS_DIR="$MODELS_DIR"'
-    - 'eval BENNCHPLOT_DIR="$BENNCHPLOT_DIR"'
-    - 'eval BENCHMARKS_DIR="$BENCHMARKS_DIR"'
+    - |+
+      for var in WORKSPACE_DIR SIMULATOR_REPO_DIR SIMULATOR_REPO_DIR JUBE_RESULTS_DIR BUILDER_DIR BUILDER_MODULES_DIR BUILDER_PLANFILE_DIR BUILDER_PACKAGE_DIR BUILDER_SOURCE_DIR BUILDER_INSTALL_DIR BUILDER_BUILD_DIR BUILDER_LOG_DIR GIT_ANNEX_DIR CONFIG_DIR MODELS_DIR BENNCHPLOT_DIR BENCHMARKS_DIR ; do
+        eval val=\$$var
+      done
   create-dirs:
     - 'mkdir -p "$USER_DATA_DIR" "$WORKSPACE_DIR" "$SIMULATOR_REPO_DIR" "$BENCHMARKS_DIR/configs/$MACHINE" "$JUBE_RESULTS_DIR" "$BENCHMARKS_DIR/jube" "$BUILDER_MODULES_DIR" "$BUILDER_PLANFILE_DIR" "$BUILDER_PACKAGE_DIR" "$BUILDER_SOURCE_DIR" "$BUILDER_INSTALL_DIR" "$BUILDER_BUILD_DIR" "$BUILDER_LOG_DIR" "$CONFIG_DIR" "$MODELS_DIR"'
   apt-requirements:
@@ -105,12 +91,9 @@ variables:
   - |+
     shopt
     while jube status --id=all "$JUBE_RESULTS_DIR" | grep -q "RUNNING" ; do
-      sleep 5 || echo "sleep $?"
-      jube continue --error --id=all --hide-animation "$JUBE_RESULTS_DIR" || echo "continue $?"
-      jube status --id=all "$JUBE_RESULTS_DIR" || echo "jube $?"
-      jube status --id=all "$JUBE_RESULTS_DIR" | grep -q "RUNNING" || echo "status $?"
+      sleep 30
+      jube continue --error --id=all --hide-animation "$JUBE_RESULTS_DIR"
     done
-    echo done
   - 'jube result --analyse --id=all "$JUBE_RESULTS_DIR"'
 
 # TODO: Collect metadata about the pipeline (config, etc.) and upload via git-annex
