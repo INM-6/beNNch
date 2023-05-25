@@ -57,6 +57,7 @@ variables:
     value: "hpc_benchmark,microcircuit"
 
 
+# Specify all machines for which configurations exist
 .machines: &machines_anchor [ "jureca" ]
 
 # Only run pipelines manually triggered from the web
@@ -113,7 +114,6 @@ Trigger:
       artifacts: true
   parallel:
     matrix:  # Add all machines here for which configurations exist. TODO: Add option to specify the runner
-      # - MACHINE: !reference [ .machines ]
       - CB_MACHINE: *machines_anchor
   trigger:
     # strategy: depend

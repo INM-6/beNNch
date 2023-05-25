@@ -18,11 +18,11 @@
 include: .gitlab-ci/jacamar-benchmarking.yml
 
 variables:
-  TEMP_DIR: "$$SCRATCH/ci-bennch/$WORKSPACE/jureca/userdata"           # Directory to temporary files accessible from both login and compute nodes
+  TEMP_DIR: "$$SCRATCH/ci-bennch/$WORKSPACE/jureca/userdata"   # Directory to temporary files accessible from both login and compute nodes
   WORKSPACE_DIR: "$$USERSOFTWARE/ci-bennch/$WORKSPACE/jureca"  # Directory to persistent files accessible from both login and compute nodes
-  BUILDER_DIR: "$$WORKSPACE_DIR/builder"                               # Path to builder installation
-  GIT_ANNEX_DIR: "$$WORKSPACE_DIR/git-annex"                           # Path to git-annex
-  BENNCHPLOT_DIR: "$$WORKSPACE_DIR/bennchplot"                         # Path to beNNch-plot
+  BUILDER_DIR: "$$WORKSPACE_DIR/builder"                       # Path to builder installation
+  GIT_ANNEX_DIR: "$$WORKSPACE_DIR/git-annex"                   # Path to git-annex
+  BENNCHPLOT_DIR: "$$WORKSPACE_DIR/bennchplot"                 # Path to beNNch-plot
 
 .preparation:
   tags:
@@ -47,20 +47,16 @@ variables:
 
 .environment-init:
   - 'echo "git annex: $GIT_ANNEX_DIR"'
-  - |+
-    module load Stages/2023 Python/3.10.4 PyYAML/6.0
-    jutil env activate -p "$CB_DATA_PROJECT"
-    jutil env activate -p "$CB_RUNNER_ACCOUNT"
-    export PATH="$PATH:$GIT_ANNEX_DIR"
+  - 'module load Stages/2023 Python/3.10.4 PyYAML/6.0'
+  - 'jutil env activate -p "$CB_DATA_PROJECT" -v'
+  - 'jutil env activate -p "$CB_RUNNER_ACCOUNT" -v'
+  - 'export PATH="$PATH:$GIT_ANNEX_DIR"'
 
 .preparation-init:
-  - |+
-    module load Stages/2023 git/2.36.0-nodocs
+  - 'module load Stages/2023 git/2.36.0-nodocs'
 
 .benchmarks-init:
-  - |+
-    module load JUBE/2.5.1 git/2.36.0-nodocs
+  - 'module load JUBE/2.5.1 git/2.36.0-nodocs'
 
 .results-init:
-  - |+
-    module load Stages/2023 Python/3.10.4 PyYAML/6.0 SciPy-bundle/2022.05 matplotlib/3.5.2 git/2.36.0-nodocs IPython/8.5.0
+  - 'module load Stages/2023 Python/3.10.4 PyYAML/6.0 SciPy-bundle/2022.05 matplotlib/3.5.2 git/2.36.0-nodocs IPython/8.5.0'
