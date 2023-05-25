@@ -23,8 +23,6 @@ variables:
   BUILDER_DIR: "$$WORKSPACE_DIR/builder"                       # Path to builder installation
   GIT_ANNEX_DIR: "$$WORKSPACE_DIR/git-annex"                   # Path to git-annex
   BENNCHPLOT_DIR: "$$WORKSPACE_DIR/bennchplot"                 # Path to beNNch-plot
-  CB_RUNNER_ACCOUNT: "$CB_JURECA_RUNNER_ACCOUNT"
-  CB_DATA_PROJECT: "$CB_JURECA_DATA_PROJECT"
 
 .preparation:
   tags:
@@ -34,6 +32,8 @@ variables:
 
 .build:
   variables:
+    CB_RUNNER_ACCOUNT: "$CB_JURECA_RUNNER_ACCOUNT"
+    CB_DATA_PROJECT: "$CB_JURECA_DATA_PROJECT"
     # TODO: How much time is really required here? Should this also be a config parameter maybe?
     SCHEDULER_PARAMETERS: "--account=$CB_RUNNER_ACCOUNT --time=00:15:00 --nodes=1"
   tags:
