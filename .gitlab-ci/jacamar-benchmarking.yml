@@ -122,36 +122,37 @@ Benchmarking:
       - "flipbooks"
       - "configs"
     when: on_success
-  - |+
-    if [ $CI_JOB_STATUS != 'success' ] ; then
-      echo "Compilation not successful, exiting without running benchmarks..."
-      exit 1
-    fi
-  # Load all modules required for continuous benchmarking in general and prepare environment
-  - !reference [ .environment-init ]
-  # Load modules on for benchmark execution
-  - !reference [ .benchmarks-init ]
-  # Load user-defined modules on compute node required for benchmarks
-  - !reference [ .prepare-benchmarks, modules-requirements ]
-  # Activate python venv
-  - 'source "$USER_DATA_DIR/benchmarking-env/bin/activate"'
-  # Build benchmark jube file for each model
-  - !reference [ .prepare-benchmarks, build-benchmarks ]
-  # Run benchmarks
-  - !reference [ .run-benchmarks ]
-  # Load modules on login node required for result uploading and make git-annex available
-  - !reference [ .results-init ]
-  # Activate python venv (after loading modules to use venv interpreter)
-  - 'source "$USER_DATA_DIR/benchmarking-env/bin/activate"'
-  # Make bennchplot available (also in Jupyter)
-  - 'export PYTHONPATH="$PYTHONPATH:$BENNCHPLOT_DIR"'
-  # Prepare results repository
-  - !reference [ .prepare-benchmarks, results ]
-  # Collect and upload metadata and results
-  - !reference [ .metadata ]
-  # Generate flipbook
-  - !reference [ .flipbook ]
-  # Copy configs for archiving as artifacts
-  - 'cp -r "$BENCHMARKS_DIR/configs/$MACHINE" "$CI_PROJECT_DIR/configs"'
-  # - 'chmod -R 777 "$USER_DATA_DIR/bennch/results/.git"'  # Todo: Probably not required, needs fix
-  # - 'rm -rf $USER_DATA_DIR'
+  script:
+    - |+
+      if [ $CI_JOB_STATUS != 'success' ] ; then
+        echo "Compilation not successful, exiting without running benchmarks..."
+        exit 1
+      fi
+    # Load all modules required for continuous benchmarking in general and prepare environment
+    - !reference [ .environment-init ]
+    # Load modules on for benchmark execution
+    - !reference [ .benchmarks-init ]
+    # Load user-defined modules on compute node required for benchmarks
+    - !reference [ .prepare-benchmarks, modules-requirements ]
+    # Activate python venv
+    - 'source "$USER_DATA_DIR/benchmarking-env/bin/activate"'
+    # Build benchmark jube file for each model
+    - !reference [ .prepare-benchmarks, build-benchmarks ]
+    # Run benchmarks
+    - !reference [ .run-benchmarks ]
+    # Load modules on login node required for result uploading and make git-annex available
+    - !reference [ .results-init ]
+    # Activate python venv (after loading modules to use venv interpreter)
+    - 'source "$USER_DATA_DIR/benchmarking-env/bin/activate"'
+    # Make bennchplot available (also in Jupyter)
+    - 'export PYTHONPATH="$PYTHONPATH:$BENNCHPLOT_DIR"'
+    # Prepare results repository
+    - !reference [ .prepare-benchmarks, results ]
+    # Collect and upload metadata and results
+    - !reference [ .metadata ]
+    # Generate flipbook
+    - !reference [ .flipbook ]
+    # Copy configs for archiving as artifacts
+    - 'cp -r "$BENCHMARKS_DIR/configs/$MACHINE" "$CI_PROJECT_DIR/configs"'
+    # - 'chmod -R 777 "$USER_DATA_DIR/bennch/results/.git"'  # Todo: Probably not required, needs fix
+    # - 'rm -rf $USER_DATA_DIR'
