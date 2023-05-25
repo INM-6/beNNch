@@ -116,8 +116,7 @@ Trigger:
     matrix:  # Add all machines here for which configurations exist. TODO: Add option to specify the runner
       - CB_MACHINE: *machines_anchor
   rules:
-    if:
-      - $CB_MACHINES =~ $CB_MACHINE
+    - if: $CB_MACHINES =~ $CB_MACHINE
   trigger:
     # strategy: depend
     include: .gitlab-ci/machine-configs/${CB_MACHINE}.yml
