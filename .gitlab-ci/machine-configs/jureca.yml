@@ -23,6 +23,8 @@ variables:
   BUILDER_DIR: "$$WORKSPACE_DIR/builder"                       # Path to builder installation
   GIT_ANNEX_DIR: "$$WORKSPACE_DIR/git-annex"                   # Path to git-annex
   BENNCHPLOT_DIR: "$$WORKSPACE_DIR/bennchplot"                 # Path to beNNch-plot
+  CB_RUNNER_ACCOUNT: "$CB_JURECA_RUNNER_ACCOUNT"
+  CB_DATA_PROJECT: "$CB_JURECA_DATA_PROJECT"
 
 .preparation:
   tags:
