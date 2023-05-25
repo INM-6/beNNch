@@ -25,6 +25,9 @@ variables:
   BENNCHPLOT_DIR: "$$WORKSPACE_DIR/bennchplot"                 # Path to beNNch-plot
 
 .preparation:
+  variables:
+    CB_RUNNER_ACCOUNT: "$CB_JURECA_RUNNER_ACCOUNT"
+    CB_DATA_PROJECT: "$CB_JURECA_DATA_PROJECT"
   tags:
     - shell
     - jurecadc
@@ -32,8 +35,6 @@ variables:
 
 .build:
   variables:
-    CB_RUNNER_ACCOUNT: "$CB_JURECA_RUNNER_ACCOUNT"
-    CB_DATA_PROJECT: "$CB_JURECA_DATA_PROJECT"
     # TODO: How much time is really required here? Should this also be a config parameter maybe?
     SCHEDULER_PARAMETERS: "--account=$CB_RUNNER_ACCOUNT --time=00:15:00 --nodes=1"
   tags:
