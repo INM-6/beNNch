@@ -18,7 +18,6 @@
 include:
   local: .gitlab-ci/base-benchmarking.yml
 
-stages: [ preparation, benchmarks ]
 
 variables:
   JUBE_RESULTS_DIR: "$$USER_DATA_DIR/jube_results"
@@ -36,9 +35,7 @@ variables:
 
 
 Preparation:
-  stage: preparation
-  extends: [ .machine-selection, .base-benchmarking ]
-  tags: !reference [ .preparation-tags ]
+  extends: [ .machine-selection, .base-benchmarking, .preparation ]
   artifacts:
     reports:
       dotenv: benchmark_variables.env
@@ -86,24 +83,18 @@ Preparation:
     - |+
       for var in BENCHMARK_ID CB_RUNNER_ACCOUNT CB_PROJECT CB_DEPENDENCIES USER_DATA_DIR WORKSPACE_DIR BENCHMARKS_DIR BENNCHPLOT_DIR USER_DATA_DIR SIMULATOR_REPO SIMULATOR_BRANCH SIMULATOR_REPO_DIR JUBE_RESULTS_DIR RESULTS_REPO_URL RESULTS_BRANCH RESULTS_PATH BUILDER_DIR BUILDER_MODULES_DIR BUILDER_PLANFILE_DIR BUILDER_PACKAGE_DIR BUILDER_SOURCE_DIR BUILDER_INSTALL_DIR BUILDER_BUILD_DIR BUILDER_LOG_DIR GIT_ANNEX_DIR CONFIG_DIR MODELS_DIR BUILDER_CONFIG_PATH ; do
         eval val=\$$var
-        echo "${var}=${val}" >> "$CI_PROJECT_DIR/benchmark_variables.env"
+        echo "${var}=${val}" > "$CI_PROJECT_DIR/benchmark_variables.env"
       done
 
-Benchmarking:
-  tags: !reference [ .benchmark-tags ]
+Build:
+  extends: [ .build ]
   needs:
     - job: "Preparation"
       artifacts: true
-  stage: benchmarks
   artifacts:
-    paths:
-      - "flipbooks"
-      - "configs"
+    reports:
+      dotenv: benchmark_variables.env
     when: on_success
-  variables:
-    # TODO: How much time is really required here? Should this also be a config parameter maybe?
-    SCHEDULER_PARAMETERS: "--account=$CB_RUNNER_ACCOUNT --time=00:15:00 --nodes=1"
-    # CI_DEBUG_TRACE: "true"
   script:
     # Load all modules required for continuous benchmarking in general and prepare environment
     - !reference [ .environment-init ]
@@ -115,37 +106,52 @@ Benchmarking:
     - !reference [ .prepare-benchmarks, modules-requirements ]
     # Build simulator
     - !reference [ .prepare-benchmarks, build-simulator ]
-  after_script:
     - |+
-      if [ $CI_JOB_STATUS != 'success' ] ; then
-        echo "Compilation not successful, exiting without running benchmarks..."
-        exit 1
-      fi
-    # Load all modules required for continuous benchmarking in general and prepare environment
-    - !reference [ .environment-init ]
-    # Load modules on for benchmark execution
-    - !reference [ .benchmarks-init ]
-    # Load user-defined modules on compute node required for benchmarks
-    - !reference [ .prepare-benchmarks, modules-requirements ]
-    # Activate python venv
-    - 'source "$USER_DATA_DIR/benchmarking-env/bin/activate"'
-    # Build benchmark jube file for each model
-    - !reference [ .prepare-benchmarks, build-benchmarks ]
-    # Run benchmarks
-    - !reference [ .run-benchmarks ]
-    # Load modules on login node required for result uploading and make git-annex available
-    - !reference [ .results-init ]
-    # Activate python venv (after loading modules to use venv interpreter)
-    - 'source "$USER_DATA_DIR/benchmarking-env/bin/activate"'
-    # Make bennchplot available (also in Jupyter)
-    - 'export PYTHONPATH="$PYTHONPATH:$BENNCHPLOT_DIR"'
-    # Prepare results repository
-    - !reference [ .prepare-benchmarks, results ]
-    # Collect and upload metadata and results
-    - !reference [ .metadata ]
-    # Generate flipbook
-    - !reference [ .flipbook ]
-    # Copy configs for archiving as artifacts
-    - 'cp -r "$BENCHMARKS_DIR/configs/$MACHINE" "$CI_PROJECT_DIR/configs"'
-    # - 'chmod -R 777 "$USER_DATA_DIR/bennch/results/.git"'  # Todo: Probably not required, needs fix
-    # - 'rm -rf $USER_DATA_DIR'
+      for var in BENCHMARK_ID CB_RUNNER_ACCOUNT CB_PROJECT CB_DEPENDENCIES USER_DATA_DIR WORKSPACE_DIR BENCHMARKS_DIR BENNCHPLOT_DIR USER_DATA_DIR SIMULATOR_REPO SIMULATOR_BRANCH SIMULATOR_REPO_DIR JUBE_RESULTS_DIR RESULTS_REPO_URL RESULTS_BRANCH RESULTS_PATH BUILDER_DIR BUILDER_MODULES_DIR BUILDER_PLANFILE_DIR BUILDER_PACKAGE_DIR BUILDER_SOURCE_DIR BUILDER_INSTALL_DIR BUILDER_BUILD_DIR BUILDER_LOG_DIR GIT_ANNEX_DIR CONFIG_DIR MODELS_DIR BUILDER_CONFIG_PATH ; do
+        eval val=\$$var
+        echo "${var}=${val}" > "$CI_PROJECT_DIR/benchmark_variables.env"
+      done
+  
+Benchmarking:
+  extends: [ .benchmark ]
+  needs:
+    - job: "Build"
+      artifacts: true
+  artifacts:
+    paths:
+      - "flipbooks"
+      - "configs"
+    when: on_success
+  - |+
+    if [ $CI_JOB_STATUS != 'success' ] ; then
+      echo "Compilation not successful, exiting without running benchmarks..."
+      exit 1
+    fi
+  # Load all modules required for continuous benchmarking in general and prepare environment
+  - !reference [ .environment-init ]
+  # Load modules on for benchmark execution
+  - !reference [ .benchmarks-init ]
+  # Load user-defined modules on compute node required for benchmarks
+  - !reference [ .prepare-benchmarks, modules-requirements ]
+  # Activate python venv
+  - 'source "$USER_DATA_DIR/benchmarking-env/bin/activate"'
+  # Build benchmark jube file for each model
+  - !reference [ .prepare-benchmarks, build-benchmarks ]
+  # Run benchmarks
+  - !reference [ .run-benchmarks ]
+  # Load modules on login node required for result uploading and make git-annex available
+  - !reference [ .results-init ]
+  # Activate python venv (after loading modules to use venv interpreter)
+  - 'source "$USER_DATA_DIR/benchmarking-env/bin/activate"'
+  # Make bennchplot available (also in Jupyter)
+  - 'export PYTHONPATH="$PYTHONPATH:$BENNCHPLOT_DIR"'
+  # Prepare results repository
+  - !reference [ .prepare-benchmarks, results ]
+  # Collect and upload metadata and results
+  - !reference [ .metadata ]
+  # Generate flipbook
+  - !reference [ .flipbook ]
+  # Copy configs for archiving as artifacts
+  - 'cp -r "$BENCHMARKS_DIR/configs/$MACHINE" "$CI_PROJECT_DIR/configs"'
+  # - 'chmod -R 777 "$USER_DATA_DIR/bennch/results/.git"'  # Todo: Probably not required, needs fix
+  # - 'rm -rf $USER_DATA_DIR'

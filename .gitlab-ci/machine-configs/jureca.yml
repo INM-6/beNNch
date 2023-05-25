@@ -27,15 +27,26 @@ variables:
   CB_RUNNER_ACCOUNT: "$CB_JURECA_RUNNER_ACCOUNT"
   CB_PROJECT: "$CB_JURECA_PROJECT"
 
-.preparation-tags:
-  - shell
-  - jurecadc
-  - jacamar
+.preparation:
+  tags:
+    - shell
+    - jurecadc
+    - jacamar
 
-.benchmark-tags:
-  - compute
-  - jurecadc
-  - jacamar
+.build:
+  variables:
+      # TODO: How much time is really required here? Should this also be a config parameter maybe?
+      SCHEDULER_PARAMETERS: "--account=$CB_RUNNER_ACCOUNT --time=00:15:00 --nodes=1"
+  tags:
+    - compute
+    - jurecadc
+    - jacamar
+
+.benchmark:
+  tags:
+    - shell
+    - jurecadc
+    - jacamar
 
 .environment-init:
   - 'echo "git annex: $GIT_ANNEX_DIR"'
