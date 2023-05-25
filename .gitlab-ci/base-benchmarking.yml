@@ -21,7 +21,7 @@ variables:
   SCRIPTS_DIR: "$CI_DIR/scripts"
   TEMPLATES_DIR: "$CI_DIR/templates"
   CB_RUNNER_ACCOUNT: "$CB_${CB_MACHINE^^}_RUNNER_ACCOUNT"
-  CB_PROJECT: "$CB_${CB_MACHINE^^}_PROJECT"
+  CB_DATA_ROJECT: "$CB_${CB_MACHINE^^}_DATA_PROJECT"
 
 .base-benchmarking:
   allow_failure: false
@@ -45,6 +45,7 @@ variables:
       mv "$CI_PROJECT_DIR/config_repository/"* "$CONFIG_DIR"
       mv "$CI_PROJECT_DIR/model_repos/"* "$MODELS_DIR"
   environment-variables:
+    # TODO
     - 'eval USER_DATA_DIR="$TEMP_DIR/$USER/${BENCHMARK_ID}-$(date +%d-%m-%y-%H-%M-%S)"'
     - 'eval WORKSPACE_DIR="$WORKSPACE_DIR"'
     - 'eval USER_DATA_DIR="$USER_DATA_DIR"'

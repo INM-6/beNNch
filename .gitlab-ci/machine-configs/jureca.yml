@@ -18,9 +18,8 @@
 include: .gitlab-ci/jacamar-benchmarking.yml
 
 variables:
-  # TODO: Instead of USERSOFTWARE_djinb33, use a place which can be accessed by anyone independent of account
   TEMP_DIR: "$$SCRATCH/ci-bennch/$WORKSPACE/jureca/userdata"           # Directory to temporary files accessible from both login and compute nodes
-  WORKSPACE_DIR: "$$USERSOFTWARE_djinb33/ci-bennch/$WORKSPACE/jureca"  # Directory to persistent files accessible from both login and compute nodes
+  WORKSPACE_DIR: "$$USERSOFTWARE/ci-bennch/$WORKSPACE/jureca"  # Directory to persistent files accessible from both login and compute nodes
   BUILDER_DIR: "$$WORKSPACE_DIR/builder"                               # Path to builder installation
   GIT_ANNEX_DIR: "$$WORKSPACE_DIR/git-annex"                           # Path to git-annex
   BENNCHPLOT_DIR: "$$WORKSPACE_DIR/bennchplot"                         # Path to beNNch-plot
@@ -50,7 +49,8 @@ variables:
   - 'echo "git annex: $GIT_ANNEX_DIR"'
   - |+
     module load Stages/2023 Python/3.10.4 PyYAML/6.0
-    jutil env activate -p "$CB_PROJECT"
+    jutil env activate -p "$CB_DATA_PROJECT"
+    jutil env activate -p "$CB_RUNNER_ACCOUNT"
     export PATH="$PATH:$GIT_ANNEX_DIR"
 
 .preparation-init:
