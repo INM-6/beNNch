@@ -116,13 +116,14 @@ Trigger:
     matrix:  # Add all machines here for which configurations exist. TODO: Add option to specify the runner
       - CB_MACHINE: *machines_anchor
   rules:
-    - if: $CB_MACHINES =~ $CB_MACHINE
+    - if: "jureca,juwels =~ $CB_MACHINE
+    # $CB_MACHINES =~ $CB_MACHINE
   trigger:
     # strategy: depend
     include: .gitlab-ci/machine-configs/${CB_MACHINE}.yml
     forward:
       pipeline_variables: true
   variables:
-    PARENT_PIPELINE_ID: $CI_PIPELINE_ID
-    CB_RUNNER_ACCOUNT: "$CB_${CB_MACHINE^^}_RUNNER_ACCOUNT"
+    PARENT_PIPELINE_ID: "$CI_PIPELINE_ID"
+    CB_RUNNER_ACCOUNT: "$CB_$(CB_MACHINE echo $a | tr 'a-z' 'A-Z')_RUNNER_ACCOUNT"
     CB_DATA_ROJECT: "$CB_${CB_MACHINE^^}_DATA_PROJECT"
