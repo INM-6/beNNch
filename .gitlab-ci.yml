@@ -106,7 +106,6 @@ Validate Input:
     when: on_success
 
 
-
 Trigger:
   stage: benchmarking
   needs:

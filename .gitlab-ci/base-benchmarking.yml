@@ -20,6 +20,8 @@ variables:
   CI_DIR: "$CI_PROJECT_DIR/.gitlab-ci"
   SCRIPTS_DIR: "$CI_DIR/scripts"
   TEMPLATES_DIR: "$CI_DIR/templates"
+  CB_RUNNER_ACCOUNT: "$CB_${CB_MACHINE^^}_RUNNER_ACCOUNT"
+  CB_PROJECT: "$CB_${CB_MACHINE^^}_PROJECT"
 
 .base-benchmarking:
   allow_failure: false
