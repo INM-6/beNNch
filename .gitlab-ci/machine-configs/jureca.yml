@@ -35,6 +35,8 @@ variables:
 
 .build:
   variables:
+    CB_RUNNER_ACCOUNT: "$CB_JURECA_RUNNER_ACCOUNT"
+    CB_DATA_PROJECT: "$CB_JURECA_DATA_PROJECT"
     # TODO: How much time is really required here? Should this also be a config parameter maybe?
     SCHEDULER_PARAMETERS: "--account=$CB_RUNNER_ACCOUNT --time=00:15:00 --nodes=1"
   tags:
@@ -43,6 +45,9 @@ variables:
     - jacamar
 
 .benchmark:
+  variables:
+    CB_RUNNER_ACCOUNT: "$CB_JURECA_RUNNER_ACCOUNT"
+    CB_DATA_PROJECT: "$CB_JURECA_DATA_PROJECT"
   tags:
     - shell
     - jurecadc
@@ -51,10 +56,8 @@ variables:
 .environment-init:
   - 'echo "git annex: $GIT_ANNEX_DIR"'
   - 'module load Stages/2023 Python/3.10.4 PyYAML/6.0'
-  - 'echo $CB_RUNNER_ACCOUNT'
-  - 'echo $CB_DATA_PROJECT'
-  - 'jutil env activate -v -p "$CB_DATA_PROJECT"'
-  - 'jutil env activate -v -p "$CB_RUNNER_ACCOUNT"'
+  - 'jutil env activate -p "$CB_DATA_PROJECT"'
+  - 'jutil env activate -p "$CB_RUNNER_ACCOUNT"'
   - 'export PATH="$PATH:$GIT_ANNEX_DIR"'
 
 .preparation-init:
