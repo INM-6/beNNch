@@ -116,7 +116,7 @@ Trigger:
     matrix:  # Add all machines here for which configurations exist. TODO: Add option to specify the runner
       - CB_MACHINE: *machines_anchor
   rules:
-    - if: "'jureca,juwels' =~ $CB_MACHINE"
+    - if: "jureca == $CB_MACHINE"
     # $CB_MACHINES =~ $CB_MACHINE
   trigger:
     # strategy: depend
