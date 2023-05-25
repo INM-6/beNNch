@@ -116,7 +116,7 @@ Trigger:
     matrix:  # Add all machines here for which configurations exist. TODO: Add option to specify the runner
       - CB_MACHINE: *machines_anchor
   rules:
-    - if: "'jureca' == $CB_MACHINE"
+    - if: "$CB_MACHINES == $CB_MACHINE"
     # $CB_MACHINES =~ $CB_MACHINE
   trigger:
     # strategy: depend
@@ -127,3 +127,4 @@ Trigger:
     PARENT_PIPELINE_ID: "$CI_PIPELINE_ID"
     CB_RUNNER_ACCOUNT: "$CB_$(CB_MACHINE echo $a | tr 'a-z' 'A-Z')_RUNNER_ACCOUNT"
     CB_DATA_ROJECT: "$CB_${CB_MACHINE^^}_DATA_PROJECT"
+    CB_MACHINES: "$CB_MACHINES"
