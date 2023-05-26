@@ -27,6 +27,7 @@ variables:
     - pipeline: $PARENT_PIPELINE_ID
       job: "Validate Input"
       artifacts: true
+  when: manual
 
 # Requires git, python3, and pyyaml
 .prepare-benchmarks:
