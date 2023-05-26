@@ -35,6 +35,7 @@ variables:
     - jacamar
 
 .build:
+  variables:
     # TODO: How much time is really required here? Should this also be a config parameter maybe?
     SCHEDULER_PARAMETERS: "--account=$CB_RUNNER_ACCOUNT --time=00:15:00 --nodes=1"
   tags:
