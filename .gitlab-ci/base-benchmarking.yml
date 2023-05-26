@@ -27,29 +27,24 @@ variables:
     - pipeline: $PARENT_PIPELINE_ID
       job: "Validate Input"
       artifacts: true
-
-.machine-selection:
   when: manual
-  rules:
-    # Only make benchmark for machine runnable if configuration was provided for it
-    - if: $CB_MACHINES =~ $CB_MACHINE
 
 # Requires git, python3, and pyyaml
 .prepare-benchmarks:
   # Move all artifacts to user data directory
   artifacts:
-    - |+
-      mv "$CI_PROJECT_DIR/repository/"* "$SIMULATOR_REPO_DIR"
-      mv "$CI_PROJECT_DIR/config_repository/"* "$CONFIG_DIR"
-      mv "$CI_PROJECT_DIR/model_repos/"* "$MODELS_DIR"
+    - 'mv "$CI_PROJECT_DIR/config_repository/"* "$CONFIG_DIR"'
   environment-variables:
     - 'eval USER_DATA_DIR="$TEMP_DIR/$USER/${BENCHMARK_ID}-$(date +%d-%m-%y-%H-%M-%S)"'
     - |+
-      for var in WORKSPACE_DIR SIMULATOR_REPO_DIR SIMULATOR_REPO_DIR JUBE_RESULTS_DIR BUILDER_DIR BUILDER_MODULES_DIR BUILDER_PLANFILE_DIR BUILDER_PACKAGE_DIR BUILDER_SOURCE_DIR BUILDER_INSTALL_DIR BUILDER_BUILD_DIR BUILDER_LOG_DIR GIT_ANNEX_DIR CONFIG_DIR MODELS_DIR BENNCHPLOT_DIR BENCHMARKS_DIR ; do
+      for var in WORKSPACE_DIR SIMULATOR_REPO_DIR JUBE_RESULTS_DIR BUILDER_DIR BUILDER_MODULES_DIR BUILDER_PLANFILE_DIR BUILDER_PACKAGE_DIR BUILDER_SOURCE_DIR BUILDER_INSTALL_DIR BUILDER_BUILD_DIR BUILDER_LOG_DIR GIT_ANNEX_DIR CONFIG_DIR MODELS_DIR BENNCHPLOT_DIR BENCHMARKS_DIR ; do
         eval val=\$$var
       done
   create-dirs:
     - 'mkdir -p "$USER_DATA_DIR" "$WORKSPACE_DIR" "$SIMULATOR_REPO_DIR" "$BENCHMARKS_DIR/configs/$MACHINE" "$JUBE_RESULTS_DIR" "$BENCHMARKS_DIR/jube" "$BUILDER_MODULES_DIR" "$BUILDER_PLANFILE_DIR" "$BUILDER_PACKAGE_DIR" "$BUILDER_SOURCE_DIR" "$BUILDER_INSTALL_DIR" "$BUILDER_BUILD_DIR" "$BUILDER_LOG_DIR" "$CONFIG_DIR" "$MODELS_DIR"'
+  clone-repositories:
+    - 'git clone --single-branch --branch="$SIMULATOR_BRANCH" --depth=1 "$SIMULATOR_REPO" "$SIMULATOR_REPO_DIR"'
+    - 'python3 "$SCRIPTS_DIR/clone_models.py" "${CONFIG_DIR}/$CONFIG_PATH" "$MODELS_DIR" "$CB_MODELS"'
   apt-requirements:
     - |+
       REQUIREMENTS=$(python3 "$SCRIPTS_DIR/get_requirements_from_config.py" apt "${CONFIG_DIR}/$CONFIG_PATH" "$MACHINE")

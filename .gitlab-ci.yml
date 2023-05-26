@@ -78,7 +78,6 @@ Validate Input:
   variables:
     MACHINES: "jureca"  # TODO: Check if the anchor can be used here somehow to avoid duplication
   script:
-    - 'apk update && apk add git'
     - |+
       # Make some values were provided for all mandatory variables
       for var in BENCHMARK_ID SIMULATOR_REPO SIMULATOR_BRANCH CONFIG_REPO CONFIG_BRANCH CONFIG_PATH RESULTS_REPO_URL RESULTS_BRANCH RESULTS_PATH WORKSPACE ; do
@@ -88,21 +87,17 @@ Validate Input:
           exit 1
         fi
       done
-    - 'git clone --single-branch --branch="$SIMULATOR_BRANCH" --depth=1 "$SIMULATOR_REPO" repository'
-    - 'git clone --single-branch --branch="$CONFIG_BRANCH" --depth=1 "$CONFIG_REPO" config_repository'
+    - 'apk update && apk add git'
     - 'python -m pip install pyyaml'
+    - 'git clone --single-branch --branch="$CONFIG_BRANCH" --depth=1 "$CONFIG_REPO" config_repository'
     - 'mkdir "$CI_PROJECT_DIR/pipelines"'
-    - 'python "$CI_PROJECT_DIR/.gitlab-ci/scripts/prepare_machine_pipelines.py" "$CI_PROJECT_DIR/.gitlab-ci/machine-configs" "$CI_PROJECT_DIR/pipelines" "config_repository/$CONFIG_PATH" model_repos "$MACHINES" variables.env'
+    - 'python "$CI_PROJECT_DIR/.gitlab-ci/scripts/prepare_machine_pipelines.py" "$CI_PROJECT_DIR/.gitlab-ci/machine-configs" "$CI_PROJECT_DIR/pipelines" "config_repository/$CONFIG_PATH" "$MACHINES"'
   artifacts:
     paths:
-      - "repository"
       - "config_repository"
-      - "model_repos"
       - "pipelines"
     exclude:
-      - "repository/.git"
       - "config_repository/.git"
-      - "model_repos/*/.git"
     reports:
       dotenv:
         - "variables.env"

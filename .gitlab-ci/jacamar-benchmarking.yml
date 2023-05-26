@@ -63,6 +63,8 @@ Preparation:
     # - 'pip install git+https://github.com/INM-6/gather-metadata.git'
     # Patch configuration files
     - !reference [ .prepare-benchmarks, configs ]
+    # Clone simulator and model repositories
+    - !reference [ .prepare-benchmarks, clone-repositories ]
     # Prepare Builder .buildrc
     - 'BUILDER_CONFIG_PATH="$USER_DATA_DIR/.buildrc"'
     - |+
