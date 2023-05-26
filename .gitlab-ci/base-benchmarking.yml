@@ -17,9 +17,8 @@
 
 variables:
   SIMULATOR_REPO_DIR: "$$USER_DATA_DIR/repository/"
-  CI_DIR: "$CI_PROJECT_DIR/.gitlab-ci"
-  SCRIPTS_DIR: "$$CI_DIR/scripts"
-  TEMPLATES_DIR: "$$CI_DIR/templates"
+  SCRIPTS_DIR: "$CI_PROJECT_DIR/.gitlab-ci/scripts"
+  TEMPLATES_DIR: "$CI_PROJECT_DIR/.gitlab-ci/templates"
 
 .base-benchmarking:
   allow_failure: false
