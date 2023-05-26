@@ -46,7 +46,6 @@ variables:
     - jacamar
 
 .environment-init:
-  - 'echo "git annex: $GIT_ANNEX_DIR"'
   - 'module load Stages/2023 Python/3.10.4 PyYAML/6.0'
   - 'jutil env activate -p "$CB_DATA_PROJECT"'
   - 'jutil env activate -p "$CB_COMPUTE_PROJECT"'
