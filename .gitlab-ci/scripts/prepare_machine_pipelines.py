@@ -32,7 +32,7 @@ pipelines_dir_in = sys.argv[1]
 pipelines_dir_out = sys.argv[2]
 config_file_path = sys.argv[3]
 model_repos_dir = sys.argv[4]
-available_machines = sys.argv[5]
+available_machines = sys.argv[5].split(",")
 variables_env_path = sys.argv[6]
 
 
