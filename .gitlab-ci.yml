@@ -91,6 +91,7 @@ Validate Input:
     - 'git clone --single-branch --branch="$SIMULATOR_BRANCH" --depth=1 "$SIMULATOR_REPO" repository'
     - 'git clone --single-branch --branch="$CONFIG_BRANCH" --depth=1 "$CONFIG_REPO" config_repository'
     - 'python -m pip install pyyaml'
+    - 'mkdir "$CI_PROJECT_DIR/pipelines"'
     - 'python "$CI_PROJECT_DIR/.gitlab-ci/scripts/prepare_machine_pipelines.py" "$CI_PROJECT_DIR/.gitlab-ci/machine-configs" "$CI_PROJECT_DIR/pipelines" "config_repository/$CONFIG_PATH" model_repos "$MACHINES" variables.env'
   artifacts:
     paths:
