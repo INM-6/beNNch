@@ -25,7 +25,7 @@ variables:
   BENNCHPLOT_DIR: "$$WORKSPACE_DIR/bennchplot"                 # Path to beNNch-plot
 
 .preparation:
-  variables:  # TODO: Remove redundancy
+  variables:  # TODO: Move somewhere else
     CB_RUNNER_ACCOUNT: "$CB_JURECA_RUNNER_ACCOUNT"
     CB_DATA_PROJECT: "$CB_JURECA_DATA_PROJECT"
     CB_COMPUTE_PROJECT: "$CB_JURECA_COMPUTE_PROJECT"
