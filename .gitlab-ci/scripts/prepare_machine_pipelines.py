@@ -78,9 +78,9 @@ for machine, machine_conf in config["user_config"].items():
         if "variables" not in pipeline_yml:
             pipeline_yml["variables"] = dict()
         pipeline_yml["variables"]["CB_DATA_PROJECT"] = machine_conf.get('data-project', '')
-        pipeline_yml["variables"]["CB_COMPUTE_PROJECT" = machine_conf.get('compute-project', '')
-        pipeline_yml["variables"]["CB_RUNNER_ACCOUNT" = machine_conf.get('account', '')
-        pipeline_yml["variables"]["CB_DEPENDENCIES" = config['dependencies']
+        pipeline_yml["variables"]["CB_COMPUTE_PROJECT"] = machine_conf.get('compute-project', '')
+        pipeline_yml["variables"]["CB_RUNNER_ACCOUNT"] = machine_conf.get('account', '')
+        pipeline_yml["variables"]["CB_DEPENDENCIES"] = config['dependencies']
         yaml.dump(pipeline_yml, pipeline_out, default_flow_style=False)
         available_machines.remove(machine)
 
