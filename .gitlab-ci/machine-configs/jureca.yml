@@ -47,8 +47,14 @@ variables:
 
 .environment-init:
   - 'module load Stages/2023 Python/3.10.4 PyYAML/6.0'
+  - 'echo $CB_DATA_PROJECT'
+  - 'echo $CB_COMPUTE_PROJECT'
   - 'jutil env activate -p "$CB_DATA_PROJECT"'
+  - 'echo $SCRATCH'
+  - 'echo $USERSOFTWARE'
   - 'jutil env activate -p "$CB_COMPUTE_PROJECT"'
+  - 'echo $SCRATCH'
+  - 'echo $USERSOFTWARE'
   - 'export PATH="$PATH:$GIT_ANNEX_DIR"'
 
 .preparation-init:
