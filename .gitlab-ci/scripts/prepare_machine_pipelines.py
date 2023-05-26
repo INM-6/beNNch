@@ -31,7 +31,7 @@ import yaml
 pipelines_dir_in = sys.argv[1]
 pipelines_dir_out = sys.argv[2]
 config_file_path = sys.argv[3]
-available_machines = sys.argv[5].split(",")
+available_machines = sys.argv[4].split(",")
 
 
 with open(config_file_path) as config_file:
