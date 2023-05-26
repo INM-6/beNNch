@@ -44,8 +44,8 @@ Preparation:
     # Load all modules required for continuous benchmarking in general and prepare environment
     - !reference [ .environment-init ]
     # Load all environment variables
-    - !reference [ .prepare-benchmarks, environment-variables ]
     - 'eval USER_DATA_DIR="$TEMP_DIR/$USER/${BENCHMARK_ID}-$(date +%d-%m-%y-%H-%M-%S)"'
+    - !reference [ .prepare-benchmarks, environment-variables ]
     # Create all required directories
     - !reference [ .prepare-benchmarks, create-dirs ]
     # Move all artifacts to user data directory
