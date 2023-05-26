@@ -50,7 +50,6 @@ variables:
   - 'jutil env activate -p "$CB_DATA_PROJECT"'
   - 'jutil env activate -p "$CB_COMPUTE_PROJECT"'
   - 'export PATH="$PATH:$GIT_ANNEX_DIR"'
-  - 'echo "${!TEMP_DIR} ${!WORKSPACE_DIR}"'
 
 .preparation-init:
   - 'module load Stages/2023 git/2.36.0-nodocs'
