@@ -25,9 +25,10 @@ variables:
   BENNCHPLOT_DIR: "$$WORKSPACE_DIR/bennchplot"                 # Path to beNNch-plot
 
 .preparation:
-  variables:
+  variables:  # TODO: Remove redundancy
     CB_RUNNER_ACCOUNT: "$CB_JURECA_RUNNER_ACCOUNT"
     CB_DATA_PROJECT: "$CB_JURECA_DATA_PROJECT"
+    CB_COMPUTE_PROJECT: "$CB_JURECA_COMPUTE_PROJECT"
   tags:
     - shell
     - jurecadc
@@ -37,6 +38,7 @@ variables:
   variables:
     CB_RUNNER_ACCOUNT: "$CB_JURECA_RUNNER_ACCOUNT"
     CB_DATA_PROJECT: "$CB_JURECA_DATA_PROJECT"
+    CB_COMPUTE_PROJECT: "$CB_JURECA_COMPUTE_PROJECT"
     # TODO: How much time is really required here? Should this also be a config parameter maybe?
     SCHEDULER_PARAMETERS: "--account=$CB_RUNNER_ACCOUNT --time=00:15:00 --nodes=1"
   tags:
@@ -48,6 +50,7 @@ variables:
   variables:
     CB_RUNNER_ACCOUNT: "$CB_JURECA_RUNNER_ACCOUNT"
     CB_DATA_PROJECT: "$CB_JURECA_DATA_PROJECT"
+    CB_COMPUTE_PROJECT: "$CB_JURECA_COMPUTE_PROJECT"
   tags:
     - shell
     - jurecadc
@@ -57,7 +60,7 @@ variables:
   - 'echo "git annex: $GIT_ANNEX_DIR"'
   - 'module load Stages/2023 Python/3.10.4 PyYAML/6.0'
   - 'jutil env activate -p "$CB_DATA_PROJECT"'
-  - 'jutil env activate -p "$CB_RUNNER_ACCOUNT"'
+  - 'jutil env activate -p "$CB_COMPUTE_ACCOUNT"'
   - 'export PATH="$PATH:$GIT_ANNEX_DIR"'
 
 .preparation-init:
