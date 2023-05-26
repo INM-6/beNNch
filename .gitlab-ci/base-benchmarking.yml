@@ -51,6 +51,8 @@ variables:
         apt-get install -y $REQUIREMENTS
       fi
   pip-requirements:
+    - 'echo $CI_DIR'
+    - 'echo $SCRIPTS_DIR'
     - |+
       REQUIREMENTS=$(python3 "$SCRIPTS_DIR/get_requirements_from_config.py" pip "${CONFIG_DIR}/$CONFIG_PATH" "$MACHINE")
       if [ ! -z "$REQUIREMENTS" ] ; then
