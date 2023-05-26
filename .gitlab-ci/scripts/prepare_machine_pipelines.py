@@ -21,9 +21,6 @@ Collect all machines for which benchmarks should be run and save them to an envi
 
 import sys
 import os
-import copy
-import subprocess
-import shutil
 
 import yaml
 
