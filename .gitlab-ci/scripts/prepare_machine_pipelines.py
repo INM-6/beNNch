@@ -28,10 +28,12 @@ import shutil
 import yaml
 
 
-config_file_path = sys.argv[1]
-model_repos_dir = sys.argv[2]
-machines = sys.argv[3]
-variables_env_path = sys.argv[4]
+pipelines_dir_in = sys.argv[1]
+pipelines_dir_out = sys.argv[2]
+config_file_path = sys.argv[3]
+model_repos_dir = sys.argv[4]
+machines = sys.argv[5]
+variables_env_path = sys.argv[6]
 
 
 with open(config_file_path) as config_file:
@@ -67,13 +69,20 @@ for model_name, benchmark_configs in config["benchmarks"].items():
 # Remove temporary repositories again
 shutil.rmtree(models_tmp_dir)
 
-with open(variables_env_path, 'w') as variables_env:
-    out_machines = list()
-    for machine, machine_conf in config["user_config"].items():
-        out_machines.append(machine)
-        variables_env.write(f"CB_{machine.upper()}_DATA_PROJECT={machine_conf.get('data-project', '')}\n")
-        variables_env.write(f"CB_{machine.upper()}_COMPUTE_PROJECT={machine_conf.get('compute-project', '')}\n")
-        variables_env.write(f"CB_{machine.upper()}_RUNNER_ACCOUNT={machine_conf.get('account', '')}\n")
 
-    variables_env.write(f"CB_MACHINES={','.join(out_machines)}\n")
-    variables_env.write(f"CB_DEPENDENCIES={config['dependencies']}")
+for machine, machine_conf in config["user_config"].items():
+    with open(os.path.join(pipelines_dir_out, machine + ".yml"), 'w') as pipeline_out:
+        if models and model_name not in models:
+            print("Skipping pipeline generation for machine " + machine)
+            pipeline_out.write(r"{stages: [fail], Fail: {stage: fail, rules: [{when: never}], script: ['']}}")
+        else:
+            with open(os.path.join(pipelines_dir_in, machine + ".yml")) as pipeline_in:
+                pipeline_yml = yaml.safe_load(pipeline_in)
+            
+            if "variables" not in pipeline_yml:
+                pipeline_yml["variables"] = list()
+            pipeline_yml["variables"].append(f"CB_DATA_PROJECT={machine_conf.get('data-project', '')}\n")
+            pipeline_yml["variables"].append(f"CB_COMPUTE_PROJECT={machine_conf.get('compute-project', '')}\n")
+            pipeline_yml["variables"].append(f"CB_RUNNER_ACCOUNT={machine_conf.get('account', '')}\n")
+            pipeline_yml["variables"].append(f"CB_DEPENDENCIES={config['dependencies']}")
+            yaml.dump(pipeline_yml, pipeline_out, default_flow_style=False)

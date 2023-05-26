@@ -91,12 +91,13 @@ Validate Input:
     - 'git clone --single-branch --branch="$SIMULATOR_BRANCH" --depth=1 "$SIMULATOR_REPO" repository'
     - 'git clone --single-branch --branch="$CONFIG_BRANCH" --depth=1 "$CONFIG_REPO" config_repository'
     - 'python -m pip install pyyaml'
-    - 'python "$CI_PROJECT_DIR/.gitlab-ci/scripts/prepare_machines.py" "config_repository/$CONFIG_PATH" model_repos "$MACHINES" variables.env'
+    - 'python "$CI_PROJECT_DIR/.gitlab-ci/scripts/prepare_machine_pipelines.py" "$CI_PROJECT_DIR/.gitlab-ci/machine-configs" "$CI_PROJECT_DIR/pipelines" "config_repository/$CONFIG_PATH" model_repos "$MACHINES" variables.env'
   artifacts:
     paths:
       - "repository"
       - "config_repository"
       - "model_repos"
+      - "pipelines"
     exclude:
       - "repository/.git"
       - "config_repository/.git"
@@ -117,7 +118,9 @@ Trigger:
       - CB_MACHINE: *machines_anchor
   trigger:
     # strategy: depend
-    include: .gitlab-ci/machine-configs/${CB_MACHINE}.yml
+    include:
+      - artifact: pipelines/${CB_MACHINE}.yml
+        job: "Validate Input"
     forward:
       pipeline_variables: true
   variables:
