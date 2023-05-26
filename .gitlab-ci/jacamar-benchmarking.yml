@@ -35,7 +35,7 @@ variables:
 
 
 Preparation:
-  extends: [ .machine-selection, .base-benchmarking, .preparation ]
+  extends: [ .base-benchmarking, .preparation ]
   artifacts:
     reports:
       dotenv: benchmark_variables.env
