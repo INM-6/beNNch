@@ -41,6 +41,7 @@ Preparation:
       dotenv: benchmark_variables.env
     when: on_success
   script:
+    - 'eval USER_DATA_DIR="$TEMP_DIR/$USER/${BENCHMARK_ID}-$(date +%d-%m-%y-%H-%M-%S)"'
     # Load all modules required for continuous benchmarking in general and prepare environment
     - !reference [ .environment-init ]
     # Load all environment variables
