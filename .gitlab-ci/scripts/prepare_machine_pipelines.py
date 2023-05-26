@@ -32,9 +32,8 @@ pipelines_dir_in = sys.argv[1]
 pipelines_dir_out = sys.argv[2]
 config_file_path = sys.argv[3]
 model_repos_dir = sys.argv[4]
-machines = sys.argv[5]
+available_machines = sys.argv[5]
 variables_env_path = sys.argv[6]
-available_machines = sys.argv[7].split(",")
 
 
 with open(config_file_path) as config_file:
