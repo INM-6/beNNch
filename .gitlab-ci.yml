@@ -121,3 +121,4 @@ Trigger:
       pipeline_variables: true
   variables:
     PARENT_PIPELINE_ID: "$CI_PIPELINE_ID"
+  when: manual
