@@ -128,11 +128,6 @@ Benchmarking:
       - "configs"
     when: on_success
   script:
-    - |+
-      if [ $CI_JOB_STATUS != 'success' ] ; then
-        echo "Compilation not successful, exiting without running benchmarks..."
-        exit 1
-      fi
     # Load all modules required for continuous benchmarking in general and prepare environment
     - !reference [ .environment-init ]
     # Load modules on for benchmark execution
