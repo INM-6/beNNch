@@ -48,6 +48,16 @@ substituteset:
       - {source: "#TIME#", dest: $walltime}
       - {source: "#COMMANDS#", dest: $exec_bench}
       - {source: "#ACCOUNT#", dest: $account}
+  - name: bench_substitutions
+    sub:
+    # TODO: How to deal with scale properly?
+      - {source: "{scale}", dest: $scale}
+      - {source: "{scaling_type}", dest: $scaling_type}
+      - {source: "{num_vps}", dest: $num_vps}
+      - {source: "{num_tasks}", dest: $num_tasks}
+      - {source: "{num_nodes}", dest: $num_nodes}
+      - {source: "{tasks_per_node}", dest: $tasks_per_node}
+      - {source: "{threads_per_task}", dest: $threads_per_task}
 
 step:
   - name: bench

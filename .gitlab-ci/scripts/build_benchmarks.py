@@ -88,13 +88,10 @@ for model_name, benchmark_configs in config.items():
     jube_benchmark["fileset"]["copy"].extend([os.path.join(benchmark_model_files_dir, f) for f in os.listdir(benchmark_model_files_dir) if os.path.isfile(os.path.join(benchmark_model_files_dir, f))])
 
     # Substituteset
-    substitutions = {"name": "bench_substitutions", "iofile": {"in": model_script_path, "out": model_script_path}, "sub": list()}
+    substitutions = next(s for s in jube_benchmark["substituteset"] if s["name"] == "bench_substitutions")
+    substitutions["iofile"] = {"in": model_script_path, "out": model_script_path}
     for param in model_parameters:
         substitutions["sub"].append({"source": "{" + param["name"] + "}", "dest": "$" + param["name"]})
-    # TODO: How to deal with scale properly?
-    substitutions["sub"].append({"source": "{scale}", "dest": "$scale"})
-    substitutions["sub"].append({"source": "{num_vps}", "dest": "$num_vps"})
-    jube_benchmark["substituteset"].append(substitutions)
 
     # Bench step
     step = next(b for b in jube_benchmark["step"] if b["name"] == "bench")
