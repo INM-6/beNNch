@@ -31,6 +31,7 @@ import numpy as np
 
 model_config_path = sys.argv[1]  # path to model config file
 workpackage_path = sys.argv[2]   # path to workpackage files
+log_path = sys.argv[3]           # path to logfiles
 
 
 with open(model_config_path) as model_config_file:
@@ -39,7 +40,7 @@ with open(model_config_path) as model_config_file:
 metrics = config["metrics"]
 metrics_sum = config["metrics_sum"]
 
-all_logfiles = glob.glob(os.path.join(workpackage_path, config["log_path"], '*logfile*'))
+all_logfiles = glob.glob(os.path.join(log_path, '*logfile*'))
 
 d = {key: list() for key in metrics}
 d_sum = {key: list() for key in metrics_sum}

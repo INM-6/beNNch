@@ -118,8 +118,7 @@ for model_name, benchmark_configs in config["benchmarks"].items():
                     {"name": "partition", "type": "string", "_": config["user_config"][machine]["partition"]}
                 ]
             })
-        
-        combined_config["log_path"] = model_config.get("log_path", "")
+
         combined_config["metrics"] = model_config["metrics"]
         combined_config["metrics_sum"] = model_config["metrics_sum"]
 
