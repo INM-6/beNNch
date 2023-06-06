@@ -102,12 +102,12 @@ Build:
   script:
     # Load all modules required for continuous benchmarking in general and prepare environment
     - !reference [ .environment-init ]
-    # Add builder to path
-    - 'export PATH=$USER_DATA_DIR/bin:$PATH'
-    # Activate python venv
-    - 'source $USER_DATA_DIR/benchmarking-env/bin/activate'
     # Load user-defined modules
     - !reference [ .prepare-benchmarks, modules-requirements ]
+    # Activate python venv
+    - 'source $USER_DATA_DIR/benchmarking-env/bin/activate'
+    # Add builder to path
+    - 'export PATH=$USER_DATA_DIR/bin:$PATH'
     # Build simulator
     - !reference [ .prepare-benchmarks, build-simulator ]
     - 'rm -f "$CI_PROJECT_DIR/benchmark_variables.env"'
