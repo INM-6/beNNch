@@ -50,8 +50,8 @@ Preparation:
     - !reference [ .prepare-benchmarks, create-dirs ]
     # Move all artifacts to user data directory
     - !reference [ .prepare-benchmarks, artifacts ]
-    # Load all modules required for preparation stage
-    - !reference [ .preparation-init ]
+    # Load user-defined modules
+    - !reference [ .prepare-benchmarks, modules-requirements ]
     # Create python venv
     - 'python -m venv --system-site-packages "$USER_DATA_DIR/benchmarking-env"'
     - 'export PYTHONNOUSERSITE=1'
@@ -106,7 +106,7 @@ Build:
     - 'export PATH=$USER_DATA_DIR/bin:$PATH'
     # Activate python venv
     - 'source $USER_DATA_DIR/benchmarking-env/bin/activate'
-    # Load user-defined modules on compute node required for benchmarks
+    # Load user-defined modules
     - !reference [ .prepare-benchmarks, modules-requirements ]
     # Build simulator
     - !reference [ .prepare-benchmarks, build-simulator ]
@@ -130,8 +130,8 @@ Benchmarking:
   script:
     # Load all modules required for continuous benchmarking in general and prepare environment
     - !reference [ .environment-init ]
-    # Load modules on for benchmark execution
-    - !reference [ .benchmarks-init ]
+    # Load user-defined modules
+    - !reference [ .prepare-benchmarks, modules-requirements ]
     # Load user-defined modules on compute node required for benchmarks
     - !reference [ .prepare-benchmarks, modules-requirements ]
     # Activate python venv
@@ -140,8 +140,6 @@ Benchmarking:
     - !reference [ .prepare-benchmarks, build-benchmarks ]
     # Run benchmarks
     - !reference [ .run-benchmarks ]
-    # Load modules on login node required for result uploading and make git-annex available
-    - !reference [ .results-init ]
     # Activate python venv (after loading modules to use venv interpreter)
     - 'source "$USER_DATA_DIR/benchmarking-env/bin/activate"'
     # Make bennchplot available (also in Jupyter)
