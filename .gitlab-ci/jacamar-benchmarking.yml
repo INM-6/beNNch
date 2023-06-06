@@ -132,8 +132,6 @@ Benchmarking:
     - !reference [ .environment-init ]
     # Load user-defined modules
     - !reference [ .prepare-benchmarks, modules-requirements ]
-    # Load user-defined modules on compute node required for benchmarks
-    - !reference [ .prepare-benchmarks, modules-requirements ]
     # Activate python venv
     - 'source "$USER_DATA_DIR/benchmarking-env/bin/activate"'
     # Build benchmark jube file for each model
