@@ -18,22 +18,22 @@
 variables:
   BENCHMARK_LABEL:
     description: "Label given to the CI pipeline to identify a benchmark."
-    value: "Adjacency axonal ()"
+    value: "Correction axonal ()"
   BENCHMARK_ID:
     description: "Alphanumeric ID for the benchmark denoting the name under which the benchmark results are stored."
-    value: "adjacency-axonal-"
+    value: "correction-axonal-"
   SIMULATOR_REPO:
     description: "Simulator repository to use for benchmarking."
     value: "https://github.com/JanVogelsang/nest-simulator"
   SIMULATOR_BRANCH:
     description: "Simulator repository branch to use for benchmarking."
-    value: "ax-delay-rework-adjacency-stdp"
+    value: "stdp_long_axonal_delays"
   CONFIG_REPO:
     description: "Configuration repository to use for benchmarking."
     value: "https://github.com/JanVogelsang/CI-Bennch-config.git"
   CONFIG_BRANCH:
     description: "Configuration repository branch to use for benchmarking."
-    value: "master-thesis-axonal-delays-adjacency"
+    value: "master-thesis-axonal-delays-correction"
   CONFIG_PATH:
     description: "Path to configuration file (e.g. config.yml) relative to the config repository root."
     value: "config_axonal_.yml"
@@ -51,7 +51,7 @@ variables:
     value: "production"
   EXTRA_CMAKE_FLAGS:
     description: "[Optional] Any extra CMake flags which should be used to compile NEST."
-    value: '-Dwith-optimize=ON -Duse-adjacency-list=ON'
+    value: '-Dwith-optimize=ON'
   CB_MODELS:
     description: "[Optional] Comma-seperated list of the names of all models which should be run."
     value: "hpc_benchmark"
