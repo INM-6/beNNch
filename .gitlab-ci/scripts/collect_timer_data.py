@@ -112,5 +112,4 @@ for logfile in all_step_logfiles:
 output_df["time_std"] /= N
 output_df["time_std"] = np.sqrt(output_df["time_std"])
 
-with open('timer_step_data.txt', "w") as out_file:
-    output_df.to_csv(file_name, sep='\t', encoding='utf-8', index=False)
+output_df.to_csv('timer_step_data.txt', sep='\t', encoding='utf-8', index=False)
