@@ -27,6 +27,7 @@ import sys
 import json
 import yaml
 import numpy as np
+import pandas as pd
 
 
 model_config_path = sys.argv[1]  # path to model config file
@@ -93,3 +94,22 @@ for element in cpu_info:
 
 with open(os.path.join(workpackage_path, 'cpu.json'), 'w') as f:
     json.dump(cpu_info_dict, f)
+
+# Step timer and memory data
+all_step_logfiles = glob.glob(os.path.join(log_path, '*logfile*_steps.dat'))
+
+output_df = pd.read_csv(next(all_step_logfiles), sep=" ", header=None)
+output_df.columns = ["time", "vmsize", "vmpeak", "vmrss"]
+output_df["time_std"] = output_df["time"]**2
+for logfile in all_step_logfiles:
+    df = pd.read_csv(logfile, sep=" ", header=None)
+    df.columns = ["time", "vmsize", "vmpeak", "vmrss"]
+    output_df["time"] = np.maximum(output_df["time"], df["time"])
+    output_df["time_std"] += df["time"]**2
+    output_df["vmsize"] += df["vmsize"]
+    output_df["vmpeak"] += df["vmpeak"]
+    output_df["vmrss"] += df["vmrss"]
+output_df["time_std"] = np.sqrt(output_df["time_std"])
+
+with open('timer_step_data.txt', "w") as out_file:
+    output_df.to_csv(file_name, sep='\t', encoding='utf-8', index=False)
