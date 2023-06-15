@@ -98,17 +98,18 @@ with open(os.path.join(workpackage_path, 'cpu.json'), 'w') as f:
 # Step timer and memory data
 all_step_logfiles = glob.glob(os.path.join(log_path, '*logfile*_steps.dat'))
 
-output_df = pd.read_csv(next(all_step_logfiles), sep=" ", header=None)
+N = len(all_step_logfiles)
+output_df = pd.read_csv(all_step_logfiles[0], sep=" ", header=None)
 output_df.columns = ["time", "vmsize", "vmpeak", "vmrss"]
-output_df["time_std"] = output_df["time"]**2
-for logfile in all_step_logfiles:
+for logfile in all_step_logfiles[1:]:
     df = pd.read_csv(logfile, sep=" ", header=None)
     df.columns = ["time", "vmsize", "vmpeak", "vmrss"]
-    output_df["time"] = np.maximum(output_df["time"], df["time"])
-    output_df["time_std"] += df["time"]**2
-    output_df["vmsize"] += df["vmsize"]
-    output_df["vmpeak"] += df["vmpeak"]
-    output_df["vmrss"] += df["vmrss"]
+    output_df.add(df, fill_value=0)
+output_df["time"] /= N
+output_df["time_std"] = 0
+for logfile in all_step_logfiles:
+    output_df["time_std"] += (df["time"] - output_df["time"])**2
+output_df["time_std"] /= N
 output_df["time_std"] = np.sqrt(output_df["time_std"])
 
 with open('timer_step_data.txt', "w") as out_file:
