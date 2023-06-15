@@ -18,10 +18,10 @@
 variables:
   BENCHMARK_LABEL:
     description: "Label given to the CI pipeline to identify a benchmark."
-    value: "Adjacency axonal ()"
+    value: "Adjacency dendritic ()"
   BENCHMARK_ID:
     description: "Alphanumeric ID for the benchmark denoting the name under which the benchmark results are stored."
-    value: "adjacency-axonal-"
+    value: "adjacency-dendritic-"
   SIMULATOR_REPO:
     description: "Simulator repository to use for benchmarking."
     value: "https://github.com/JanVogelsang/nest-simulator"
@@ -36,7 +36,7 @@ variables:
     value: "master-thesis-axonal-delays-adjacency"
   CONFIG_PATH:
     description: "Path to configuration file (e.g. config.yml) relative to the config repository root."
-    value: "config_axonal_.yml"
+    value: "config_dendritic_.yml"
   RESULTS_REPO_URL:
     description: "Repository to upload benchmark results to."
     value: "https://$GIN_GNODE_TOKEN@gin.g-node.org/Janvog/CI-Bennch-results-devel.git"
