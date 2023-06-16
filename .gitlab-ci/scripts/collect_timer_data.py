@@ -108,6 +108,7 @@ for logfile in all_step_logfiles[1:]:
 output_df["time"] /= N
 output_df["time_std"] = 0
 for logfile in all_step_logfiles:
+    df = pd.read_csv(logfile, sep=" ", header=None)
     output_df["time_std"] += (df["time"] - output_df["time"])**2
 output_df["time_std"] /= N
 output_df["time_std"] = np.sqrt(output_df["time_std"])
