@@ -1,0 +1,52 @@
+# Copyright (C) 2023 Forschungszentrum Jülich GmbH, INM-6
+#
+# Builder is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# Builder is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Builder.  If not, see <https://www.gnu.org/licenses/>.
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+include: .gitlab-ci/jacamar-benchmarking.yml
+
+variables:
+  TEMP_DIR: "$$SCRATCH/ci-bennch/$WORKSPACE/jusuf/userdata"   # Directory to temporary files accessible from both login and compute nodes
+  WORKSPACE_DIR: "$$USERSOFTWARE/ci-bennch/$WORKSPACE/jusuf"  # Directory to persistent files accessible from both login and compute nodes
+  BUILDER_DIR: "$$WORKSPACE_DIR/builder"                       # Path to builder installation
+  GIT_ANNEX_DIR: "$$WORKSPACE_DIR/git-annex"                   # Path to git-annex
+  BENNCHPLOT_DIR: "$$WORKSPACE_DIR/bennchplot"                 # Path to beNNch-plot
+
+.preparation:
+  tags:
+    - shell
+    - jusuf
+    - jacamar
+
+.build:
+  variables:
+    # TODO: How much time is really required here? Should this also be a config parameter maybe?
+    SCHEDULER_PARAMETERS: "--account=$CB_RUNNER_ACCOUNT --time=00:15:00 --nodes=1"
+  tags:
+    - compute
+    - jusuf
+    - jacamar
+
+.benchmark:
+  tags:
+    - shell
+    - jusuf
+    - jacamar
+
+.environment-init:
+  - 'jutil env activate -p "$CB_DATA_PROJECT"'
+  - 'jutil env activate -p "$CB_COMPUTE_PROJECT"'
+  - 'export PATH="$PATH:$GIT_ANNEX_DIR"'
+
