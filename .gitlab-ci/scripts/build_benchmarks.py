@@ -47,12 +47,8 @@ if models:
 with open(config_path, 'r') as config_file:
     config = yaml.safe_load(config_file)["benchmarks"]
 
-for model_name, benchmark_configs in config.items():
-    if models and model_name not in models:
-        print("Skipping benchmark file generation for model " + model_name)
-        continue
-
-    model_config_path = os.path.join(config_dir, benchmark_configs["config_path"])
+for model_config_path in glob.glob(os.path.join(config_dir, "cb_*_config.yml")):
+    model_name = model_config_path[model_config_path.find("cb_"):model_config_path.find("_config.yml")]
 
     # Model parameters
     with open(model_config_path, 'r') as benchmark_config_file:

@@ -91,8 +91,9 @@ for model_name, benchmark_configs in config["benchmarks"].items():
         "parameter": benchmark_configs.get("model_parameters", [])
     })
 
-    for machine_name, machine_config in benchmark_configs["machine_parameters"].items():
-        combined_configs[model_name][machine_name] = copy.deepcopy(combined_config)
+    if machine in benchmark_configs["machine_parameters"]:
+        machine_config = benchmark_configs["machine_parameters"][machine]
+        combined_configs[model_name][machine] = copy.deepcopy(combined_config)
 
         # Machine parameters
         combined_config["parameterset"].append(
@@ -130,7 +131,7 @@ for model_name, benchmark_configs in config["benchmarks"].items():
         #     del config_overwrites[i]
 
         # Dump config file
-        with open(os.path.join(config_output_dir, os.path.basename(model_config_path)), 'w') as outfile:
+        with open(os.path.join(config_output_dir, f"cb_{model_name}_config.yml"), 'w') as outfile:
             yaml.dump(combined_config, outfile, default_flow_style=False)
 
 for conf in combined_configs.values():
