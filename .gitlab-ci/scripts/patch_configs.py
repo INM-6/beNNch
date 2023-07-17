@@ -57,6 +57,11 @@ if models:
 if not os.path.exists(config_output_dir):
     os.makedirs(config_output_dir)
 
+    
+# User config        
+with open(os.path.join(os.path.dirname(config_file_path), config["user_config"])) as user_config_file:
+    user_config = yaml.safe_load(user_config_file)
+
 for model_name, benchmark_configs in config["benchmarks"].items():
     # Skip benchmarks defined in config which were not explicitly requested to be benchmarked
     if models and model_name not in models:
@@ -79,48 +84,35 @@ for model_name, benchmark_configs in config["benchmarks"].items():
             ]
         })
 
-    model_config_path = os.path.join(config_dir, benchmark_configs["config_path"])
-    with open(model_config_path) as model_config_file:
-        model_config = yaml.safe_load(model_config_file)
-
     # Model parameters
     combined_config["parameterset"].append(
     {
         "name": "model_parameters",
-        "parameter": model_config["model_parameters"]
+        "parameter": benchmark_configs.get("model_parameters", [])
     })
 
-    for machine_name, machine_config_path in model_config["machines"].items():
-        # Only generate config for the machine this script runs on
-        if machine_name != machine:
-            print("Skipping config file generation for machine " + machine_name)
-            continue
-
+    for machine_name, machine_config in benchmark_configs["machine_parameters"].items():
         combined_configs[model_name][machine_name] = copy.deepcopy(combined_config)
-
-        with open(os.path.join(os.path.dirname(model_config_path), machine_config_path)) as machine_config_file:
-            machine_config = yaml.safe_load(machine_config_file)
 
         # Machine parameters
         combined_config["parameterset"].append(
             {
                 "name": "machine_parameters",
-                "parameter": machine_config["machine_parameters"]
+                "parameter": machine_config
             })
 
-        # User config
         combined_config["parameterset"].append(
             {
                 "name": "user_config",
                 "parameter": [
-                    {"name": "account", "type": "string", "_": config["user_config"][machine]["account"]},
-                    {"name": "email_address", "type": "string", "_": config["user_config"][machine]["email_address"]},
-                    {"name": "partition", "type": "string", "_": config["user_config"][machine]["partition"]}
+                    {"name": "account", "type": "string", "_": user_config[machine]["account"]},
+                    {"name": "email_address", "type": "string", "_": user_config[machine]["email_address"]},
+                    {"name": "partition", "type": "string", "_": user_config[machine]["partition"]}
                 ]
             })
 
-        combined_config["metrics"] = model_config["metrics"]
-        combined_config["metrics_sum"] = model_config["metrics_sum"]
+        combined_config["metrics"] = benchmark_configs.get("metrics", [])
+        combined_config["metrics_sum"] = benchmark_configs.get("metrics_sum", [])
 
         # TODO: Patch configuration using environment variables
         # to_remove = list()
