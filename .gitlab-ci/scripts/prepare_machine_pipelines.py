@@ -33,7 +33,7 @@ available_machines = sys.argv[4].split(",")
 
 with open(config_file_path) as config_file:
     config = yaml.safe_load(config_file)
-with open(config["user_config"]) as user_config_file:
+with open(os.path.join(os.path.dirname(config_file_path), config["user_config"])) as user_config_file:
     user_config = yaml.safe_load(user_config_file)
 
 for machine, machine_conf in user_config.items():
