@@ -44,7 +44,8 @@ Preparation:
     # Load all modules required for continuous benchmarking in general and prepare environment
     - !reference [ .environment-init ]
     # Load all environment variables
-    - 'eval USER_DATA_DIR="$TEMP_DIR/$USER/$(echo $BENCHMARK_ID | sed -e 's/[^A-Za-z0-9._-]/_/g')-$(date +%d-%m-%y-%H-%M-%S)"'
+    - |+
+      eval USER_DATA_DIR="$TEMP_DIR/$USER/$(echo $BENCHMARK_ID | sed -e 's/[^A-Za-z0-9._-]/_/g')-$(date +%d-%m-%y-%H-%M-%S)"
     - !reference [ .prepare-benchmarks, environment-variables ]
     # Create all required directories
     - !reference [ .prepare-benchmarks, create-dirs ]
