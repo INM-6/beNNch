@@ -21,6 +21,7 @@ Construct a jube-yaml file for a benchmark based on the configuration.
 import sys
 import os
 import copy
+import glob
 
 import yaml
 
