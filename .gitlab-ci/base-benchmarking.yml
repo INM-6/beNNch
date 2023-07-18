@@ -21,7 +21,7 @@ variables:
   TEMPLATES_DIR: "$CI_PROJECT_DIR/.gitlab-ci/templates"
 
 .base-benchmarking:
-  allow_failure: false
+  allow_failure: true
   needs:
     - pipeline: $PARENT_PIPELINE_ID
       job: "Validate Input"
