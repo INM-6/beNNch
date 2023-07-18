@@ -54,7 +54,7 @@ variables:
     value: '-Dwith-optimize=ON'
   CB_MODELS:
     description: "[Optional] Comma-seperated list of the names of all models which should be run."
-    value: "hpc_benchmark,microcircuit"
+    value: "hpc_benchmark"
 
 
 # Specify all machines for which configurations exist
