@@ -110,7 +110,6 @@ for model_name, benchmark_configs in config["benchmarks"].items():
                 "name": "user_config",
                 "parameter": [
                     {"name": "account", "type": "string", "_": user_config[machine]["account"]},
-                    {"name": "email_address", "type": "string", "_": user_config[machine]["email_address"]},
                     {"name": "partition", "type": "string", "_": user_config[machine]["partition"]}
                 ]
             })
