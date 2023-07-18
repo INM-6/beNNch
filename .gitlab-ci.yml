@@ -16,12 +16,9 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 variables:
-  BENCHMARK_LABEL:
+  BENCHMARK_ID:
     description: "Label given to the CI pipeline to identify a benchmark."
     value: "My Benchmark"
-  BENCHMARK_ID:
-    description: "Alphanumeric ID for the benchmark denoting the name under which the benchmark results are stored."
-    value: "my-benchmark"
   SIMULATOR_REPO:
     description: "Simulator repository to use for benchmarking."
     value: "https://github.com/nest/nest-simulator"
@@ -50,10 +47,10 @@ variables:
     description: "Benchmarking CI workflow type. Valid options are: 'production' or 'development'."
     value: "production"
   EXTRA_CMAKE_FLAGS:
-    description: "[Optional] Any extra CMake flags which should be used to compile NEST."
-    value: '-Dwith-optimize=ON'
+    description: "Any extra CMake flags which should be used to compile NEST."
+    value: '-Dwith-optimize=ON -Dwith-ltdl=ON -Dwith-boost=ON -Dwith-detailed-timers=ON'
   CB_MODELS:
-    description: "[Optional] Comma-seperated list of the names of all models which should be run."
+    description: "Comma-seperated list of the names of all models which should be run. Leave empty to run benchmarks for all models specified in the configuration file."
     value: "hpc_benchmark"
 
 
@@ -62,7 +59,7 @@ variables:
 
 # Only run pipelines manually triggered from the web
 workflow:
-  name: $BENCHMARK_LABEL
+  name: $BENCHMARK_ID
   rules:
     - if: '$CI_PIPELINE_SOURCE == "web"'
 
