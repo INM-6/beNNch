@@ -23,6 +23,7 @@ import os
 import copy
 import subprocess
 import shutil
+import urllib.request
 
 import yaml
 
@@ -57,7 +58,9 @@ if models:
 if not os.path.exists(config_output_dir):
     os.makedirs(config_output_dir)
 
-    
+# TODO
+urllib.request.urlopen(target_url)
+
 # User config        
 with open(os.path.join(os.path.dirname(config_file_path), config["user_config"])) as user_config_file:
     user_config = yaml.safe_load(user_config_file)
