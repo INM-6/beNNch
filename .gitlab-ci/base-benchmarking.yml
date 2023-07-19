@@ -98,7 +98,8 @@ variables:
   # TODO: Split this up into multiple jobs and make each benchmark (model) run in a parallel job so the analysis for a benchmark can start even if the others didn't finish yet
   - 'cp "$TEMPLATES_DIR/job.slurm.in" "$BENCHMARKS_DIR/jube/job.slurm.in"'
   - |+
-    for benchmark in "$BENCHMARKS_DIR/jube"/cb_*_"$MACHINE".yml ; do
+    for benchmark in "$BENCHMARKS_DIR"/jube/cb_*_"$MACHINE".yml ; do
+      echo $benchmark
       jube run --hide-animation -e --include-path="$BENCHMARKS_DIR/configs/$MACHINE" $benchmark
     done
   - |+
