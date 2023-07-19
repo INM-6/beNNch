@@ -147,7 +147,7 @@ Benchmarking:
     - !reference [ .metadata ]
     # Generate flipbook
     - !reference [ .flipbook ]
-    # Copy configs for archiving as artifacts
-    - 'cp -r "$BENCHMARKS_DIR/configs/$MACHINE" "$CI_PROJECT_DIR/configs"'
+    # Copy jube benchmark files for archiving as artifacts
+    - 'cp -r "$BENCHMARKS_DIR/jube" "$CI_PROJECT_DIR/specifications"'
     # - 'chmod -R 777 "$USER_DATA_DIR/bennch/results/.git"'  # Todo: Probably not required, needs fix
     # - 'rm -rf $USER_DATA_DIR'

@@ -96,7 +96,11 @@ for model_name, benchmark_config in config["benchmarks"].items():
     metrics_sum = benchmark_config.get("metrics_sum", [])
     all_metrics = metrics + metrics_sum
 
+    # Write all metrics to a file to later extract timer data depending on the desired metrics
     metrics_out = {"metrics": metrics, "metrics_sum": metrics_sum}
+    metrics_out_path = os.path.join(config_output_dir, f"cb_{model_name}_{machine}_metrics.yml")
+    with open(metrics_out_path, 'w') as metrics_outfile:
+        yaml.dump(metrics_out, metrics_outfile, default_flow_style=False)
 
     # Name
     jube_benchmark["name"] = model_name
@@ -145,6 +149,7 @@ for model_name, benchmark_config in config["benchmarks"].items():
         {"name": "run_file", "type": "string", "_": "${jube_wp_abspath}" + os.sep + model_script_path},
         {"name": "log_path", "type": "string", "_": "${jube_wp_abspath}" + os.sep + run_parameters.get("log_path", "")},
         {"name": "scripts_dir", "type": "string", "_": scripts_dir},
+        {"name": "metrics_path", "type": "string", "_": metrics_out_path},
         {"name": "optional_run_command", "type": "string", "_": run_parameters.get("optional_run_command", "")},
         {"name": "run_args", "type": "string", "_": run_parameters.get("run_args", "")},
         {"name": "model_path", "type": "string", "_": os.path.abspath(benchmark_model_files_dir)},
@@ -170,10 +175,6 @@ for model_name, benchmark_config in config["benchmarks"].items():
     # Write jube benchmark file
     with open(os.path.join(benchmark_output_dir, f"cb_{model_name}_{machine}.yml"), 'w') as jube_outfile:
         yaml.dump(jube_benchmark, jube_outfile, default_flow_style=False)
-
-    # Write all metrics to a file to later extract timer data depending on the desired metrics
-    with open(os.path.join(config_output_dir, f"cb_{model_name}_metrics.yml"), 'w') as metrics_outfile:
-        yaml.dump(metrics_out, metrics_outfile, default_flow_style=False)
 
 for conf in combined_configs.values():
     if len(conf) > 0:
