@@ -61,18 +61,18 @@ with open(config_path, 'r') as config_file:
 
 # Recursively get extended config file until reaching root. Starting with the root config, iteratively patch the configuration.
 # TODO
-while False:
-    pass # urllib.request.urlopen(target_url)
+# while False:
+#     pass # urllib.request.urlopen(target_url)
 
 
 # After patching the configuration using various base configurations, patch the final config using environment variables provided by the user when triggering the pipeline.
-for env_var_key, env_var_value in os.environ.items():
-    if env_var_key.startswith("CB_"):
-        keys = env_var_key[3:].split("__")
-        try:
-            reduce(operator.getitem, keys[:-1], config)[keys[-1]] = env_var_value
-        except:
-            print(f"The configuration path {'.'.join(keys[:-1])} is not present in original config. The variable {env_var_key} with value {env_var_value} can therefore not be set!", file=sys.stderr)
+# for env_var_key, env_var_value in os.environ.items():
+#     if env_var_key.startswith("CB_"):
+#         keys = env_var_key[3:].split("__")
+#         try:
+#             reduce(operator.getitem, keys[:-1], config)[keys[-1]] = env_var_value
+#         except:
+#             print(f"The configuration path {'.'.join(keys[:-1])} is not present in original config. The variable {env_var_key} with value {env_var_value} can therefore not be set!", file=sys.stderr)
 
 # User config
 with open(os.path.join(config_dir, config["user_config"])) as user_config_file:
