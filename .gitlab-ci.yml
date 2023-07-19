@@ -110,7 +110,8 @@ Trigger:
     matrix:  # Add all machines here for which configurations exist. TODO: Add option to specify the runner
       - CB_MACHINE: *machines_anchor
   rules:
-    - exists: pipelines/${CB_MACHINE}.yml
+    - exists:
+      - pipelines/${CB_MACHINE}.yml
   trigger:
     strategy: depend
     include:
