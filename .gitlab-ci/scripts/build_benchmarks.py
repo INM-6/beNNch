@@ -152,7 +152,7 @@ for model_name, benchmark_config in config["benchmarks"].items():
     ])
 
     # Fileset
-    jube_benchmark["fileset"]["copy"].extend([os.path.join(benchmark_model_files_dir, f) for f in os.listdir(benchmark_model_files_dir) if os.path.isfile(os.path.join(benchmark_model_files_dir, f))])
+    jube_benchmark["fileset"]["link"].extend([os.path.join(benchmark_model_files_dir, f) for f in os.listdir(benchmark_model_files_dir)])
 
     # Substituteset
     substitutions = next(s for s in jube_benchmark["substituteset"] if s["name"] == "bench_substitutions")
