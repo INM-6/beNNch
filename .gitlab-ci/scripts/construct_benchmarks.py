@@ -24,6 +24,10 @@ import copy
 
 import yaml
 
+COLOR_WARNING = '\033[93m'
+COLOR_FAIL = '\033[91m'
+COLOR_END = '\033[0m'
+
 
 jube_template_path = sys.argv[1]     # path to template of jube benchmark file
 config_path = sys.argv[2]            # path to configuration file
@@ -58,11 +62,11 @@ with open(config_path, 'r') as config_file:
 for model_name, benchmark_config in config["benchmarks"].items():
     # Skip benchmarks defined in config which were not explicitly requested to be benchmarked
     if models and model_name not in models:
-        print(f"Skipping config file generation for model {model_name} as requested by the user!")
+        print(f"{COLOR_WARNING}Skipping config file generation for model {model_name} as requested by the user!{COLOR_END}")
         continue
 
     if machine not in benchmark_config["machine_parameters"]:
-        print(f"Skipping config file generation for model {model_name} because no configuration was provided for machine {machine}!")
+        print(f"{COLOR_WARNING}Skipping config file generation for model {model_name} because no configuration was provided for machine {machine}!{COLOR_END}")
         continue
     
     jube_benchmark = copy.deepcopy(jube_benchmark_template)
@@ -156,5 +160,5 @@ for model_name, benchmark_config in config["benchmarks"].items():
     success = True
 
 if not success:
-    print("No config for any model provided for this machine, aborting...")
+    print(f"{COLOR_FAIL}No config for any model provided for this machine, aborting...{COLOR_END}", file=sys.stderr)
     exit(1)
