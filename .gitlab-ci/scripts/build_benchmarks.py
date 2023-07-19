@@ -48,7 +48,7 @@ if models:
 with open(config_path, 'r') as config_file:
     config = yaml.safe_load(config_file)["benchmarks"]
 
-for model_config_path in glob.glob(os.path.join(config_dir, "cb_*_config.yml")):
+for model_config_path in glob.glob(os.path.join(config_output_dir, "cb_*_config.yml")):
     model_name = model_config_path[model_config_path.find("cb_"):model_config_path.find("_config.yml")]
 
     # Model parameters
