@@ -37,7 +37,6 @@ fileset:
   name: bench_files
   copy: 
     - job.slurm.in
-  link: []
 
 substituteset:
   - name: slurm_jobfile
