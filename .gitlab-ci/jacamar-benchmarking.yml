@@ -63,10 +63,10 @@ Preparation:
     - !reference [ .prepare-benchmarks, pip-requirements ]
     # TODO: Metadata
     # - 'pip install git+https://github.com/INM-6/gather-metadata.git'
-    # Construct JUBE benchmark files from provided config
-    - !reference [ .prepare-benchmarks, construct-benchmarks ]
     # Clone simulator and model repositories
     - !reference [ .prepare-benchmarks, clone-repositories ]
+    # Construct JUBE benchmark files from provided config
+    - !reference [ .prepare-benchmarks, construct-benchmarks ]
     # Prepare Builder .buildrc
     - 'BUILDER_CONFIG_PATH="$USER_DATA_DIR/.buildrc"'
     - |+
