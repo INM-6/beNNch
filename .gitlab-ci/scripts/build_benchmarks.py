@@ -22,51 +22,121 @@ import sys
 import os
 import copy
 import glob
+import subprocess
+import shutil
+import urllib.request
 
 import yaml
 
 
 jube_template_path = sys.argv[1]     # path to template of jube benchmark file
-config_path = sys.argv[2]            # path to configuration file of specific benchmark
-benchmark_models_dir = sys.argv[3]   # path to directory of model files for all models
-benchmark_output_dir = sys.argv[4]   # path to directory where all jube benchmark files are placed
-config_output_dir = sys.argv[5]      # path to directory where all benchmark config files are placed
-scripts_dir = sys.argv[6]            # path to directory where all benchmark helper scripts are located
-jube_results_dir = sys.argv[7]       # path to directory where all benchmark results should be placed
-machine = sys.argv[8]                # name of the machine the benchmark is running on
+config_path = sys.argv[2]            # path to configuration file
+builder_modules_dir = sys.argv[3]    # directory where builder installs modules
+simulator_branch = sys.argv[4]       # repository branch of the simulator to benchmark
+benchmark_models_dir = sys.argv[5]   # path to directory of model files for all models
+benchmark_output_dir = sys.argv[6]   # path to directory where all jube benchmark files are placed
+config_output_dir = sys.argv[7]      # path to directory where all benchmark config files are placed
+scripts_dir = sys.argv[8]            # path to directory where all benchmark helper scripts are located
+jube_results_dir = sys.argv[9]       # path to directory where all benchmark results should be placed
+machine = sys.argv[10]                # name of the machine the benchmark is running on
 
 config_dir = os.path.dirname(config_path)
 
-with open(jube_template_path, 'r') as template_file:
-    jube_benchmark_template = yaml.safe_load(template_file)
-    jube_benchmark_template["outpath"] = jube_results_dir
+combined_configs = dict()
 
 models = os.environ.get("CB_MODELS", [])
 if models:
     models = models.split(",")
 
+# Prepare output directory
+if not os.path.exists(config_output_dir):
+    os.makedirs(config_output_dir)
+
+with open(jube_template_path, 'r') as template_file:
+    jube_benchmark_template = yaml.safe_load(template_file)
+    jube_benchmark_template["outpath"] = jube_results_dir
+
 with open(config_path, 'r') as config_file:
-    config = yaml.safe_load(config_file)["benchmarks"]
+    config = yaml.safe_load(config_file)
 
-for model_config_path in glob.glob(os.path.join(config_output_dir, "cb_*_config.yml")):
-    model_name = model_config_path[model_config_path.find("cb_"):model_config_path.find("_config.yml")]
+# Recursively get extended config file until reaching root. Starting with the root config, iteratively patch the configuration.
+# TODO
+while False:
+    pass # urllib.request.urlopen(target_url)
 
-    # Model parameters
-    with open(model_config_path, 'r') as benchmark_config_file:
-        benchmark_config = yaml.safe_load(benchmark_config_file)
-        model_parameters = benchmark_config["model_parameters"]
-        run_parameters = benchmark_config["run_parameters"]
-        metrics = benchmark_config["metrics"]
-        metrics_sum = benchmark_config["metrics_sum"]
-        all_metrics = metrics + metrics_sum
-        result_keys = benchmark_config["results"]
 
-    model_script_path = run_parameters["script_path"]
+# After patching the configuration using various base configurations, patch the final config using environment variables provided by the user when triggering the pipeline.
+for env_var_key, env_var_value in os.environ.items():
+    if env_var_key.startswith("CB_"):
+        keys = env_var_key[3:].split("__")
+        try:
+            reduce(operator.getitem, keys[:-1], config)[keys[-1]] = env_var_value
+        except:
+            print(f"The configuration path {'.'.join(keys[:-1])} is not present in original config. The variable {env_var_key} with value {env_var_value} can therefore not be set!", file=sys.stderr)
 
+# User config
+with open(os.path.join(config_dir, config["user_config"])) as user_config_file:
+    user_config = yaml.safe_load(user_config_file)
+
+for model_name, benchmark_config in config["benchmarks"].items():
+    # Skip benchmarks defined in config which were not explicitly requested to be benchmarked
+    if models and model_name not in models:
+        print(f"Skipping config file generation for model {model_name} as requested by the user!")
+        continue
+
+    if machine not in benchmark_config["machine_parameters"]:
+        print(f"Skipping config file generation for model {model_name} because no configuration was provided for machine {machine}!")
+        continue
+    
     jube_benchmark = copy.deepcopy(jube_benchmark_template)
 
-    # Name and outpath
+    run_parameters = benchmark_config.get("run_parameters", [])
+    model_script_path = run_parameters["script_path"]
+    metrics = benchmark_config.get("metrics", [])
+    metrics_sum = benchmark_config.get("metrics_sum", [])
+    all_metrics = metrics + metrics_sum
+
+    metrics_out = {"metrics": metrics, "metrics_sum": metrics_sum}
+
+    # Name
     jube_benchmark["name"] = model_name
+
+    # Machine parameters
+    combined_config["parameterset"].append(
+        {
+            "name": "machine_parameters",
+            "parameter": benchmark_config["machine_parameters"][machine]
+        })
+
+    combined_config["parameterset"].append(
+        {
+            "name": "user_config",
+            "parameter": [
+                {"name": "account", "type": "string", "_": user_config[machine]["account"]},
+                {"name": "partition", "type": "string", "_": user_config[machine]["partition"]}
+            ]
+        })
+
+    # Software parameters
+    jube_benchmark["parameterset"].append(
+        {
+            "name": "software_parameters",
+            "parameter": [
+                {"name": "simulator", "_": "nest-simulator"},
+                {"name": "version", "_": simulator_branch},
+                {"name": "variant", "_": "default"},
+                {"name": "suffix", "_": ""},
+                {"name": "buildermod", "_": builder_modules_dir}
+            ]
+        })
+
+    # Model parameters
+    # TODO: Remove type information from config file and set it here according to value
+    jube_benchmark["parameterset"].append(
+    {
+        "name": "model_parameters",
+        "parameter": benchmark_config.get("model_parameters", [])
+    })
 
     # TODO: Logpath is currently hardcoded in models
     # Parameterset
@@ -78,7 +148,6 @@ for model_config_path in glob.glob(os.path.join(config_output_dir, "cb_*_config.
         {"name": "optional_run_command", "type": "string", "_": run_parameters.get("optional_run_command", "")},
         {"name": "run_args", "type": "string", "_": run_parameters.get("run_args", "")},
         {"name": "model_path", "type": "string", "_": os.path.abspath(benchmark_model_files_dir)},
-        {"name": "model_config_path", "type": "string", "_": os.path.join(config_output_dir, os.path.basename(model_config_path))}
     ])
 
     # Fileset
@@ -87,12 +156,8 @@ for model_config_path in glob.glob(os.path.join(config_output_dir, "cb_*_config.
     # Substituteset
     substitutions = next(s for s in jube_benchmark["substituteset"] if s["name"] == "bench_substitutions")
     substitutions["iofile"] = {"in": model_script_path, "out": model_script_path}
-    for param in model_parameters:
+    for param in benchmark_config.get("model_parameters", []):
         substitutions["sub"].append({"source": "{" + param["name"] + "}", "dest": "$" + param["name"]})
-
-    # Bench step
-    step = next(b for b in jube_benchmark["step"] if b["name"] == "bench")
-    next(u for u in step["use"] if type(u) == dict and u["from"] == "MODEL_CONFIG")["from"] = os.path.join(config_output_dir, os.path.basename(model_config_path))
 
     # Analyser
     jube_benchmark["patternset"] = {"name": "bench_patternset", "pattern": [
@@ -100,7 +165,19 @@ for model_config_path in glob.glob(os.path.join(config_output_dir, "cb_*_config.
     ]}
 
     # Result
-    jube_benchmark["result"]["table"]["column"] = result_keys + all_metrics
+    jube_benchmark["result"]["table"]["column"] = benchmark_config.get("results", []) + all_metrics
 
-    with open(os.path.join(benchmark_output_dir, f"cb_{model_name}_{machine}.yml"), 'w') as outfile:
-        yaml.dump(jube_benchmark, outfile, default_flow_style=False) 
+    # Write jube benchmark file
+    with open(os.path.join(benchmark_output_dir, f"cb_{model_name}_{machine}.yml"), 'w') as jube_outfile:
+        yaml.dump(jube_benchmark, jube_outfile, default_flow_style=False)
+
+    # Write all metrics to a file to later extract timer data depending on the desired metrics
+    with open(os.path.join(config_output_dir, f"cb_{model_name}_metrics.yml"), 'w') as metrics_outfile:
+        yaml.dump(metrics_out, metrics_outfile, default_flow_style=False)
+
+for conf in combined_configs.values():
+    if len(conf) > 0:
+        break
+else:
+    print("No config for any model provided for this machine, aborting...")
+    exit(1)

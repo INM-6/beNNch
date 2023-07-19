@@ -80,8 +80,6 @@ variables:
       if [ ! -z "$REQUIREMENTS" ] ; then
         module load $REQUIREMENTS
       fi
-  configs:
-    - 'python3 "$SCRIPTS_DIR/patch_configs.py" "${CONFIG_DIR}/$CONFIG_PATH" "$BENCHMARKS_DIR/configs/$MACHINE" "$BUILDER_MODULES_DIR" "$SIMULATOR_BRANCH" "$MACHINE"'
   results:
     # Set result repository
     - 'git clone --single-branch --branch="$RESULTS_BRANCH" --depth=1 "$RESULTS_REPO_URL" "$USER_DATA_DIR/results"'
@@ -90,8 +88,8 @@ variables:
   build-simulator:
     # TODO: Make this generic to not only work for NEST
     - 'build -f nest-simulator $SIMULATOR_BRANCH'
-  build-benchmarks:
-    - 'python3 "$SCRIPTS_DIR/build_benchmarks.py" "$TEMPLATES_DIR/jube-template.yml" "${CONFIG_DIR}/$CONFIG_PATH" "$MODELS_DIR" "$BENCHMARKS_DIR/jube" "$BENCHMARKS_DIR/configs/$MACHINE" "$SCRIPTS_DIR" "$JUBE_RESULTS_DIR" "$MACHINE"'
+  construct-benchmarks:
+    - 'python3 "$SCRIPTS_DIR/build_benchmarks.py" "$TEMPLATES_DIR/jube-template.yml" "${CONFIG_DIR}/$CONFIG_PATH" "$BUILDER_MODULES_DIR" "$SIMULATOR_BRANCH" "$MODELS_DIR" "$BENCHMARKS_DIR/jube" "$BENCHMARKS_DIR/configs/$MACHINE" "$SCRIPTS_DIR" "$JUBE_RESULTS_DIR" "$MACHINE"'
 
 # Requires jube
 .run-benchmarks:

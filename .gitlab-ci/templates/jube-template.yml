@@ -62,9 +62,7 @@ substituteset:
 step:
   - name: bench
     use:
-      - bench_parameters, run_benchmark, bench_files, bench_substitutions, slurm_jobfile
-      - from: MODEL_CONFIG
-        _: user_config, model_parameters, machine_parameters, software_parameters
+      - bench_parameters, run_benchmark, bench_files, bench_substitutions, slurm_jobfile, user_config, model_parameters, machine_parameters, software_parameters
     do:
       done_file: ready
       _: sbatch job.slurm
