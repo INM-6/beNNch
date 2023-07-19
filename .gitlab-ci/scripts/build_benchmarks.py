@@ -42,7 +42,7 @@ machine = sys.argv[10]                # name of the machine the benchmark is run
 
 config_dir = os.path.dirname(config_path)
 
-combined_configs = dict()
+success = False
 
 models = os.environ.get("CB_MODELS", [])
 if models:
@@ -102,13 +102,13 @@ for model_name, benchmark_config in config["benchmarks"].items():
     jube_benchmark["name"] = model_name
 
     # Machine parameters
-    combined_config["parameterset"].append(
+    jube_benchmark["parameterset"].append(
         {
             "name": "machine_parameters",
             "parameter": benchmark_config["machine_parameters"][machine]
         })
 
-    combined_config["parameterset"].append(
+    jube_benchmark["parameterset"].append(
         {
             "name": "user_config",
             "parameter": [
@@ -171,10 +171,9 @@ for model_name, benchmark_config in config["benchmarks"].items():
     # Write jube benchmark file
     with open(os.path.join(benchmark_output_dir, f"cb_{model_name}_{machine}.yml"), 'w') as jube_outfile:
         yaml.dump(jube_benchmark, jube_outfile, default_flow_style=False)
+    
+    success = True
 
-for conf in combined_configs.values():
-    if len(conf) > 0:
-        break
-else:
+if not success:
     print("No config for any model provided for this machine, aborting...")
     exit(1)
