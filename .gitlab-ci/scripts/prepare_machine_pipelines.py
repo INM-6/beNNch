@@ -53,5 +53,5 @@ for machine, machine_conf in user_config.items():
 # All machines for which no config exists are ignored
 for machine in available_machines:
     print("Skipping pipeline generation for machine " + machine)
-    # with open(os.path.join(pipelines_dir_out, machine + ".yml"), 'w') as pipeline_out:
-    #     pipeline_out.write(r"{stages: [fail], Fail: {stage: fail, rules: [{when: never}], script: ['']}}")
+    with open(os.path.join(pipelines_dir_out, machine + ".yml"), 'w') as pipeline_out:
+        pipeline_out.write(r"{stages: [fail], Fail: {stage: fail, rules: [{when: never}], script: ['']}}")
