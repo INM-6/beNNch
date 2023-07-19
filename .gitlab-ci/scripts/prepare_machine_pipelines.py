@@ -33,10 +33,8 @@ available_machines = sys.argv[4].split(",")
 
 with open(config_file_path) as config_file:
     config = yaml.safe_load(config_file)
-with open(os.path.join(os.path.dirname(config_file_path), config["user_config"])) as user_config_file:
-    user_config = yaml.safe_load(user_config_file)
 
-for machine, machine_conf in user_config.items():
+for machine, machine_conf in config["user_config"].items():
     with open(os.path.join(pipelines_dir_out, machine + ".yml"), 'w') as pipeline_out:
         with open(os.path.join(pipelines_dir_in, machine + ".yml")) as pipeline_in:
             pipeline_yml = yaml.safe_load(pipeline_in)

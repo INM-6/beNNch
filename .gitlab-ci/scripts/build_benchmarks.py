@@ -74,10 +74,6 @@ with open(config_path, 'r') as config_file:
 #         except:
 #             print(f"The configuration path {'.'.join(keys[:-1])} is not present in original config. The variable {env_var_key} with value {env_var_value} can therefore not be set!", file=sys.stderr)
 
-# User config
-with open(os.path.join(config_dir, config["user_config"])) as user_config_file:
-    user_config = yaml.safe_load(user_config_file)
-
 for model_name, benchmark_config in config["benchmarks"].items():
     # Skip benchmarks defined in config which were not explicitly requested to be benchmarked
     if models and model_name not in models:
@@ -116,8 +112,8 @@ for model_name, benchmark_config in config["benchmarks"].items():
         {
             "name": "user_config",
             "parameter": [
-                {"name": "account", "type": "string", "_": user_config[machine]["account"]},
-                {"name": "partition", "type": "string", "_": user_config[machine]["partition"]}
+                {"name": "account", "type": "string", "_": config["user_config"][machine]["account"]},
+                {"name": "partition", "type": "string", "_": config["user_config"][machine]["partition"]}
             ]
         })
 
