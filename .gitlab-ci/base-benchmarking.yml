@@ -89,7 +89,7 @@ variables:
     # TODO: Make this generic to not only work for NEST
     - 'build -f nest-simulator $SIMULATOR_BRANCH'
   construct-benchmarks:
-    - 'python3 "$SCRIPTS_DIR/build_benchmarks.py" "$TEMPLATES_DIR/jube-template.yml" "${CONFIG_DIR}/$CONFIG_PATH" "$BUILDER_MODULES_DIR" "$SIMULATOR_BRANCH" "$MODELS_DIR" "$BENCHMARKS_DIR/jube" "$BENCHMARKS_DIR/metrics" "$SCRIPTS_DIR" "$JUBE_RESULTS_DIR" "$MACHINE"'
+    - 'python3 "$SCRIPTS_DIR/construct_benchmarks.py" "$TEMPLATES_DIR/jube-template.yml" "${CONFIG_DIR}/$CONFIG_PATH" "$BUILDER_MODULES_DIR" "$SIMULATOR_BRANCH" "$MODELS_DIR" "$BENCHMARKS_DIR/jube" "$BENCHMARKS_DIR/metrics" "$SCRIPTS_DIR" "$JUBE_RESULTS_DIR" "$MACHINE"'
 
 # Requires jube
 .run-benchmarks:

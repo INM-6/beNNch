@@ -86,15 +86,14 @@ Validate Input:
       done
     - 'apk update && apk add git'
     - 'python -m pip install pyyaml'
-    - 'git clone --single-branch --branch="$CONFIG_BRANCH" --depth=1 "$CONFIG_REPO" config_repository'
+    - 'mkdir "$CI_PROJECT_DIR/tmp" '
+    - 'python "$CI_PROJECT_DIR/.gitlab-ci/scripts/patch_config.py" "$CI_PROJECT_DIR/tmp" "$CI_PROJECT_DIR/config.yml" "$CONFIG_REPO" "$CONFIG_BRANCH" "CONFIG_PATH"'
     - 'mkdir "$CI_PROJECT_DIR/pipelines"'
     - 'python "$CI_PROJECT_DIR/.gitlab-ci/scripts/prepare_machine_pipelines.py" "$CI_PROJECT_DIR/.gitlab-ci/machine-configs" "$CI_PROJECT_DIR/pipelines" "config_repository/$CONFIG_PATH" "$MACHINES"'
   artifacts:
     paths:
-      - "config_repository"
+      - "config.yml"
       - "pipelines"
-    exclude:
-      - "config_repository/.git"
     reports:
       dotenv:
         - "variables.env"
