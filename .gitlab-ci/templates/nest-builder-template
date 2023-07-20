@@ -29,7 +29,10 @@ source_prepare () { :; }
 build_install_test () { :; }
 
 source_get () {
-    git clone --single-branch --branch="$SIMULATOR_BRANCH" --depth=1 "$SIMULATOR_REPO" "$SIMULATOR_REPO_DIR"
+    # Only clone if target directory is empty
+    if [ -z "$(ls -A '$SIMULATOR_REPO_DIR')" ]; then
+        git clone --single-branch --branch="$SIMULATOR_BRANCH" --depth=1 "$SIMULATOR_REPO" "$SIMULATOR_REPO_DIR"
+    fi
 }
 
 build_package () {
