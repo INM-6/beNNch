@@ -24,8 +24,6 @@
 #SBATCH --exclusive
 #SBATCH --account=#ACCOUNT#
 
-source "${USER_DATA_DIR}/pre_benchmark.sh"
-
 export OMP_NUM_THREADS=#THREADS_PER_TASK#
 export OMP_DISPLAY_ENV=VERBOSE
 export OMP_DISPLAY_AFFINITY=TRUE

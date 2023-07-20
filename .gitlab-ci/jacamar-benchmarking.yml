@@ -85,7 +85,6 @@ Preparation:
     - !reference [ .prepare-benchmarks, clone-repositories ]
     # Construct JUBE benchmark files from provided config
     - !reference [ .prepare-benchmarks, construct-benchmarks ]
-    - echo 'source "$USER_DATA_DIR/benchmarking-env/bin/activate"' >> "${USER_DATA_DIR}/pre_benchmark.sh"
     # Forward all environment variables to next stage
     - 'rm -f "$CI_PROJECT_DIR/benchmark_variables.env"'
     - |+
@@ -111,6 +110,7 @@ Build:
     - !reference [ .prepare-benchmarks, modules-requirements ]
     # Activate python venv
     - 'source $USER_DATA_DIR/benchmarking-env/bin/activate'
+    - 'python -c "import nested_dict"'
     # Add builder to path
     - 'export PATH=$USER_DATA_DIR/bin:$PATH'
     # Build simulator
@@ -142,8 +142,6 @@ Benchmarking:
     - 'source "$USER_DATA_DIR/benchmarking-env/bin/activate"'
     # Run benchmarks
     - !reference [ .run-benchmarks ]
-    # Activate python venv (after loading modules to use venv interpreter)
-    - 'source "$USER_DATA_DIR/benchmarking-env/bin/activate"'
     # Make bennchplot available (also in Jupyter)
     - 'export PYTHONPATH="$PYTHONPATH:$BENNCHPLOT_DIR"'
     # Prepare results repository
