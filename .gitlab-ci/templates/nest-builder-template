@@ -25,9 +25,12 @@ CONFIGURE_OPTIONS="$CMAKEFLAGS $EXTRA_CMAKE_FLAGS"
 
 # Override functions which are not required here
 check_package_file () { :; }
-source_get () { :; }
 source_prepare () { :; }
 build_install_test () { :; }
+
+source_get () {
+    git clone --single-branch --branch="$SIMULATOR_BRANCH" --depth=1 "$SIMULATOR_REPO" "$SIMULATOR_REPO_DIR"
+}
 
 build_package () {
 	log_status ">>> build"

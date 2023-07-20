@@ -24,6 +24,12 @@
 #SBATCH --exclusive
 #SBATCH --account=#ACCOUNT#
 
+source "$USER_DATA_DIR/benchmarking-env/bin/activate"
+export OMP_NUM_THREADS=#THREADS_PER_TASK#
+export OMP_DISPLAY_ENV=VERBOSE
+export OMP_DISPLAY_AFFINITY=TRUE
+export OMP_PROC_BIND=TRUE
+
 #COMMANDS#
 
 touch ready
