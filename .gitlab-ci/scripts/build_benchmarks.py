@@ -122,10 +122,7 @@ for model_name, benchmark_config in config["benchmarks"].items():
         {
             "name": "software_parameters",
             "parameter": [
-                {"name": "simulator", "_": "nest-simulator"},
-                {"name": "version", "_": simulator_branch},
-                {"name": "variant", "_": "default"},
-                {"name": "suffix", "_": ""},
+                {"name": "simulator_branch", "_": simulator_branch},
                 {"name": "buildermod", "_": builder_modules_dir}
             ]
         })
