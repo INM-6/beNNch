@@ -110,7 +110,6 @@ Build:
     - !reference [ .prepare-benchmarks, modules-requirements ]
     # Activate python venv
     - 'source $USER_DATA_DIR/benchmarking-env/bin/activate'
-    - 'python -c "import nested_dict"'
     # Add builder to path
     - 'export PATH=$USER_DATA_DIR/bin:$PATH'
     # Build simulator
