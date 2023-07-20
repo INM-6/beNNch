@@ -103,7 +103,6 @@ variables:
       jube run --hide-animation -e $benchmark
     done
   - |+
-    shopt
     while jube status --id=all "$JUBE_RESULTS_DIR" | grep -q "RUNNING" ; do
       sleep 30
       jube continue --error --id=all --hide-animation "$JUBE_RESULTS_DIR"

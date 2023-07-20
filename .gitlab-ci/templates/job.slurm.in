@@ -24,9 +24,8 @@
 #SBATCH --exclusive
 #SBATCH --account=#ACCOUNT#
 
-which python
-echo $PYTHONPATH
-python -c "import nested_dict"
+echo $PATH
+python -c "import nested_dict" || echo "nested_dict NOT FOUND!"
 export OMP_NUM_THREADS=#THREADS_PER_TASK#
 export OMP_DISPLAY_ENV=VERBOSE
 export OMP_DISPLAY_AFFINITY=TRUE
