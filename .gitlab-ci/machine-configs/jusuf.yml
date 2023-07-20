@@ -50,4 +50,3 @@ variables:
   - 'jutil env activate -p "$CB_COMPUTE_PROJECT"'
   - 'export PATH="$PATH:$GIT_ANNEX_DIR"'
   - 'ml Stages/2023 Python/3.10.4 PyYAML/6.0'
-
