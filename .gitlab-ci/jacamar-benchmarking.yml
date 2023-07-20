@@ -31,6 +31,7 @@ variables:
   BUILDER_INSTALL_DIR: "$$USER_DATA_DIR/install"
   BUILDER_BUILD_DIR: "$$USER_DATA_DIR/Builder/build"
   BUILDER_LOG_DIR: "$$USER_DATA_DIR/Builder/log/"
+  BUILDER_CONFIG_PATH: "$$USER_DATA_DIR/.buildrc"
   MACHINE: "$CB_MACHINE"
 
 
@@ -64,7 +65,6 @@ Preparation:
     # TODO: Metadata
     # - 'pip install git+https://github.com/INM-6/gather-metadata.git'
     # Prepare Builder .buildrc
-    - 'BUILDER_CONFIG_PATH="$USER_DATA_DIR/.buildrc"'
     - |+
       echo PLANFILE_PATH="$BUILDER_PLANFILE_DIR" > "$BUILDER_CONFIG_PATH"
       echo PACKAGE_CACHE="$BUILDER_PACKAGE_DIR" >> "$BUILDER_CONFIG_PATH"
