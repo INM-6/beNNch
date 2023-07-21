@@ -38,8 +38,8 @@ benchmark_output_dir = sys.argv[6]   # path to directory where all jube benchmar
 config_output_dir = sys.argv[7]      # path to directory where all benchmark config files are placed
 scripts_dir = sys.argv[8]            # path to directory where all benchmark helper scripts are located
 jube_results_dir = sys.argv[9]       # path to directory where all benchmark results should be placed
-venv_path = sys.argv[10]
-machine = sys.argv[11]                # name of the machine the benchmark is running on
+prepare_file_path = sys.argv[10]     # path to the prepare.sh file which is loaded on the compute node
+machine = sys.argv[11]               # name of the machine the benchmark is running on
 
 config_dir = os.path.dirname(config_path)
 
@@ -147,7 +147,7 @@ for model_name, benchmark_config in config["benchmarks"].items():
         {"name": "optional_run_command", "type": "string", "_": run_parameters.get("optional_run_command", "")},
         {"name": "run_args", "type": "string", "_": run_parameters.get("run_args", "")},
         {"name": "model_path", "type": "string", "_": os.path.abspath(benchmark_model_files_dir)},
-        {"name": "venv_path", "type": "string", "_": venv_path}
+        {"name": "prepare_file_path", "type": "string", "_": prepare_file_path}
     ])
 
     # Fileset
