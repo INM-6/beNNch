@@ -26,7 +26,8 @@ parameterset:
           module use ${buildermod}
           module load simulator/${simulator_branch}/default
           ${optional_run_command}
-          srun --cpus-per-task=${threads_per_task} ${affinity} python ${run_file} ${run_args}
+          source {$venv_path}/bin/activate
+          srun --export=ALL --cpus-per-task=${threads_per_task} ${affinity} python ${run_file} ${run_args}
           srun -n 1 --nodes 1 python ${scripts_dir}/collect_timer_data.py ${metrics_path} ${jube_wp_abspath} ${log_path}
 
 fileset:
