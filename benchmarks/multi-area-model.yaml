@@ -43,7 +43,7 @@ step:
       use:
       - from: user_config.yaml
         _: user_config
-      - from: multi-area-model_2_config.yaml
+      - from: multi-area-model_config.yaml
         _: file_paths,model_parameters,software_parameters
       - from: helpers.yaml
         _: slurm_build,run_build,files,sub_build_job
@@ -57,13 +57,13 @@ step:
       - model_commands
       - from: user_config.yaml
         _: user_config
-      - from: multi-area-model_2_config.yaml
+      - from: multi-area-model_config.yaml
         _: file_paths,model_parameters,machine_parameters,software_parameters
       - from: helpers.yaml
         _: slurm_bench,run_benchmark,files,sub_bench_job,scaling_experiment
       do:
         done_file: $ready_file
-        _: $submit_cmd --dependency=afterok:$$DEP  $job_file
+        _: $submit_cmd --dependency=afterok:$$DEP $job_file
 # analysis step
 analyser:
       name: analyse
