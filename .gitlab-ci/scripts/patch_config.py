@@ -26,7 +26,7 @@ def patch_element(config, key, value):
                             val["type"] = v["type"]
                             val["_"] = v["_"]
                     else:
-                        config[key].append[v]
+                        config[key].append(v)
                 elif v not in config[key]:
                     config[key].append(v)
         if type(config[key]) == dict:
