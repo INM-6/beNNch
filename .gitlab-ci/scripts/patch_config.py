@@ -47,7 +47,7 @@ def extend_config(config, level):
     with open(os.path.join(repo_path, base_repo_config_path), 'r') as config_file:
         base_config = yaml.safe_load(config_file)
     # Patch dependencies
-    base_config["dependencies"] = os.path.join(repo_path, base_config["dependencies"])
+    base_config["dependencies"] = os.path.join(repo_path, base_config.get("dependencies", dict()))
 
     if "extends" in base_config:
         base_config = extend_config(base_config, level+1)
