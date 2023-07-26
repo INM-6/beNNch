@@ -12,9 +12,21 @@ config_branch = sys.argv[4]
 config_path = sys.argv[5]
 
 
-def patch_config(base_config, patch_config):
-    # TODO
-    return config
+def patch_element(config, key, value):
+    if key not in config:
+        config[key] = value
+    else:
+        if type(config[key]) != type(value):
+            raise ValueError()
+        if type(config[key]) == list:
+            config[key].sort()
+            value.sort()
+            for 
+        if type(config[key]) == dict:
+            for k, v in value.items():
+                patch_element(config[key], k, v)
+        else:
+            config[key] = value
 
 
 def extend_config(config, level):
@@ -33,7 +45,9 @@ def extend_config(config, level):
     if "extends" in base_config:
         base_config = extend_config(base_config, level+1)
 
-    return patch_config(base_config, config)
+    for key, value in config.items():
+        patch_element(base_config, key, value)
+    return base_config
 
 # Recursively get extended config file until reaching root. Starting with the root config, iteratively patch the configuration.
 config = extend_config({"extends": {"repo": "base", "config_file": config_path}, "repositories": {"base": {"url": config_repo, "branch": config_branch}}}, 0)
