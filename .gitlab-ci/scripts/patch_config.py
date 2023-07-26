@@ -19,9 +19,16 @@ def patch_element(config, key, value):
         if type(config[key]) != type(value):
             raise ValueError()
         if type(config[key]) == list:
-            config[key].sort()
-            value.sort()
-            for 
+            for v in value:
+                if type(v) == dict and "name" in v:
+                    for val in config[key]:
+                        if val.get("name") == v["name"]:
+                            val["type"] = v["type"]
+                            val["_"] = v["_"]
+                    else:
+                        config[key].append[v]
+                elif v not in config[key]:
+                    config[key].append(v)
         if type(config[key]) == dict:
             for k, v in value.items():
                 patch_element(config[key], k, v)
