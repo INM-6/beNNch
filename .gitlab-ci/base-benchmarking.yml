@@ -64,6 +64,8 @@ variables:
   clone-repositories:
     - 'build --get --silent simulator $SIMULATOR_BRANCH'
     - 'python3 "$SCRIPTS_DIR/clone_models.py" "$CONFIG_FILE_PATH" "$MODELS_DIR" "$CB_MODELS"'
+  user-requirements:
+    - 'eval $(python3 "$SCRIPTS_DIR/get_requirements_from_config.py" general "$CONFIG_FILE_PATH" "$MACHINE")'
   apt-requirements:
     - |
       REQUIREMENTS=$(python3 "$SCRIPTS_DIR/get_requirements_from_config.py" apt "$CONFIG_FILE_PATH" "$MACHINE")
@@ -74,7 +76,7 @@ variables:
     - |
       REQUIREMENTS=$(python3 "$SCRIPTS_DIR/get_requirements_from_config.py" pip "$CONFIG_FILE_PATH" "$MACHINE")
       if [ ! -z "$REQUIREMENTS" ] ; then
-        "$USER_DATA_DIR/benchmarking-env/bin/pip" install $REQUIREMENTS
+        pip install $REQUIREMENTS
       fi
   modules-requirements:
     - |

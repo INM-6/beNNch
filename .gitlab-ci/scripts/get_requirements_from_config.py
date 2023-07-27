@@ -32,4 +32,7 @@ machine = sys.argv[3]
 with open(config_file_path) as config_file:
     requirements = yaml.safe_load(config_file)["dependencies"][machine].get(requirement_type, [])
 
-print(*requirements, sep=" ", end="")
+if requirement_type == 'general':
+    print(*requirements, sep=" && ", end="")
+else:
+    print(*requirements, sep=" ", end="")

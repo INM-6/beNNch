@@ -42,26 +42,24 @@ Preparation:
       dotenv: benchmark_variables.env
     when: on_success
   script:
-    - 'echo $CB_BUILD_TIME_LIMIT'
+    - |
+      eval USER_DATA_DIR="$TEMP_DIR/$USER/$(echo $BENCHMARK_ID | sed -e 's/[^A-Za-z0-9._-]/_/g')-$(date +%d-%m-%y-%H-%M-%S)"
+    # Apply general preparation steps defined by the user in the config file
+    - 'mkdir "$USER_DATA_DIR/user_files"'
+    - 'cd "$USER_DATA_DIR/user_files"'
+    - !reference [ .prepare-benchmarks, user-requirements ]
+    - 'which pip'  # "$USER_DATA_DIR/benchmarking-env/bin/pip"
+    # Move all artifacts to user data directory
+    - !reference [ .prepare-benchmarks, artifacts ]
     # Load all modules required for continuous benchmarking in general and prepare environment
     - !reference [ .environment-init ]
     # Load all environment variables
-    - |
-      eval USER_DATA_DIR="$TEMP_DIR/$USER/$(echo $BENCHMARK_ID | sed -e 's/[^A-Za-z0-9._-]/_/g')-$(date +%d-%m-%y-%H-%M-%S)"
     - !reference [ .prepare-benchmarks, environment-variables ]
     # Create all required directories
     - !reference [ .prepare-benchmarks, create-dirs ]
-    # Move all artifacts to user data directory
-    - !reference [ .prepare-benchmarks, artifacts ]
     # Load user-defined modules
     - !reference [ .prepare-benchmarks, modules-requirements ]
-    # Create python venv
-    - 'python -m venv --system-site-packages "$USER_DATA_DIR/benchmarking-env"'
-    # Activate python venv
-    - 'source "$USER_DATA_DIR/benchmarking-env/bin/activate"'
     # Install all pip packages into venv specified in config file
-    - 'export PYTHONNOUSERSITE=1'
-    - '"$USER_DATA_DIR/benchmarking-env/bin/pip" install jupyter nbconvert'  # TODO
     - !reference [ .prepare-benchmarks, pip-requirements ]
     # TODO: Metadata
     # - 'pip install git+https://github.com/INM-6/gather-metadata.git'
