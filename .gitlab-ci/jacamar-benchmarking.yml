@@ -47,16 +47,16 @@ Preparation:
     # Apply general preparation steps defined by the user in the config file
     - 'mkdir "$USER_DATA_DIR/user_files"'
     - 'cd "$USER_DATA_DIR/user_files"'
-    - !reference [ .prepare-benchmarks, user-requirements ]
-    - 'which pip'  # "$USER_DATA_DIR/benchmarking-env/bin/pip"
-    # Move all artifacts to user data directory
-    - !reference [ .prepare-benchmarks, artifacts ]
-    # Load all modules required for continuous benchmarking in general and prepare environment
     - !reference [ .environment-init ]
+    # Load all modules required for continuous benchmarking in general and prepare environment
+    - !reference [ .environment-load ]
+    - 'which pip'  # "$USER_DATA_DIR/benchmarking-env/bin/pip"
     # Load all environment variables
     - !reference [ .prepare-benchmarks, environment-variables ]
     # Create all required directories
     - !reference [ .prepare-benchmarks, create-dirs ]
+    # Move all artifacts to user data directory
+    - !reference [ .prepare-benchmarks, artifacts ]
     # Load user-defined modules
     - !reference [ .prepare-benchmarks, modules-requirements ]
     # Install all pip packages into venv specified in config file
@@ -72,9 +72,6 @@ Preparation:
       echo TARGET_PATH="$BUILDER_INSTALL_DIR" >> "$BUILDER_CONFIG_PATH"
       echo MODULE_INSTALL_PATH="$BUILDER_MODULES_DIR" >> "$BUILDER_CONFIG_PATH"
       echo LOG_PATH="$BUILDER_LOG_DIR" >> "$BUILDER_CONFIG_PATH"
-    - 'mkdir -p "$USER_DATA_DIR/bin"'
-    - 'ln -s "$BUILDER_DIR/build.sh" "$USER_DATA_DIR/bin/build"'
-    - 'export PATH="$USER_DATA_DIR/bin:$PATH"'
     # Prepare simulator installation (builder plan)
     - 'mkdir -p "$BUILDER_PLANFILE_DIR/simulator/$SIMULATOR_BRANCH"'
     # TODO: Make this generic and not NEST-specific
@@ -88,7 +85,7 @@ Preparation:
     # Forward all environment variables to next stage
     - 'rm -f "$CI_PROJECT_DIR/benchmark_variables.env"'
     - |
-      for var in BENCHMARK_ID CB_RUNNER_ACCOUNT CB_COMPUTE_PROJECT CB_DATA_PROJECT CB_DEPENDENCIES USER_DATA_DIR WORKSPACE_DIR BENCHMARKS_DIR BENNCHPLOT_DIR SIMULATOR_REPO SIMULATOR_BRANCH SIMULATOR_REPO_DIR JUBE_RESULTS_DIR RESULTS_REPO_URL RESULTS_BRANCH RESULTS_PATH BUILDER_DIR BUILDER_MODULES_DIR BUILDER_PLANFILE_DIR BUILDER_PACKAGE_DIR BUILDER_SOURCE_DIR BUILDER_INSTALL_DIR BUILDER_BUILD_DIR BUILDER_LOG_DIR GIT_ANNEX_DIR CONFIG_FILE_PATH MODELS_DIR BUILDER_CONFIG_PATH NEST_VERSION ; do
+      for var in BENCHMARK_ID CB_RUNNER_ACCOUNT CB_COMPUTE_PROJECT CB_DATA_PROJECT CB_DEPENDENCIES USER_DATA_DIR BENCHMARKS_DIR SIMULATOR_REPO SIMULATOR_BRANCH SIMULATOR_REPO_DIR JUBE_RESULTS_DIR RESULTS_REPO_URL RESULTS_BRANCH RESULTS_PATH BUILDER_MODULES_DIR BUILDER_PLANFILE_DIR BUILDER_PACKAGE_DIR BUILDER_SOURCE_DIR BUILDER_INSTALL_DIR BUILDER_BUILD_DIR BUILDER_LOG_DIR CONFIG_FILE_PATH MODELS_DIR BUILDER_CONFIG_PATH NEST_VERSION ; do
         eval val=\$$var
         echo "${var}=${val}" >> "$CI_PROJECT_DIR/benchmark_variables.env"
       done
@@ -105,19 +102,15 @@ Build:
     when: on_success
   script:
     # Load all modules required for continuous benchmarking in general and prepare environment
-    - !reference [ .environment-init ]
+    - !reference [ .environment-load ]
     # Load user-defined modules
     - !reference [ .prepare-benchmarks, modules-requirements ]
-    # Activate python venv
-    - 'source $USER_DATA_DIR/benchmarking-env/bin/activate'
-    # Add builder to path
-    - 'export PATH=$USER_DATA_DIR/bin:$PATH'
     # Build simulator
     - 'export MAKE_THREADS=$(nproc)'
     - !reference [ .prepare-benchmarks, build-simulator ]
     - 'rm -f "$CI_PROJECT_DIR/benchmark_variables.env"'
     - |
-      for var in BENCHMARK_ID CB_RUNNER_ACCOUNT CB_COMPUTE_PROJECT CB_DATA_PROJECT CB_DEPENDENCIES USER_DATA_DIR WORKSPACE_DIR BENCHMARKS_DIR BENNCHPLOT_DIR SIMULATOR_REPO SIMULATOR_BRANCH SIMULATOR_REPO_DIR JUBE_RESULTS_DIR RESULTS_REPO_URL RESULTS_BRANCH RESULTS_PATH BUILDER_DIR BUILDER_MODULES_DIR BUILDER_PLANFILE_DIR BUILDER_PACKAGE_DIR BUILDER_SOURCE_DIR BUILDER_INSTALL_DIR BUILDER_BUILD_DIR BUILDER_LOG_DIR GIT_ANNEX_DIR CONFIG_FILE_PATH MODELS_DIR BUILDER_CONFIG_PATH NEST_VERSION ; do
+      for var in BENCHMARK_ID CB_RUNNER_ACCOUNT CB_COMPUTE_PROJECT CB_DATA_PROJECT CB_DEPENDENCIES USER_DATA_DIR BENCHMARKS_DIR SIMULATOR_REPO SIMULATOR_BRANCH SIMULATOR_REPO_DIR JUBE_RESULTS_DIR RESULTS_REPO_URL RESULTS_BRANCH RESULTS_PATH BUILDER_MODULES_DIR BUILDER_PLANFILE_DIR BUILDER_PACKAGE_DIR BUILDER_SOURCE_DIR BUILDER_INSTALL_DIR BUILDER_BUILD_DIR BUILDER_LOG_DIR CONFIG_FILE_PATH MODELS_DIR BUILDER_CONFIG_PATH NEST_VERSION ; do
         eval val=\$$var
         echo "${var}=${val}" >> "$CI_PROJECT_DIR/benchmark_variables.env"
       done
@@ -134,15 +127,11 @@ Benchmarking:
     when: on_success
   script:
     # Load all modules required for continuous benchmarking in general and prepare environment
-    - !reference [ .environment-init ]
+    - !reference [ .environment-load ]
     # Load user-defined modules
     - !reference [ .prepare-benchmarks, modules-requirements ]
-    # Activate python venv
-    - 'source "$USER_DATA_DIR/benchmarking-env/bin/activate"'
     # Run benchmarks
     - !reference [ .run-benchmarks ]
-    # Make bennchplot available (also in Jupyter)
-    - 'export PYTHONPATH="$PYTHONPATH:$BENNCHPLOT_DIR"'
     # Prepare results repository
     - !reference [ .prepare-benchmarks, results ]
     # Collect and upload metadata and results

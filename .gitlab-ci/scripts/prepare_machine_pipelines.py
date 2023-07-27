@@ -42,10 +42,18 @@ for machine, machine_conf in config["user_config"].items():
 
         if "variables" not in pipeline_yml:
             pipeline_yml["variables"] = dict()
+        if ".environment-init" not in pipeline_yml:
+            pipeline_yml[".environment-init"] = list()
+        if ".environment-load" not in pipeline_yml:
+            pipeline_yml[".environment-load"] = list()
         pipeline_yml["variables"]["CB_DATA_PROJECT"] = machine_conf.get('data-project', '')
         pipeline_yml["variables"]["CB_COMPUTE_PROJECT"] = machine_conf.get('compute-project', '')
         pipeline_yml["variables"]["CB_RUNNER_ACCOUNT"] = machine_conf.get('account', '')
         pipeline_yml["variables"]["CB_BUILD_TIME_LIMIT"] = machine_conf.get('build-time-limit', '')
+        
+        pipeline_yml[".environment-init"].extend(config["dependencies"]["machine"]["init"])
+        pipeline_yml[".environment-load"].extend(config["dependencies"]["machine"]["load"])
+
         yaml.dump(pipeline_yml, pipeline_out, default_flow_style=False)
         available_machines.remove(machine)
 

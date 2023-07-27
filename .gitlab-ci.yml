@@ -43,9 +43,6 @@ variables:
   RESULTS_PATH:
     description: "Path to results directory relative to results repository root."
     value: "."
-  WORKSPACE:
-    description: "Benchmarking CI workflow type. Valid options are: 'production' or 'development'."
-    value: "production"
   EXTRA_CMAKE_FLAGS:
     description: "Any extra CMake flags which should be used to compile NEST."
     value: '-Dwith-optimize=ON -Dwith-ltdl=ON -Dwith-boost=ON -Dwith-detailed-timers=ON'
@@ -79,7 +76,7 @@ Validate Input:
   script:
     - |+
       # Make some values were provided for all mandatory variables
-      for var in BENCHMARK_ID SIMULATOR_REPO SIMULATOR_BRANCH CONFIG_REPO CONFIG_BRANCH CONFIG_PATH RESULTS_REPO_URL RESULTS_BRANCH RESULTS_PATH WORKSPACE NEST_VERSION ; do
+      for var in BENCHMARK_ID SIMULATOR_REPO SIMULATOR_BRANCH CONFIG_REPO CONFIG_BRANCH CONFIG_PATH RESULTS_REPO_URL RESULTS_BRANCH RESULTS_PATH NEST_VERSION ; do
         eval val=\$$var
         if [ -z $val ] ; then
           echo "No value provided for variable ${var}!"
