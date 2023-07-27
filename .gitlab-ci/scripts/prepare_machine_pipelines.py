@@ -21,6 +21,7 @@ Collect all machines for which benchmarks should be run and save them to an envi
 
 import sys
 import os
+import traceback
 
 import yaml
 yaml.add_representer(str, lambda dumper, data: dumper.represent_scalar('tag:yaml.org,2002:str', data, style='"'))
@@ -36,7 +37,7 @@ with open(config_file_path) as config_file:
     config = yaml.safe_load(config_file)
 
 for machine, machine_conf in config["user_config"].items():
-    with open(os.path.join(pipelines_dir_out, machine + ".yml"), 'w') as pipeline_out:
+    try:
         with open(os.path.join(pipelines_dir_in, machine + ".yml")) as pipeline_in:
             pipeline_yml = yaml.safe_load(pipeline_in)
 
@@ -51,9 +52,13 @@ for machine, machine_conf in config["user_config"].items():
         pipeline_yml["variables"]["CB_RUNNER_ACCOUNT"] = machine_conf.get('account', '')
         pipeline_yml["variables"]["CB_BUILD_TIME_LIMIT"] = machine_conf.get('build-time-limit', '')
         
-        pipeline_yml[".environment-init"].extend(config["dependencies"]["machine"]["init"])
-        pipeline_yml[".environment-load"].extend(config["dependencies"]["machine"]["load"])
+        pipeline_yml[".environment-init"].extend(config["dependencies"][machine]["init"])
+        pipeline_yml[".environment-load"].extend(config["dependencies"][machine]["load"])
+    except Exception as e:
+        traceback.print_exc()
+        continue
 
+    with open(os.path.join(pipelines_dir_out, machine + ".yml"), 'w') as pipeline_out:
         yaml.dump(pipeline_yml, pipeline_out, default_flow_style=False)
         available_machines.remove(machine)
 
