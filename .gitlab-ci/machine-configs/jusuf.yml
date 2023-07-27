@@ -17,12 +17,6 @@
 
 include: .gitlab-ci/jacamar-benchmarking.yml
 
-variables:
-  TEMP_DIR: "$$SCRATCH/ci-bennch/$WORKSPACE/jusuf/userdata"   # Directory to temporary files accessible from both login and compute nodes
-  WORKSPACE_DIR: "$$USERSOFTWARE/ci-bennch/$WORKSPACE/jusuf"  # Directory to persistent files accessible from both login and compute nodes
-  BUILDER_DIR: "$$WORKSPACE_DIR/builder"                       # Path to builder installation
-  GIT_ANNEX_DIR: "$$WORKSPACE_DIR/git-annex"                   # Path to git-annex
-  BENNCHPLOT_DIR: "$$WORKSPACE_DIR/bennchplot"                 # Path to beNNch-plot
 
 .preparation:
   tags:
