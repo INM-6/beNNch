@@ -32,7 +32,7 @@ variables:
 .prepare-benchmarks:
   # Move all artifacts to user data directory
   artifacts:
-    - 'mv "$CI_PROJECT_DIR/config.yml" "$CONFIG_PATH" || true'
+    - 'if [[ $(realpath "$CI_PROJECT_DIR/config.yml") != $(realpath "$CONFIG_PATH") ]]; then mv "$CI_PROJECT_DIR/config.yml" "$CONFIG_PATH"; fi'
   environment-variables:
     #- |+
     #  for var in WORKSPACE_DIR SIMULATOR_REPO_DIR JUBE_RESULTS_DIR BUILDER_DIR BUILDER_MODULES_DIR BUILDER_PLANFILE_DIR BUILDER_PACKAGE_DIR BUILDER_SOURCE_DIR BUILDER_INSTALL_DIR BUILDER_BUILD_DIR BUILDER_LOG_DIR GIT_ANNEX_DIR MODELS_DIR BENNCHPLOT_DIR BENCHMARKS_DIR ; do
