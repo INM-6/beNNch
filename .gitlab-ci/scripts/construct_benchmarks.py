@@ -116,7 +116,6 @@ for model_name, benchmark_config in config["benchmarks"].items():
         })
 
     # Model parameters
-    # TODO: Remove type information from config file and set it here according to value
     jube_benchmark["parameterset"].append(
     {
         "name": "model_parameters",
