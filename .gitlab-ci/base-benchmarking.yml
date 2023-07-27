@@ -35,7 +35,7 @@ variables:
     - 'if [[ $(realpath "$CI_PROJECT_DIR/config.yml") != $(realpath "$CONFIG_FILE_PATH") ]]; then mv "$CI_PROJECT_DIR/config.yml" "$CONFIG_FILE_PATH"; fi'
   environment-variables:
     # TODO
-    #- |+
+    #- |
     #  for var in WORKSPACE_DIR SIMULATOR_REPO_DIR JUBE_RESULTS_DIR BUILDER_DIR BUILDER_MODULES_DIR BUILDER_PLANFILE_DIR BUILDER_PACKAGE_DIR BUILDER_SOURCE_DIR BUILDER_INSTALL_DIR BUILDER_BUILD_DIR BUILDER_LOG_DIR GIT_ANNEX_DIR MODELS_DIR BENNCHPLOT_DIR BENCHMARKS_DIR ; do
     #    eval "$var"='${$var}'
     #  done
@@ -65,19 +65,19 @@ variables:
     - 'build --get --silent simulator $SIMULATOR_BRANCH'
     - 'python3 "$SCRIPTS_DIR/clone_models.py" "$CONFIG_FILE_PATH" "$MODELS_DIR" "$CB_MODELS"'
   apt-requirements:
-    - |+
+    - |
       REQUIREMENTS=$(python3 "$SCRIPTS_DIR/get_requirements_from_config.py" apt "$CONFIG_FILE_PATH" "$MACHINE")
       if [ ! -z "$REQUIREMENTS" ] ; then
         apt-get install -y $REQUIREMENTS
       fi
   pip-requirements:
-    - |+
+    - |
       REQUIREMENTS=$(python3 "$SCRIPTS_DIR/get_requirements_from_config.py" pip "$CONFIG_FILE_PATH" "$MACHINE")
       if [ ! -z "$REQUIREMENTS" ] ; then
         "$USER_DATA_DIR/benchmarking-env/bin/pip" install $REQUIREMENTS
       fi
   modules-requirements:
-    - |+
+    - |
       REQUIREMENTS=$(python3 "$SCRIPTS_DIR/get_requirements_from_config.py" modules "$CONFIG_FILE_PATH" "$MACHINE")
       if [ ! -z "$REQUIREMENTS" ] ; then
         module load $REQUIREMENTS
@@ -97,11 +97,11 @@ variables:
 .run-benchmarks:
   # TODO: Split this up into multiple jobs and make each benchmark (model) run in a parallel job so the analysis for a benchmark can start even if the others didn't finish yet
   - 'cp "$TEMPLATES_DIR/job.slurm.in" "$BENCHMARKS_DIR/jube/job.slurm.in"'
-  - |+
+  - |
     for benchmark in "$BENCHMARKS_DIR"/jube/cb_*_"$MACHINE".yml ; do
       jube run --hide-animation -e $benchmark
     done
-  - |+
+  - |
     while jube status --id=all "$JUBE_RESULTS_DIR" | grep -q "RUNNING" ; do
       sleep 30
       jube continue --error --id=all --hide-animation "$JUBE_RESULTS_DIR"
@@ -111,7 +111,7 @@ variables:
 # TODO: Collect metadata about the pipeline (config, etc.) and upload via git-annex
 .metadata:
   - ''
-  # - |+
+  # - |
     # cd ${model_path}
     # model_git_commit_hash=$(git rev-parse HEAD)
     # cd -

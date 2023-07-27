@@ -46,7 +46,7 @@ Preparation:
     # Load all modules required for continuous benchmarking in general and prepare environment
     - !reference [ .environment-init ]
     # Load all environment variables
-    - |+
+    - |
       eval USER_DATA_DIR="$TEMP_DIR/$USER/$(echo $BENCHMARK_ID | sed -e 's/[^A-Za-z0-9._-]/_/g')-$(date +%d-%m-%y-%H-%M-%S)"
     - !reference [ .prepare-benchmarks, environment-variables ]
     # Create all required directories
@@ -66,7 +66,7 @@ Preparation:
     # TODO: Metadata
     # - 'pip install git+https://github.com/INM-6/gather-metadata.git'
     # Prepare Builder .buildrc
-    - |+
+    - |
       echo PLANFILE_PATH="$BUILDER_PLANFILE_DIR" > "$BUILDER_CONFIG_PATH"
       echo PACKAGE_CACHE="$BUILDER_PACKAGE_DIR" >> "$BUILDER_CONFIG_PATH"
       echo SOURCE_PATH="$BUILDER_SOURCE_DIR" >> "$BUILDER_CONFIG_PATH"
@@ -89,7 +89,7 @@ Preparation:
     - 'echo "source $USER_DATA_DIR/benchmarking-env/bin/activate" >> $USER_DATA_DIR/prepare.sh'
     # Forward all environment variables to next stage
     - 'rm -f "$CI_PROJECT_DIR/benchmark_variables.env"'
-    - |+
+    - |
       for var in BENCHMARK_ID CB_RUNNER_ACCOUNT CB_COMPUTE_PROJECT CB_DATA_PROJECT CB_DEPENDENCIES USER_DATA_DIR WORKSPACE_DIR BENCHMARKS_DIR BENNCHPLOT_DIR SIMULATOR_REPO SIMULATOR_BRANCH SIMULATOR_REPO_DIR JUBE_RESULTS_DIR RESULTS_REPO_URL RESULTS_BRANCH RESULTS_PATH BUILDER_DIR BUILDER_MODULES_DIR BUILDER_PLANFILE_DIR BUILDER_PACKAGE_DIR BUILDER_SOURCE_DIR BUILDER_INSTALL_DIR BUILDER_BUILD_DIR BUILDER_LOG_DIR GIT_ANNEX_DIR CONFIG_FILE_PATH MODELS_DIR BUILDER_CONFIG_PATH NEST_VERSION ; do
         eval val=\$$var
         echo "${var}=${val}" >> "$CI_PROJECT_DIR/benchmark_variables.env"
@@ -118,7 +118,7 @@ Build:
     - 'export MAKE_THREADS=$(nproc)'
     - !reference [ .prepare-benchmarks, build-simulator ]
     - 'rm -f "$CI_PROJECT_DIR/benchmark_variables.env"'
-    - |+
+    - |
       for var in BENCHMARK_ID CB_RUNNER_ACCOUNT CB_COMPUTE_PROJECT CB_DATA_PROJECT CB_DEPENDENCIES USER_DATA_DIR WORKSPACE_DIR BENCHMARKS_DIR BENNCHPLOT_DIR SIMULATOR_REPO SIMULATOR_BRANCH SIMULATOR_REPO_DIR JUBE_RESULTS_DIR RESULTS_REPO_URL RESULTS_BRANCH RESULTS_PATH BUILDER_DIR BUILDER_MODULES_DIR BUILDER_PLANFILE_DIR BUILDER_PACKAGE_DIR BUILDER_SOURCE_DIR BUILDER_INSTALL_DIR BUILDER_BUILD_DIR BUILDER_LOG_DIR GIT_ANNEX_DIR CONFIG_FILE_PATH MODELS_DIR BUILDER_CONFIG_PATH NEST_VERSION ; do
         eval val=\$$var
         echo "${var}=${val}" >> "$CI_PROJECT_DIR/benchmark_variables.env"
