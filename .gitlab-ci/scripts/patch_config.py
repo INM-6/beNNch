@@ -3,6 +3,7 @@ import os
 import subprocess
 
 import yaml
+yaml.add_representer(str, lambda dumper, data: dumper.represent_scalar('tag:yaml.org,2002:str', data, style='"'))
 
 
 tmp_dir = sys.argv[1]

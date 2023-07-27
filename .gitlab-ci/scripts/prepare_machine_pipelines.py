@@ -23,6 +23,7 @@ import sys
 import os
 
 import yaml
+yaml.add_representer(str, lambda dumper, data: dumper.represent_scalar('tag:yaml.org,2002:str', data, style='"'))
 
 
 pipelines_dir_in = sys.argv[1]
@@ -41,10 +42,10 @@ for machine, machine_conf in config["user_config"].items():
 
         if "variables" not in pipeline_yml:
             pipeline_yml["variables"] = dict()
-        pipeline_yml["variables"]["CB_DATA_PROJECT"] = f"\"{machine_conf.get('data-project', '')}\""
-        pipeline_yml["variables"]["CB_COMPUTE_PROJECT"] = f"\"{machine_conf.get('compute-project', '')}\""
-        pipeline_yml["variables"]["CB_RUNNER_ACCOUNT"] = f"\"{machine_conf.get('account', '')}\""
-        pipeline_yml["variables"]["CB_BUILD_TIME_LIMIT"] = f"\"{machine_conf.get('build-time-limit', '')}\""
+        pipeline_yml["variables"]["CB_DATA_PROJECT"] = machine_conf.get('data-project', '')
+        pipeline_yml["variables"]["CB_COMPUTE_PROJECT"] = machine_conf.get('compute-project', '')
+        pipeline_yml["variables"]["CB_RUNNER_ACCOUNT"] = machine_conf.get('account', '')
+        pipeline_yml["variables"]["CB_BUILD_TIME_LIMIT"] = machine_conf.get('build-time-limit', '')
         yaml.dump(pipeline_yml, pipeline_out, default_flow_style=False)
         available_machines.remove(machine)
 

@@ -23,6 +23,7 @@ import os
 import copy
 
 import yaml
+yaml.add_representer(str, lambda dumper, data: dumper.represent_scalar('tag:yaml.org,2002:str', data, style='"'))
 
 COLOR_WARNING = '\033[93m'
 COLOR_FAIL = '\033[91m'

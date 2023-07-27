@@ -19,6 +19,7 @@ import sys
 import glob
 
 import yaml
+yaml.add_representer(str, lambda dumper, data: dumper.represent_scalar('tag:yaml.org,2002:str', data, style='"'))
 import json
 import tarfile
 import numpy as np

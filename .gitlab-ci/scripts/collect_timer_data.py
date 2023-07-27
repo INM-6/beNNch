@@ -26,6 +26,7 @@ import sys
 
 import json
 import yaml
+yaml.add_representer(str, lambda dumper, data: dumper.represent_scalar('tag:yaml.org,2002:str', data, style='"'))
 import numpy as np
 import pandas as pd
 
