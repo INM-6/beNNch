@@ -32,9 +32,7 @@ variables:
 .prepare-benchmarks:
   # Move all artifacts to user data directory
   artifacts:
-    - 'echo "$CI_PROJECT_DIR/config.yml"'
-    - 'echo $CONFIG_PATH'
-    - 'if [[ $(realpath "$CI_PROJECT_DIR/config.yml") != $(realpath "$CONFIG_PATH") ]]; then mv "$CI_PROJECT_DIR/config.yml" "$CONFIG_PATH"; fi'
+    - 'if [[ $(realpath "$CI_PROJECT_DIR/config.yml") != $(realpath "$CONFIG_FILE_PATH") ]]; then mv "$CI_PROJECT_DIR/config.yml" "$CONFIG_FILE_PATH"; fi'
   environment-variables:
     # TODO
     #- |+
@@ -57,7 +55,7 @@ variables:
     - 'eval BUILDER_BUILD_DIR="$BUILDER_BUILD_DIR"'
     - 'eval BUILDER_LOG_DIR="$BUILDER_LOG_DIR"'
     - 'eval GIT_ANNEX_DIR="$GIT_ANNEX_DIR"'
-    - 'eval CONFIG_PATH="$CONFIG_PATH"'
+    - 'eval CONFIG_FILE_PATH="$CONFIG_FILE_PATH"'
     - 'eval MODELS_DIR="$MODELS_DIR"'
     - 'eval BENNCHPLOT_DIR="$BENNCHPLOT_DIR"'
     - 'eval BENCHMARKS_DIR="$BENCHMARKS_DIR"'
@@ -65,22 +63,22 @@ variables:
     - 'mkdir -p "$USER_DATA_DIR" "$WORKSPACE_DIR" "$SIMULATOR_REPO_DIR" "$BENCHMARKS_DIR/metrics" "$JUBE_RESULTS_DIR" "$BENCHMARKS_DIR/jube" "$BUILDER_MODULES_DIR" "$BUILDER_PLANFILE_DIR" "$BUILDER_PACKAGE_DIR" "$BUILDER_SOURCE_DIR" "$BUILDER_INSTALL_DIR" "$BUILDER_BUILD_DIR" "$BUILDER_LOG_DIR" "$MODELS_DIR"'
   clone-repositories:
     - 'build --get --silent simulator $SIMULATOR_BRANCH'
-    - 'python3 "$SCRIPTS_DIR/clone_models.py" "$CONFIG_PATH" "$MODELS_DIR" "$CB_MODELS"'
+    - 'python3 "$SCRIPTS_DIR/clone_models.py" "$CONFIG_FILE_PATH" "$MODELS_DIR" "$CB_MODELS"'
   apt-requirements:
     - |+
-      REQUIREMENTS=$(python3 "$SCRIPTS_DIR/get_requirements_from_config.py" apt "$CONFIG_PATH" "$MACHINE")
+      REQUIREMENTS=$(python3 "$SCRIPTS_DIR/get_requirements_from_config.py" apt "$CONFIG_FILE_PATH" "$MACHINE")
       if [ ! -z "$REQUIREMENTS" ] ; then
         apt-get install -y $REQUIREMENTS
       fi
   pip-requirements:
     - |+
-      REQUIREMENTS=$(python3 "$SCRIPTS_DIR/get_requirements_from_config.py" pip "$CONFIG_PATH" "$MACHINE")
+      REQUIREMENTS=$(python3 "$SCRIPTS_DIR/get_requirements_from_config.py" pip "$CONFIG_FILE_PATH" "$MACHINE")
       if [ ! -z "$REQUIREMENTS" ] ; then
         "$USER_DATA_DIR/benchmarking-env/bin/pip" install $REQUIREMENTS
       fi
   modules-requirements:
     - |+
-      REQUIREMENTS=$(python3 "$SCRIPTS_DIR/get_requirements_from_config.py" modules "$CONFIG_PATH" "$MACHINE")
+      REQUIREMENTS=$(python3 "$SCRIPTS_DIR/get_requirements_from_config.py" modules "$CONFIG_FILE_PATH" "$MACHINE")
       if [ ! -z "$REQUIREMENTS" ] ; then
         module load $REQUIREMENTS
       fi
@@ -93,7 +91,7 @@ variables:
     - 'build -f simulator $SIMULATOR_BRANCH'
   construct-benchmarks:
     - 'touch $USER_DATA_DIR/prepare.sh'
-    - 'python3 "$SCRIPTS_DIR/construct_benchmarks.py" "$TEMPLATES_DIR/jube-template.yml" "$CONFIG_PATH" "$BUILDER_MODULES_DIR" "$SIMULATOR_BRANCH" "$MODELS_DIR" "$BENCHMARKS_DIR/jube" "$BENCHMARKS_DIR/metrics" "$SCRIPTS_DIR" "$JUBE_RESULTS_DIR" "$USER_DATA_DIR/prepare.sh" "$MACHINE"'
+    - 'python3 "$SCRIPTS_DIR/construct_benchmarks.py" "$TEMPLATES_DIR/jube-template.yml" "$CONFIG_FILE_PATH" "$BUILDER_MODULES_DIR" "$SIMULATOR_BRANCH" "$MODELS_DIR" "$BENCHMARKS_DIR/jube" "$BENCHMARKS_DIR/metrics" "$SCRIPTS_DIR" "$JUBE_RESULTS_DIR" "$USER_DATA_DIR/prepare.sh" "$MACHINE"'
 
 # Requires jube
 .run-benchmarks:
