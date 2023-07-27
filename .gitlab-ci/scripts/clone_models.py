@@ -27,6 +27,7 @@ for model_name, benchmark_configs in config["benchmarks"].items():
     repo_alias = benchmark_configs["repository"]
     if repo_alias not in model_tmp_dirs:
         model_tmp_dirs[repo_alias] = os.path.join(models_tmp_dir, repo_alias)
+        repo = config["repositories"][repo_alias]
         subprocess.run(["git", "clone", "--depth=1", "--single-branch", "--branch=" + repo["branch"], repo["url"], model_tmp_dirs[repo_alias]])
 
     # Copy relevant part of the repository to final destination
