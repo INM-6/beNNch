@@ -69,7 +69,6 @@ variables:
     - |
       REQUIREMENTS=$(python3 "$SCRIPTS_DIR/get_requirements_from_config.py" pip "$CONFIG_FILE_PATH" "$MACHINE")
       if [ ! -z "$REQUIREMENTS" ] ; then
-        which pip
         pip install $REQUIREMENTS
       fi
   modules-requirements:
