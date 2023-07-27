@@ -45,7 +45,13 @@ setenv          NEST_DATA_DIR           \$INSTALLDIR/share/nest
 setenv          NEST_DOC_DIR            \$INSTALLDIR/share/doc/nest
 
 # The path where NEST looks for user modules.
+if { $NEST_VERSION == "3" } {
 setenv          NEST_MODULE_PATH        [glob -directory \$INSTALLDIR/ -type d lib*/nest/]
+} elseif { $NEST_VERSION == "2" } {
+setenv          NEST_MODULE_PATH        [glob -directory \$INSTALLDIR/ -type d lib*/]
+} else {
+puts stderr "Invalid NEST major version specified!"
+}
 
 # The path where the PyNEST bindings are installed.
 setenv          NEST_PYTHON_PREFIX      \$INSTALLDIR

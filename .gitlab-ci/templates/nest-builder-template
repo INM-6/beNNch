@@ -25,9 +25,15 @@ CONFIGURE_OPTIONS="$CMAKEFLAGS $EXTRA_CMAKE_FLAGS"
 
 # Override functions which are not required here
 check_package_file () { :; }
-source_get () { :; }
 source_prepare () { :; }
 build_install_test () { :; }
+
+source_get () {
+    # Only clone if target directory is empty
+    if [ -z "$(ls -A $SIMULATOR_REPO_DIR)" ]; then
+        git clone --single-branch --branch="$SIMULATOR_BRANCH" --depth=1 "$SIMULATOR_REPO" "$SIMULATOR_REPO_DIR"
+    fi
+}
 
 build_package () {
 	log_status ">>> build"

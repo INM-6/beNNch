@@ -31,6 +31,7 @@ variables:
   BUILDER_INSTALL_DIR: "$$USER_DATA_DIR/install"
   BUILDER_BUILD_DIR: "$$USER_DATA_DIR/Builder/build"
   BUILDER_LOG_DIR: "$$USER_DATA_DIR/Builder/log/"
+  BUILDER_CONFIG_PATH: "$$USER_DATA_DIR/.buildrc"
   MACHINE: "$CB_MACHINE"
 
 
@@ -55,20 +56,15 @@ Preparation:
     - !reference [ .prepare-benchmarks, modules-requirements ]
     # Create python venv
     - 'python -m venv --system-site-packages "$USER_DATA_DIR/benchmarking-env"'
-    - 'export PYTHONNOUSERSITE=1'
-    - '"$USER_DATA_DIR/benchmarking-env/bin/pip" install jupyter nbconvert'  # TODO
     # Activate python venv
     - 'source "$USER_DATA_DIR/benchmarking-env/bin/activate"'
     # Install all pip packages into venv specified in config file
+    - 'export PYTHONNOUSERSITE=1'
+    - '"$USER_DATA_DIR/benchmarking-env/bin/pip" install jupyter nbconvert'  # TODO
     - !reference [ .prepare-benchmarks, pip-requirements ]
     # TODO: Metadata
     # - 'pip install git+https://github.com/INM-6/gather-metadata.git'
-    # Clone simulator and model repositories
-    - !reference [ .prepare-benchmarks, clone-repositories ]
-    # Construct JUBE benchmark files from provided config
-    - !reference [ .prepare-benchmarks, construct-benchmarks ]
     # Prepare Builder .buildrc
-    - 'BUILDER_CONFIG_PATH="$USER_DATA_DIR/.buildrc"'
     - |+
       echo PLANFILE_PATH="$BUILDER_PLANFILE_DIR" > "$BUILDER_CONFIG_PATH"
       echo PACKAGE_CACHE="$BUILDER_PACKAGE_DIR" >> "$BUILDER_CONFIG_PATH"
@@ -80,16 +76,24 @@ Preparation:
     - 'mkdir -p "$USER_DATA_DIR/bin"'
     - 'ln -s "$BUILDER_DIR/build.sh" "$USER_DATA_DIR/bin/build"'
     - 'export PATH="$USER_DATA_DIR/bin:$PATH"'
-    # Prepare nest installation (builder plan)
-    - 'mkdir -p "$BUILDER_PLANFILE_DIR/nest-simulator/$SIMULATOR_BRANCH"'
-    - 'cp "$TEMPLATES_DIR/nest-builder-template" "$BUILDER_PLANFILE_DIR/nest-simulator/$SIMULATOR_BRANCH/default"'
-    - 'cp "$TEMPLATES_DIR/nest-builder-module" "$BUILDER_PLANFILE_DIR/nest-simulator/$SIMULATOR_BRANCH/default.module"'
+    # Prepare simulator installation (builder plan)
+    - 'mkdir -p "$BUILDER_PLANFILE_DIR/simulator/$SIMULATOR_BRANCH"'
+    # TODO: Make this generic and not NEST-specific
+    - 'cp "$TEMPLATES_DIR/nest-builder-template" "$BUILDER_PLANFILE_DIR/simulator/$SIMULATOR_BRANCH/default"'
+    - 'cp "$TEMPLATES_DIR/nest-builder-module" "$BUILDER_PLANFILE_DIR/simulator/$SIMULATOR_BRANCH/default.module"'
+    # Clone simulator and model repositories
+    - !reference [ .prepare-benchmarks, clone-repositories ]
+    # Construct JUBE benchmark files from provided config
+    - !reference [ .prepare-benchmarks, construct-benchmarks ]
+    - 'echo "source $USER_DATA_DIR/benchmarking-env/bin/activate" >> $USER_DATA_DIR/prepare.sh'
+    # Forward all environment variables to next stage
     - 'rm -f "$CI_PROJECT_DIR/benchmark_variables.env"'
     - |+
-      for var in BENCHMARK_ID CB_RUNNER_ACCOUNT CB_COMPUTE_PROJECT CB_DATA_PROJECT CB_DEPENDENCIES USER_DATA_DIR WORKSPACE_DIR BENCHMARKS_DIR BENNCHPLOT_DIR SIMULATOR_REPO SIMULATOR_BRANCH SIMULATOR_REPO_DIR JUBE_RESULTS_DIR RESULTS_REPO_URL RESULTS_BRANCH RESULTS_PATH BUILDER_DIR BUILDER_MODULES_DIR BUILDER_PLANFILE_DIR BUILDER_PACKAGE_DIR BUILDER_SOURCE_DIR BUILDER_INSTALL_DIR BUILDER_BUILD_DIR BUILDER_LOG_DIR GIT_ANNEX_DIR CONFIG_PATH MODELS_DIR BUILDER_CONFIG_PATH ; do
+      for var in BENCHMARK_ID CB_RUNNER_ACCOUNT CB_COMPUTE_PROJECT CB_DATA_PROJECT CB_DEPENDENCIES USER_DATA_DIR WORKSPACE_DIR BENCHMARKS_DIR BENNCHPLOT_DIR SIMULATOR_REPO SIMULATOR_BRANCH SIMULATOR_REPO_DIR JUBE_RESULTS_DIR RESULTS_REPO_URL RESULTS_BRANCH RESULTS_PATH BUILDER_DIR BUILDER_MODULES_DIR BUILDER_PLANFILE_DIR BUILDER_PACKAGE_DIR BUILDER_SOURCE_DIR BUILDER_INSTALL_DIR BUILDER_BUILD_DIR BUILDER_LOG_DIR GIT_ANNEX_DIR CONFIG_PATH MODELS_DIR BUILDER_CONFIG_PATH NEST_VERSION ; do
         eval val=\$$var
         echo "${var}=${val}" >> "$CI_PROJECT_DIR/benchmark_variables.env"
       done
+
 
 Build:
   extends: [ .build ]
@@ -110,10 +114,11 @@ Build:
     # Add builder to path
     - 'export PATH=$USER_DATA_DIR/bin:$PATH'
     # Build simulator
+    - 'export MAKE_THREADS=$(nproc)'
     - !reference [ .prepare-benchmarks, build-simulator ]
     - 'rm -f "$CI_PROJECT_DIR/benchmark_variables.env"'
     - |+
-      for var in BENCHMARK_ID CB_RUNNER_ACCOUNT CB_COMPUTE_PROJECT CB_DATA_PROJECT CB_DEPENDENCIES USER_DATA_DIR WORKSPACE_DIR BENCHMARKS_DIR BENNCHPLOT_DIR SIMULATOR_REPO SIMULATOR_BRANCH SIMULATOR_REPO_DIR JUBE_RESULTS_DIR RESULTS_REPO_URL RESULTS_BRANCH RESULTS_PATH BUILDER_DIR BUILDER_MODULES_DIR BUILDER_PLANFILE_DIR BUILDER_PACKAGE_DIR BUILDER_SOURCE_DIR BUILDER_INSTALL_DIR BUILDER_BUILD_DIR BUILDER_LOG_DIR GIT_ANNEX_DIR CONFIG_PATH MODELS_DIR BUILDER_CONFIG_PATH ; do
+      for var in BENCHMARK_ID CB_RUNNER_ACCOUNT CB_COMPUTE_PROJECT CB_DATA_PROJECT CB_DEPENDENCIES USER_DATA_DIR WORKSPACE_DIR BENCHMARKS_DIR BENNCHPLOT_DIR SIMULATOR_REPO SIMULATOR_BRANCH SIMULATOR_REPO_DIR JUBE_RESULTS_DIR RESULTS_REPO_URL RESULTS_BRANCH RESULTS_PATH BUILDER_DIR BUILDER_MODULES_DIR BUILDER_PLANFILE_DIR BUILDER_PACKAGE_DIR BUILDER_SOURCE_DIR BUILDER_INSTALL_DIR BUILDER_BUILD_DIR BUILDER_LOG_DIR GIT_ANNEX_DIR CONFIG_PATH MODELS_DIR BUILDER_CONFIG_PATH NEST_VERSION ; do
         eval val=\$$var
         echo "${var}=${val}" >> "$CI_PROJECT_DIR/benchmark_variables.env"
       done
@@ -137,8 +142,6 @@ Benchmarking:
     - 'source "$USER_DATA_DIR/benchmarking-env/bin/activate"'
     # Run benchmarks
     - !reference [ .run-benchmarks ]
-    # Activate python venv (after loading modules to use venv interpreter)
-    - 'source "$USER_DATA_DIR/benchmarking-env/bin/activate"'
     # Make bennchplot available (also in Jupyter)
     - 'export PYTHONPATH="$PYTHONPATH:$BENNCHPLOT_DIR"'
     # Prepare results repository

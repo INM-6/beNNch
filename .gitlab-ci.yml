@@ -52,6 +52,9 @@ variables:
   CB_MODELS:
     description: "Comma-seperated list of the names of all models which should be run. Leave empty to run benchmarks for all models specified in the configuration file."
     value: "hpc_benchmark"
+  NEST_VERSION:
+    description: "Either 2 or 3. TODO: Remove this"
+    value: "3"
 
 
 # Specify all machines for which configurations exist
@@ -76,7 +79,7 @@ Validate Input:
   script:
     - |+
       # Make some values were provided for all mandatory variables
-      for var in BENCHMARK_ID SIMULATOR_REPO SIMULATOR_BRANCH CONFIG_REPO CONFIG_BRANCH CONFIG_PATH RESULTS_REPO_URL RESULTS_BRANCH RESULTS_PATH WORKSPACE ; do
+      for var in BENCHMARK_ID SIMULATOR_REPO SIMULATOR_BRANCH CONFIG_REPO CONFIG_BRANCH CONFIG_PATH RESULTS_REPO_URL RESULTS_BRANCH RESULTS_PATH WORKSPACE NEST_VERSION ; do
         eval val=\$$var
         if [ -z $val ] ; then
           echo "No value provided for variable ${var}!"
