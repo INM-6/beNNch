@@ -48,8 +48,6 @@ Preparation:
     - 'mkdir -p "$USER_DATA_DIR/user_files"'
     - 'cd "$USER_DATA_DIR/user_files"'
     - !reference [ .environment-init ]
-    # Load all modules required for continuous benchmarking in general and prepare environment
-    - !reference [ .environment-load ]
     # Load all environment variables
     - !reference [ .prepare-benchmarks, environment-variables ]
     # Create all required directories
@@ -58,6 +56,8 @@ Preparation:
     - !reference [ .prepare-benchmarks, artifacts ]
     # Load user-defined modules
     - !reference [ .prepare-benchmarks, modules-requirements ]
+    # Prepare environment using user-defined commands
+    - !reference [ .environment-load ]
     # Install all pip packages into venv specified in config file
     - !reference [ .prepare-benchmarks, pip-requirements ]
     # TODO: Metadata
