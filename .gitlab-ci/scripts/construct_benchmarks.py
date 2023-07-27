@@ -44,7 +44,7 @@ config_dir = os.path.dirname(config_path)
 
 success = False
 
-models = os.environ.get("CB_MODELS", [])
+models = os.environ.get("CB_MODELS", "")
 if models:
     models = models.split(",")
 
@@ -71,7 +71,7 @@ for model_name, benchmark_config in config["benchmarks"].items():
     
     jube_benchmark = copy.deepcopy(jube_benchmark_template)
 
-    run_parameters = benchmark_config.get("run_parameters", [])
+    run_parameters = benchmark_config.get("run_parameters", dict())
     model_script_path = run_parameters["script_path"]
     metrics = benchmark_config.get("metrics", [])
     metrics_sum = benchmark_config.get("metrics_sum", [])
