@@ -63,7 +63,7 @@ config = extend_config({"extends": {"repo": "base", "config_file": config_path},
 
 # Load dependencies
 with open(config["dependencies"], 'r') as dependencies_file:
-    base_config["dependencies"] = yaml.safe_load(dependencies_file)
+    config["dependencies"] = yaml.safe_load(dependencies_file)
 
 # TODO: Test this
 # After patching the configuration using various base configurations, patch the final config using environment variables provided by the user when triggering the pipeline.
