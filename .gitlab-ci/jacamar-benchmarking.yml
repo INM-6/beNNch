@@ -42,6 +42,7 @@ Preparation:
       dotenv: benchmark_variables.env
     when: on_success
   script:
+    - 'echo $CB_BUILD_TIME_LIMIT'
     # Load all modules required for continuous benchmarking in general and prepare environment
     - !reference [ .environment-init ]
     # Load all environment variables
