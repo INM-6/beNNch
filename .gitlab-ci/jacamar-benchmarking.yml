@@ -50,7 +50,6 @@ Preparation:
     - !reference [ .environment-init ]
     # Load all modules required for continuous benchmarking in general and prepare environment
     - !reference [ .environment-load ]
-    - 'which pip'  # "$USER_DATA_DIR/benchmarking-env/bin/pip"
     # Load all environment variables
     - !reference [ .prepare-benchmarks, environment-variables ]
     # Create all required directories
