@@ -45,7 +45,7 @@ Preparation:
     - |
       eval USER_DATA_DIR="$TEMP_DIR/$USER/$(echo $BENCHMARK_ID | sed -e 's/[^A-Za-z0-9._-]/_/g')-$(date +%d-%m-%y-%H-%M-%S)"
     # Apply general preparation steps defined by the user in the config file
-    - 'mkdir "$USER_DATA_DIR/user_files"'
+    - 'mkdir -p "$USER_DATA_DIR/user_files"'
     - 'cd "$USER_DATA_DIR/user_files"'
     - !reference [ .environment-init ]
     # Load all modules required for continuous benchmarking in general and prepare environment

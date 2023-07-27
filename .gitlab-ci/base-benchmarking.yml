@@ -40,7 +40,6 @@ variables:
     #    eval "$var"='${$var}'
     #  done
     - 'eval BENNCH_DIR="$BENNCH_DIR"'
-    - 'eval USER_DATA_DIR="$USER_DATA_DIR"'
     - 'eval SIMULATOR_REPO_DIR="$SIMULATOR_REPO_DIR"'
     - 'eval JUBE_RESULTS_DIR="$JUBE_RESULTS_DIR"'
     - 'eval ANALYSIS_DIR="$ANALYSIS_DIR"'
