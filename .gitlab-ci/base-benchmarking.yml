@@ -64,7 +64,7 @@ variables:
     - !reference [ .environment-init ]
   environment-load:
     - 'cd "$USER_DATA_DIR/user_files"'
-    - !reference [ .environment-init ]
+    - !reference [ .environment-load ]
   results:
     # Set result repository
     - 'git clone --single-branch --branch="$RESULTS_BRANCH" --depth=1 "$RESULTS_REPO_URL" "$USER_DATA_DIR/results"'
