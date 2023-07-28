@@ -44,10 +44,10 @@ Preparation:
   script:
     - |
       eval USER_DATA_DIR="$TEMP_DIR/$USER/$(echo $BENCHMARK_ID | sed -e 's/[^A-Za-z0-9._-]/_/g')-$(date +%d-%m-%y-%H-%M-%S)"
-    # Apply general preparation steps defined by the user in the config file
     - 'mkdir -p "$USER_DATA_DIR/user_files"'
     - 'cd "$USER_DATA_DIR/user_files"'
-    - !reference [ .environment-init ]
+    # Load all modules required for continuous benchmarking in general
+    - !reference [ .environment-base ]
     # Load all environment variables
     - !reference [ .prepare-benchmarks, environment-variables ]
     # Create all required directories
@@ -56,6 +56,8 @@ Preparation:
     - !reference [ .prepare-benchmarks, artifacts ]
     # Load user-defined modules
     - !reference [ .prepare-benchmarks, modules-requirements ]
+    # Apply general preparation steps defined by the user in the config file
+    - !reference [ .environment-init ]
     # Prepare environment using user-defined commands
     - !reference [ .environment-load ]
     # Install all pip packages into venv specified in config file
@@ -100,6 +102,9 @@ Build:
       dotenv: benchmark_variables.env
     when: on_success
   script:
+    - 'cd "$USER_DATA_DIR/user_files"'
+    # Load all modules required for continuous benchmarking in general
+    - !reference [ .environment-base ]
     # Load all modules required for continuous benchmarking in general and prepare environment
     - !reference [ .environment-load ]
     # Load user-defined modules
@@ -125,7 +130,10 @@ Benchmarking:
       - "configs"
     when: on_success
   script:
-    # Load all modules required for continuous benchmarking in general and prepare environment
+    - 'cd "$USER_DATA_DIR/user_files"'
+    # Load all modules required for continuous benchmarking in general
+    - !reference [ .environment-base ]
+    #  and prepare environment
     - !reference [ .environment-load ]
     # Load user-defined modules
     - !reference [ .prepare-benchmarks, modules-requirements ]
