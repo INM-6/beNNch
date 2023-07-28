@@ -47,8 +47,11 @@ variables:
     description: "Any extra CMake flags which should be used to compile NEST."
     value: '-Dwith-optimize=ON -Dwith-ltdl=ON -Dwith-boost=ON -Dwith-detailed-timers=ON'
   CB_MODELS:
-    description: "Comma-seperated list of the names of all models which should be run. Leave empty to run benchmarks for all models specified in the configuration file."
+    description: "Comma-seperated list of the names of all models for which benchmarks should be run. Leave empty to run benchmarks for all models specified in the configuration file."
     value: "hpc_benchmark"
+  CB_MACHINES:
+    description: "Comma-seperated list of the names of all machines on which benchmarks should be run. Leave empty to trigger benchmark runs for manually for each individual machine for which configuration was found."
+    value: "jusuf"
   NEST_VERSION:
     description: "Either 2 or 3. TODO: Remove this"
     value: "3"

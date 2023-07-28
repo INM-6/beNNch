@@ -32,6 +32,11 @@ pipelines_dir_out = sys.argv[2]
 config_file_path = sys.argv[3]
 available_machines = sys.argv[4].split(",")
 
+manual = True
+if os.environ["CB_MACHINES"]:
+    available_machines = os.environ["CB_MACHINES"].split(",")
+    manual = False
+
 
 with open(config_file_path) as config_file:
     config = yaml.safe_load(config_file)
@@ -49,6 +54,8 @@ for machine, machine_conf in config["user_config"].items():
             pipeline_yml[".environment-load"] = list()
         if "variables" not in pipeline_yml:
             pipeline_yml["variables"] = list()
+        if ".preparation" not in pipeline_yml:
+            pipeline_yml[".preparation"] = dict()
         pipeline_yml["variables"]["CB_DATA_PROJECT"] = machine_conf.get('data-project', '')
         pipeline_yml["variables"]["CB_COMPUTE_PROJECT"] = machine_conf.get('compute-project', '')
         pipeline_yml["variables"]["CB_RUNNER_ACCOUNT"] = machine_conf.get('account', '')
@@ -57,6 +64,11 @@ for machine, machine_conf in config["user_config"].items():
 
         pipeline_yml[".environment-init"].extend(config["dependencies"][machine]["init"])
         pipeline_yml[".environment-load"].extend(config["dependencies"][machine]["load"])
+
+        if manual:
+            pipeline_yml[".preparation"]["when"] = "manual"
+        else:
+            pipeline_yml[".preparation"]["when"] = "always"
     except Exception as e:
         traceback.print_exc()
         continue
