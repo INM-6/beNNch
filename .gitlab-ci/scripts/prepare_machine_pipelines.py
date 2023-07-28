@@ -43,8 +43,6 @@ for machine, machine_conf in config["user_config"].items():
 
         if "variables" not in pipeline_yml:
             pipeline_yml["variables"] = dict()
-        if ".environment-base" not in pipeline_yml:
-            pipeline_yml[".environment-base"] = list()
         if ".environment-init" not in pipeline_yml:
             pipeline_yml[".environment-init"] = list()
         if ".environment-load" not in pipeline_yml:
