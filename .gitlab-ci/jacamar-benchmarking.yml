@@ -47,9 +47,9 @@ Preparation:
     # Load all environment variables
     - !reference [ .prepare-benchmarks, environment-variables ]
     # Apply general preparation steps defined by the user in the config file
-    - !reference [ .environment-init ]
+    - !reference [ .prepare-benchmarks, environment-init ]
     # Prepare environment using user-defined commands
-    - !reference [ .environment-load ]
+    - !reference [ .prepare-benchmarks, environment-load ]
     # Create all required directories
     - !reference [ .prepare-benchmarks, create-dirs ]
     # Move all artifacts to user data directory
@@ -83,7 +83,7 @@ Build:
     when: on_success
   script:
     # Prepare environment
-    - !reference [ .environment-load ]
+    - !reference [ .prepare-benchmarks, environment-load ]
     # Build simulator
     - 'export MAKE_THREADS=$(nproc)'
     - !reference [ .prepare-benchmarks, build-simulator ]
@@ -106,7 +106,7 @@ Benchmarking:
     when: on_success
   script:
     # Prepare environment
-    - !reference [ .environment-load ]
+    - !reference [ .prepare-benchmarks, environment-load ]
     # Run benchmarks
     - !reference [ .run-benchmarks ]
     # Prepare results repository
