@@ -56,8 +56,7 @@ for machine, machine_conf in config["user_config"].items():
         pipeline_yml["variables"]["CB_RUNNER_ACCOUNT"] = machine_conf.get('account', '')
         pipeline_yml["variables"]["CB_BUILD_TIME_LIMIT"] = machine_conf.get('build-time-limit', '')
         pipeline_yml["variables"].update(config["dependencies"][machine]["variables"])
-        
-        pipeline_yml[".environment-base"].extend(config["dependencies"][machine]["base"])
+
         pipeline_yml[".environment-init"].extend(config["dependencies"][machine]["init"])
         pipeline_yml[".environment-load"].extend(config["dependencies"][machine]["load"])
     except Exception as e:
