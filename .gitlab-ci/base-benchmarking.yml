@@ -69,6 +69,7 @@ variables:
     # Set result repository
     - 'git clone --single-branch --branch="$RESULTS_BRANCH" --depth=1 "$RESULTS_REPO_URL" "$USER_DATA_DIR/results"'
     - 'cd $USER_DATA_DIR/results'
+    - 'echo $PATH'
     - 'git annex init'
   builder:
     # Prepare Builder .buildrc
