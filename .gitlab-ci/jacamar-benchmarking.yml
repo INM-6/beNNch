@@ -44,40 +44,20 @@ Preparation:
   script:
     - |
       eval USER_DATA_DIR="$TEMP_DIR/$USER/$(echo $BENCHMARK_ID | sed -e 's/[^A-Za-z0-9._-]/_/g')-$(date +%d-%m-%y-%H-%M-%S)"
-    - 'mkdir -p "$USER_DATA_DIR/user_files"'
-    - 'cd "$USER_DATA_DIR/user_files"'
-    # Load all modules required for continuous benchmarking in general
-    - !reference [ .environment-base ]
     # Load all environment variables
     - !reference [ .prepare-benchmarks, environment-variables ]
-    # Create all required directories
-    - !reference [ .prepare-benchmarks, create-dirs ]
-    # Move all artifacts to user data directory
-    - !reference [ .prepare-benchmarks, artifacts ]
-    # Load user-defined modules
-    - !reference [ .prepare-benchmarks, modules-requirements ]
     # Apply general preparation steps defined by the user in the config file
     - !reference [ .environment-init ]
     # Prepare environment using user-defined commands
     - !reference [ .environment-load ]
-    # Install all pip packages into venv specified in config file
-    - !reference [ .prepare-benchmarks, pip-requirements ]
+    # Create all required directories
+    - !reference [ .prepare-benchmarks, create-dirs ]
+    # Move all artifacts to user data directory
+    - !reference [ .prepare-benchmarks, artifacts ]
     # TODO: Metadata
     # - 'pip install git+https://github.com/INM-6/gather-metadata.git'
-    # Prepare Builder .buildrc
-    - |
-      echo PLANFILE_PATH="$BUILDER_PLANFILE_DIR" > "$BUILDER_CONFIG_PATH"
-      echo PACKAGE_CACHE="$BUILDER_PACKAGE_DIR" >> "$BUILDER_CONFIG_PATH"
-      echo SOURCE_PATH="$BUILDER_SOURCE_DIR" >> "$BUILDER_CONFIG_PATH"
-      echo BUILD_PATH="$BUILDER_BUILD_DIR" >> "$BUILDER_CONFIG_PATH"
-      echo TARGET_PATH="$BUILDER_INSTALL_DIR" >> "$BUILDER_CONFIG_PATH"
-      echo MODULE_INSTALL_PATH="$BUILDER_MODULES_DIR" >> "$BUILDER_CONFIG_PATH"
-      echo LOG_PATH="$BUILDER_LOG_DIR" >> "$BUILDER_CONFIG_PATH"
-    # Prepare simulator installation (builder plan)
-    - 'mkdir -p "$BUILDER_PLANFILE_DIR/simulator/$SIMULATOR_BRANCH"'
-    # TODO: Make this generic and not NEST-specific
-    - 'cp "$TEMPLATES_DIR/nest-builder-template" "$BUILDER_PLANFILE_DIR/simulator/$SIMULATOR_BRANCH/default"'
-    - 'cp "$TEMPLATES_DIR/nest-builder-module" "$BUILDER_PLANFILE_DIR/simulator/$SIMULATOR_BRANCH/default.module"'
+    # Prepare builder
+    - !reference [ .prepare-benchmarks, builder ]
     # Clone simulator and model repositories
     - !reference [ .prepare-benchmarks, clone-repositories ]
     # Construct JUBE benchmark files from provided config
@@ -102,13 +82,8 @@ Build:
       dotenv: benchmark_variables.env
     when: on_success
   script:
-    - 'cd "$USER_DATA_DIR/user_files"'
-    # Load all modules required for continuous benchmarking in general
-    - !reference [ .environment-base ]
-    # Load all modules required for continuous benchmarking in general and prepare environment
+    # Prepare environment
     - !reference [ .environment-load ]
-    # Load user-defined modules
-    - !reference [ .prepare-benchmarks, modules-requirements ]
     # Build simulator
     - 'export MAKE_THREADS=$(nproc)'
     - !reference [ .prepare-benchmarks, build-simulator ]
@@ -130,13 +105,8 @@ Benchmarking:
       - "configs"
     when: on_success
   script:
-    - 'cd "$USER_DATA_DIR/user_files"'
-    # Load all modules required for continuous benchmarking in general
-    - !reference [ .environment-base ]
-    #  and prepare environment
+    # Prepare environment
     - !reference [ .environment-load ]
-    # Load user-defined modules
-    - !reference [ .prepare-benchmarks, modules-requirements ]
     # Run benchmarks
     - !reference [ .run-benchmarks ]
     # Prepare results repository
