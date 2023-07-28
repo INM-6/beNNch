@@ -48,10 +48,8 @@ Preparation:
     - !reference [ .prepare-benchmarks, environment-variables ]
     # Apply general preparation steps defined by the user in the config file
     - !reference [ .prepare-benchmarks, environment-init ]
-    - 'echo $USERSOFTWARE_DIR'
     # Prepare environment using user-defined commands
     - !reference [ .prepare-benchmarks, environment-load ]
-    - 'echo $USERSOFTWARE_DIR'
     # Create all required directories
     - !reference [ .prepare-benchmarks, create-dirs ]
     # Move all artifacts to user data directory
