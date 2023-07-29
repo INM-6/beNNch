@@ -40,7 +40,8 @@ config_output_dir = sys.argv[7]      # path to directory where all benchmark con
 scripts_dir = sys.argv[8]            # path to directory where all benchmark helper scripts are located
 jube_results_dir = sys.argv[9]       # path to directory where all benchmark results should be placed
 prepare_file_path = sys.argv[10]     # path to the prepare.sh file which is loaded on the compute node
-machine = sys.argv[11]               # name of the machine the benchmark is running on
+pipeline_file_path = sys.argv[11]    # path to current pipeline definition file
+machine = sys.argv[12]               # name of the machine the benchmark is running on
 
 config_dir = os.path.dirname(config_path)
 
@@ -54,9 +55,19 @@ if models:
 if not os.path.exists(config_output_dir):
     os.makedirs(config_output_dir)
 
+# Write prepare-file which is run right before the benchmark
+with open(prepare_file_path, 'w') as prepare_file:
+    with open(pipeline_file_path, 'r') as pipeline_file:
+        pipeline = yaml.safe_load(pipeline_file)
+    prepare_commands = pipeline.get(".environment-load", "")
+    if prepare_commands:
+        prepare_file.writelines([c.strip() for c in prepare_commands])
+
+
 with open(jube_template_path, 'r') as template_file:
     jube_benchmark_template = yaml.safe_load(template_file)
     jube_benchmark_template["outpath"] = jube_results_dir
+
 
 with open(config_path, 'r') as config_file:
     config = yaml.safe_load(config_file)
