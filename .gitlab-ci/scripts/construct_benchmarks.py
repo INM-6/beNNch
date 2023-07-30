@@ -61,7 +61,7 @@ with open(prepare_file_path, 'w') as prepare_file:
         pipeline = yaml.safe_load(pipeline_file)
     prepare_commands = pipeline.get(".environment-load", "")
     if prepare_commands:
-        prepare_file.writelines([c.strip() for c in prepare_commands])
+        prepare_file.write('\n'.join([c.strip() for c in prepare_commands]))
 
 
 with open(jube_template_path, 'r') as template_file:
