@@ -89,6 +89,8 @@ variables:
   build-simulator:
     - 'build -f simulator $SIMULATOR_BRANCH'
   construct-benchmarks:
+    - |
+      echo 'cd "$USER_DATA_DIR/user_files"' > "$USER_DATA_DIR/prepare.sh"
     - 'python3 "$SCRIPTS_DIR/construct_benchmarks.py" "$TEMPLATES_DIR/jube-template.yml" "$CONFIG_FILE_PATH" "$BUILDER_MODULES_DIR" "$SIMULATOR_BRANCH" "$MODELS_DIR" "$BENCHMARKS_DIR/jube" "$BENCHMARKS_DIR/metrics" "$SCRIPTS_DIR" "$JUBE_RESULTS_DIR" "$USER_DATA_DIR/prepare.sh" "$CI_PROJECT_DIR/pipelines/${MACHINE}.yml" "$MACHINE"'
 
 # Requires jube
