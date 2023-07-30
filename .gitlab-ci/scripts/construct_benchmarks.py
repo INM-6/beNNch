@@ -56,7 +56,7 @@ if not os.path.exists(config_output_dir):
     os.makedirs(config_output_dir)
 
 # Write prepare-file which is run right before the benchmark
-with open(prepare_file_path, 'w') as prepare_file:
+with open(prepare_file_path, 'a') as prepare_file:
     with open(pipeline_file_path, 'r') as pipeline_file:
         pipeline = yaml.safe_load(pipeline_file)
     prepare_commands = pipeline.get(".environment-load", "")
