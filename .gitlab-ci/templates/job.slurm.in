@@ -30,9 +30,9 @@ export OMP_DISPLAY_ENV=VERBOSE
 export OMP_DISPLAY_AFFINITY=TRUE
 export OMP_PROC_BIND=TRUE
 
-source #PREPARE_FILE#
 module use #MODULES_DIR#
 module load simulator/#BRANCH#/default
+source #PREPARE_FILE#
 
 #COMMANDS#
 
