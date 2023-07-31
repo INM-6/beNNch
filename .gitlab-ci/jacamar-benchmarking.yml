@@ -62,7 +62,6 @@ Preparation:
     - !reference [ .prepare-benchmarks, clone-repositories ]
     # Construct JUBE benchmark files from provided config
     - !reference [ .prepare-benchmarks, construct-benchmarks ]
-    - 'echo "source $USER_DATA_DIR/benchmarking-env/bin/activate" >> $USER_DATA_DIR/prepare.sh'
     # Forward all environment variables to next stage
     - 'rm -f "$CI_PROJECT_DIR/benchmark_variables.env"'
     - |
