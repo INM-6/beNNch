@@ -100,11 +100,18 @@ for model_name, benchmark_config in config["benchmarks"].items():
     jube_benchmark["name"] = model_name
 
     # Machine parameters
+    machine_params = benchmark_config["machine_parameters"][machine]
     jube_benchmark["parameterset"].append(
         {
             "name": "machine_parameters",
-            "parameter": benchmark_config["machine_parameters"][machine]
+            "parameter": [
+                '- {name: num_nodes, type: int, _: ' + machine_params["num_nodes"] + '}',
+                '- {name: tasks_per_node, type: int, _: ' + machine_params["tasks_per_node"] + '}',
+                '- {name: threads_per_task, type: int, _: ' + machine_params["threads_per_task"] + '}',
+                '- {name: walltime, type: string, _: ' + machine_params["walltime"] + '}'
+            ]
         })
+                
 
     jube_benchmark["parameterset"].append(
         {
