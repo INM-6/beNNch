@@ -104,10 +104,38 @@ variables:
       jube run --hide-animation -e $benchmark
     done
   - |
+    COUNTER=0
     while jube status --id=all "$JUBE_RESULTS_DIR" | grep -q "RUNNING" ; do
       sleep 30
-      jube continue --error --id=all --hide-animation "$JUBE_RESULTS_DIR"
+      jube continue --error --id=all --hide-animation "$JUBE_RESULTS_DIR" > /dev/null
+      COUNTER=$((COUNTER + 1))
+      if [ $COUNTER -eq 9 ] ; do 
+        sleep 30
+        COUNTER=0
+        jube continue --error --id=all --hide-animation "$JUBE_RESULTS_DIR"
+        for model in "$USER_DATA_DIR/jube_results/*" ; do
+          for run in "$model/*" ; do
+            eval id="$model$run"
+            if grep -E 'terminated node failure|force terminated' "$run/work/stderr" ; then
+              if [[ -v ${!id} ]] ; then
+                if [[ ${!id} -lt 4 ]] ; then
+                  ${!id}=$((id + 1))  # TODO
+                  rm -f "$run/work/ready"
+                  cd "$USER_DATA_DIR/jube_results/$model/$run/work/"
+                  sbatch job.slurm
+                fi
+              else
+                eval "$model$run"=1
+                rm -f "$run/work/ready"
+                cd "$USER_DATA_DIR/jube_results/$model/$run/work/"
+                sbatch job.slurm
+              fi
+            fi
+          done
+        done
+      done
     done
+  - 'jube info --id=all --hide-animation "$JUBE_RESULTS_DIR"'
   - 'jube result --analyse --id=all "$JUBE_RESULTS_DIR"'
 
 # TODO: Collect metadata about the pipeline (config, etc.) and upload via git-annex
