@@ -105,10 +105,10 @@ for model_name, benchmark_config in config["benchmarks"].items():
         {
             "name": "machine_parameters",
             "parameter": [
-                '- {name: num_nodes, type: int, _: ' + machine_params["num_nodes"] + '}',
-                '- {name: tasks_per_node, type: int, _: ' + machine_params["tasks_per_node"] + '}',
-                '- {name: threads_per_task, type: int, _: ' + machine_params["threads_per_task"] + '}',
-                '- {name: walltime, type: string, _: ' + machine_params["walltime"] + '}'
+                {"name": "num_nodes", "type": "int", "_": machine_params["num_nodes"]},
+                {"name": "tasks_per_node", "type": "int", "_": machine_params["tasks_per_node"]},
+                {"name": "threads_per_task", "type": "int", "_": machine_params["threads_per_task"]},
+                {"name": "walltime", "type": "string", "_": machine_params["walltime"]}
             ]
         })
                 
