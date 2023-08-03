@@ -139,7 +139,7 @@ variables:
         done
       fi
     done
-  - 'jube info --id=all --hide-animation "$JUBE_RESULTS_DIR"'
+  - 'jube info --id=all "$JUBE_RESULTS_DIR"'
   - 'jube result --analyse --id=all "$JUBE_RESULTS_DIR"'
 
 # TODO: Collect metadata about the pipeline (config, etc.) and upload via git-annex
