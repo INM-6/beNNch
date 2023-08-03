@@ -130,7 +130,7 @@ variables:
                 rm -f "$run/work/ready"
                 cd "$USER_DATA_DIR/jube_results/$model/$run/work/"
                 sbatch job.slurm
-                echo "Detected node failure, rerunning job (#1)"
+                echo "Detected node failure, rerunning job (#{!id})"
               fi
             fi
           done
