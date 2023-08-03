@@ -109,17 +109,17 @@ variables:
       sleep 30
       jube continue --error --id=all --hide-animation "$JUBE_RESULTS_DIR" > /dev/null
       COUNTER=$((COUNTER + 1))
-      if [ $COUNTER -eq 9 ] ; do 
+      if [ $COUNTER -eq 9 ] ; then
         sleep 30
         COUNTER=0
         jube continue --error --id=all --hide-animation "$JUBE_RESULTS_DIR"
-        for model in "$USER_DATA_DIR/jube_results/*" ; do
-          for run in "$USER_DATA_DIR/jube_results/$model/*" ; do
+        for model in "$USER_DATA_DIR/jube_results"/* ; do
+          for run in "$USER_DATA_DIR/jube_results/$model"/* ; do
             eval id="$model$run"
             if grep -E 'terminated due to failure of node|Force Terminated StepId' "$USER_DATA_DIR/jube_results/$model/$run/work/stderr" ; then
               if [[ -v ${!id} ]] ; then
                 if [[ ${!id} -lt 4 ]] ; then
-                  ${!id}=$((id + 1))  # TODO
+                  declare $id=$(($id + 1))
                   rm -f "$run/work/ready"
                   cd "$USER_DATA_DIR/jube_results/$model/$run/work/"
                   sbatch job.slurm
@@ -133,7 +133,7 @@ variables:
             fi
           done
         done
-      done
+      fi
     done
   - 'jube info --id=all --hide-animation "$JUBE_RESULTS_DIR"'
   - 'jube result --analyse --id=all "$JUBE_RESULTS_DIR"'
