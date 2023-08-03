@@ -46,14 +46,14 @@ Preparation:
       eval USER_DATA_DIR="$TEMP_DIR/$USER/$(echo $BENCHMARK_ID | sed -e 's/[^A-Za-z0-9._-]/_/g')-$(date +%d-%m-%y-%H-%M-%S)"
     # Load all environment variables
     - !reference [ .prepare-benchmarks, environment-variables ]
-    # Apply general preparation steps defined by the user in the config file
-    - !reference [ .prepare-benchmarks, environment-init ]
-    # Prepare environment using user-defined commands
-    - !reference [ .prepare-benchmarks, environment-load ]
     # Create all required directories
     - !reference [ .prepare-benchmarks, create-dirs ]
     # Move all artifacts to user data directory
     - !reference [ .prepare-benchmarks, artifacts ]
+    # Apply general preparation steps defined by the user in the config file
+    - !reference [ .prepare-benchmarks, environment-init ]
+    # Prepare environment using user-defined commands
+    - !reference [ .prepare-benchmarks, environment-load ]
     # TODO: Metadata
     # - 'pip install git+https://github.com/INM-6/gather-metadata.git'
     # Prepare builder

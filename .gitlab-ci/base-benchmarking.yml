@@ -59,6 +59,7 @@ variables:
     - 'build --get --silent simulator $SIMULATOR_BRANCH'
     - 'python3 "$SCRIPTS_DIR/clone_models.py" "$CONFIG_FILE_PATH" "$MODELS_DIR" "$CB_MODELS"'
   environment-init:
+    - 'echo $USER_DATA_DIR'
     - 'mkdir -p "$USER_DATA_DIR/user_files"'
     - 'cd "$USER_DATA_DIR/user_files"'
     - !reference [ .environment-init ]
