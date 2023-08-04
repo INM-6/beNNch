@@ -107,19 +107,24 @@ variables:
     done
   - |
     COUNTER=0
+    NUM_FAILURES=-1
     declare -A retries
     for model in "$USER_DATA_DIR/jube_results"/*/ ; do
       for run in "$model"/*/ ; do
             retries[$(basename $model),$(basename $run)]=0
       done
     done
-    while jube status --id=all "$JUBE_RESULTS_DIR" | grep -q "RUNNING" ; do
+    while jube status --id=all "$JUBE_RESULTS_DIR" | grep -q "RUNNING" || [[ NO_FAILURES -ne 0 ]] ; do
       sleep 30
       jube continue --error --id=all --hide-animation "$JUBE_RESULTS_DIR" > /dev/null
       COUNTER=$((COUNTER + 1))
+      if ! jube status --id=all "$JUBE_RESULTS_DIR" | grep -q "RUNNING" ; then
+        COUNTER=9
+      fi
       if [ $COUNTER -eq 9 ] ; then
         sleep 30
         COUNTER=0
+        NUM_FAILURES=0
         jube continue --error --id=all --hide-animation "$JUBE_RESULTS_DIR"
         for model in "$USER_DATA_DIR/jube_results"/*/ ; do
           for run in "$model"/*/ ; do
@@ -130,6 +135,7 @@ variables:
                 cd "$run/work/"
                 sbatch job.slurm
                 echo "Detected node failure, rerunning job (#${!id})"
+                (( NUM_FAILURES++ ))
               fi
             fi
           done
