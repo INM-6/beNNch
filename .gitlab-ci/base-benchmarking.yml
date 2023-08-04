@@ -128,17 +128,14 @@ variables:
         jube continue --error --id=all --hide-animation "$JUBE_RESULTS_DIR"
         for model in "$USER_DATA_DIR/jube_results"/*/ ; do
           for run in "$model"/*/ ; do
-            echo "if fail"
             if grep -q -E 'terminated due to failure of node|Force Terminated StepId' "$run/work/stderr" ; then
-              echo "if retries lt 4"
               if [[ ${retries[$(basename $model),$(basename $run)]} -lt 4 ]] ; then
-                echo "retries lt 4"
-                (( retries[$(basename $model),$(basename $run)]++ )) || echo "136"
-                rm -f "$run/work/ready" "$run/work/stderr" "$run/work/stdout" || echo "137"
-                cd "$run/work/" || echo "138"
-                sbatch job.slurm || echo "139"
-                echo "Detected node failure, rerunning job (#${!id})" || echo "140"
-                (( NUM_FAILURES++ )) || echo "141"
+                (( ++retries[$(basename $model),$(basename $run)] ))
+                rm -f "$run/work/ready" "$run/work/stderr" "$run/work/stdout"
+                cd "$run/work/"
+                sbatch job.slurm
+                echo "Detected node failure, rerunning job (#${!id})"
+                (( ++NUM_FAILURES ))
               fi
             fi
           done
