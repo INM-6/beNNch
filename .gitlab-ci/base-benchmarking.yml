@@ -117,31 +117,28 @@ variables:
     while jube status --id=all "$JUBE_RESULTS_DIR" | grep -q "RUNNING" || [[ $NO_FAILURES -ne 0 ]] ; do
       sleep 30
       jube continue --error --id=all --hide-animation "$JUBE_RESULTS_DIR" > /dev/null
-      echo "continue 1"
       COUNTER=$((COUNTER + 1))
-      echo "any running"
       if ! jube status --id=all "$JUBE_RESULTS_DIR" | grep -q "RUNNING" ; then
         COUNTER=9
       fi
-      echo "if counter eq 9"
       if [ $COUNTER -eq 9 ] ; then
-        sleep 30
-        echo "entering eq9"
+        sleep 3
         COUNTER=0
         NUM_FAILURES=0
         jube continue --error --id=all --hide-animation "$JUBE_RESULTS_DIR"
-        echo "continue 2"
         for model in "$USER_DATA_DIR/jube_results"/*/ ; do
           for run in "$model"/*/ ; do
             echo "if fail"
             if grep -q -E 'terminated due to failure of node|Force Terminated StepId' "$run/work/stderr" ; then
+              echo "if retries lt 4"
               if [[ ${retries[$(basename $model),$(basename $run)]} -lt 4 ]] ; then
-                (( retries[$(basename $model),$(basename $run)]++ ))
-                rm -f "$run/work/ready" "$run/work/stderr" "$run/work/stdout"
-                cd "$run/work/"
-                sbatch job.slurm
-                echo "Detected node failure, rerunning job (#${!id})"
-                (( NUM_FAILURES++ ))
+                echo "retries lt 4"
+                (( retries[$(basename $model),$(basename $run)]++ )) || echo "136"
+                rm -f "$run/work/ready" "$run/work/stderr" "$run/work/stdout" || echo "137"
+                cd "$run/work/" || echo "138"
+                sbatch job.slurm || echo "139"
+                echo "Detected node failure, rerunning job (#${!id})" || echo "140"
+                (( NUM_FAILURES++ )) || echo "141"
               fi
             fi
           done
