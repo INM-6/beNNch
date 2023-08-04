@@ -114,7 +114,7 @@ variables:
             retries[$(basename $model),$(basename $run)]=0
       done
     done
-    while jube status --id=all "$JUBE_RESULTS_DIR" | grep -q "RUNNING" || [[ NO_FAILURES -ne 0 ]] ; do
+    while jube status --id=all "$JUBE_RESULTS_DIR" | grep -q "RUNNING" || [[ $NO_FAILURES -ne 0 ]] ; do
       sleep 30
       jube continue --error --id=all --hide-animation "$JUBE_RESULTS_DIR" > /dev/null
       COUNTER=$((COUNTER + 1))
