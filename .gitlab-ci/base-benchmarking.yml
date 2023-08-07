@@ -105,6 +105,7 @@ variables:
     for benchmark in "$BENCHMARKS_DIR"/jube/cb_*_"$MACHINE".yml ; do
       jube run --hide-animation -e $benchmark
     done
+  - 'set -xv'
   - |
     COUNTER=0
     NUM_FAILURES=-1
