@@ -76,7 +76,7 @@ for machine, machine_conf in config["user_config"].items():
         benchmark_id = 0
         for model_name, model_config in config["benchmarks"].items():
             if machine in model_config["machine_parameters"]:
-                benchmarks.append({"JUBE_BENCHMARK_FILE": f"cb_{model_name}_{machine}.yml",
+                benchmarks.append({"JUBE_BENCHMARK_FILE": model_name,
                                    "JUBE_BENCHMARK_ID": str(benchmark_id).zfill(6)})
                 benchmark_id += 1
 
