@@ -88,8 +88,14 @@ Validate Input:
       done
     - 'apk update && apk add git'
     - 'python -m pip install pyyaml'
-    - 'mkdir "$CI_PROJECT_DIR/tmp" '
-    - 'python "$CI_PROJECT_DIR/.gitlab-ci/scripts/patch_config.py" "$CI_PROJECT_DIR/tmp" "$CI_PROJECT_DIR/config.yml" "$CONFIG_REPO" "$CONFIG_BRANCH" "$CONFIG_PATH"'
+    - |
+      if [ -z "$CB_MACHINES" ] ; then
+        export CB_MANUAL="1"
+      else
+        export CB_MANUAL="0"
+      fi
+    - 'mkdir "$CI_PROJECT_DIR/tmp"'
+    - 'export CB_MACHINES=$(python "$CI_PROJECT_DIR/.gitlab-ci/scripts/patch_config.py" "$CI_PROJECT_DIR/tmp" "$CI_PROJECT_DIR/config.yml" "$CONFIG_REPO" "$CONFIG_BRANCH" "$CONFIG_PATH")'
     - 'rm -rf $CI_PROJECT_DIR/tmp'
     - 'mkdir "$CI_PROJECT_DIR/pipelines"'
     - 'python "$CI_PROJECT_DIR/.gitlab-ci/scripts/prepare_machine_pipelines.py" "$CI_PROJECT_DIR/.gitlab-ci/machine-configs" "$CI_PROJECT_DIR/pipelines" "$CI_PROJECT_DIR/config.yml" "$MACHINES"'

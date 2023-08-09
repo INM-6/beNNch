@@ -50,7 +50,7 @@ def extend_config(config, level):
     base_repo_config_path = config["extends"]["config_file"]
 
     repo_path = os.path.join(tmp_dir, str(level))
-    subprocess.run(["git", "clone", "--depth=1", "--single-branch", "--branch=" + base_repo_branch, base_repo_url, repo_path])
+    subprocess.run(["git", "clone", "--depth=1", "--single-branch", "--branch=" + base_repo_branch, base_repo_url, repo_path], stdout=subprocess.DEVNULL)
     with open(os.path.join(repo_path, base_repo_config_path), 'r') as config_file:
         base_config = yaml.safe_load(config_file)
     # Patch dependencies
@@ -78,7 +78,7 @@ for env_var_key, env_var_value in os.environ.items():
         try:
             reduce(operator.getitem, keys[:-1], config)[keys[-1]] = env_var_value
         except Exception as e:
-            print(f"The configuration path {'.'.join(keys[:-1])} is not present in original config. The variable {env_var_key} with value {env_var_value} can therefore not be set!", file=sys.stderr)
+            print(f"{COLOR_WARNING}The configuration path {'.'.join(keys[:-1])} is not present in original config. The variable {env_var_key} with value {env_var_value} can therefore not be set!{COLOR_END}", file=sys.stderr)
 
 success = False
 models = os.environ.get("CB_MODELS", "")
@@ -87,10 +87,8 @@ if models:
 
 if os.environ["CB_MACHINES"]:
     machines = list(set(os.environ["CB_MACHINES"].split(",")) & set(config["user_config"].keys()))
-    os.environ["CB_MANUAL"] = "0"
 else:
     machines = list(config["user_config"].keys())
-    os.environ["CB_MANUAL"] = "1"
 
 machine_models = {machine: 0 for machine in machines}
 to_remove = list()
@@ -100,7 +98,7 @@ for model_name, benchmark_config in config["benchmarks"].items():
         continue
 
     if models and model_name not in models:
-        print(f"{COLOR_WARNING}Skipping config generation for model {model_name} as requested by the user!{COLOR_END}")
+        print(f"{COLOR_WARNING}Skipping config generation for model {model_name} as requested by the user!{COLOR_END}", file=sys.stderr)
         continue
     for machine in list(benchmark_config["machine_parameters"].keys()):
         if machine not in machines:
@@ -113,8 +111,9 @@ for model in to_remove:
 for machine, count in machine_models.items():
     if count == 0:
         machines.remove(machine)
-os.environ["CB_MACHINES"] = ",".join([machine for machine, count in machine_models.items() if count != 0])
 
 # Write patched config file
 with open(config_out_path, 'w') as config_outfile:
     yaml.dump(config, config_outfile, default_flow_style=False)
+
+print(",".join([machine for machine, count in machine_models.items() if count != 0]))
