@@ -74,10 +74,8 @@ for env_var_key, env_var_value in os.environ.items():
     if env_var_key.startswith("CB_") and env_var_key not in ("CB_MODELS", "CB_MACHINES"):
         keys = env_var_key[3:].split("__")
         try:
-            print(keys[:-1], keys[-1])
             reduce(operator.getitem, keys[:-1], config)[keys[-1]] = env_var_value
         except Exception as e:
-            print(e)
             print(f"The configuration path {'.'.join(keys[:-1])} is not present in original config. The variable {env_var_key} with value {env_var_value} can therefore not be set!", file=sys.stderr)
 
 
