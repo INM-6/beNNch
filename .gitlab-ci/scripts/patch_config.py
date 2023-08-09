@@ -1,6 +1,7 @@
 import sys
 import os
 import subprocess
+from functools import reduce
 
 import yaml
 yaml.add_representer(str, lambda dumper, data: dumper.represent_scalar('tag:yaml.org,2002:str', data, style='"'))
