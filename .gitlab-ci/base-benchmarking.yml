@@ -54,7 +54,6 @@ variables:
     - 'eval MODELS_DIR="$MODELS_DIR"'
     - 'eval BENCHMARKS_DIR="$BENCHMARKS_DIR"'
   create-dirs:
-    - 'echo $USER_DATA_DIR'
     - 'jutil env activate -p cjinb33'
     - 'mkdir -p "$USER_DATA_DIR" "$SIMULATOR_REPO_DIR" "$BENCHMARKS_DIR/metrics" "$JUBE_RESULTS_DIR" "$BENCHMARKS_DIR/jube" "$BUILDER_MODULES_DIR" "$BUILDER_PLANFILE_DIR" "$BUILDER_PACKAGE_DIR" "$BUILDER_SOURCE_DIR" "$BUILDER_INSTALL_DIR" "$BUILDER_BUILD_DIR" "$BUILDER_LOG_DIR" "$MODELS_DIR"'
   clone-repositories:
@@ -71,7 +70,6 @@ variables:
     # Set result repository
     - 'git clone --single-branch --branch="$RESULTS_BRANCH" --depth=1 "$RESULTS_REPO_URL" "$USER_DATA_DIR/results"'
     - 'cd $USER_DATA_DIR/results'
-    - 'echo $PATH'
     - 'git annex init'
   builder:
     # Prepare Builder .buildrc
@@ -105,7 +103,6 @@ variables:
     for benchmark in "$BENCHMARKS_DIR"/jube/cb_*_"$MACHINE".yml ; do
       jube run --hide-animation -e $benchmark
     done
-  - 'set -xv'
   - |
     COUNTER=0
     NUM_FAILURES=-1

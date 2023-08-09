@@ -104,12 +104,11 @@ for model_name, benchmark_config in config["benchmarks"].items():
 
     machine_param_list = list()
     for k in ["num_nodes", "tasks_per_node", "threads_per_task"]:
-        for c in machine_params[k]:
-            if not c.isdigit() or c != ",":
-                machine_param_list.append({"name": k, "mode": "python", "type": "int", "_": machine_params[k]})
-                break
-        else:
+        if all(c.isnumeric() for c in machine_params[k].split(","))
             machine_param_list.append({"name": c, "type": "int", "_": machine_params[k]})
+        else:
+            machine_param_list.append({"name": k, "mode": "python", "type": "int", "_": machine_params[k]})
+            
         w = machine_params["walltime"]
         if w[2] != ":" or w[5] != ":" or len(w) != 8 or not all(w[p].isdigit() for p in [0,1,3,4,6,7]):
             machine_param_list.append({"name": "walltime", "mode": "python", "type": "string", "_": w})
