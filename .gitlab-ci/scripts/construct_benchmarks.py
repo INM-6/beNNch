@@ -104,7 +104,7 @@ for model_name, benchmark_config in config["benchmarks"].items():
 
     machine_param_list = list()
     for k in ["num_nodes", "tasks_per_node", "threads_per_task"]:
-        if all(c.isnumeric() for c in machine_params[k].split(","))
+        if all(c.isnumeric() for c in machine_params[k].split(",")):
             machine_param_list.append({"name": c, "type": "int", "_": machine_params[k]})
         else:
             machine_param_list.append({"name": k, "mode": "python", "type": "int", "_": machine_params[k]})
