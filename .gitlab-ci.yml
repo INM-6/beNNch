@@ -55,8 +55,6 @@ variables:
   NEST_VERSION:
     description: "Either 2 or 3. TODO: Remove this"
     value: "3"
-  NUM:
-    value: "5"
 
 
 # Specify all machines for which configurations exist

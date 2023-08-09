@@ -29,7 +29,6 @@ COLOR_WARNING = '\033[93m'
 COLOR_FAIL = '\033[91m'
 COLOR_END = '\033[0m'
 
-
 jube_template_path = sys.argv[1]     # path to template of jube benchmark file
 config_path = sys.argv[2]            # path to configuration file
 builder_modules_dir = sys.argv[3]    # directory where builder installs modules
@@ -44,12 +43,6 @@ pipeline_file_path = sys.argv[11]    # path to current pipeline definition file
 machine = sys.argv[12]               # name of the machine the benchmark is running on
 
 config_dir = os.path.dirname(config_path)
-
-success = False
-
-models = os.environ.get("CB_MODELS", "")
-if models:
-    models = models.split(",")
 
 # Prepare output directory
 if not os.path.exists(config_output_dir):
@@ -73,15 +66,10 @@ with open(config_path, 'r') as config_file:
     config = yaml.safe_load(config_file)
 
 for model_name, benchmark_config in config["benchmarks"].items():
-    # Skip benchmarks defined in config which were not explicitly requested to be benchmarked
-    if models and model_name not in models:
-        print(f"{COLOR_WARNING}Skipping config file generation for model {model_name} as requested by the user!{COLOR_END}")
-        continue
-
     if machine not in benchmark_config["machine_parameters"]:
         print(f"{COLOR_WARNING}Skipping config file generation for model {model_name} because no configuration was provided for machine {machine}!{COLOR_END}")
         continue
-    
+
     jube_benchmark = copy.deepcopy(jube_benchmark_template)
 
     run_parameters = benchmark_config.get("run_parameters", dict())
@@ -184,9 +172,3 @@ for model_name, benchmark_config in config["benchmarks"].items():
     # Write jube benchmark file
     with open(os.path.join(benchmark_output_dir, f"cb_{model_name}_{machine}.yml"), 'w') as jube_outfile:
         yaml.dump(jube_benchmark, jube_outfile, default_flow_style=False)
-    
-    success = True
-
-if not success:
-    print(f"{COLOR_FAIL}No config for any model provided for this machine, aborting...{COLOR_END}", file=sys.stderr)
-    exit(1)

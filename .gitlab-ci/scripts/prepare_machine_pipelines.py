@@ -35,7 +35,7 @@ available_machines = sys.argv[4].split(",")
 manual = True
 if os.environ["CB_MACHINES"]:
     user_machines = os.environ["CB_MACHINES"].split(",")
-    manual = False
+manual = os.environ["CB_MANUAL"] != "0"
 
 
 with open(config_file_path) as config_file:
@@ -71,6 +71,17 @@ for machine, machine_conf in config["user_config"].items():
             pipeline_yml[".preparation"]["when"] = "manual"
         else:
             pipeline_yml[".preparation"]["when"] = "always"
+
+        benchmarks = list()
+        benchmark_id = 0
+        for model_name, model_config in config["benchmarks"].items():
+            if machine in model_config["machine_parameters"]:
+                benchmarks.append({"JUBE_BENCHMARK_NAME": f"cb_{model_name}_{machine}.yml",
+                                   "JUBE_BENCHMARK_ID": str(benchmark_id).zfill(6)})
+                benchmark_id += 1
+
+        pipeline_yml[".parallel-benchmark"] = {"parallel": {"matrix": benchmarks}}
+        
     except Exception as e:
         traceback.print_exc()
         continue

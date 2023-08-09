@@ -7,6 +7,9 @@ import operator
 import yaml
 yaml.add_representer(str, lambda dumper, data: dumper.represent_scalar('tag:yaml.org,2002:str', data, style='"'))
 
+COLOR_WARNING = '\033[93m'
+COLOR_FAIL = '\033[91m'
+COLOR_END = '\033[0m'
 
 tmp_dir = sys.argv[1]
 config_out_path = sys.argv[2]
@@ -77,6 +80,40 @@ for env_var_key, env_var_value in os.environ.items():
         except Exception as e:
             print(f"The configuration path {'.'.join(keys[:-1])} is not present in original config. The variable {env_var_key} with value {env_var_value} can therefore not be set!", file=sys.stderr)
 
+success = False
+models = os.environ.get("CB_MODELS", "")
+if models:
+    models = models.split(",")
+
+if os.environ["CB_MACHINES"]:
+    machines = list(set(os.environ["CB_MACHINES"].split(",")) & set(config["user_config"].keys()))
+    os.environ["CB_MANUAL"] = "0"
+else:
+    machines = list(config["user_config"].keys())
+    os.environ["CB_MANUAL"] = "1"
+
+machine_models = {machine: 0 for machine in machines}
+to_remove = list()
+for model_name, benchmark_config in config["benchmarks"].items():
+    if model_name not in models:
+        to_remove.append(model_name)
+        continue
+
+    if models and model_name not in models:
+        print(f"{COLOR_WARNING}Skipping config generation for model {model_name} as requested by the user!{COLOR_END}")
+        continue
+    for machine in list(benchmark_config["machine_parameters"].keys()):
+        if machine not in machines:
+            del benchmark_config["machine_parameters"][machine]
+        else:
+            machine_models[machine] += 1
+for model in to_remove:
+    del config["benchmarks"][model]
+
+for machine, count in machine_models.items():
+    if count == 0:
+        machines.remove(machine)
+os.environ["CB_MACHINES"] = ",".join([machine for machine, count in machine_models.items() if count != 0])
 
 # Write patched config file
 with open(config_out_path, 'w') as config_outfile:
