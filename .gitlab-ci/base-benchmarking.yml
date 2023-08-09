@@ -127,7 +127,7 @@ variables:
         COUNTER=0
         NUM_FAILURES=0
         jube continue --error --id=all --hide-animation "$JUBE_RESULTS_DIR"
-        for model in "$USE  R_DATA_DIR/jube_results"/*/ ; do
+        for model in "$USER_DATA_DIR/jube_results"/*/ ; do
           for run in "$model"/*/ ; do
             JOBID=$(grep -e 'Submitted batch job ' -e 'JobId: ' "$run/work/stdout" | head -1 | grep -oP '\d*')
             if grep -q -E 'terminated due to failure of node|Force Terminated StepId' "$run/work/stderr" ; then
