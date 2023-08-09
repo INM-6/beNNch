@@ -110,7 +110,7 @@ Trigger:
     - job: "Validate Input"
       artifacts: true
   parallel:
-    matrix:  # Add all machines here for which configurations exist. TODO: Add option to specify the runner
+    matrix:  # Add all machines here for which configurations exist.
       - CB_MACHINE: *machines_anchor
   trigger:
     strategy: depend
