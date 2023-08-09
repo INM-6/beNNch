@@ -99,11 +99,7 @@ Benchmarking:
   needs:
     - job: "Build"
       artifacts: true
-  artifacts:
-    paths:
-      - "flipbooks"
-      - "configs"
-    when: on_success
+  parallel: $NUM
   script:
     # Prepare environment
     - !reference [ .prepare-benchmarks, environment-load ]
@@ -113,9 +109,21 @@ Benchmarking:
     - !reference [ .prepare-benchmarks, results ]
     # Collect and upload metadata and results
     - !reference [ .metadata ]
-    # Generate flipbook
-    - !reference [ .flipbook ]
     # Copy jube benchmark files for archiving as artifacts
     - 'cp -r "$BENCHMARKS_DIR/jube" "$CI_PROJECT_DIR/specifications"'
     # - 'chmod -R 777 "$USER_DATA_DIR/bennch/results/.git"'  # Todo: Probably not required, needs fix
     # - 'rm -rf $USER_DATA_DIR'
+
+
+Flipbook:
+  when: manual
+  needs:
+    - job: "Benchmarking"
+      artifacts: true
+  artifacts:
+    paths:
+      - "flipbooks"
+    when: on_success
+  script:
+    # Generate flipbook
+    - !reference [ .flipbook ]
