@@ -34,7 +34,9 @@ user_config:
 dependencies: ""  # Path to a yaml file with dependency specifications (see #Benchmark dependencies).
 ```
 
-Any parameter in the *machine_parameters*, *model_parameters*, or *run_parameters* section can receive multiple values per key (e.g. `num_nodes: "1,2,4,8"`). One benchmark run will be executed per possible parameter combination.
+Any parameter in the *machine_parameters*, *model_parameters*, or *run_parameters* section can receive multiple values per key (e.g. `num_nodes: "1,2,4,8"`). One benchmark run will be executed per possible parameter combination.  
+
+Parameters can also 
 
 ### Benchmark dependencies
 ```yaml

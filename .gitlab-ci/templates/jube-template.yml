@@ -15,7 +15,6 @@
 parameterset:
   - name: bench_parameters
     parameter:
-      - {name: scale, mode: python, type: float, "_": $scale_N}
       - {name: num_vps, type: int, mode: python, "_": $tasks_per_node * $threads_per_task * $num_nodes}
       - {name: num_tasks, type: int, mode: python, "_": $tasks_per_node * $num_nodes}
   - name: run_benchmark
@@ -48,13 +47,11 @@ substituteset:
       - {source: "#PREPARE_FILE#", dest: $prepare_file_path}
   - name: bench_substitutions
     sub:
-      - {source: "{scale}", dest: $scale}
-      - {source: "{scaling_type}", dest: $scaling_type}
       - {source: "{num_vps}", dest: $num_vps}
       - {source: "{num_tasks}", dest: $num_tasks}
-      - {source: "{num_nodes}", dest: $num_nodes}
-      - {source: "{tasks_per_node}", dest: $tasks_per_node}
-      - {source: "{threads_per_task}", dest: $threads_per_task}
+      # - {source: "{num_nodes}", dest: $num_nodes}
+      # - {source: "{tasks_per_node}", dest: $tasks_per_node}
+      # - {source: "{threads_per_task}", dest: $threads_per_task}
 
 step:
   - name: bench
