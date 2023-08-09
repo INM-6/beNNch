@@ -36,7 +36,10 @@ dependencies: ""  # Path to a yaml file with dependency specifications (see #Ben
 
 Any parameter in the *machine_parameters*, *model_parameters*, or *run_parameters* section can receive multiple values per key (e.g. `num_nodes: "1,2,4,8"`). One benchmark run will be executed per possible parameter combination.  
 
-Parameters can also 
+The *model_parameters* and *machine_parameters* can also depend on other parameters or include any arbitrary python code to generate the value or list of values. In place of the value or list of values, simply write python code returning the desired values. For the *model_parameters*, one must additionally add `mode: python`. E.g.:
+`{name: scale, mode: python, type: float, "_": "$scale_N*$num_nodes"}`
+or
+`threads_per_task: "128/$tasks_per_node"`.
 
 ### Benchmark dependencies
 ```yaml

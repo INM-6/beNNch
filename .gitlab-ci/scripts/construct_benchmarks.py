@@ -101,15 +101,25 @@ for model_name, benchmark_config in config["benchmarks"].items():
 
     # Machine parameters
     machine_params = benchmark_config["machine_parameters"][machine]
+
+    machine_param_list = list()
+    for k in ["num_nodes", "tasks_per_node", "threads_per_task"]:
+        for c in machine_params[k]:
+            if not c.isdigit() or c != ",":
+                machine_param_list.append({"name": c, "mode": "python", "type": "int", "_": machine_params[c]})
+                break
+        else:
+            machine_param_list.append({"name": c, "type": "int", "_": machine_params[c]})
+        w = machine_params["walltime"]
+        if w[2] != ":" or w[5] != ":" or len(w) != 8:
+            machine_param_list.append({"name": "walltime", "mode": "python", "type": "string", "_": w})
+        else:
+            machine_param_list.append({"name": "walltime", "type": "string", "_": w})
+            
     jube_benchmark["parameterset"].append(
         {
             "name": "machine_parameters",
-            "parameter": [
-                {"name": "num_nodes", "type": "int", "_": machine_params["num_nodes"]},
-                {"name": "tasks_per_node", "type": "int", "_": machine_params["tasks_per_node"]},
-                {"name": "threads_per_task", "type": "int", "_": machine_params["threads_per_task"]},
-                {"name": "walltime", "type": "string", "_": machine_params["walltime"]}
-            ]
+            "parameter": machine_param_list
         })
                 
 
