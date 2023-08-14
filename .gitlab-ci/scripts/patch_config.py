@@ -37,6 +37,7 @@ def patch_element(config, key, value):
                             if "type" in v:
                                 val["type"] = v["type"]
                             val["_"] = v["_"]
+                            break
                     else:
                         config[key].append(v)
                 elif v not in config[key]:
