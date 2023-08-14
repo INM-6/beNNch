@@ -21,17 +21,13 @@ config_path = sys.argv[5]
 def patch_element(config, key, value):
     if key not in config:
         config[key] = value
-        print(f"patching key {key}", file=sys.stderr)
     else:
-        print(f"patching key {key} with value of type {type(config[key])}", file=sys.stderr)
         if type(config[key]) != type(value):
             raise ValueError()
         if type(config[key]) == list:
             for v in value:
                 if type(v) == dict and "name" in v:
-                    print(v, file=sys.stderr)
                     for val in config[key]:
-                        print("val:", val, file=sys.stderr)
                         if val.get("name", "") == v["name"]:
                             if "type" in v:
                                 val["type"] = v["type"]
@@ -66,7 +62,7 @@ def extend_config(config, level):
 
     for key, value in config.items():
         patch_element(base_config, key, value)
-    print(base_config)
+    print(base_config, file=sys.stderr)
     return base_config
 
 # Recursively get extended config file until reaching root. Starting with the root config, iteratively patch the configuration.
