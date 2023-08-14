@@ -31,6 +31,7 @@ def patch_element(config, key, value):
                 if type(v) == dict and "name" in v:
                     print(v, file=sys.stderr)
                     for val in config[key]:
+                        print(val, file=sys.stderr)
                         if val.get("name", "") == v["name"]:
                             if "type" in v:
                                 val["type"] = v["type"]
