@@ -66,6 +66,7 @@ def extend_config(config, level):
 
     for key, value in config.items():
         patch_element(base_config, key, value)
+    print(base_config)
     return base_config
 
 # Recursively get extended config file until reaching root. Starting with the root config, iteratively patch the configuration.
