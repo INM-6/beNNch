@@ -53,7 +53,7 @@ def extend_config(config, level):
     base_repo_config_path = config["extends"]["config_file"]
 
     repo_path = os.path.join(tmp_dir, str(level))
-    subprocess.run(["git", "clone", "-q", "--depth=1", "--single-branch", "--branch=" + base_repo_branch, base_repo_url, repo_path], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    subprocess.run(["git", "clone", "-q", "--depth=1", "--single-branch", "--branch=" + base_repo_branch, base_repo_url, repo_path], stdout=subprocess.DEVNULL)
     with open(os.path.join(repo_path, base_repo_config_path), 'r') as config_file:
         base_config = yaml.safe_load(config_file)
     # Patch dependencies
