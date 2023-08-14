@@ -19,10 +19,11 @@ config_path = sys.argv[5]
 
 
 def patch_element(config, key, value):
-    print(f"patching key {key} with value of type {type(config[key])}")
     if key not in config:
         config[key] = value
+        print(f"patching key {key}")
     else:
+        print(f"patching key {key} with value of type {type(config[key])}")
         if type(config[key]) != type(value):
             raise ValueError()
         if type(config[key]) == list:
