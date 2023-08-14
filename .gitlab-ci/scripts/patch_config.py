@@ -19,6 +19,9 @@ config_path = sys.argv[5]
 
 
 def patch_element(config, key, value):
+    print(config, file=sys.stderr)
+    print(key, file=sys.stderr)
+    print(value, file=sys.stderr)
     if key not in config:
         config[key] = value
     else:
@@ -57,12 +60,10 @@ def extend_config(config, level):
     if "dependencies" in base_config:
         base_config["dependencies"] = os.path.join(repo_path, base_config["dependencies"])
 
-    print(base_config, file=sys.stderr)
     if "extends" in base_config:
         base_config = extend_config(base_config, level+1)
     for key, value in config.items():
         patch_element(base_config, key, value)
-    print(base_config, file=sys.stderr)
     return base_config
 
 # Recursively get extended config file until reaching root. Starting with the root config, iteratively patch the configuration.
