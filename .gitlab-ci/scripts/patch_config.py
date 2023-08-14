@@ -37,6 +37,8 @@ def patch_element(config, key, value):
                         config[key].append(v)
                 elif v not in config[key]:
                     config[key].append(v)
+            if key == "model_parameters":
+                print(config, file=sys.stderr)
         if type(value) == dict:
             for k, v in value.items():
                 patch_element(config[key], k, v)
