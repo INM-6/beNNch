@@ -19,18 +19,20 @@ config_path = sys.argv[5]
 
 
 def patch_element(config, key, value):
-    print(config, file=sys.stderr)
-    print(key, file=sys.stderr)
-    print(value, file=sys.stderr)
     if key not in config:
         config[key] = value
     else:
         if type(config[key]) != type(value):
             raise ValueError()
-        if type(config[key]) == list:
+        if type(value) == list:
+            if key == "model_parameters":
+                print(config, file=sys.stderr)
+                print(key, file=sys.stderr)
+                print(value, file=sys.stderr)
             for v in value:
                 if type(v) == dict and "name" in v:
                     for val in config[key]:
+                        print(v, val, file=sys.stderr)
                         if val.get("name", "") == v["name"]:
                             if "type" in v:
                                 val["type"] = v["type"]
@@ -39,7 +41,9 @@ def patch_element(config, key, value):
                         config[key].append(v)
                 elif v not in config[key]:
                     config[key].append(v)
-        if type(config[key]) == dict:
+            if key == "model_parameters":
+                print(config, file=sys.stderr)
+        if type(value) == dict:
             for k, v in value.items():
                 patch_element(config[key], k, v)
         else:
