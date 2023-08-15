@@ -29,7 +29,6 @@ COLOR_WARNING = '\033[93m'
 COLOR_FAIL = '\033[91m'
 COLOR_END = '\033[0m'
 
-
 jube_template_path = sys.argv[1]     # path to template of jube benchmark file
 config_path = sys.argv[2]            # path to configuration file
 builder_modules_dir = sys.argv[3]    # directory where builder installs modules
@@ -44,12 +43,6 @@ pipeline_file_path = sys.argv[11]    # path to current pipeline definition file
 machine = sys.argv[12]               # name of the machine the benchmark is running on
 
 config_dir = os.path.dirname(config_path)
-
-success = False
-
-models = os.environ.get("CB_MODELS", "")
-if models:
-    models = models.split(",")
 
 # Prepare output directory
 if not os.path.exists(config_output_dir):
@@ -73,15 +66,10 @@ with open(config_path, 'r') as config_file:
     config = yaml.safe_load(config_file)
 
 for model_name, benchmark_config in config["benchmarks"].items():
-    # Skip benchmarks defined in config which were not explicitly requested to be benchmarked
-    if models and model_name not in models:
-        print(f"{COLOR_WARNING}Skipping config file generation for model {model_name} as requested by the user!{COLOR_END}")
-        continue
-
     if machine not in benchmark_config["machine_parameters"]:
         print(f"{COLOR_WARNING}Skipping config file generation for model {model_name} because no configuration was provided for machine {machine}!{COLOR_END}")
         continue
-    
+
     jube_benchmark = copy.deepcopy(jube_benchmark_template)
 
     run_parameters = benchmark_config.get("run_parameters", dict())
@@ -101,15 +89,24 @@ for model_name, benchmark_config in config["benchmarks"].items():
 
     # Machine parameters
     machine_params = benchmark_config["machine_parameters"][machine]
+
+    machine_param_list = list()
+    for k in ["num_nodes", "tasks_per_node", "threads_per_task"]:
+        if all(c.isnumeric() for c in machine_params[k].split(",")):
+            machine_param_list.append({"name": k, "type": "int", "_": machine_params[k]})
+        else:
+            machine_param_list.append({"name": k, "mode": "python", "type": "int", "_": machine_params[k]})
+            
+        w = machine_params["walltime"]
+        if w[2] != ":" or w[5] != ":" or len(w) != 8 or not all(w[p].isdigit() for p in [0,1,3,4,6,7]):
+            machine_param_list.append({"name": "walltime", "mode": "python", "type": "string", "_": w})
+        else:
+            machine_param_list.append({"name": "walltime", "type": "string", "_": w})
+            
     jube_benchmark["parameterset"].append(
         {
             "name": "machine_parameters",
-            "parameter": [
-                {"name": "num_nodes", "type": "int", "_": machine_params["num_nodes"]},
-                {"name": "tasks_per_node", "type": "int", "_": machine_params["tasks_per_node"]},
-                {"name": "threads_per_task", "type": "int", "_": machine_params["threads_per_task"]},
-                {"name": "walltime", "type": "string", "_": machine_params["walltime"]}
-            ]
+            "parameter": machine_param_list
         })
                 
 
@@ -161,6 +158,8 @@ for model_name, benchmark_config in config["benchmarks"].items():
     substitutions["iofile"] = {"in": model_script_path, "out": model_script_path}
     for param in benchmark_config.get("model_parameters", []):
         substitutions["sub"].append({"source": "{" + param["name"] + "}", "dest": "$" + param["name"]})
+    for param in machine_params.keys():
+        substitutions["sub"].append({"source": "{" + param + "}", "dest": "$" + param})
 
     # Analyser
     jube_benchmark["patternset"] = {"name": "bench_patternset", "pattern": [
@@ -173,9 +172,3 @@ for model_name, benchmark_config in config["benchmarks"].items():
     # Write jube benchmark file
     with open(os.path.join(benchmark_output_dir, f"cb_{model_name}_{machine}.yml"), 'w') as jube_outfile:
         yaml.dump(jube_benchmark, jube_outfile, default_flow_style=False)
-    
-    success = True
-
-if not success:
-    print(f"{COLOR_FAIL}No config for any model provided for this machine, aborting...{COLOR_END}", file=sys.stderr)
-    exit(1)

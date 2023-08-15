@@ -54,7 +54,6 @@ variables:
     - 'eval MODELS_DIR="$MODELS_DIR"'
     - 'eval BENCHMARKS_DIR="$BENCHMARKS_DIR"'
   create-dirs:
-    - 'echo $USER_DATA_DIR'
     - 'jutil env activate -p cjinb33'
     - 'mkdir -p "$USER_DATA_DIR" "$SIMULATOR_REPO_DIR" "$BENCHMARKS_DIR/metrics" "$JUBE_RESULTS_DIR" "$BENCHMARKS_DIR/jube" "$BUILDER_MODULES_DIR" "$BUILDER_PLANFILE_DIR" "$BUILDER_PACKAGE_DIR" "$BUILDER_SOURCE_DIR" "$BUILDER_INSTALL_DIR" "$BUILDER_BUILD_DIR" "$BUILDER_LOG_DIR" "$MODELS_DIR"'
   clone-repositories:
@@ -71,7 +70,6 @@ variables:
     # Set result repository
     - 'git clone --single-branch --branch="$RESULTS_BRANCH" --depth=1 "$RESULTS_REPO_URL" "$USER_DATA_DIR/results"'
     - 'cd $USER_DATA_DIR/results'
-    - 'echo $PATH'
     - 'git annex init'
   builder:
     # Prepare Builder .buildrc
@@ -99,55 +97,54 @@ variables:
 
 # Requires jube
 .run-benchmarks:
-  # TODO: Split this up into multiple jobs and make each benchmark (model) run in a parallel job so the analysis for a benchmark can start even if the others didn't finish yet
-  - 'cp "$TEMPLATES_DIR/job.slurm.in" "$BENCHMARKS_DIR/jube/job.slurm.in"'
-  - |
-    for benchmark in "$BENCHMARKS_DIR"/jube/cb_*_"$MACHINE".yml ; do
-      jube run --hide-animation -e $benchmark
-    done
-  - 'set -xv'
+  - 'cp "$TEMPLATES_DIR/job.slurm.in" "${BENCHMARKS_DIR}/jube/job.slurm.in"'
+  - 'jube run --hide-animation -e "${BENCHMARKS_DIR}/jube/cb_${JUBE_BENCHMARK_FILE}_${MACHINE}.yml"'
   - |
     COUNTER=0
     NUM_FAILURES=-1
     declare -A retries
-    for model in "$USER_DATA_DIR/jube_results"/*/ ; do
-      for run in "$model"/*/ ; do
-            retries[$(basename $model),$(basename $run)]=0
-      done
+    for run in "$USER_DATA_DIR/jube_results/$JUBE_BENCHMARK_ID"/*/ ; do
+        retries[$(basename $run)]=0
     done
-    while jube status --id=all "$JUBE_RESULTS_DIR" | grep -q "RUNNING" || [[ $NO_FAILURES -ne 0 ]] ; do
+    while jube status --id=$JUBE_BENCHMARK_ID "$JUBE_RESULTS_DIR" | grep -q "RUNNING" || [[ $NO_FAILURES -ne 0 ]] ; do
       sleep 30
-      jube continue --error --id=all --hide-animation "$JUBE_RESULTS_DIR" > /dev/null
+      jube continue --error --id=$JUBE_BENCHMARK_ID --hide-animation "$JUBE_RESULTS_DIR" > /dev/null
       COUNTER=$((COUNTER + 1))
-      if ! jube status --id=all "$JUBE_RESULTS_DIR" | grep -q "RUNNING" ; then
+      if ! jube status --id=$JUBE_BENCHMARK_ID "$JUBE_RESULTS_DIR" | grep -q "RUNNING" ; then
         COUNTER=9
       fi
       if [ $COUNTER -eq 9 ] ; then
         sleep 3
         COUNTER=0
         NUM_FAILURES=0
-        jube continue --error --id=all --hide-animation "$JUBE_RESULTS_DIR"
-        for model in "$USER_DATA_DIR/jube_results"/*/ ; do
-          for run in "$model"/*/ ; do
-            JOBID=$(grep -e 'Submitted batch job ' -e 'JobId: ' "$run/work/stdout" | head -1 | grep -oP '\d*')
-            if grep -q -E 'terminated due to failure of node|Force Terminated StepId' "$run/work/stderr" ; then
-              if [[ ${retries[$(basename $model),$(basename $run)]} -lt 4 ]] ; then
-                (( ++retries[$(basename $model),$(basename $run)] ))
-                rm -f "$run/work/ready" "$run/work/stderr" "$run/work/stdout"
-                cd "$run/work/"
-                sbatch job.slurm
-                echo "Detected node failure, rerunning job (#${!id})"
-                (( ++NUM_FAILURES ))
-              fi
-            elif [[ $(squeue -h --job $JOBID | wc -l) = 0 ]] ; then
-              touch "$run/work/ready"
+        jube continue --error --id=$JUBE_BENCHMARK_ID --hide-animation "$JUBE_RESULTS_DIR"
+        for run in "$USER_DATA_DIR/jube_results/$JUBE_BENCHMARK_ID"/*/ ; do
+          JOBID=$(grep -e 'Submitted batch job ' -e 'JobId: ' "$run/work/stdout" | head -1 | grep -oP '\d*')
+          if grep -q -E 'terminated due to failure of node|Force Terminated StepId' "$run/work/stderr" ; then
+            if [[ ${retries[$(basename $run)]} -lt 4 ]] ; then
+              (( ++retries[$(basename $run)] ))
+              rm -f "$run/work/ready" "$run/work/stderr" "$run/work/stdout"
+              cd "$run/work/"
+              sbatch job.slurm
+              echo "Detected node failure, rerunning job (#${!id})"
+              (( ++NUM_FAILURES ))
             fi
-          done
+          elif [[ $(squeue -h --job $JOBID | wc -l) = 0 ]] ; then
+            touch "$run/work/ready"
+          fi
         done
       fi
     done
-  - 'jube info --id=all "$JUBE_RESULTS_DIR"'
-  - 'jube result --analyse --id=all "$JUBE_RESULTS_DIR"'
+  - 'jube info --id=$JUBE_BENCHMARK_ID "$JUBE_RESULTS_DIR"'
+  - 'jube result --analyse --id=$JUBE_BENCHMARK_ID "$JUBE_RESULTS_DIR"'
+
+.variables-as-artifacts:
+  - 'rm -f "$CI_PROJECT_DIR/benchmark_variables.env"'
+  - |
+    for var in BENCHMARK_ID CB_RUNNER_ACCOUNT CB_COMPUTE_PROJECT CB_DATA_PROJECT CB_DEPENDENCIES USER_DATA_DIR BENCHMARKS_DIR SIMULATOR_REPO SIMULATOR_BRANCH SIMULATOR_REPO_DIR JUBE_RESULTS_DIR RESULTS_REPO_URL RESULTS_BRANCH RESULTS_PATH BUILDER_MODULES_DIR BUILDER_PLANFILE_DIR BUILDER_PACKAGE_DIR BUILDER_SOURCE_DIR BUILDER_INSTALL_DIR BUILDER_BUILD_DIR BUILDER_LOG_DIR CONFIG_FILE_PATH MODELS_DIR BUILDER_CONFIG_PATH NEST_VERSION ; do
+      eval val=\$$var
+      echo "${var}=${val}" >> "$CI_PROJECT_DIR/benchmark_variables.env"
+    done
 
 # TODO: Collect metadata about the pipeline (config, etc.) and upload via git-annex
 .metadata:
@@ -188,5 +185,3 @@ variables:
   # TODO: Add another stage which can be triggered manually to create flipbooks with additional configuration
   - 'mkdir "$CI_PROJECT_DIR/flipbooks"'
   - 'python3 "${SCRIPTS_DIR}/create_flipbooks.py" "$JUBE_RESULTS_DIR" "$CI_PROJECT_DIR/flipbooks" "$BENCHMARK_ID"'
-
-  # TODO: Add another job at the end which collects the artifacts of all downstream pipelines and combines them into a single archive
