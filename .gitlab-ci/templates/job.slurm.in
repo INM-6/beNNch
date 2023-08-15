@@ -26,9 +26,9 @@
 
 echo "JobId: $SLURM_JOB_ID"
 export OMP_NUM_THREADS=#THREADS_PER_TASK#
+export OMP_PROC_BIND=TRUE
 export OMP_DISPLAY_ENV=VERBOSE
 export OMP_DISPLAY_AFFINITY=TRUE
-export OMP_PROC_BIND=TRUE
 
 module use #MODULES_DIR#
 module load simulator/#BRANCH#/default
