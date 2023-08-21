@@ -112,6 +112,21 @@ for machine, count in machine_models.items():
     if count == 0:
         machines.remove(machine)
 
+# Validate model parameters
+for model_name, benchmark_config in config["benchmarks"].items():
+    for param in benchmark_config.get("model_parameters", []):
+        if "type" in param and not ("mode" in param and param["mode"] == "python"):
+            try:
+                if param["type"] == "float":
+                    for c in param["_"].split(","):
+                        float(c)
+                elif param["type"] == "int":
+                    for c in param["_"].split(","):
+                        int(c)
+            except ValueError:
+                raise ValueError(f"Parameter {param['name']} for model {model_name} with value {param['_']} of type {param['type']} contains non-numeric values (e.g. variables), but 'mode' is not set to 'python'.")
+
+
 # Write patched config file
 with open(config_out_path, 'w') as config_outfile:
     yaml.dump(config, config_outfile, default_flow_style=False)

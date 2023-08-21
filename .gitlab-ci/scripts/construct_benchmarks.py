@@ -132,18 +132,6 @@ for model_name, benchmark_config in config["benchmarks"].items():
         })
 
     # Model parameters
-    for param in benchmark_config.get("model_parameters", []):
-        if "type" in param and not ("mode" in param and param["mode"] == "python"):
-            try:
-                if param["type"] == "float":
-                    for c in param["_"].split(","):
-                        float(c)
-                elif param["type"] == "int":
-                    for c in param["_"].split(","):
-                        int(c)
-            except ValueError:
-                raise ValueError(f"Parameter {param['name']} with type {param['type']} contains non-numeric values (e.g. variables), but 'mode' is not set to 'python'.")
-
     jube_benchmark["parameterset"].append(
     {
         "name": "model_parameters",
