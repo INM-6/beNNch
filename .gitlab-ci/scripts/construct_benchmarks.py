@@ -132,12 +132,13 @@ for model_name, benchmark_config in config["benchmarks"].items():
     # Model parameters
     for param in benchmark_config.get("model_parameters", []):
         err = False
-        if param["type"] == float and not ("mode" in param and param["mode"] == "python"):
-            if not all(c.isnumeric() for c in param["_"].split(",")):
-                err = True
-        elif param["type"] == int:
-            if not all(c.isdigit() for c in param["_"].split(",")):
-                err = True
+        if "type" in param and not ("mode" in param and param["mode"] == "python"):
+            if param["type"] == "float":
+                if not all(c.isnumeric() for c in param["_"].split(",")):
+                    err = True
+            elif param["type"] == "int":
+                if not all(c.isdigit() for c in param["_"].split(",")):
+                    err = True
         if err:
             raise ValueError(f"Parameter {param['name']} with type {param['type']} contains non-numeric values (e.g. variables), but 'mode' is not set to 'python'.")
 
