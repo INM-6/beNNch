@@ -92,9 +92,11 @@ for model_name, benchmark_config in config["benchmarks"].items():
 
     machine_param_list = list()
     for k in ["num_nodes", "tasks_per_node", "threads_per_task"]:
-        if all(c.isnumeric() for c in machine_params[k].split(",")):
+        try:
+            for c in machine_params[k].split(","):
+                float(c)
             machine_param_list.append({"name": k, "type": "int", "_": machine_params[k]})
-        else:
+        except ValueError:
             machine_param_list.append({"name": k, "mode": "python", "type": "int", "_": machine_params[k]})
             
         w = machine_params["walltime"]
@@ -131,16 +133,16 @@ for model_name, benchmark_config in config["benchmarks"].items():
 
     # Model parameters
     for param in benchmark_config.get("model_parameters", []):
-        err = False
         if "type" in param and not ("mode" in param and param["mode"] == "python"):
-            if param["type"] == "float":
-                if not all(c.isnumeric() for c in param["_"].split(",")):
-                    err = True
-            elif param["type"] == "int":
-                if not all(c.isdigit() for c in param["_"].split(",")):
-                    err = True
-        if err:
-            raise ValueError(f"Parameter {param['name']} with type {param['type']} contains non-numeric values (e.g. variables), but 'mode' is not set to 'python'.")
+            try:
+                if param["type"] == "float":
+                    for c in param["_"].split(","):
+                        float(c)
+                elif param["type"] == "int":
+                    for c in param["_"].split(","):
+                        int(c)
+            except ValueError:
+                raise ValueError(f"Parameter {param['name']} with type {param['type']} contains non-numeric values (e.g. variables), but 'mode' is not set to 'python'.")
 
     jube_benchmark["parameterset"].append(
     {
