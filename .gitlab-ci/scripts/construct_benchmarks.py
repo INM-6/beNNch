@@ -139,7 +139,7 @@ for model_name, benchmark_config in config["benchmarks"].items():
             if not all(c.isdigit() for c in param["_"].split(",")):
                 err = True
         if err:
-            raise ValueError(f"Parameter {param["name"]} with type {param["type"]} contains non-numeric values (e.g. variables), but 'mode' is not set to 'python'.")
+            raise ValueError(f"Parameter {param['name']} with type {param['type']} contains non-numeric values (e.g. variables), but 'mode' is not set to 'python'.")
 
     jube_benchmark["parameterset"].append(
     {
