@@ -42,7 +42,7 @@ Preparation:
       dotenv: benchmark_variables.env
     when: on_success
   script:
-    - echo $0
+    - 'echo $EXTRA_CMAKE_FLAGS'
     - |
       eval USER_DATA_DIR="$TEMP_DIR/$USER/$(echo $BENCHMARK_ID | sed -e 's/[^A-Za-z0-9._-]/_/g')-$(date +%d-%m-%y-%H-%M-%S)"
     # Load all environment variables

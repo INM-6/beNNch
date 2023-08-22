@@ -99,6 +99,7 @@ Validate Input:
     - 'rm -rf $CI_PROJECT_DIR/tmp'
     - 'mkdir "$CI_PROJECT_DIR/pipelines"'
     - 'python "$CI_PROJECT_DIR/.gitlab-ci/scripts/prepare_machine_pipelines.py" "$CI_PROJECT_DIR/.gitlab-ci/machine-configs" "$CI_PROJECT_DIR/pipelines" "$CI_PROJECT_DIR/config.yml" "$MACHINES"'
+    - 'echo $EXTRA_CMAKE_FLAGS'
   artifacts:
     paths:
       - "config.yml"
