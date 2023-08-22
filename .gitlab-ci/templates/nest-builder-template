@@ -22,8 +22,6 @@ SOURCE=$SIMULATOR_REPO_DIR
 
 CMAKEFLAGS="-Dwith-mpi=ON -DCMAKE_CXX_COMPILER=mpicxx -DCMAKE_C_COMPILER=mpicc -Dwith-python=ON"
 CONFIGURE_OPTIONS='$CMAKEFLAGS $EXTRA_CMAKE_FLAGS'
-echo '$EXTRA_CMAKE_FLAGS'
-echo '$CONFIGURE_OPTIONS'
 
 # Override functions which are not required here
 check_package_file () { :; }
