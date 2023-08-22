@@ -27,13 +27,23 @@
 echo "JobId: $SLURM_JOB_ID"
 export OMP_NUM_THREADS=#THREADS_PER_TASK#
 export OMP_PROC_BIND=TRUE
+
 export OMP_DISPLAY_ENV=VERBOSE
 export OMP_DISPLAY_AFFINITY=TRUE
+
+# Avoid problems from numexpr Python package
+export NUMEXPR_MAX_THREADS=$OMP_NUM_THREADS
 
 module use #MODULES_DIR#
 module load simulator/#BRANCH#/default
 source #PREPARE_FILE#
 
+source jemalloc.sh
+
+module list
+
 #COMMANDS#
+
+scontrol show jobid ${SLURM_JOBID} -dd
 
 touch ready
