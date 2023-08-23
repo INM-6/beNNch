@@ -29,6 +29,8 @@ source_prepare () { :; }
 build_install_test () { :; }
 
 source_get () {
+    echo ${EXTRA_CMAKE_FLAGS}
+    echo ${CONFIGURE_OPTIONS}
     # Only clone if target directory is empty
     if [ -z "$(ls -A $SIMULATOR_REPO_DIR)" ]; then
         git clone --single-branch --branch="$SIMULATOR_BRANCH" --depth=1 "$SIMULATOR_REPO" "$SIMULATOR_REPO_DIR"
@@ -36,14 +38,14 @@ source_get () {
 }
 
 build_package () {
+    echo ${EXTRA_CMAKE_FLAGS}
+    echo ${CONFIGURE_OPTIONS}
 	log_status ">>> build"
 	cd "${BUILD}"
 	set -x
 	# CONFIGURE_OPTIONS variable needs to be split, so no quotes
 	# shellcheck disable=SC2086
-    echo ${CONFIGURE_OPTIONS}
 	cmake ${CONFIGURE_OPTIONS} -DCMAKE_INSTALL_PREFIX:PATH="$TARGET" "$SOURCE" 2>&1 | tee "${LOG}/cmake.log"
-    exit 1
 	make -j "${MAKE_THREADS:-$(nproc)}" 2>&1 | tee "${LOG}/make.log"
 	set +x
 }
