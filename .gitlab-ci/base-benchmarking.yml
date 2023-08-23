@@ -126,7 +126,7 @@ variables:
               rm -f "$run/work/ready" "$run/work/stderr" "$run/work/stdout"
               cd "$run/work/"
               sbatch job.slurm
-              echo "Detected node failure, rerunning job (#${!id})"
+              echo "Detected node failure, rerunning job (#${retries[$(basename $run)]})"
               (( ++NUM_FAILURES ))
             fi
           elif [[ $(squeue -h --job $JOBID | wc -l) = 0 ]] ; then
