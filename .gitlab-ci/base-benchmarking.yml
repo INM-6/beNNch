@@ -145,6 +145,7 @@ variables:
       eval val=\$$var
       echo "${var}=${val}" >> "$CI_PROJECT_DIR/benchmark_variables.env"
     done
+  - 'cat "$CI_PROJECT_DIR/benchmark_variables.env"'
 
 # TODO: Collect metadata about the pipeline (config, etc.) and upload via git-annex
 .metadata:
