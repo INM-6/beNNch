@@ -64,7 +64,6 @@ Preparation:
     - !reference [ .prepare-benchmarks, construct-benchmarks ]
     # Forward all environment variables to next stage
     - !reference [ .variables-as-artifacts ]
-    - 'echo ${EXTRA_CMAKE_FLAGS}'
 
 
 Build:
@@ -77,7 +76,6 @@ Build:
       dotenv: benchmark_variables.env
     when: on_success
   script:
-    - 'echo ${EXTRA_CMAKE_FLAGS}'
     # Prepare environment
     - !reference [ .prepare-benchmarks, environment-load ]
     # Build simulator
