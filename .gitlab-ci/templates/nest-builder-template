@@ -22,10 +22,6 @@ SOURCE=$SIMULATOR_REPO_DIR
 
 CMAKEFLAGS="-Dwith-mpi=ON -DCMAKE_CXX_COMPILER=mpicxx -DCMAKE_C_COMPILER=mpicc -Dwith-python=ON"
 CONFIGURE_OPTIONS="$CMAKEFLAGS $EXTRA_CMAKE_FLAGS"
-echo $CMAKEFLAGS
-echo $EXTRA_CMAKE_FLAGS
-echo $CONFIGURE_OPTIONS
-exit 1
 
 # Override functions which are not required here
 check_package_file () { :; }
@@ -45,7 +41,9 @@ build_package () {
 	set -x
 	# CONFIGURE_OPTIONS variable needs to be split, so no quotes
 	# shellcheck disable=SC2086
+    echo ${CONFIGURE_OPTIONS}
 	cmake ${CONFIGURE_OPTIONS} -DCMAKE_INSTALL_PREFIX:PATH="$TARGET" "$SOURCE" 2>&1 | tee "${LOG}/cmake.log"
+    exit 1
 	make -j "${MAKE_THREADS:-$(nproc)}" 2>&1 | tee "${LOG}/make.log"
 	set +x
 }
