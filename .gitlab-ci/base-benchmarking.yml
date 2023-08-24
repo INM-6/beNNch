@@ -119,18 +119,20 @@ variables:
         NUM_FAILURES=0
         jube continue --error --id=$JUBE_BENCHMARK_ID --hide-animation "$JUBE_RESULTS_DIR"
         for run in "$USER_DATA_DIR/jube_results/$JUBE_BENCHMARK_ID"/*/ ; do
-          JOBID=$(grep -e 'Submitted batch job ' -e 'JobId: ' "$run/work/stdout" | head -1 | grep -oP '\d*')
-          if grep -q -E 'terminated due to failure of node|Force Terminated StepId' "$run/work/stderr" ; then
-            if [[ ${retries[$(basename $run)]} -lt 4 ]] ; then
-              (( ++retries[$(basename $run)] ))
-              rm -f "$run/work/ready" "$run/work/stderr" "$run/work/stdout"
-              cd "$run/work/"
-              sbatch job.slurm
-              echo "Detected node failure, rerunning job (#${retries[$(basename $run)]})"
-              (( ++NUM_FAILURES ))
+          if [ -f "$run/work/stdout" ] ; then
+            JOBID=$(grep -e 'Submitted batch job ' -e 'JobId: ' "$run/work/stdout" | head -1 | grep -oP '\d*')
+            if grep -q -E 'terminated due to failure of node|Force Terminated StepId' "$run/work/stderr" ; then
+              if [[ ${retries[$(basename $run)]} -lt 4 ]] ; then
+                (( ++retries[$(basename $run)] ))
+                rm -f "$run/work/ready" "$run/work/stderr" "$run/work/stdout"
+                cd "$run/work/"
+                sbatch job.slurm
+                echo "Detected node failure, rerunning job (#${retries[$(basename $run)]})"
+                (( ++NUM_FAILURES ))
+              fi
+            elif [[ $(squeue -h --job $JOBID | wc -l) = 0 ]] ; then
+              touch "$run/work/ready"
             fi
-          elif [[ $(squeue -h --job $JOBID | wc -l) = 0 ]] ; then
-            touch "$run/work/ready"
           fi
         done
       fi
