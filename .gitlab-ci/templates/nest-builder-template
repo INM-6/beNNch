@@ -41,7 +41,7 @@ build_package () {
 	set -x
 	# CONFIGURE_OPTIONS variable needs to be split, so no quotes
 	# shellcheck disable=SC2086
-	cmake "${CONFIGURE_OPTIONS}" -DCMAKE_INSTALL_PREFIX:PATH="$TARGET" "$SOURCE" 2>&1 | tee "${LOG}/cmake.log"
+	cmake ${CONFIGURE_OPTIONS} -DCMAKE_INSTALL_PREFIX:PATH="$TARGET" "$SOURCE" 2>&1 | tee "${LOG}/cmake.log"
 	make -j "${MAKE_THREADS:-$(nproc)}" 2>&1 | tee "${LOG}/make.log"
 	set +x
 }
