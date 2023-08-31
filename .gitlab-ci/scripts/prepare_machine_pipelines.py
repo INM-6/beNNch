@@ -42,7 +42,7 @@ with open(config_file_path) as config_file:
     config = yaml.safe_load(config_file)
 
 for machine, machine_conf in config["user_config"].items():
-    if not manual and machine not in user_machines:
+    if not manual and user_machines and machine not in user_machines:
         continue
     try:
         with open(os.path.join(pipelines_dir_in, machine + ".yml")) as pipeline_in:

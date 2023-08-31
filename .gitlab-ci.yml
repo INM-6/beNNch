@@ -80,7 +80,7 @@ Validate Input:
     - |+
       # Make sure values were provided for all mandatory variables
       for var in BENCHMARK_ID SIMULATOR_REPO SIMULATOR_BRANCH CONFIG_REPO CONFIG_BRANCH CONFIG_PATH RESULTS_REPO_URL RESULTS_BRANCH RESULTS_PATH NEST_VERSION ; do
-        eval val=\$$var
+        eval val=\$"$var"
         if [ -z $val ] ; then
           echo "No value provided for variable ${var}!"
           exit 1
