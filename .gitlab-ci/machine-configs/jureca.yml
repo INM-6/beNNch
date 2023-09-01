@@ -21,7 +21,7 @@ include: .gitlab-ci/jacamar-benchmarking.yml
 .preparation:
   tags:
     - shell
-    - jurecadc
+    - jureca
     - jacamar
 
 .build:
@@ -29,13 +29,13 @@ include: .gitlab-ci/jacamar-benchmarking.yml
     SCHEDULER_PARAMETERS: "--account=$CB_RUNNER_ACCOUNT --time=$CB_BUILD_TIME_LIMIT --nodes=1"
   tags:
     - compute
-    - jurecadc
+    - jureca
     - jacamar
 
 .benchmark:
   tags:
     - shell
-    - jurecadc
+    - jureca
     - jacamar
 
 .environment-init:
