@@ -150,37 +150,17 @@ variables:
 
 # TODO: Collect metadata about the pipeline (config, etc.) and upload via git-annex
 .metadata:
-  - ''
-  # - |
-    # cd ${model_path}
-    # model_git_commit_hash=$(git rev-parse HEAD)
-    # cd -
-    # cat >job.json <<EOT
-    # {"num_nodes":"${num_nodes}",
-    # "tasks_per_node":"${tasks_per_node}",
-    # "threads_per_task":"${threads_per_task}",
-    # "affinity":"${affinity}",
-    # "simulator":"${simulator}",
-    # "simulator-version":"${version}",
-    # "simulator-variant":"${variant}",
-    # "simulator-suffix":"${suffix}",
-    # "model_name":"${model_name}",
-    # "model_git_commit_hash":"${model_git_commit_hash}",
-    # "network_state":"${network_state}",
-    # "record_spikes":"${record_spikes}",
-    # "scaling_type":"${scaling_type}"
-    # }
-    # EOT
-    # metadata_uuid=$(uuidgen)
-    # gathermetadata ${jube_wp_abspath}/${metadata_uuid}
-    # cp ${jube_wp_abspath}/stderr ${jube_wp_abspath}/${metadata_uuid}
-    # tar -czf ${metadata_uuid}.tgz -C ${jube_wp_abspath} ${metadata_uuid}
-    # rm -r ${jube_wp_abspath}/${metadata_uuid}
+  # - cd ${model_path}
+  # - model_git_commit_hash=$(git rev-parse HEAD)
+  # - cd -
+  - 'gathermetadata ${USER_DATA_DIR}/metadata'
+  - 'cp ${CONFIG_FILE_PATH} ${USER_DATA_DIR}/metadata/config.yml'
+  - 'tar -czf ${USER_DATA_DIR}/${}.tgz -C ${USER_DATA_DIR} metadata'
     
-    # TODO: Upload benchmark results
-    # - 'git annex add .'
-    # - 'git annex sync --content'
-    # - 'git annex copy --to=origin --auto'
+  # Upload benchmark results
+  - 'git annex add .'
+  - 'git annex sync --content'
+  - 'git annex copy --to=origin --auto'
 
 # Requires python3, pyyaml, jupyter, nbconvert, git, and git-annex
 .flipbook:
