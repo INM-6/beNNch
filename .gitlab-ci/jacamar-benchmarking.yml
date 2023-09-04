@@ -55,7 +55,7 @@ Preparation:
     # Prepare environment using user-defined commands
     - !reference [ .prepare-benchmarks, environment-load ]
     # TODO: Metadata
-    # - 'pip install git+https://github.com/INM-6/gather-metadata.git'
+    - 'pip install git+https://github.com/INM-6/gather-metadata.git'
     # Prepare builder
     - !reference [ .prepare-benchmarks, builder ]
     # Clone simulator and model repositories
