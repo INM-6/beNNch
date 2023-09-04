@@ -154,7 +154,7 @@ variables:
   # - model_git_commit_hash=$(git rev-parse HEAD)
   # - cd -
   # - 'gathermetadata ${USER_DATA_DIR}/metadata'
-  - 'python ${SCRIPTS_DIR}/gather_metadata.py ${USER_DATA_DIR}/metadata'
+  - 'python ${SCRIPTS_DIR}/_gathermetadata.py ${USER_DATA_DIR}/metadata'
   - 'cp ${CONFIG_FILE_PATH} ${USER_DATA_DIR}/metadata/config.yml'
   - 'tar -czf ${USER_DATA_DIR}/${}.tgz -C ${USER_DATA_DIR} metadata'
     
