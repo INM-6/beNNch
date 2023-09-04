@@ -29,6 +29,9 @@ variables:
 
 # Requires git, python3, and pyyaml
 .prepare-benchmarks:
+  get-uid:
+    - |
+      export BENCHMARK_UID="$(echo $BENCHMARK_ID | sed -e 's/[^A-Za-z0-9._-]/_/g')-$(date +%d-%m-%y-%H-%M-%S)"
   # Move all artifacts to user data directory
   artifacts:
     - 'if [[ $(realpath "$CI_PROJECT_DIR/config.yml") != $(realpath "$CONFIG_FILE_PATH") ]]; then mv "$CI_PROJECT_DIR/config.yml" "$CONFIG_FILE_PATH"; fi'
@@ -156,7 +159,7 @@ variables:
   # - 'gathermetadata ${USER_DATA_DIR}/metadata'
   - 'python ${SCRIPTS_DIR}/_gathermetadata.py ${USER_DATA_DIR}/metadata'
   - 'cp ${CONFIG_FILE_PATH} ${USER_DATA_DIR}/metadata/config.yml'
-  - 'tar -czf ${USER_DATA_DIR}/${}.tgz -C ${USER_DATA_DIR} metadata'
+  - 'tar -czf ${USER_DATA_DIR}/${BENCHMARK_UID}.tgz -C ${USER_DATA_DIR} metadata'
     
   # Upload benchmark results
   - 'git annex add .'
