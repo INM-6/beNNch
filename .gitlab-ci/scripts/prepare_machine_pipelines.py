@@ -33,8 +33,7 @@ config_file_path = sys.argv[3]
 available_machines = sys.argv[4].split(",")
 
 manual = True
-if os.environ["CB_MACHINES"]:
-    user_machines = os.environ["CB_MACHINES"].split(",")
+user_machines = os.environ["CB_MACHINES"].split(",") if os.environ["CB_MACHINES"] else None
 manual = os.environ["CB_MANUAL"] != "0"
 
 
@@ -42,7 +41,7 @@ with open(config_file_path) as config_file:
     config = yaml.safe_load(config_file)
 
 for machine, machine_conf in config["user_config"].items():
-    if not manual and user_machines and machine not in user_machines:
+    if not manual and user_machines is not None and machine not in user_machines:
         continue
     try:
         with open(os.path.join(pipelines_dir_in, machine + ".yml")) as pipeline_in:
