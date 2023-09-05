@@ -162,9 +162,10 @@ variables:
   - 'tar -czf ${USER_DATA_DIR}/${BENCHMARK_UID}.tgz -C ${USER_DATA_DIR} metadata'
     
   # Upload benchmark results
-  # - 'git annex add .'
-  # - 'git annex sync --content'
-  # - 'git annex copy --to=origin --auto'
+  - 'cd $USER_DATA_DIR/results'
+  - 'git annex add .'
+  - 'git annex sync --content'
+  - 'git annex copy --to=origin --auto'
 
 # Requires python3, pyyaml, jupyter, nbconvert, git, and git-annex
 .flipbook:
