@@ -84,7 +84,7 @@ Build:
     - 'export MAKE_THREADS=$(nproc)'
     - !reference [ .prepare-benchmarks, build-simulator ]
     # Prepare results repository
-    # - !reference [ .prepare-benchmarks, results ]
+    - !reference [ .prepare-benchmarks, results ]
     # Forward all environment variables to next stage
     - !reference [ .variables-as-artifacts ]
   
