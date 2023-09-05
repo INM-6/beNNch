@@ -64,6 +64,8 @@ Preparation:
     - !reference [ .prepare-benchmarks, clone-repositories ]
     # Construct JUBE benchmark files from provided config
     - !reference [ .prepare-benchmarks, construct-benchmarks ]
+    # Prepare results repository
+    - !reference [ .prepare-benchmarks, results ]
     # Forward all environment variables to next stage
     - !reference [ .variables-as-artifacts ]
 
@@ -83,8 +85,6 @@ Build:
     # Build simulator
     - 'export MAKE_THREADS=$(nproc)'
     - !reference [ .prepare-benchmarks, build-simulator ]
-    # Prepare results repository
-    - !reference [ .prepare-benchmarks, results ]
     # Forward all environment variables to next stage
     - !reference [ .variables-as-artifacts ]
   
