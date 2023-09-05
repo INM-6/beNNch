@@ -159,13 +159,13 @@ variables:
   # - 'gathermetadata ${USER_DATA_DIR}/metadata'
   - 'python ${SCRIPTS_DIR}/_gathermetadata.py ${USER_DATA_DIR}/metadata'
   - 'cp ${CONFIG_FILE_PATH} ${USER_DATA_DIR}/metadata/config.yml'
-  - 'tar -czf ${USER_DATA_DIR}/${BENCHMARK_UID}.tgz -C ${USER_DATA_DIR} metadata'
+  - 'tar -czf ${USER_DATA_DIR}/results/${BENCHMARK_UID}.tgz -C ${USER_DATA_DIR} metadata'
     
   # Upload benchmark results
   - 'cd $USER_DATA_DIR/results'
   - 'git annex add .'
-  - 'git annex sync --content'
-  - 'git annex copy --to=origin --auto'
+  - 'git commit -m "Adding benchmark data for ${BENCHMARK_ID}"'
+  - 'git annex push origin --jobs=cpus'
 
 # Requires python3, pyyaml, jupyter, nbconvert, git, and git-annex
 .flipbook:
