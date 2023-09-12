@@ -163,9 +163,11 @@ variables:
     
   # Upload benchmark results
   - 'cd $USER_DATA_DIR/results'
+  - 'git config user.email ""'
+  - 'git config user.name "${USER}"'
   - 'git annex add .'
-  - 'git commit -m "Adding benchmark data for ${BENCHMARK_ID}"'
-  - 'git annex push origin --jobs=cpus'
+  # - 'git commit -m "Adding benchmark data for ${BENCHMARK_ID}"'
+  - 'git annex sync --no-pull --content-of=${BENCHMARK_UID}.tgz --jobs=cpus'
 
 # Requires python3, pyyaml, jupyter, nbconvert, git, and git-annex
 .flipbook:
