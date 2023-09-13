@@ -37,7 +37,7 @@ variables:
   RESULTS_REPO_URL:
     description: "Repository to upload benchmark results to."
     # value: "https://$GIN_GNODE_TOKEN@gin.g-node.org/janvog/CI-beNNch-results.git"
-    value: "https://$GIN_GNODE_TOKEN@gin.g-node.org/janvog/CI-Bennch-results-devel.git"
+    value: "https://$GIN_GNODE_TOKEN@gin.g-node.org/janvog/CI-Bennch-results-devel"
   RESULTS_BRANCH:
     description: "Branch of result repository to upload benchmark results to."
     value: "master"
