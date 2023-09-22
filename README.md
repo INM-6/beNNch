@@ -25,9 +25,9 @@ benchmarks:
       script_path: ""  # Path to the Python script which will be run to start the benchmark for the specific model.
       run_args: ""  # Any arguments that should be passed to the script. Can contain variables using $VARIABLE which come either from the "model_parameters" or the globally defined variables (see # Global variables).
       optional_run_command: ""  # Any command or list of commands that should be run prior to the script given via the "script_path".
-    results: []  # List of strings 
-    metrics: []  # List of strings 
-    metrics_sum: []  # List of strings 
+    results: []  # List of strings containing all model parameter keys which should be added as a column to the result.csv file
+    metrics: []  # List of strings containing all output parameters in log files which should be added as a column to the result.csv file. Aggregation function for multiple MPI processes (multiple log files): Average of all values
+    metrics_sum: []  # List of strings containing all output parameters in log files which should be added as a column to the result.csv file. Aggregation function for multiple MPI processes (multiple log files): Sum of all values
 user_config:
   [MACHINE_ID]:  # Replace the MACHINE_ID by a custom unique identifier for the machine. Must match the machine identifier used to define the machine-specific subpipeline (see #Pipeline configuration).
     build-time-limit: "HH:MM:SS"  # Upper time limit for the build job passed to slurm.
