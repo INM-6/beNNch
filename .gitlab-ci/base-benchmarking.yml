@@ -72,8 +72,8 @@ variables:
   results:
     # Set result repository
     - 'git clone --single-branch --branch="$RESULTS_BRANCH" --depth=1 "$RESULTS_REPO_URL" "$USER_DATA_DIR/results"'
-    - 'cd $USER_DATA_DIR/results'
-    - 'git annex init'
+    # - 'cd $USER_DATA_DIR/results'
+    # - 'git annex init'
   builder:
     # Prepare Builder .buildrc
     - |
@@ -162,12 +162,12 @@ variables:
   - 'tar -czf ${USER_DATA_DIR}/results/${BENCHMARK_UID}.tgz -C ${USER_DATA_DIR} metadata'
     
   # Upload benchmark results
-  - 'cd $USER_DATA_DIR/results'
-  - 'git config user.email ""'
-  - 'git config user.name "${USER}"'
-  - 'git annex add .'
+  # - 'cd $USER_DATA_DIR/results'
+  # - 'git config user.email ""'
+  # - 'git config user.name "${USER}"'
+  # - 'git annex add .'
   # - 'git commit -m "Adding benchmark data for ${BENCHMARK_ID}"'
-  - 'git annex sync --no-pull --content-of=${BENCHMARK_UID}.tgz --jobs=cpus'
+  # - 'git annex sync --no-pull --content-of=${BENCHMARK_UID}.tgz --jobs=cpus'
 
 # Requires python3, pyyaml, jupyter, nbconvert, git, and git-annex
 .flipbook:
