@@ -159,9 +159,13 @@ variables:
   # - model_git_commit_hash=$(git rev-parse HEAD)
   # - cd -
   # - 'gathermetadata ${USER_DATA_DIR}/metadata'
-  - 'python ${SCRIPTS_DIR}/_gathermetadata.py ${USER_DATA_DIR}/metadata'
-  - 'cp ${CONFIG_FILE_PATH} ${USER_DATA_DIR}/metadata/config.yml'
-  - 'tar -czf ${USER_DATA_DIR}/results/${BENCHMARK_UID}.tgz -C ${USER_DATA_DIR} metadata'
+  - 'python "${SCRIPTS_DIR}/_gathermetadata.py" "${USER_DATA_DIR}/${BENCHMARK_UID}"'
+  - 'cp "${CONFIG_FILE_PATH}" "${USER_DATA_DIR}/${BENCHMARK_UID}/config.yml"'
+  - |
+    for jube_model in "$USER_DATA_DIR/jube_results"/*/ ; do
+        cp "$jube_model/result/result_table.dat" "${USER_DATA_DIR}/${BENCHMARK_UID}/$(basename jube_model).csv"
+    done
+  - 'tar -czf ${USER_DATA_DIR}/results/${BENCHMARK_UID}.tgz -C ${USER_DATA_DIR} ${BENCHMARK_UID}'
     
   # Upload benchmark results
   # - 'cd $USER_DATA_DIR/results'
