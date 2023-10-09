@@ -96,6 +96,7 @@ Benchmarking:
   artifacts:
     paths:
       - "specifications"
+      - "flipbooks"
     when: on_success
   script:
     # Prepare environment
