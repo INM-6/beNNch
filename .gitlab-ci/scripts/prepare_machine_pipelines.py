@@ -49,6 +49,8 @@ for machine, machine_conf in config["user_config"].items():
 
         if "variables" not in pipeline_yml:
             pipeline_yml["variables"] = dict()
+        if ".environment-vars" not in pipeline_yml:
+            pipeline_yml[".environment-vars"] = list()
         if ".environment-init" not in pipeline_yml:
             pipeline_yml[".environment-init"] = list()
         if ".environment-load" not in pipeline_yml:
@@ -63,6 +65,7 @@ for machine, machine_conf in config["user_config"].items():
         pipeline_yml["variables"]["CB_BUILD_TIME_LIMIT"] = machine_conf.get('build-time-limit', '')
         pipeline_yml["variables"].update(config["dependencies"][machine]["variables"])
 
+        pipeline_yml[".environment-vars"].extend(config["dependencies"][machine]["vars"])
         pipeline_yml[".environment-init"].extend(config["dependencies"][machine]["init"])
         pipeline_yml[".environment-load"].extend(config["dependencies"][machine]["load"])
 
