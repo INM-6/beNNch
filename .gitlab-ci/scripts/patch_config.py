@@ -92,13 +92,11 @@ else:
 machine_models = {machine: 0 for machine in machines}
 to_remove = list()
 for model_name, benchmark_config in config["benchmarks"].items():
-    if model_name not in models:
-        to_remove.append(model_name)
-        continue
-
     if models and model_name not in models:
+        to_remove.append(model_name)
         print(f"{COLOR_WARNING}Skipping config generation for model {model_name} as requested by the user!{COLOR_END}", file=sys.stderr)
         continue
+        
     for machine in list(benchmark_config["machine_parameters"].keys()):
         print(machine, machines, machine_models, file=sys.stderr)
         if machine not in machines:
