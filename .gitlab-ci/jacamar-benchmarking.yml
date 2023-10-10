@@ -114,6 +114,7 @@ Benchmarking:
     - !reference [ .variables-as-artifacts ]
 
 Aggregation:
+  extends: [ .preparation ]
   needs: 
     - job: "Benchmarking"
       artifacts: true
