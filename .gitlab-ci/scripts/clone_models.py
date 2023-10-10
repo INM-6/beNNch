@@ -9,7 +9,9 @@ yaml.add_representer(str, lambda dumper, data: dumper.represent_scalar('tag:yaml
 
 config_file_path = sys.argv[1]
 model_repos_dir = sys.argv[2]
-models = sys.argv[3].split(",")
+models = sys.argv[3]
+if models:
+    models = models.split(",")
 
 
 with open(config_file_path) as config_file:
