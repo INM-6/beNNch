@@ -86,7 +86,6 @@ if models:
     models = models.split(",")
 if os.environ["CB_MACHINES"]:
     machines = list(set(os.environ["CB_MACHINES"].split(",")) & set(config["user_config"].keys()))
-    raise ValueError(machines)
 else:
     machines = list(config["user_config"].keys())
 
@@ -111,6 +110,8 @@ for model in to_remove:
 for machine, count in machine_models.items():
     if count == 0:
         machines.remove(machine)
+# Return list of machines from script to use it in the shell
+print(",".join([machine for machine in machines]))
 
 # Validate model parameters
 for model_name, benchmark_config in config["benchmarks"].items():
@@ -130,5 +131,3 @@ for model_name, benchmark_config in config["benchmarks"].items():
 # Write patched config file
 with open(config_out_path, 'w') as config_outfile:
     yaml.dump(config, config_outfile, default_flow_style=False)
-
-print(",".join([machine for machine, count in machine_models.items() if count != 0]))
