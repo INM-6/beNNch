@@ -119,6 +119,8 @@ Aggregation:
     - job: "Benchmarking"
       artifacts: true
   script:
+    # Prepare environment
+    - !reference [ .prepare-benchmarks, environment-load ]
     # Collect and upload metadata and results
     - !reference [ .results, metadata ]
     - !reference [ .results, upload ]
