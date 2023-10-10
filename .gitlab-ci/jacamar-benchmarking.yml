@@ -24,6 +24,7 @@ variables:
   BENCHMARKS_DIR: "$$USER_DATA_DIR/benchmarks"
   CONFIG_FILE_PATH: "$$USER_DATA_DIR/config.yml"
   MODELS_DIR: "$$USER_DATA_DIR/models"
+  OUTPUT_DIR: "$$USER_DATA_DIR/$$BENCHMARK_UID"
   BUILDER_MODULES_DIR: "$$USER_DATA_DIR/modules"
   BUILDER_PLANFILE_DIR: "$$USER_DATA_DIR/Builder/plans"
   BUILDER_PACKAGE_DIR: "$$USER_DATA_DIR/Builder/cache/packages"
@@ -97,17 +98,28 @@ Benchmarking:
     paths:
       - "specifications"
       - "flipbooks"
+    reports:
+      dotenv: benchmark_variables.env
     when: on_success
   script:
     # Prepare environment
     - !reference [ .prepare-benchmarks, environment-load ]
     # Run benchmarks
     - !reference [ .run-benchmarks ]
-    # Collect and upload metadata and results
-    - !reference [ .metadata ]
     # Copy jube benchmark files for archiving as artifacts
     - 'cp -r "$BENCHMARKS_DIR/jube" "$CI_PROJECT_DIR/specifications"'
     # Generate flipbook
-    - !reference [ .flipbook ]
+    - !reference [ .results, flipbook ]
+    # Forward all environment variables to next stage
+    - !reference [ .variables-as-artifacts ]
+
+Aggregation:
+  needs: 
+    - job: "Benchmarking"
+      artifacts: true
+  script:
+    # Collect and upload metadata and results
+    - !reference [ .results, metadata ]
+    - !reference [ .results, upload ]
     # - 'chmod -R 777 "$USER_DATA_DIR/bennch/results/.git"'  # Todo: Probably not required, needs fix
     # - 'rm -rf $USER_DATA_DIR'

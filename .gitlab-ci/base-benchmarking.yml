@@ -57,6 +57,7 @@ variables:
     - 'eval CONFIG_FILE_PATH="$CONFIG_FILE_PATH"'
     - 'eval MODELS_DIR="$MODELS_DIR"'
     - 'eval BENCHMARKS_DIR="$BENCHMARKS_DIR"'
+    - 'eval OUTPUT_DIR="$OUTPUT_DIR"'
   create-dirs:
     - 'mkdir -p "$USER_DATA_DIR" "$SIMULATOR_REPO_DIR" "$BENCHMARKS_DIR/metrics" "$JUBE_RESULTS_DIR" "$BENCHMARKS_DIR/jube" "$BUILDER_MODULES_DIR" "$BUILDER_PLANFILE_DIR" "$BUILDER_PACKAGE_DIR" "$BUILDER_SOURCE_DIR" "$BUILDER_INSTALL_DIR" "$BUILDER_BUILD_DIR" "$BUILDER_LOG_DIR" "$MODELS_DIR"'
   clone-repositories:
@@ -144,39 +145,38 @@ variables:
     done
   - 'jube info --id=$JUBE_BENCHMARK_ID "$JUBE_RESULTS_DIR"'
   - 'jube result --analyse --id=$JUBE_BENCHMARK_ID "$JUBE_RESULTS_DIR"'
+  - 'cp "$USER_DATA_DIR/jube_results/$JUBE_BENCHMARK_ID/result/result_table.dat" "$OUTPUT_DIR/$(basename jube_model).csv"'
 
 .variables-as-artifacts:
   - 'rm -f "$CI_PROJECT_DIR/benchmark_variables.env"'
   - |
-    for var in BENCHMARK_ID BENCHMARK_UID CB_RUNNER_ACCOUNT CB_COMPUTE_PROJECT CB_DATA_PROJECT CB_DEPENDENCIES USER_DATA_DIR BENCHMARKS_DIR SIMULATOR_REPO SIMULATOR_BRANCH SIMULATOR_REPO_DIR JUBE_RESULTS_DIR RESULTS_REPO_URL RESULTS_BRANCH RESULTS_PATH BUILDER_MODULES_DIR BUILDER_PLANFILE_DIR BUILDER_PACKAGE_DIR BUILDER_SOURCE_DIR BUILDER_INSTALL_DIR BUILDER_BUILD_DIR BUILDER_LOG_DIR CONFIG_FILE_PATH MODELS_DIR BUILDER_CONFIG_PATH NEST_VERSION ; do
+    for var in BENCHMARK_ID BENCHMARK_UID CB_RUNNER_ACCOUNT CB_COMPUTE_PROJECT CB_DATA_PROJECT CB_DEPENDENCIES USER_DATA_DIR BENCHMARKS_DIR SIMULATOR_REPO SIMULATOR_BRANCH SIMULATOR_REPO_DIR JUBE_RESULTS_DIR RESULTS_REPO_URL RESULTS_BRANCH RESULTS_PATH BUILDER_MODULES_DIR BUILDER_PLANFILE_DIR BUILDER_PACKAGE_DIR BUILDER_SOURCE_DIR BUILDER_INSTALL_DIR BUILDER_BUILD_DIR BUILDER_LOG_DIR CONFIG_FILE_PATH MODELS_DIR BUILDER_CONFIG_PATH OUTPUT_DIR NEST_VERSION ; do
       eval val=\$$var
       echo "${var}=${val}" >> "$CI_PROJECT_DIR/benchmark_variables.env"
     done
 
 # TODO: Collect metadata about the pipeline (config, etc.) and upload via git-annex
-.metadata:
-  # - cd ${model_path}
-  # - model_git_commit_hash=$(git rev-parse HEAD)
-  # - cd -
-  # - 'gathermetadata ${USER_DATA_DIR}/metadata'
-  - 'python "${SCRIPTS_DIR}/_gathermetadata.py" "${USER_DATA_DIR}/${BENCHMARK_UID}"'
-  - 'cp "${CONFIG_FILE_PATH}" "${USER_DATA_DIR}/${BENCHMARK_UID}/config.yml"'
-  - |
-    for jube_model in "$USER_DATA_DIR/jube_results"/*/ ; do
-        cp "$jube_model/result/result_table.dat" "${USER_DATA_DIR}/${BENCHMARK_UID}/$(basename jube_model).csv"
-    done
-  - 'tar -czf ${USER_DATA_DIR}/results/${BENCHMARK_UID}.tgz -C ${USER_DATA_DIR} ${BENCHMARK_UID}'
-    
-  # Upload benchmark results
-  # - 'cd $USER_DATA_DIR/results'
-  # - 'git config user.email ""'
-  # - 'git config user.name "${USER}"'
-  # - 'git annex add .'
-  # - 'git commit -m "Adding benchmark data for ${BENCHMARK_ID}"'
-  # - 'git annex sync --no-pull --content-of=${BENCHMARK_UID}.tgz --jobs=cpus'
+.results:
+  metadata:
+    # - cd ${model_path}
+    # - model_git_commit_hash=$(git rev-parse HEAD)
+    # - cd -
+    # - 'gathermetadata ${USER_DATA_DIR}/metadata'
+    - 'python "${SCRIPTS_DIR}/_gathermetadata.py" "${USER_DATA_DIR}/${BENCHMARK_UID}"'
+    - 'cp "${CONFIG_FILE_PATH}" "${USER_DATA_DIR}/${BENCHMARK_UID}/config.yml"'
+    - 'tar -czf ${USER_DATA_DIR}/results/${BENCHMARK_UID}.tgz -C ${USER_DATA_DIR} ${BENCHMARK_UID}'
 
-# Requires python3, pyyaml, jupyter, nbconvert, git, and git-annex
-.flipbook:
-  # TODO: Add another stage which can be triggered manually to create flipbooks with additional configuration
-  - 'mkdir "$CI_PROJECT_DIR/flipbooks"'
-  - 'python3 "${SCRIPTS_DIR}/create_flipbooks.py" "$JUBE_RESULTS_DIR" "$CI_PROJECT_DIR/flipbooks" "$BENCHMARK_ID"'
+  upload:
+    # Upload benchmark results
+    - 'cd $USER_DATA_DIR/results'
+    # - 'git config user.email ""'
+    # - 'git config user.name "${USER}"'
+    # - 'git annex add .'
+    # - 'git commit -m "Adding benchmark data for ${BENCHMARK_ID}"'
+    # - 'git annex sync --no-pull --content-of=${BENCHMARK_UID}.tgz --jobs=cpus'
+
+  # Requires python3, pyyaml, jupyter, nbconvert, git, and git-annex
+  flipbook:
+    # TODO: Add another stage which can be triggered manually to create flipbooks with additional configuration
+    - 'mkdir "$CI_PROJECT_DIR/flipbooks"'
+    - 'python3 "${SCRIPTS_DIR}/create_flipbooks.py" "$JUBE_RESULTS_DIR" "$CI_PROJECT_DIR/flipbooks" "$BENCHMARK_ID"'

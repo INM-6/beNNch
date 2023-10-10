@@ -83,6 +83,7 @@ for machine, machine_conf in config["user_config"].items():
                 benchmark_id += 1
 
         pipeline_yml[".parallel-benchmark"] = {"parallel": {"matrix": benchmarks}}
+        # pipeline_yml[".aggregation"] = {"parallel": {"matrix": benchmarks}}
         
     except Exception as e:
         traceback.print_exc()
