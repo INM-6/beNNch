@@ -96,9 +96,8 @@ for model_name, benchmark_config in config["benchmarks"].items():
         to_remove.append(model_name)
         print(f"{COLOR_WARNING}Skipping config generation for model {model_name} as requested by the user!{COLOR_END}", file=sys.stderr)
         continue
-        
+
     for machine in list(benchmark_config["machine_parameters"].keys()):
-        print(machine, machines, machine_models, file=sys.stderr)
         if machine not in machines:
             del benchmark_config["machine_parameters"][machine]
         else:
