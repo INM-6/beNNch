@@ -87,6 +87,7 @@ if models:
 
 if os.environ["CB_MACHINES"]:
     machines = list(set(os.environ["CB_MACHINES"].split(",")) & set(config["user_config"].keys()))
+    print(machines)
 else:
     machines = list(config["user_config"].keys())
 
