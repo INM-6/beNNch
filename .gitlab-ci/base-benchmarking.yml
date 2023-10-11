@@ -171,7 +171,7 @@ variables:
     - 'export RESULTS_UID=$(uuidgen)'
     - 'python "${SCRIPTS_DIR}/_gathermetadata.py" "${USER_DATA_DIR}/${RESULTS_UID}"'
     - 'cp "${CONFIG_FILE_PATH}" "${USER_DATA_DIR}/${RESULTS_UID}/config.yml"'
-    - 'tar -czf ${USER_DATA_DIR}/results/${RESULTS_UID}.tgz -C ${USER_DATA_DIR} ${RESULTS_UID}'
+    - 'tar -czf ${USER_DATA_DIR}/${RESULTS_UID}.tgz -C ${USER_DATA_DIR} ${RESULTS_UID}'
 
   upload:
     # TODO: Move the following two lines to config file as soon as a consistent environment exsists on JSC systems
@@ -179,7 +179,7 @@ variables:
     - 'module load git-annex'
   
     # Upload benchmark results
-    - 'cp "${USER_DATA_DIR}/results/${RESULTS_UID}.tgz" "$RESULTS_REPO_DIR/${RESULTS_UID}.tgz"'
+    - 'cp "${USER_DATA_DIR}/${RESULTS_UID}.tgz" "$RESULTS_REPO_DIR/${RESULTS_UID}.tgz"'
     - 'cd $RESULTS_REPO_DIR"'
     - 'git config user.email ""'
     - 'git config user.name "${USER}"'
