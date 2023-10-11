@@ -168,6 +168,10 @@ variables:
     - 'tar -czf ${USER_DATA_DIR}/results/${RESULTS_UID}.tgz -C ${USER_DATA_DIR} ${RESULTS_UID}'
 
   upload:
+    # TODO: Move the following two lines to config file as soon as a consistent environment exsists on JSC systems
+    - 'module use /p/usersoftware/djinb33/modules/linux-rocky8-x86_64/gcc/11.3.0/'
+    - 'module load git-annex'
+  
     # Upload benchmark results
     - 'cp "${USER_DATA_DIR}/results/${RESULTS_UID}.tgz" "$RESULTS_REPO_DIR/${RESULTS_UID}.tgz"'
     - 'cd $RESULTS_REPO_DIR"'
