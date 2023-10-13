@@ -180,7 +180,7 @@ variables:
   
     # Upload benchmark results
     - 'cp "${USER_DATA_DIR}/${RESULTS_UID}.tgz" "$RESULTS_REPO_DIR/${RESULTS_UID}.tgz"'
-    - 'cd $RESULTS_REPO_DIR"'
+    - 'cd "$RESULTS_REPO_DIR"'
     - 'git config user.email ""'
     - 'git config user.name "${USER}"'
     - 'git annex add ${RESULTS_UID}.tgz"'
