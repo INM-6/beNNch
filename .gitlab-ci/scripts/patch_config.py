@@ -27,10 +27,9 @@ def patch_element(config, key, value):
         if type(value) == list:
             for v in value:
                 if type(v) == dict and "name" in v:
-                    for val in config[key]:
+                    for i, val in enumerate(config[key]):
                         if val.get("name", "") == v["name"]:
-                            for key in v:
-                                val[key] = v[key]
+                            config[key][i] = v
                             break
                     else:
                         config[key].append(v)
