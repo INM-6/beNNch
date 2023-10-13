@@ -123,6 +123,7 @@ for model_name, benchmark_config in config["benchmarks"].items():
                     for c in param["_"].split(","):
                         int(c)
             except ValueError:
+                raise ValueError(param)
                 raise ValueError(f"Parameter {param['name']} for model {model_name} with value {param['_']} of type {param['type']} contains non-numeric values (e.g. variables), but 'mode' is not set to 'python'.")
 
 
