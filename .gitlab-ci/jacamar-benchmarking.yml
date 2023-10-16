@@ -24,7 +24,7 @@ variables:
   BENCHMARKS_DIR: "$$USER_DATA_DIR/benchmarks"
   CONFIG_FILE_PATH: "$$USER_DATA_DIR/config.yml"
   MODELS_DIR: "$$USER_DATA_DIR/models"
-  OUTPUT_DIR: "$$USER_DATA_DIR/$$BENCHMARK_UID"
+  OUTPUT_DIR: "$$USER_DATA_DIR/benchmark_results"
   BUILDER_MODULES_DIR: "$$USER_DATA_DIR/modules"
   BUILDER_PLANFILE_DIR: "$$USER_DATA_DIR/Builder/plans"
   BUILDER_PACKAGE_DIR: "$$USER_DATA_DIR/Builder/cache/packages"

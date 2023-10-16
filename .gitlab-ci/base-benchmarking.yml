@@ -151,7 +151,7 @@ variables:
     done
   - 'jube info --id=$JUBE_BENCHMARK_ID "$JUBE_RESULTS_DIR"'
   - 'jube result --analyse --id=$JUBE_BENCHMARK_ID "$JUBE_RESULTS_DIR"'
-  - 'cp "$USER_DATA_DIR/jube_results/$JUBE_BENCHMARK_ID/result/result_table.dat" "$OUTPUT_DIR/$(basename jube_model).csv"'
+  - 'cp "$USER_DATA_DIR/jube_results/$JUBE_BENCHMARK_ID/result/result_table.dat" "$OUTPUT_DIR/${JUBE_BENCHMARK_FILE}_${MACHINE}.csv"'
 
 .variables-as-artifacts:
   - 'rm -f "$CI_PROJECT_DIR/benchmark_variables.env"'
@@ -171,6 +171,8 @@ variables:
     - 'export RESULTS_UID=$(uuidgen)'
     - 'python "${SCRIPTS_DIR}/_gathermetadata.py" "${USER_DATA_DIR}/${RESULTS_UID}"'
     - 'cp "${CONFIG_FILE_PATH}" "${USER_DATA_DIR}/${RESULTS_UID}/config.yml"'
+    # Actual benchmark data
+    - 'cp "$OUTPUT_DIR/*" ${USER_DATA_DIR}/${RESULTS_UID}/'
     - 'tar -czf ${USER_DATA_DIR}/${RESULTS_UID}.tgz -C ${USER_DATA_DIR} ${RESULTS_UID}'
 
   upload:
