@@ -39,14 +39,17 @@ variables:
     value: "/p/largedata2/djinb33/shared/annex-test-repo"
   # RESULTS_REPO_URL:
   #   description: "Repository to upload benchmark results to."
-  #   value: "https://$GIN_GNODE_TOKEN@gin.g-node.org/janvog/CI-beNNch-results.git"
-  #   value: "https://$GIN_GNODE_TOKEN@gin.g-node.org/janvog/CI-Bennch-results-devel"
+  #   value: "https://gin.g-node.org/janvog/CI-beNNch-results.git"
+  #   value: "https://gin.g-node.org/janvog/CI-Bennch-results-devel"
   # RESULTS_BRANCH:
   #   description: "Branch of result repository to upload benchmark results to."
   #   value: "master"
   # RESULTS_PATH:
   #   description: "Path to results directory relative to results repository root."
   #   value: "."
+  # RESULTS_REPO_TOKEN:
+  #   description: "Access token for results repository in order to access repository via https."
+  #   value: "$GIN_GNODE_TOKEN"
   EXTRA_CMAKE_FLAGS:
     description: "Any extra CMake flags which should be used to compile NEST. Only single quotes allowed! Multiple values for a single parameter must be single quoted and separated by semicolons."
     value: "-Dwith-optimize='-O3;-march=native' -Dwith-defines='-DNDEBUG' -Dwith-ltdl=ON -Dwith-boost=ON -Dwith-detailed-timers=OFF"

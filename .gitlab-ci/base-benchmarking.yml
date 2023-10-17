@@ -74,7 +74,8 @@ variables:
     - !reference [ .environment-load ]
   results: []
     # Set result repository
-    # - 'git clone --single-branch --branch="$RESULTS_BRANCH" --depth=1 "$RESULTS_REPO_URL" "$USER_DATA_DIR/results"'
+    # The additional empty value for credential.helper causes any existing credential helpers to be removed, preventing the addition of this token into the user's credential helper. If you'd like the user to be able to save it, then remove that directive. See https://stackoverflow.com/questions/70960407/keep-git-auth-as-environment-variable-instead-of-evaluated-value
+    # - 'git clone -c credential.helper= -c credential.helper='!f() { echo username=author; echo "password=$RESULTS_REPO_TOKEN"; };f' --single-branch --branch="$RESULTS_BRANCH" --depth=1 "$RESULTS_REPO_URL" "$USER_DATA_DIR/results"'
     # - 'cd $USER_DATA_DIR/results'
     # - 'git annex init'
   builder:
