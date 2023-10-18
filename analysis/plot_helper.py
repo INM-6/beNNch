@@ -58,8 +58,8 @@ def plot(scaling_type, timer_hash, timer_file, save_path):
 
         B.plot_fractions(axis=ax1,
                          fill_variables=[
-                             'wall_time_create+wall_time_connect',
-                             'wall_time_sim', ],
+                             'time_construction_create+time_construction_connect',
+                             'time_simulate', ],
                          interpolate=True,
                          step=None,
                          error=True)
