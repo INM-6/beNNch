@@ -21,6 +21,8 @@ import bennchplot as bp
 from matplotlib import pyplot as plt
 import matplotlib.gridspec as gridspec
 import matplotlib.transforms as mtransforms
+import tol_colors
+import os
 
 
 def plot(scaling_type, timer_hash, timer_file, save_path):
@@ -29,7 +31,8 @@ def plot(scaling_type, timer_hash, timer_file, save_path):
         args = {
             'data_file': timer_file,
             'x_axis': ['num_nodes'],
-            'time_scaling': 1e3
+            'time_scaling': 1e3,
+            'detailed_timers': True,
         }
 
         # Instantiate class
@@ -95,6 +98,8 @@ def plot(scaling_type, timer_hash, timer_file, save_path):
         ax2.legend(handles2[::-1], labels2[::-1], loc='upper right')
 
         ax3.set_ylim(0, 100)
+        ax1.set_ylim(0, 65)
+        ax2.set_ylim(0, 1.3)
 
         for ax in [ax1, ax2, ax3]:
             ax.margins(x=0)
@@ -142,3 +147,50 @@ def plot(scaling_type, timer_hash, timer_file, save_path):
         B.merge_legends(ax1, ax2)
 
         plt.savefig(f'{save_path}/{timer_hash}.png', dpi=600)
+
+
+def plot_comparison(scaling_type, timer_files, save_path, colors=None):
+
+    if colors is None:
+        vibrant = tol_colors.tol_cset('vibrant')
+        colors = [vibrant.blue, vibrant.orange, vibrant.red, vibrant.teal, vibrant.magenta, vibrant.cyan]
+
+    if len(timer_files) > len(colors):
+        raise NotImplementedError('Number of colors < number of lines in plot. Please provide a longer list of colors.')
+
+    fig, ax = plt.subplots(figsize=(6, 6), constrained_layout=True)
+
+    if scaling_type == 'nodes':
+        xaxis = ['num_nodes']
+    elif scaling_type == 'threads':
+        xaxis = ['num_nvp']
+    for i, timer_file in enumerate(timer_files):
+
+        args = {
+            'data_file': timer_file,
+            'x_axis': xaxis,
+            'time_scaling': 1e3,
+            'detailed_timers': False
+        }
+        timer_hash = timer_file.split('/')[-1].split('.')[0]
+        file_path = os.popen(f"find . -name '*{timer_hash}.csv'").read().strip()
+        version = os.popen(f'git annex metadata {file_path} --get simulator-version').read().strip()
+
+        # Instantiate class
+        B = bp.Plot(**args)
+        B.plot_main(quantities=['sim_factor'], axis=ax, error=True, label=version, color=colors[i])
+        B.simple_axis(ax)
+    ax.legend()
+    plt.savefig(f'{save_path}/comparison.png', dpi=600)
+
+
+if __name__ == "__main__":
+
+    # for version in ["microcircuit_2_14_2", "microcircuit_def", "microcircuit_master"]:
+    #     plot(scaling_type="nodes", timer_hash=version,
+    #          timer_file=f"{version}.csv", save_path=".")
+
+    versions = ['2_14_2', 'def', 'master']
+    colors = ['#DDAA33', '#BB5566', '#004488']
+    plot_multiple_sim_times(scaling_type="threads", versions=versions,
+                            colors=colors, save_path=".", model_name='microcircuit')

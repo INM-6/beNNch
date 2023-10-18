@@ -23,9 +23,11 @@ from nbformat import v4 as nbf
 import nbformat
 from IPython.display import Image
 from IPython.display import HTML
+import click
+import ast
 
 sys.path.insert(1, os.path.join(sys.path[0], '..'))
-from analysis.plot_helper import plot
+from analysis.plot_helper import plot, plot_comparison
 
 
 def display_plot(timer_hash, plot_path, attributes, page_number=1):
@@ -78,29 +80,64 @@ def make_notebook(outPath: str, timer_hashes, attributes_to_display):
         nbformat.write(nb, _)
 
 
-if __name__ == '__main__':
+@click.command()
+@click.option('--style', type=click.Choice(['flipbook', 'single_plot']),
+              help='Specify the style - flipbook or single_plot')
+@click.option('--scaling_type', type=click.Choice(['nodes', 'threads']),
+              help='Specify the scaling type - nodes or threads')
+@click.option('--attributes_to_display', type=str, default=None,
+              help='Specify the attributes (metadata) to display under the plots in the flipbook')
+def generate_plots(style, scaling_type, attributes_to_display):
 
-    scaling_type = sys.argv[1]
-    attributes_to_display = sys.argv[2:]
-
+    if style is None:
+        style = click.prompt('Please enter the style (flipbook/single_plot)',
+                             type=click.Choice(['flipbook', 'single_plot']))
+    if scaling_type is None:
+        scaling_type = click.prompt('Please enter the scaling type (nodes/threads)',
+                                    type=click.Choice(['nodes', 'threads']))
     csv_files = os.popen(
-        "find . -not -path '*/.*' -name '*.csv' | sort").read().strip().split(
-            '\n')
+        "find . -not -path '*/.*' -name '*.csv' | sort").read().strip().split('\n')
     timer_hashes = []
     os.system('mkdir -p ./plots')
 
-    for csv_file in csv_files:
-        timer_hash = csv_file.split('/')[-1].split('.')[0]
-        timer_hashes.append(timer_hash)
-        plot(scaling_type=scaling_type,
-             timer_hash=timer_hash,
-             timer_file=csv_file,
-             save_path='./plots'
-             )
-    make_notebook('./', timer_hashes, attributes_to_display)
-    os.system("jupyter nbconvert --inplace --execute flipbook.ipynb")
-    os.system("jupyter nbconvert --to slides flipbook.ipynb "
-              + "--TemplateExporter.exclude_input=True "
-              + "--SlidesExporter.reveal_transition='none'")
-    os.system("rm flipbook.ipynb")
-    # os.system("rm -r ./plots")
+    if style == 'flipbook':
+
+        if attributes_to_display is None:
+            attributes_to_display = click.prompt('Enter the attributes to display as a list', type=str)
+        try:
+            attributes_to_display = ast.literal_eval(attributes_to_display)
+            if not isinstance(attributes_to_display, list):
+                raise ValueError
+        except (ValueError, SyntaxError):
+            print('Invalid input. Please enter a valid list.')
+
+        # Code for generating flipbook style plots with the specified scaling type
+        print(f'Generating flipbook style plots with scaling type: {scaling_type}...')
+
+        for csv_file in csv_files:
+            timer_hash = csv_file.split('/')[-1].split('.')[0]
+            timer_hashes.append(timer_hash)
+            plot(scaling_type=scaling_type,
+                 timer_hash=timer_hash,
+                 timer_file=csv_file,
+                 save_path='./plots'
+                 )
+        make_notebook('./', timer_hashes, list(attributes_to_display))
+        os.system("jupyter nbconvert --inplace --execute flipbook.ipynb")
+        os.system("jupyter nbconvert --to slides flipbook.ipynb "
+                  + "--TemplateExporter.exclude_input=True "
+                  + "--SlidesExporter.reveal_transition='none'")
+        os.system("rm flipbook.ipynb")
+        os.system("rm -r ./plots")
+
+    elif style == 'single_plot':
+        # Code for generating single_plot style plots
+        print('Generating single_plot style plots...')
+
+        plot_comparison(scaling_type=scaling_type, timer_files=csv_files, save_path='.')
+    else:
+        print('Invalid style specified. Please choose either flipbook or single_plot.')
+
+
+if __name__ == '__main__':
+    generate_plots()
