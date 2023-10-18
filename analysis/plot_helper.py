@@ -162,8 +162,10 @@ def plot_comparison(scaling_type, timer_files, save_path, colors=None):
 
     if scaling_type == 'nodes':
         xaxis = ['num_nodes']
+        xaxis_label = 'Number of Nodes'
     elif scaling_type == 'threads':
         xaxis = ['num_nvp']
+        xaxis_label = 'Number of Virtual Processes'
     for i, timer_file in enumerate(timer_files):
 
         args = {
@@ -181,16 +183,7 @@ def plot_comparison(scaling_type, timer_files, save_path, colors=None):
         B.plot_main(quantities=['sim_factor'], axis=ax, error=True, label=version, color=colors[i])
         B.simple_axis(ax)
     ax.legend()
+    ax.set_ylabel(r'real-time factor $T_{\mathrm{wall}}/T_{\mathrm{model}}$')
+    ax.set_xlabel(xaxis_label)
+
     plt.savefig(f'{save_path}/comparison.png', dpi=600)
-
-
-if __name__ == "__main__":
-
-    # for version in ["microcircuit_2_14_2", "microcircuit_def", "microcircuit_master"]:
-    #     plot(scaling_type="nodes", timer_hash=version,
-    #          timer_file=f"{version}.csv", save_path=".")
-
-    versions = ['2_14_2', 'def', 'master']
-    colors = ['#DDAA33', '#BB5566', '#004488']
-    plot_multiple_sim_times(scaling_type="threads", versions=versions,
-                            colors=colors, save_path=".", model_name='microcircuit')
