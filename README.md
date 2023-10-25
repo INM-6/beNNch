@@ -33,6 +33,7 @@ user_config:
     build-time-limit: "HH:MM:SS"  # Upper time limit for the build job passed to slurm.
 dependencies: ""  # Path to a yaml file with dependency specifications (see #Benchmark dependencies).
 ```
+TODO: Provide yaml-schema for validation.
 
 Any parameter in the *machine_parameters*, *model_parameters*, or *run_parameters* section can receive multiple values per key (e.g. `num_nodes: "1,2,4,8"`). One benchmark run will be executed per possible parameter combination.  
 
@@ -40,6 +41,9 @@ The *model_parameters* and *machine_parameters* can also depend on other paramet
 `{name: scale, mode: python, type: float, "_": "$scale_N*$num_nodes"}`
 or
 `threads_per_task: "128/$tasks_per_node"`.
+
+Examples can be found here:
+https://github.com/JanVogelsang/CI-Bennch-config/blob/deliver-events-first/config.yml
 
 ### Benchmark dependencies
 ```yaml
@@ -55,10 +59,18 @@ Variables are evaluated when the pipeline is created (i.e., when clicking on the
 ### Global variables
 
 ### Model templating
-
+Find examples for MAM, Microcircuit and HPC benchmark here: 
+https://github.com/JanVogelsang/ci-bennch-models.git
 
 ### Automatic result upload
+In the future, results will be uploaded to git-annex automatically including plenty of metadata (see branch ci-bennch-dev).  
+Currently, the data has to be extracted manually. By default, the output data is located under `/p/scratch/cjinb33/ci-bennch/jusuf/userdata/$USER/$BENCHMARK_ID/benchmark_results/`.
 
+For debugging your runs, you might want to look at the log files of each job.  
+All output any of the jobs produce is located unter `/p/scratch/cjinb33/ci-bennch/jusuf/userdata/$USER/$BENCHMARK_ID/jube_results/` with the following directory structure:
+`jube_results`: This folder is completely managed by Jube and contains one subdirectory per Jube-Run.
+`jube_results/000000` (e.g.): In ci-bennch, one Jube-Run is started per model that is being benchmarked. For each model, one slurm job is started for each parameter combination.
+`jube_results/000000/000000_bench` (e.g.): This directory contains all files required for a specific job with all template parameters replaced by actual values for a specific parameter combination. It also contains any output data, logs, and files created during the job.
 
 ## Pipeline configuration
 
