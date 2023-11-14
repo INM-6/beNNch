@@ -186,8 +186,8 @@ variables:
     - 'cd "$RESULTS_REPO_DIR"'
     - 'git config user.email ""'
     - 'git config user.name "${USER}"'
-    - 'git annex add ${RESULTS_UID}.tgz"'
-    - 'git annex metadata ${RESULTS_UID}.tgz" --set user=$USER'
+    - 'git annex add "${RESULTS_UID}.tgz"'
+    - 'git annex metadata "${RESULTS_UID}.tgz" --set user=$USER'
     - 'git commit -m "Adding benchmark data for ${BENCHMARK_ID}"'
     # - 'git annex sync --no-pull --content-of=${BENCHMARK_UID}.tgz --jobs=cpus'
 
