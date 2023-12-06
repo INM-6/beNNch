@@ -17,7 +17,10 @@ parameterset:
     parameter:
       - {name: num_vps, type: int, mode: python, "_": $tasks_per_node * $threads_per_task * $num_nodes}
       - {name: num_tasks, type: int, mode: python, "_": $tasks_per_node * $num_nodes}
-      - {name: cpu_bind_mask, type: string, mode: python, "_": "exec('cpu_bind_masks = list()\nbits_per_task = threads_per_task\ncurrent_block = 0\ncurrent_block_free = 4\nfor _ in range(tasks_per_node):\n    bits_left = bits_per_task\n    cpu_bind_masks.append(\'0x\')\n    while bits_left >= current_block_free:\n        mask = \'1\'*current_block_free\n        cpu_bind_masks[-1] += hex(int(mask, 2))[2:].upper()\n        bits_left -= current_block_free\n        current_block_free = 4\n        current_block += 1\n    if bits_left > 0:\n        mask = \'1\'*bits_left + \'0\'*(4-bits_left)\n        cpu_bind_masks[-1] += hex(int(mask, 2))[2:].upper()\n        current_block_free -= bits_left\n    cpu_bind_masks[-1] += \'0\'*current_block');','.join(cpu_bind_masks)"}
+      - name: cpu_bind_mask
+        type: string, mode: python
+        "_": |
+          exec("cpu_bind_masks = list()\nbits_per_task = threads_per_task\ncurrent_block = 0\ncurrent_block_free = 4\nfor _ in range(tasks_per_node):\n    bits_left = bits_per_task\n    cpu_bind_masks.append('0x')\n    while bits_left >= current_block_free:\n        mask = '1'*current_block_free\n        cpu_bind_masks[-1] += hex(int(mask, 2))[2:].upper()\n        bits_left -= current_block_free\n        current_block_free = 4\n        current_block += 1\n    if bits_left > 0:\n        mask = '1'*bits_left + '0'*(4-bits_left)\n        cpu_bind_masks[-1] += hex(int(mask, 2))[2:].upper()\n        current_block_free -= bits_left\n    cpu_bind_masks[-1] += '0'*current_block");",".join(cpu_bind_masks)
   - name: run_benchmark
     parameter:
       - name: exec_bench
