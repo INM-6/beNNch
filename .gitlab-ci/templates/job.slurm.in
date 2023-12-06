@@ -20,9 +20,13 @@
 #SBATCH -e stderr
 #SBATCH --nodes=#NODES#
 #SBATCH --ntasks-per-node=#NTASKS_PER_NODE#
+#SBATCH --cpus-per-task=#THREADS_PER_TASK#
 #SBATCH --time=#TIME#
 #SBATCH --exclusive
 #SBATCH --account=#ACCOUNT#
+#SBATCH --hint=nomultithread
+#SBATCH --distribution=block:block:fcyclic
+#SBATCH --cpu-bind=mask_cpu:#CPU_BIND_MASK#
 
 echo "JobId: $SLURM_JOB_ID"
 

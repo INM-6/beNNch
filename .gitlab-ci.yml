@@ -22,7 +22,7 @@ variables:
   SIMULATOR_REPO:
     description: "Simulator repository to use for benchmarking."
     value: "https://github.com/nest/nest-simulator"
-  SIMULATOR_BRANCH:
+  SIMULATOR_BRANCH: # SIMULATOR_PARAMETERS__BRANCH: TODO
     description: "Simulator repository branch to use for benchmarking."
     value: "master"
   CONFIG_REPO:
