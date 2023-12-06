@@ -106,30 +106,7 @@ for model_name, benchmark_config in config["benchmarks"].items():
         else:
             machine_param_list.append({"name": "walltime", "type": "string", "_": w})
 
-    # Construct pinning mask
-    cpu_bind_masks = list()
-    bits_per_task = machine_params["threads_per_task"]
-    current_block = 0
-    current_block_free = 4
-    for node in range(machine_params["tasks_per_node"]):
-        bits_left = bits_per_task
-        cpu_bind_masks.append("0x")
-        # fill whole 4-bit blocks as long as possible
-        while bits_left > current_block_free:
-            mask = '1'*current_block_free
-            cpu_bind_masks[-1] += hex(int(mask, 2))[2:].upper()
-            bits_left -= current_block_free
-            current_block_free = 4
-            current_block += 1
-        # if there are still threads left, partially fill the next block
-        if bits_left > 0:
-            mask = '1'*bits_left + '0'*(4-bits_left)
-            cpu_bind_masks[-1] += hex(int(mask, 2))[2:].upper()
-            current_block_free -= bits_left
-
-        cpu_bind_masks[-1] += '0'*current_block
     machine_param_list.append({"name": "cpu_bind_mask", "type": "string", "_": ",".join[cpu_bind_masks]})
-    print(",".join[cpu_bind_masks])
 
     jube_benchmark["parameterset"].append(
         {
