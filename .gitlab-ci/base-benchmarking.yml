@@ -35,6 +35,8 @@ variables:
   # Move all artifacts to user data directory
   artifacts:
     - 'if [[ $(realpath "$CI_PROJECT_DIR/config.yml") != $(realpath "$CONFIG_FILE_PATH") ]]; then mv "$CI_PROJECT_DIR/config.yml" "$CONFIG_FILE_PATH"; fi'
+    - 'if [[ $(realpath "$CI_PROJECT_DIR/simulator.module") != $(realpath "$SIMULATOR_MODULEFILE_PATH") ]]; then mv "$CI_PROJECT_DIR/simulator.module" "$SIMULATOR_MODULEFILE_PATH"; fi'
+    - 'if [[ $(realpath "$CI_PROJECT_DIR/simulator.planfile") != $(realpath "$SIMULATOR_PLANFILE_PATH") ]]; then mv "$CI_PROJECT_DIR/simulator.planfile" "$SIMULATOR_PLANFILE_PATH"; fi'
   environment-variables:
     - !reference [ .environment-vars ]
     # TODO
