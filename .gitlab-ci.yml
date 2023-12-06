@@ -102,13 +102,15 @@ Validate Input:
         export CB_MANUAL="0"
       fi
     - 'mkdir "$CI_PROJECT_DIR/tmp"'
-    - 'export CB_MACHINES=$(python "$CI_PROJECT_DIR/.gitlab-ci/scripts/patch_config.py" "$CI_PROJECT_DIR/tmp" "$CI_PROJECT_DIR/config.yml" "$CONFIG_REPO" "$CONFIG_BRANCH" "$CONFIG_PATH")'
+    - 'export CB_MACHINES=$(python "$CI_PROJECT_DIR/.gitlab-ci/scripts/patch_config.py" "$CI_PROJECT_DIR/tmp" "$CI_PROJECT_DIR/config.yml" "$CI_PROJECT_DIR/simulator.planfile" "$CI_PROJECT_DIR/simulator.module" "$CONFIG_REPO" "$CONFIG_BRANCH" "$CONFIG_PATH")'
     - 'rm -rf $CI_PROJECT_DIR/tmp'
     - 'mkdir "$CI_PROJECT_DIR/pipelines"'
     - 'python "$CI_PROJECT_DIR/.gitlab-ci/scripts/prepare_machine_pipelines.py" "$CI_PROJECT_DIR/.gitlab-ci/machine-configs" "$CI_PROJECT_DIR/pipelines" "$CI_PROJECT_DIR/config.yml" "$MACHINES"'
   artifacts:
     paths:
       - "config.yml"
+      - "simulator.module"
+      - "simulator.planfile"
       - "pipelines"
     when: on_success
 
