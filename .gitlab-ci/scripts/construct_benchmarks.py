@@ -106,8 +106,6 @@ for model_name, benchmark_config in config["benchmarks"].items():
         else:
             machine_param_list.append({"name": "walltime", "type": "string", "_": w})
 
-    machine_param_list.append({"name": "cpu_bind_mask", "type": "string", "_": ",".join[cpu_bind_masks]})
-
     jube_benchmark["parameterset"].append(
         {
             "name": "machine_parameters",
