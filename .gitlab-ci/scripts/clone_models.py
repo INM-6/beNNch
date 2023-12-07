@@ -46,4 +46,6 @@ shutil.rmtree(models_tmp_dir)
 env = os.environ.copy()
 env["SOURCE"] = config["software_parameters"]["simulator_repo_url"]
 simulator_branch = config["software_parameters"]["simulator_repo_branch"]
-subprocess.Popen(["build", "--get", "--silent", "simulator", simulator_branch], env=env)
+subprocess.Popen(["build", "--get", "--silent", "simulator", simulator_branch], env=env, stdout=subprocess.DEVNULL)
+
+print(simulator_branch)
