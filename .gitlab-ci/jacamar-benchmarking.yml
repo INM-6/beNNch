@@ -55,9 +55,7 @@ Preparation:
     - !reference [ .prepare-benchmarks, environment-load ]
     # TODO: Metadata
     # - 'pip install git+https://github.com/INM-6/gather-metadata.git'
-    # Prepare builder
-    - !reference [ .prepare-benchmarks, builder ]
-    # Clone simulator and model repositories
+    # Clone simulator and model repositories and prepare builder
     - !reference [ .prepare-benchmarks, clone-repositories ]
     # Construct JUBE benchmark files from provided config
     - !reference [ .prepare-benchmarks, construct-benchmarks ]
