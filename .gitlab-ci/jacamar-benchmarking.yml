@@ -20,13 +20,8 @@ include:
 
 
 variables:
-  JUBE_RESULTS_DIR: "$$USER_DATA_DIR/jube_results"
-  BENCHMARKS_DIR: "$$USER_DATA_DIR/benchmarks"
-  CONFIG_FILE_PATH: "$$USER_DATA_DIR/config.yml"
   SIMULATOR_MODULEFILE_PATH: "$$USER_DATA_DIR/simulator.module"
   SIMULATOR_PLANFILE_PATH: "$$USER_DATA_DIR/simulator.planfile"
-  MODELS_DIR: "$$USER_DATA_DIR/models"
-  OUTPUT_DIR: "$$USER_DATA_DIR/benchmark_results"
   BUILDER_MODULES_DIR: "$$USER_DATA_DIR/modules"
   BUILDER_PLANFILE_DIR: "$$USER_DATA_DIR/Builder/plans"
   BUILDER_PACKAGE_DIR: "$$USER_DATA_DIR/Builder/cache/packages"
@@ -35,9 +30,8 @@ variables:
   BUILDER_BUILD_DIR: "$$USER_DATA_DIR/Builder/build"
   BUILDER_LOG_DIR: "$$USER_DATA_DIR/Builder/log/"
   BUILDER_CONFIG_PATH: "$$USER_DATA_DIR/.buildrc"
-  MACHINE: "$CB_MACHINE"
 
-
+# Must define USER_DATA_DIR
 Preparation:
   extends: [ .base-benchmarking, .preparation ]
   artifacts:
@@ -111,12 +105,14 @@ Benchmarking:
     # Copy jube benchmark files for archiving as artifacts
     - 'cp -r "$BENCHMARKS_DIR/jube" "$CI_PROJECT_DIR/specifications"'
     # Generate flipbook
-    - !reference [ .results, flipbook ]
+    - !reference [ .flipbook ]
+    # Collect metadata and prepare
+    - !reference [ .collect-metadata ]
     # Forward all environment variables to next stage
     - !reference [ .variables-as-artifacts ]
 
 Aggregation:
-  extends: [ .preparation ]
+  extends: [ .aggregation ]
   needs: 
     - job: "Benchmarking"
       artifacts: true
@@ -124,7 +120,6 @@ Aggregation:
     # Prepare environment
     - !reference [ .prepare-benchmarks, environment-load ]
     # Collect and upload metadata and results
-    - !reference [ .results, metadata ]
-    - !reference [ .results, upload ]
+    - !reference [ .upload-results ]
     # - 'chmod -R 777 "$USER_DATA_DIR/bennch/results/.git"'  # Todo: Probably not required, needs fix
     # - 'rm -rf $USER_DATA_DIR'

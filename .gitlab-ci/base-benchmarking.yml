@@ -16,9 +16,16 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 variables:
-  SIMULATOR_REPO_DIR: "$$USER_DATA_DIR/repository/"
+  SIMULATOR_REPO_DIR: "$$USER_DATA_DIR/repository"
+  RESULTS_DIR: "$$USER_DATA_DIR/results"
   SCRIPTS_DIR: "$CI_PROJECT_DIR/.gitlab-ci/scripts"
   TEMPLATES_DIR: "$CI_PROJECT_DIR/.gitlab-ci/templates"
+  JUBE_RESULTS_DIR: "$$USER_DATA_DIR/jube_results"
+  BENCHMARKS_DIR: "$$USER_DATA_DIR/benchmarks"
+  CONFIG_FILE_PATH: "$$USER_DATA_DIR/config.yml"
+  MODELS_DIR: "$$USER_DATA_DIR/models"
+  OUTPUT_DIR: "$$USER_DATA_DIR/benchmark_results"
+  MACHINE: "$CB_MACHINE"
 
 .base-benchmarking:
   allow_failure: false
@@ -28,6 +35,7 @@ variables:
       artifacts: true
 
 # Requires git, python3, and pyyaml
+# Run once per machine for all models
 .prepare-benchmarks:
   get-uid:
     - |
@@ -62,8 +70,10 @@ variables:
     - 'eval MODELS_DIR="$MODELS_DIR"'
     - 'eval BENCHMARKS_DIR="$BENCHMARKS_DIR"'
     - 'eval OUTPUT_DIR="$OUTPUT_DIR"'
+    # - 'eval RESULTS_DIR="$RESULTS_DIR"'
+    - 'eval RESULTS_REPO_DIR="RESULTS_REPO_DIR"'
   create-dirs:
-    - 'mkdir -p "$USER_DATA_DIR" "$SIMULATOR_REPO_DIR" "$BENCHMARKS_DIR/metrics" "$JUBE_RESULTS_DIR" "$BENCHMARKS_DIR/jube" "$BUILDER_MODULES_DIR" "$BUILDER_PLANFILE_DIR" "$BUILDER_PACKAGE_DIR" "$BUILDER_SOURCE_DIR" "$BUILDER_INSTALL_DIR" "$BUILDER_BUILD_DIR" "$BUILDER_LOG_DIR" "$MODELS_DIR" "$OUTPUT_DIR"'
+    - 'mkdir -p "$USER_DATA_DIR" "$SIMULATOR_REPO_DIR" "$BENCHMARKS_DIR/metrics" "$JUBE_RESULTS_DIR" "$BENCHMARKS_DIR/jube" "$BUILDER_MODULES_DIR" "$BUILDER_PLANFILE_DIR" "$BUILDER_PACKAGE_DIR" "$BUILDER_SOURCE_DIR" "$BUILDER_INSTALL_DIR" "$BUILDER_BUILD_DIR" "$BUILDER_LOG_DIR" "$MODELS_DIR" "$OUTPUT_DIR" "$CI_PROJECT_DIR/flipbooks"'
   clone-repositories:
     - 'export SIMULATOR_BRANCH=$(python3 "$SCRIPTS_DIR/clone_models.py" "$CONFIG_FILE_PATH" "$MODELS_DIR" "$CB_MODELS")'
   environment-init:
@@ -78,8 +88,10 @@ variables:
   results: []
     # Set result repository
     # The additional empty value for credential.helper causes any existing credential helpers to be removed, preventing the addition of this token into the user's credential helper. If you'd like the user to be able to save it, then remove that directive. See https://stackoverflow.com/questions/70960407/keep-git-auth-as-environment-variable-instead-of-evaluated-value
-    # - 'git clone -c credential.helper= -c credential.helper='!f() { echo username=author; echo "password=$RESULTS_REPO_TOKEN"; };f' --single-branch --branch="$RESULTS_BRANCH" --depth=1 "$RESULTS_REPO_URL" "$USER_DATA_DIR/results"'
-    # - 'cd $USER_DATA_DIR/results'
+    # - |
+    #   git clone -c credential.helper='!f() { echo "username=$RESULTS_REPO_TOKEN"; echo "password="; };f' --single-branch --branch="$RESULTS_BRANCH" --depth=1 "$RESULTS_REPO_URL" "$RESULTS_DIR"
+    # - 'cd "$RESULTS_DIR"'
+    # - 'git config --local --unset credential.helper'
     # - 'git annex init'
   builder:
     # Prepare Builder .buildrc
@@ -104,11 +116,13 @@ variables:
       python3 "$SCRIPTS_DIR/construct_benchmarks.py" "$TEMPLATES_DIR/jube-template.yml" "$CONFIG_FILE_PATH" "$BUILDER_MODULES_DIR" "$SIMULATOR_BRANCH" "$MODELS_DIR" "$BENCHMARKS_DIR/jube" "$BENCHMARKS_DIR/metrics" "$SCRIPTS_DIR" "$JUBE_RESULTS_DIR" "$USER_DATA_DIR/prepare.sh" "$CI_PROJECT_DIR/pipelines/${MACHINE}.yml" "$MACHINE"
       echo 'cd "$CURR_PATH"' >> "$USER_DATA_DIR/prepare.sh"
 
-# Requires jube
+# Requires jube, python3
+# Run once per model-machine combination
 .run-benchmarks:
   # Wait until all other jube benchmarks have been started until the JUBE_BENCHMARK_ID of this subpipeline
+  - 'cd $JUBE_RESULTS_DIR'
   - |
-    while [ $(echo */ | wc) -neq $(expr $JUBE_BENCHMARK_ID + 0) ] ; do
+    while [ $( find . -mindepth 1 -maxdepth 1 -type d | wc -l) -ne $(expr $JUBE_BENCHMARK_ID + 0) ] ; do
       sleep 3
     done
   # Start the benchmarks now
@@ -118,7 +132,7 @@ variables:
     COUNTER=0
     NUM_FAILURES=-1
     declare -A retries
-    for run in "$USER_DATA_DIR/jube_results/$JUBE_BENCHMARK_ID"/*/ ; do
+    for run in "$JUBE_RESULTS_DIR/$JUBE_BENCHMARK_ID"/*/ ; do
         retries[$(basename $run)]=0
     done
     while jube status --id=$JUBE_BENCHMARK_ID "$JUBE_RESULTS_DIR" | grep -q "RUNNING" || [[ $NO_FAILURES -ne 0 ]] ; do
@@ -133,7 +147,7 @@ variables:
         COUNTER=0
         NUM_FAILURES=0
         jube continue --error --id=$JUBE_BENCHMARK_ID --hide-animation "$JUBE_RESULTS_DIR"
-        for run in "$USER_DATA_DIR/jube_results/$JUBE_BENCHMARK_ID"/*/ ; do
+        for run in "$JUBE_RESULTS_DIR/$JUBE_BENCHMARK_ID"/*/ ; do
           if [ -f "$run/work/stdout" ] ; then
             JOBID=$(grep -e 'Submitted batch job ' -e 'JobId: ' "$run/work/stdout" | head -1 | grep -oP '\d*')
             if grep -q -E 'terminated due to failure of node|Force Terminated StepId' "$run/work/stderr" ; then
@@ -154,47 +168,66 @@ variables:
     done
   - 'jube info --id=$JUBE_BENCHMARK_ID "$JUBE_RESULTS_DIR"'
   - 'jube result --analyse --id=$JUBE_BENCHMARK_ID "$JUBE_RESULTS_DIR"'
-  - 'cp "$USER_DATA_DIR/jube_results/$JUBE_BENCHMARK_ID/result/result_table.dat" "$OUTPUT_DIR/${JUBE_BENCHMARK_FILE}_${MACHINE}.csv"'
+
+# Requires python3, gathermetadata
+# Run once per model-machine combination
+.collect-metadata:
+  # - 'gathermetadata ${USER_DATA_DIR}/metadata'
+  - 'export RESULTS_UID=$(uuidgen)'
+  - 'mkdir -p "${OUTPUT_DIR}/${JUBE_BENCHMARK_FILE}_${MACHINE}/"'
+  - 'python "${SCRIPTS_DIR}/_gathermetadata.py" "${OUTPUT_DIR}/${JUBE_BENCHMARK_FILE}_${MACHINE}/"'  # TODO: Should happen on compute node instead
+  - 'cp "${CONFIG_FILE_PATH}" "${OUTPUT_DIR}/${JUBE_BENCHMARK_FILE}_${MACHINE}/config.yml"'
+  # Add actual benchmark data
+  - 'cp "$JUBE_RESULTS_DIR/$JUBE_BENCHMARK_ID/result/result_table.dat" "$OUTPUT_DIR/${JUBE_BENCHMARK_FILE}_${MACHINE}.csv"'
+  # - 'tar -czf "${RESULTS_DIR}/$RESULTS_PATH/${RESULTS_UID}.tgz" -C "${OUTPUT_DIR}" "${JUBE_BENCHMARK_FILE}_${MACHINE}"'
+  - 'tar -czf "${RESULTS_REPO_DIR}/${RESULTS_UID}.tgz" -C "${OUTPUT_DIR}" "${JUBE_BENCHMARK_FILE}_${MACHINE}"'
+  # Add metadata to output archive
+  - 'cd "${SIMULATOR_REPO_DIR}"'
+  - 'export simulator_git_commit_hash=$(git rev-parse HEAD)'
+  - 'cd ${MODELS_DIR}/${JUBE_BENCHMARK_FILE}'
+  - 'export model_git_commit_hash=$(git rev-parse HEAD)'
+  # - 'cd "$RESULTS_DIR/$RESULTS_PATH/"'
+  - 'cd $RESULTS_REPO_DIR'
+  - 'git config --global --add safe.directory $RESULTS_REPO_DIR'
+  - 'git annex add "${RESULTS_UID}.tgz"'
+  - 'git annex metadata "${RESULTS_UID}.tgz" --set user=$USER'
+  - 'git annex metadata "${RESULTS_UID}.tgz" --set machine=$MACHINE'
+  - 'git annex metadata "${RESULTS_UID}.tgz" --set key=$RESULTS_UID'
+  - 'git annex metadata "${RESULTS_UID}.tgz" --set model_name=$JUBE_BENCHMARK_FILE'
+  - 'git annex metadata "${RESULTS_UID}.tgz" --set model_git_commit_hash="$model_git_commit_hash"'
+  - 'git annex metadata "${RESULTS_UID}.tgz" --set simulator_version=$SIMULATOR_BRANCH'
+  - 'git annex metadata "${RESULTS_UID}.tgz" --set simulator_git_commit_hash="$simulator_git_commit_hash"'
+  # Add metadata coming from lscpu and from user config
+  - 'python ${SCRIPTS_DIR}/add_metadata.py "${RESULTS_UID}.tgz" "${JUBE_RESULTS_DIR}/000000/000000_bench/work/cpu.json" "$CONFIG_FILE_PATH" "$MACHINE" "$JUBE_BENCHMARK_FILE"'
+
+# Requires python3, pyyaml, jupyter, nbconvert, git, and git-annex
+# Run once per model-machine combination
+.flipbook:
+  # TODO: Add another stage which can be triggered manually to create flipbooks or other plots with additional configuration
+  - 'python3 "${SCRIPTS_DIR}/create_flipbooks.py" "$JUBE_RESULTS_DIR" "$CI_PROJECT_DIR/flipbooks" "$BENCHMARK_ID"'
+
+# Requires git, python3, pyyaml, bennchplot
+# Run once per machine for all models
+.upload-results:
+  # - 'cd "$RESULTS_DIR/$RESULTS_PATH"'
+  # - |
+  #   git config --local credential.helper '!f() { echo "username=$RESULTS_REPO_TOKEN"; echo "password="; };f'
+  # # - 'git config user.email ""'
+  # - 'git config --local user.name "${USER}"'
+  # # Push data to remote repository
+  # - 'git commit -m "Adding benchmark data for ${BENCHMARK_ID}"'
+  # - 'git push origin $RESULTS_BRANCH'
+  # - 'git annex copy --to=origin'
+
+  - 'cd $RESULTS_REPO_DIR'
+  - 'git config user.name "${USER}"'
+  - 'git commit -m "Adding benchmark data for ${BENCHMARK_ID}"'
 
 .variables-as-artifacts:
   - 'rm -f "$CI_PROJECT_DIR/benchmark_variables.env"'
   - |
-    for var in BENCHMARK_ID BENCHMARK_UID CB_RUNNER_ACCOUNT CB_COMPUTE_PROJECT CB_DATA_PROJECT CB_DEPENDENCIES USER_DATA_DIR BENCHMARKS_DIR SIMULATOR_REPO SIMULATOR_BRANCH SIMULATOR_REPO_DIR JUBE_RESULTS_DIR RESULTS_REPO_DIR BUILDER_MODULES_DIR BUILDER_PLANFILE_DIR BUILDER_PACKAGE_DIR BUILDER_SOURCE_DIR BUILDER_INSTALL_DIR BUILDER_BUILD_DIR BUILDER_LOG_DIR CONFIG_FILE_PATH SIMULATOR_MODULEFILE_PATH SIMULATOR_PLANFILE_PATH MODELS_DIR BUILDER_CONFIG_PATH OUTPUT_DIR ; do
+    for var in BENCHMARK_ID BENCHMARK_UID CB_RUNNER_ACCOUNT CB_COMPUTE_PROJECT CB_DATA_PROJECT CB_DEPENDENCIES USER_DATA_DIR BENCHMARKS_DIR SIMULATOR_REPO SIMULATOR_BRANCH SIMULATOR_REPO_DIR JUBE_RESULTS_DIR RESULTS_REPO_DIR BUILDER_MODULES_DIR BUILDER_PLANFILE_DIR BUILDER_PACKAGE_DIR BUILDER_SOURCE_DIR BUILDER_INSTALL_DIR BUILDER_BUILD_DIR BUILDER_LOG_DIR CONFIG_FILE_PATH MODELS_DIR BUILDER_CONFIG_PATH OUTPUT_DIR RESULTS_DIR ; do
+    # RESULTS_REPO_URL RESULTS_BRANCH RESULTS_PATH RESULTS_REPO_TOKEN
       eval val=\$$var
       echo "${var}=${val}" >> "$CI_PROJECT_DIR/benchmark_variables.env"
     done
-
-# TODO: Collect metadata about the pipeline (config, etc.) and upload via git-annex
-.results:
-  metadata:
-    # - cd ${model_path}
-    # - model_git_commit_hash=$(git rev-parse HEAD)
-    # - cd -
-    # - 'gathermetadata ${USER_DATA_DIR}/metadata'
-    - 'export RESULTS_UID=$(uuidgen)'
-    - 'python "${SCRIPTS_DIR}/_gathermetadata.py" "${USER_DATA_DIR}/${RESULTS_UID}"'
-    - 'cp "${CONFIG_FILE_PATH}" "${USER_DATA_DIR}/${RESULTS_UID}/config.yml"'
-    # Actual benchmark data
-    - 'cp "$OUTPUT_DIR"/* ${USER_DATA_DIR}/${RESULTS_UID}/'
-    - 'tar -czf ${USER_DATA_DIR}/${RESULTS_UID}.tgz -C ${USER_DATA_DIR} ${RESULTS_UID}'
-
-  upload:
-    # TODO: Move the following two lines to config file as soon as a consistent environment exsists on JSC systems
-    - 'module use /p/usersoftware/djinb33/modules/linux-rocky8-x86_64/gcc/11.3.0/'
-    - 'module load git-annex'
-  
-    # Upload benchmark results
-    - 'cp "${USER_DATA_DIR}/${RESULTS_UID}.tgz" "$RESULTS_REPO_DIR/${RESULTS_UID}.tgz"'
-    - 'cd "$RESULTS_REPO_DIR"'
-    - 'git config user.email ""'
-    - 'git config user.name "${USER}"'
-    - 'git annex add "${RESULTS_UID}.tgz"'
-    - 'git annex metadata "${RESULTS_UID}.tgz" --set user=$USER'
-    - 'git commit -m "Adding benchmark data for ${BENCHMARK_ID}"'
-    # - 'git annex sync --no-pull --content-of=${BENCHMARK_UID}.tgz --jobs=cpus'
-
-  # Requires python3, pyyaml, jupyter, nbconvert, git, and git-annex
-  flipbook:
-    # TODO: Add another stage which can be triggered manually to create flipbooks with additional configuration
-    - 'mkdir "$CI_PROJECT_DIR/flipbooks"'
-    - 'python3 "${SCRIPTS_DIR}/create_flipbooks.py" "$JUBE_RESULTS_DIR" "$CI_PROJECT_DIR/flipbooks" "$BENCHMARK_ID"'

@@ -38,6 +38,12 @@ include: .gitlab-ci/jacamar-benchmarking.yml
     - jureca
     - jacamar
 
+.aggregation:
+  tags:
+    - shell
+    - jureca
+    - jacamar
+
 .environment-init:
   - 'export PYTHONNOUSERSITE=1'
 

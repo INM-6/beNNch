@@ -30,6 +30,8 @@
 
 echo "JobId: $SLURM_JOB_ID"
 
+jutil user cpuquota -u $USER -p #ACCOUNT# --currsys
+
 export OMP_NUM_THREADS=#THREADS_PER_TASK#
 export OMP_PROC_BIND=TRUE
 
@@ -49,6 +51,7 @@ module list
 
 #COMMANDS#
 
+jutil user cpuquota -u $USER -p #ACCOUNT# --currsys
 scontrol show jobid ${SLURM_JOB_ID} -dd
 
 touch ready

@@ -83,6 +83,7 @@ Validate Input:
   script:
     - |+
       # Make sure values were provided for all mandatory variables
+      # for var in BENCHMARK_ID CONFIG_REPO CONFIG_BRANCH CONFIG_PATH RESULTS_REPO_URL RESULTS_BRANCH RESULTS_PATH RESULTS_REPO_TOKEN ; do
       for var in BENCHMARK_ID CONFIG_REPO CONFIG_BRANCH CONFIG_PATH RESULTS_REPO_DIR ; do
         eval val=\$"$var"
         if [ -z "$val" ] ; then
