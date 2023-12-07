@@ -92,7 +92,10 @@ variables:
     # - 'git config --local --unset credential.helper'
     # - 'git annex init'
   clone-repositories:
-    - 'export SIMULATOR_BRANCH=$(python3 "$SCRIPTS_DIR/clone_models.py" "$CONFIG_FILE_PATH" "$MODELS_DIR" "$CB_MODELS")'
+    - |
+      export CB_SIMULATOR_REPO=$(python3 -c "import yaml; yaml.safe_load($CONFIG_FILE_PATH)['software_parameters']['simulator_repo_url']")
+      export CB_SIMULATOR_BRANCH=$(python3 -c "import yaml; yaml.safe_load($CONFIG_FILE_PATH)['software_parameters']['simulator_repo_branch']")
+    - 'python3 "$SCRIPTS_DIR/clone_models.py" "$CONFIG_FILE_PATH" "$MODELS_DIR" "$CB_MODELS"'
     # Prepare Builder .buildrc
     - |
       echo PLANFILE_PATH="$BUILDER_PLANFILE_DIR" > "$BUILDER_CONFIG_PATH"
@@ -103,16 +106,16 @@ variables:
       echo MODULE_INSTALL_PATH="$BUILDER_MODULES_DIR" >> "$BUILDER_CONFIG_PATH"
       echo LOG_PATH="$BUILDER_LOG_DIR" >> "$BUILDER_CONFIG_PATH"
     # Prepare simulator installation (builder plan and module)
-    - 'mkdir -p "$BUILDER_PLANFILE_DIR/simulator/$SIMULATOR_BRANCH"'
-    - 'cp "$SIMULATOR_PLANFILE_PATH" "$BUILDER_PLANFILE_DIR/simulator/$SIMULATOR_BRANCH/default"'
-    - 'cp "$SIMULATOR_MODULEFILE_PATH" "$BUILDER_PLANFILE_DIR/simulator/$SIMULATOR_BRANCH/default.module"'
+    - 'mkdir -p "$BUILDER_PLANFILE_DIR/simulator/$CB_SIMULATOR_BRANCH"'
+    - 'cp "$SIMULATOR_PLANFILE_PATH" "$BUILDER_PLANFILE_DIR/simulator/$CB_SIMULATOR_BRANCH/default"'
+    - 'cp "$SIMULATOR_MODULEFILE_PATH" "$BUILDER_PLANFILE_DIR/simulator/$CB_SIMULATOR_BRANCH/default.module"'
   build-simulator:
-    - 'build -f simulator $SIMULATOR_BRANCH'
+    - 'build -f simulator $CB_SIMULATOR_BRANCH'
   construct-benchmarks:
     - |
       echo 'CURR_PATH=$(pwd)' > "$USER_DATA_DIR/prepare.sh"
       echo 'cd "$USER_DATA_DIR/user_files"' >> "$USER_DATA_DIR/prepare.sh"
-      python3 "$SCRIPTS_DIR/construct_benchmarks.py" "$TEMPLATES_DIR/jube-template.yml" "$CONFIG_FILE_PATH" "$BUILDER_MODULES_DIR" "$SIMULATOR_BRANCH" "$MODELS_DIR" "$BENCHMARKS_DIR/jube" "$BENCHMARKS_DIR/metrics" "$SCRIPTS_DIR" "$JUBE_RESULTS_DIR" "$USER_DATA_DIR/prepare.sh" "$CI_PROJECT_DIR/pipelines/${MACHINE}.yml" "$MACHINE"
+      python3 "$SCRIPTS_DIR/construct_benchmarks.py" "$TEMPLATES_DIR/jube-template.yml" "$CONFIG_FILE_PATH" "$BUILDER_MODULES_DIR" "$CB_SIMULATOR_BRANCH" "$MODELS_DIR" "$BENCHMARKS_DIR/jube" "$BENCHMARKS_DIR/metrics" "$SCRIPTS_DIR" "$JUBE_RESULTS_DIR" "$USER_DATA_DIR/prepare.sh" "$CI_PROJECT_DIR/pipelines/${MACHINE}.yml" "$MACHINE"
       echo 'cd "$CURR_PATH"' >> "$USER_DATA_DIR/prepare.sh"
 
 # Requires jube, python3
@@ -194,7 +197,7 @@ variables:
   - 'git annex metadata "${RESULTS_UID}.tgz" --set key=$RESULTS_UID'
   - 'git annex metadata "${RESULTS_UID}.tgz" --set model_name=$JUBE_BENCHMARK_FILE'
   - 'git annex metadata "${RESULTS_UID}.tgz" --set model_git_commit_hash="$model_git_commit_hash"'
-  - 'git annex metadata "${RESULTS_UID}.tgz" --set simulator_version=$SIMULATOR_BRANCH'
+  - 'git annex metadata "${RESULTS_UID}.tgz" --set simulator_version=$CB_SIMULATOR_BRANCH'
   - 'git annex metadata "${RESULTS_UID}.tgz" --set simulator_git_commit_hash="$simulator_git_commit_hash"'
   # Add metadata coming from lscpu and from user config
   - 'python ${SCRIPTS_DIR}/add_metadata.py "${RESULTS_UID}.tgz" "${JUBE_RESULTS_DIR}/000000/000000_bench/work/cpu.json" "$CONFIG_FILE_PATH" "$MACHINE" "$JUBE_BENCHMARK_FILE"'
@@ -225,7 +228,7 @@ variables:
 .variables-as-artifacts:
   - 'rm -f "$CI_PROJECT_DIR/benchmark_variables.env"'
   - |
-    for var in BENCHMARK_ID BENCHMARK_UID CB_RUNNER_ACCOUNT CB_COMPUTE_PROJECT CB_DATA_PROJECT CB_DEPENDENCIES USER_DATA_DIR BENCHMARKS_DIR SIMULATOR_REPO SIMULATOR_BRANCH SIMULATOR_REPO_DIR JUBE_RESULTS_DIR RESULTS_REPO_DIR BUILDER_MODULES_DIR BUILDER_PLANFILE_DIR BUILDER_PACKAGE_DIR BUILDER_SOURCE_DIR BUILDER_INSTALL_DIR BUILDER_BUILD_DIR BUILDER_LOG_DIR CONFIG_FILE_PATH MODELS_DIR BUILDER_CONFIG_PATH OUTPUT_DIR RESULTS_DIR ; do
+    for var in BENCHMARK_ID BENCHMARK_UID CB_RUNNER_ACCOUNT CB_COMPUTE_PROJECT CB_DATA_PROJECT CB_DEPENDENCIES USER_DATA_DIR BENCHMARKS_DIR CB_SIMULATOR_REPO CB_SIMULATOR_BRANCH SIMULATOR_REPO_DIR JUBE_RESULTS_DIR RESULTS_REPO_DIR BUILDER_MODULES_DIR BUILDER_PLANFILE_DIR BUILDER_PACKAGE_DIR BUILDER_SOURCE_DIR BUILDER_INSTALL_DIR BUILDER_BUILD_DIR BUILDER_LOG_DIR CONFIG_FILE_PATH MODELS_DIR BUILDER_CONFIG_PATH OUTPUT_DIR RESULTS_DIR ; do
     # RESULTS_REPO_URL RESULTS_BRANCH RESULTS_PATH RESULTS_REPO_TOKEN
       eval val=\$$var
       echo "${var}=${val}" >> "$CI_PROJECT_DIR/benchmark_variables.env"

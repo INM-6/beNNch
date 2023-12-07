@@ -45,18 +45,38 @@ or
 Examples can be found here:
 https://github.com/JanVogelsang/CI-Bennch-config/blob/deliver-events-first/config.yml
 
-### Benchmark dependencies
+Variables are evaluated right when the pipeline is created (i.e., when clicking on the "Run pipeline" button). If a variable is only known on a specific machine and should be evaluated once jobs of the pipeline run on the machine, use double dollar signs (`$$`) instead of a single one inside the _variables_ section to escape the variable (e.g. `TEMP_DIR: "$$SCRATCH_cjinb33"`). Additionally, any variable containing an escaped variable must be evaluated at runtime (e.g. `'eval TEMP_DIR="$TEMP_DIR"'`) in both the _init_ and _load_ sections.
+
+#### Benchmark dependencies
 ```yaml
 [MACHINE_ID]:
-  variables:
-    TEMP_DIR: ""   # Directory to temporary files accessible from both login and compute nodes
-    USERSOFTWARE_DIR: ""
-  init: []
-  load: []  # list of strings
+  variables: []  # Any variables that should be available in "vars", "init", and "load"
+  vars: []  # Preparing the environment variables. Called before "init" and "load"
+  init: []  # Called once to initialize the environment. Called after "vars" but before "load".
+  load: []  # Called each time after calling "vars" (but never before "init" was called). Used to load the environment.
 ```
-Variables are evaluated when the pipeline is created (i.e., when clicking on the "Run pipeline" button). If a variable is only known on a specific machine and should be evaluated once jobs of the pipeline run on the machine, use double dollar signs (`$$`) instead of a single one inside the _variables_ section to escape the variable (e.g. `TEMP_DIR: "$$SCRATCH_cjinb33"`). Additionally, any variable containing an escaped variable must be evaluated at runtime (e.g. `'eval TEMP_DIR="$TEMP_DIR"'`) in both the _init_ and _load_ sections.
 
-### Global variables
+### Pipeline variables
+There is a set of variables beNNch provides which can be used at various places. Some are set by beNNch and some must be
+provided by the user. All of the variables below can be safely accessed by the user at any time, given the variable is
+already set at that time. The columns 1 and 2 indicate two different points in time when the user might access
+these variables. An "X" indicates the variable has already been set at this point.  
+1: In the "run pipeline" form
+2: In simulator-modulefile/-planfile or dependencies
+
+| Variable name       | Type                            | Read-only | Mandatory | 1 | 2 | Description                                                                                                                                                                                            |
+|---------------------|---------------------------------|-----------|-----------|---|---|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| BENCHMARK_ID        | String                          | No        | Yes       | X | X | Label given to the CI pipeline to identify a benchmark.                                                                                                                                                |
+| BENCHMARK_UID       | String (POSIX compatible)       | Yes       | /         |   | X | Label converted to a POSIX-compatible version for filenames.                                                                                                                                           |
+| CONFIG_REPO         | Any valid input to git clone    | No        | Yes       | X | X | Configuration repository to use for benchmarking.                                                                                                                                                      |
+| CONFIG_BRANCH       | String                          | No        | Yes       | X | X | Configuration repository branch to use for benchmarking.                                                                                                                                               |
+| CONFIG_PATH         | Relative path to file           | No        | Yes       | X | X | Path to configuration file (e.g. config.yml) relative to the config repository root.                                                                                                                   |
+| RESULTS_REPO_DIR    | Absolute path to directory      | No        | Yes       | X | X | Directory of git-annex-enabled repository where result files are moved to.                                                                                                                             |
+| EXTRA_CMAKE_FLAGS   | Any valid input to cmake        | No        | No        | X | X | Any extra CMake flags which should be used to compile NEST. Only single quotes allowed! Multiple values for a single parameter must be single quoted and separated by semicolons.                      |
+| CB_MODELS           | Comma-separated list of strings | No        | No        | X | X | Comma-separated list of the names of all models for which benchmarks should be run. Leave empty to run benchmarks for all models specified in the configuration file.                                  |
+| CB_MACHINES         | Comma-separated list of strings | No        | No        | X | X | Comma-separated list of the names of all machines on which benchmarks should be run. Leave empty to trigger benchmark runs for manually for each individual machine for which configuration was found. |
+| CB_SIMULATOR_REPO   | URL to git repository           | Yes       | /         |   | X | The url to the simulator git repository, which will most likely be used as input to git clone in the builder planfile.                                                                                 |
+| CB_SIMULATOR_BRANCH | String                          | Yes       | /         |   | X | The simulator git branch to be used.                                                                                                                                                                   |
 
 ### Model templating
 Find examples for MAM, Microcircuit and HPC benchmark here: 
