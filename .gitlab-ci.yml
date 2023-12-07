@@ -59,9 +59,6 @@ variables:
   CB_MACHINES:
     description: "Comma-seperated list of the names of all machines on which benchmarks should be run. Leave empty to trigger benchmark runs for manually for each individual machine for which configuration was found."
     value: "jusuf"
-  NEST_VERSION:
-    description: "Either 2 or 3. TODO: Remove this"
-    value: "3"
 
 
 # Specify all machines for which configurations exist
@@ -86,7 +83,7 @@ Validate Input:
   script:
     - |+
       # Make sure values were provided for all mandatory variables
-      for var in BENCHMARK_ID SIMULATOR_REPO SIMULATOR_BRANCH CONFIG_REPO CONFIG_BRANCH CONFIG_PATH RESULTS_REPO_DIR NEST_VERSION ; do
+      for var in BENCHMARK_ID CONFIG_REPO CONFIG_BRANCH CONFIG_PATH RESULTS_REPO_DIR ; do
         eval val=\$"$var"
         if [ -z "$val" ] ; then
           echo "No value provided for variable ${var}!"
