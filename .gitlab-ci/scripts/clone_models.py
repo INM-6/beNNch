@@ -4,7 +4,7 @@ import subprocess
 import copy
 import shutil
 import yaml
-yaml.add_representer(str, lambda dumper, data: dumper.represent_scalar('tag:yaml.org,2002:str', data, style='"'))
+yaml.add_representer(str, lambda dumper, data: dumper.represent_scalar("tag:yaml.org,2002:str", data, style='"'))
 
 
 config_file_path = sys.argv[1]
@@ -41,3 +41,9 @@ for model_name, benchmark_configs in config["benchmarks"].items():
 
 # Remove temporary repositories again
 shutil.rmtree(models_tmp_dir)
+
+# Clone the simulator
+env = os.environ.copy()
+env["SOURCE"] = config["software_parameters"]["simulator_repo_url"]
+simulator_branch = config["software_parameters"]["simulator_repo_branch"]
+subprocess.Popen(["build", "--get", "--silent", "simulator", simulator_branch], env=env)
