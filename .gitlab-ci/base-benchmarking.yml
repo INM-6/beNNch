@@ -93,8 +93,8 @@ variables:
     # - 'git annex init'
   clone-repositories:
     - |
-      export CB_SIMULATOR_REPO=$(python3 -c "import yaml; yaml.safe_load($CONFIG_FILE_PATH)['software_parameters']['simulator_repo_url']")
-      export CB_SIMULATOR_BRANCH=$(python3 -c "import yaml; yaml.safe_load($CONFIG_FILE_PATH)['software_parameters']['simulator_repo_branch']")
+      export CB_SIMULATOR_REPO=$(python3 -c "import yaml; print(yaml.safe_load($CONFIG_FILE_PATH)['software_parameters']['simulator_repo_url'])")
+      export CB_SIMULATOR_BRANCH=$(python3 -c "import yaml; print(yaml.safe_load($CONFIG_FILE_PATH)['software_parameters']['simulator_repo_branch'])")
     - 'python3 "$SCRIPTS_DIR/clone_models.py" "$CONFIG_FILE_PATH" "$MODELS_DIR" "$CB_MODELS"'
     # Prepare Builder .buildrc
     - |
