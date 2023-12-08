@@ -174,10 +174,8 @@ variables:
 # Requires python3, gathermetadata
 # Run once per model-machine combination
 .collect-metadata:
-  # - 'gathermetadata ${USER_DATA_DIR}/metadata'
   - 'export RESULTS_UID=$(uuidgen)'
   - 'mkdir -p "${OUTPUT_DIR}/${JUBE_BENCHMARK_FILE}_${MACHINE}/"'
-  - 'python "${SCRIPTS_DIR}/_gathermetadata.py" "${OUTPUT_DIR}/${JUBE_BENCHMARK_FILE}_${MACHINE}/"'  # TODO: Should happen on compute node instead
   - 'cp "${CONFIG_FILE_PATH}" "${OUTPUT_DIR}/${JUBE_BENCHMARK_FILE}_${MACHINE}/config.yml"'
   # Add actual benchmark data
   - 'cp "$JUBE_RESULTS_DIR/$JUBE_BENCHMARK_ID/result/result_table.dat" "$OUTPUT_DIR/${JUBE_BENCHMARK_FILE}_${MACHINE}.csv"'
