@@ -29,7 +29,7 @@ parameterset:
         _: |
           ${optional_run_command}
           srun python ${run_file} ${run_args}
-          srun -n 1 --nodes 1 python ${scripts_dir}/collect_timer_data.py ${metrics_path} ${jube_wp_abspath} ${log_path}
+          srun -n 1 --nodes 1 --cpu-bind=mask_cpu:${cpu_bind_mask} python ${scripts_dir}/collect_timer_data.py ${metrics_path} ${jube_wp_abspath} ${log_path}
 
 fileset:
   name: bench_files
@@ -44,7 +44,6 @@ substituteset:
       - {source: "#NODES#", dest: $num_nodes}
       - {source: "#NTASKS_PER_NODE#", dest: $tasks_per_node}
       - {source: "#THREADS_PER_TASK#", dest: $threads_per_task}
-      - {source: "#CPU_BIND_MASK#", dest: $cpu_bind_mask}
       - {source: "#TIME#", dest: $walltime}
       - {source: "#COMMANDS#", dest: $exec_bench}
       - {source: "#ACCOUNT#", dest: $account}

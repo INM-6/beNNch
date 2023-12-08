@@ -26,7 +26,6 @@
 #SBATCH --account=#ACCOUNT#
 #SBATCH --hint=nomultithread
 #SBATCH --distribution=block:block:fcyclic
-#SBATCH --cpu-bind=mask_cpu:#CPU_BIND_MASK#
 
 echo "JobId: $SLURM_JOB_ID"
 
