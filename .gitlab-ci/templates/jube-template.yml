@@ -15,8 +15,8 @@
 parameterset:
   - name: bench_parameters
     parameter:
-      - {name: num_vps, type: int, mode: python, "_": "$tasks_per_node * $threads_per_task * $num_nodes}"
-      - {name: num_tasks, type: int, mode: python, "_": "$tasks_per_node * $num_nodes}"
+      - {name: num_vps, type: int, mode: python, "_": "$tasks_per_node * $threads_per_task * $num_nodes"}
+      - {name: num_tasks, type: int, mode: python, "_": "$tasks_per_node * $num_nodes"}
       - name: cpu_bind_mask
         type: string
         mode: python
