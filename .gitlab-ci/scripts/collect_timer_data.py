@@ -100,11 +100,9 @@ with open(os.path.join(workpackage_path, 'cpu.json'), 'w') as f:
 all_step_logfiles = glob.glob(os.path.join(log_path, '*logfile*_steps.dat'))
 
 N = len(all_step_logfiles)
-output_df = pd.read_csv(all_step_logfiles[0], sep=" ", header=None)
-output_df.columns = ["time", "vmsize", "vmpeak", "vmrss", "spike_counter"]
+output_df = pd.read_csv(all_step_logfiles[0], sep=" ", header=0)
 for logfile in all_step_logfiles[1:]:
-    df = pd.read_csv(logfile, sep=" ", header=None)
-    df.columns = ["time", "vmsize", "vmpeak", "vmrss", "spike_counter"]
+    df = pd.read_csv(logfile, sep=" ", header=0)
     output_df.add(df, fill_value=0)
 output_df["time"] /= N
 output_df["time_std"] = 0
