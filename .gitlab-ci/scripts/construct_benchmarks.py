@@ -75,12 +75,12 @@ for model_name, benchmark_config in config["benchmarks"].items():
 
     run_parameters = benchmark_config.get("run_parameters", dict())
     model_script_path = run_parameters["script_path"]
-    metrics = benchmark_config.get("metrics", [])
+    metrics = benchmark_config.get("metrics_mean", [])
     metrics_sum = benchmark_config.get("metrics_sum", [])
     all_metrics = metrics + metrics_sum
 
     # Write all metrics to a file to later extract timer data depending on the desired metrics
-    metrics_out = {"metrics": metrics, "metrics_sum": metrics_sum}
+    metrics_out = {"metrics_mean": metrics, "metrics_sum": metrics_sum}
     metrics_out_path = os.path.join(config_output_dir, f"cb_{model_name}_{machine}_metrics.yml")
     with open(metrics_out_path, 'w') as metrics_outfile:
         yaml.dump(metrics_out, metrics_outfile, default_flow_style=False)
@@ -169,8 +169,8 @@ for model_name, benchmark_config in config["benchmarks"].items():
         {"name": key, "mode": "pattern", "type": "float", "_": key + " $jube_pat_fp"} for key in all_metrics
     ]}
 
-    # Result
-    jube_benchmark["result"]["table"]["column"] = benchmark_config.get("results", []) + all_metrics
+    # Parameters to record
+    jube_benchmark["result"]["table"]["column"] = benchmark_config.get("params_rec", []) + all_metrics
 
     # Write jube benchmark file
     with open(os.path.join(benchmark_output_dir, f"cb_{model_name}_{machine}.yml"), 'w') as jube_outfile:
