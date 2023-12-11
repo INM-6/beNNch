@@ -220,6 +220,7 @@ variables:
   # - 'git annex copy --to=origin'
 
   - 'cd $RESULTS_REPO_DIR'
+  - 'echo $RESULTS_REPO_DIR'
   - 'git config user.name "${USER}"'
   - 'git commit -m "Adding benchmark data for ${BENCHMARK_ID}"'
 
