@@ -36,7 +36,7 @@ variables:
     value: "config.yml"
   RESULTS_REPO_DIR:
     description: "Directory of git-annex-enabled repository where result files are moved to."
-    value: "/p/largedata2/djinb33/shared/annex-test-repo"
+    value: "/p/largedata2/djinb33/shared/ci-bennch-annex-repo"
   # RESULTS_REPO_URL:
   #   description: "Repository to upload benchmark results to."
   #   value: "https://gin.g-node.org/janvog/CI-beNNch-results.git"
