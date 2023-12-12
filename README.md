@@ -8,6 +8,11 @@ repositories:
   [REPOSITORY_ID]:  # Replace the REPOSITORY_ID by a custom unique identifier for the repository.
     url: ""  # URL to a git repository in a form that makes it possible to run 'git clone [url]'.
     branch: ""  # Branch name of any branch in the repository.
+software_parameters:
+  modulefile: ""  # Path to a modulefile with instructions to load the simulator module once built
+  planfile: ""  # Path to a builder planfile with instructions to get and build the simulator
+  simulator_repo_url: ""  # Git repository url which will be forwarded to the builder planfile
+  simulator_repo_branch: ""  # Git repository branch which will be forwarded to the builder planfile
 benchmarks:
   [MODEL_ID]:
     repository: [REPOSITORY_ID]
