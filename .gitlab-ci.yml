@@ -34,19 +34,17 @@ variables:
   CONFIG_PATH:
     description: "Path to configuration file (e.g. config.yml) relative to the config repository root."
     value: "config.yml"
-  RESULTS_REPO_DIR:
-    description: "Directory of git-annex-enabled repository where result files are moved to."
-    value: "/p/largedata2/djinb33/shared/ci-bennch-annex-repo"
-  # RESULTS_REPO_URL:
-  #   description: "Repository to upload benchmark results to."
-  #   value: "https://gin.g-node.org/janvog/CI-beNNch-results.git"
-  #   value: "https://gin.g-node.org/janvog/CI-Bennch-results-devel"
-  # RESULTS_BRANCH:
-  #   description: "Branch of result repository to upload benchmark results to."
-  #   value: "master"
-  # RESULTS_PATH:
-  #   description: "Path to results directory relative to results repository root."
-  #   value: "."
+  RESULTS_REPO_URL:
+    description: "Repository to upload benchmark results to."
+    value: "/p/largedata2/djinb33/shared/annex-test-repo"
+    # value: "https://gin.g-node.org/janvog/CI-beNNch-results.git"
+    # value: "https://gin.g-node.org/janvog/CI-Bennch-results-devel"
+  RESULTS_BRANCH:
+    description: "Branch of result repository to upload benchmark results to."
+    value: "master"
+  RESULTS_PATH:
+    description: "Path to results directory relative to results repository root."
+    value: "."
   # RESULTS_REPO_TOKEN:
   #   description: "Access token for results repository in order to access repository via https."
   #   value: "$GIN_GNODE_TOKEN"
