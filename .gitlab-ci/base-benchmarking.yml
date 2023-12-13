@@ -70,8 +70,9 @@ variables:
     - 'eval MODELS_DIR="$MODELS_DIR"'
     - 'eval BENCHMARKS_DIR="$BENCHMARKS_DIR"'
     - 'eval OUTPUT_DIR="$OUTPUT_DIR"'
-    # - 'eval RESULTS_DIR="$RESULTS_DIR"'
-    - 'eval RESULTS_REPO_DIR="$RESULTS_REPO_DIR"'
+    - 'eval RESULTS_REPO_URL="$RESULTS_REPO_URL"'
+    - 'eval RESULTS_BRANCH="$RESULTS_BRANCH"'
+    # - 'eval RESULTS_REPO_TOKEN="$RESULTS_REPO_TOKEN"'
   create-dirs:
     - 'mkdir -p "$USER_DATA_DIR" "$SIMULATOR_REPO_DIR" "$BENCHMARKS_DIR/metrics" "$JUBE_RESULTS_DIR" "$BENCHMARKS_DIR/jube" "$BUILDER_MODULES_DIR" "$BUILDER_PLANFILE_DIR/simulator" "$BUILDER_PACKAGE_DIR" "$BUILDER_SOURCE_DIR" "$BUILDER_INSTALL_DIR" "$BUILDER_BUILD_DIR" "$BUILDER_LOG_DIR" "$MODELS_DIR" "$OUTPUT_DIR"  "$CI_PROJECT_DIR/flipbooks"'
   environment-init:
@@ -88,9 +89,10 @@ variables:
     # The additional empty value for credential.helper causes any existing credential helpers to be removed, preventing the addition of this token into the user's credential helper. If you'd like the user to be able to save it, then remove that directive. See https://stackoverflow.com/questions/70960407/keep-git-auth-as-environment-variable-instead-of-evaluated-value
     # - |
     #   git clone -c credential.helper='!f() { echo "username=$RESULTS_REPO_TOKEN"; echo "password="; };f' --single-branch --branch="$RESULTS_BRANCH" --depth=1 "$RESULTS_REPO_URL" "$RESULTS_DIR"
-    # - 'cd "$RESULTS_DIR"'
+    - 'git clone --single-branch --branch="$RESULTS_BRANCH" --depth=1 "$RESULTS_REPO_URL" "$RESULTS_DIR"'
+    - 'cd "$RESULTS_DIR"'
     # - 'git config --local --unset credential.helper'
-    # - 'git annex init'
+    - 'git annex init'
   clone-repositories:
     - |
       export CB_SIMULATOR_REPO=$(python3 -c "import yaml; f = open('$CONFIG_FILE_PATH', 'r'); print(yaml.safe_load(f)['software_parameters']['simulator_repo_url']);f.close()")
@@ -179,16 +181,14 @@ variables:
   - 'cp "${CONFIG_FILE_PATH}" "${OUTPUT_DIR}/${JUBE_BENCHMARK_FILE}_${MACHINE}/config.yml"'
   # Add actual benchmark data
   - 'cp "$JUBE_RESULTS_DIR/$JUBE_BENCHMARK_ID/result/result_table.dat" "$OUTPUT_DIR/${JUBE_BENCHMARK_FILE}_${MACHINE}.csv"'
-  # - 'tar -czf "${RESULTS_DIR}/$RESULTS_PATH/${RESULTS_UID}.tgz" -C "${OUTPUT_DIR}" "${JUBE_BENCHMARK_FILE}_${MACHINE}"'
-  - 'tar -czf "${RESULTS_REPO_DIR}/${RESULTS_UID}.tgz" -C "${OUTPUT_DIR}" "${JUBE_BENCHMARK_FILE}_${MACHINE}"'
+  - 'tar -czf "${RESULTS_DIR}/${RESULTS_PATH}/${RESULTS_UID}.tgz" -C "${OUTPUT_DIR}" "${JUBE_BENCHMARK_FILE}_${MACHINE}"'
   # Add metadata to output archive
   - 'cd "${SIMULATOR_REPO_DIR}"'
   - 'export simulator_git_commit_hash=$(git rev-parse HEAD)'
   - 'cd ${MODELS_DIR}/${JUBE_BENCHMARK_FILE}'
   - 'export model_git_commit_hash=$(git rev-parse HEAD)'
   # - 'cd "$RESULTS_DIR/$RESULTS_PATH/"'
-  - 'cd $RESULTS_REPO_DIR'
-  - 'git config --global --add safe.directory $RESULTS_REPO_DIR'
+  - 'cd "$RESULTS_DIR/$RESULTS_PATH"'
   - 'git annex add "${RESULTS_UID}.tgz"'
   - 'git annex metadata "${RESULTS_UID}.tgz" --set user=$USER'
   - 'git annex metadata "${RESULTS_UID}.tgz" --set machine=$MACHINE'
@@ -209,26 +209,20 @@ variables:
 # Requires git, python3, pyyaml, bennchplot
 # Run once per machine for all models
 .upload-results:
-  # - 'cd "$RESULTS_DIR/$RESULTS_PATH"'
+  - 'cd "$RESULTS_DIR/$RESULTS_PATH"'
   # - |
   #   git config --local credential.helper '!f() { echo "username=$RESULTS_REPO_TOKEN"; echo "password="; };f'
-  # # - 'git config user.email ""'
-  # - 'git config --local user.name "${USER}"'
-  # # Push data to remote repository
-  # - 'git commit -m "Adding benchmark data for ${BENCHMARK_ID}"'
-  # - 'git push origin $RESULTS_BRANCH'
-  # - 'git annex copy --to=origin'
-
-  - 'cd $RESULTS_REPO_DIR'
-  - 'echo $RESULTS_REPO_DIR'
-  - 'git config user.name "${USER}"'
+  - 'git config --local user.name "${USER}"'
+  # Push data to remote repository
   - 'git commit -m "Adding benchmark data for ${BENCHMARK_ID}"'
+  - 'git push origin $RESULTS_BRANCH'
+  - 'git annex copy --to=origin'
 
 .variables-as-artifacts:
   - 'rm -f "$CI_PROJECT_DIR/benchmark_variables.env"'
   - |
-    for var in BENCHMARK_ID BENCHMARK_UID CB_RUNNER_ACCOUNT CB_COMPUTE_PROJECT CB_DATA_PROJECT CB_DEPENDENCIES USER_DATA_DIR BENCHMARKS_DIR CB_SIMULATOR_REPO CB_SIMULATOR_BRANCH SIMULATOR_REPO_DIR JUBE_RESULTS_DIR RESULTS_REPO_DIR BUILDER_MODULES_DIR BUILDER_PLANFILE_DIR BUILDER_PACKAGE_DIR BUILDER_SOURCE_DIR BUILDER_INSTALL_DIR BUILDER_BUILD_DIR BUILDER_LOG_DIR CONFIG_FILE_PATH MODELS_DIR BUILDER_CONFIG_PATH OUTPUT_DIR RESULTS_DIR ; do
-    # RESULTS_REPO_URL RESULTS_BRANCH RESULTS_PATH RESULTS_REPO_TOKEN
+    for var in BENCHMARK_ID BENCHMARK_UID CB_RUNNER_ACCOUNT CB_COMPUTE_PROJECT CB_DATA_PROJECT CB_DEPENDENCIES USER_DATA_DIR BENCHMARKS_DIR CB_SIMULATOR_REPO CB_SIMULATOR_BRANCH SIMULATOR_REPO_DIR JUBE_RESULTS_DIR RESULTS_REPO_URL RESULTS_BRANCH RESULTS_PATH BUILDER_MODULES_DIR BUILDER_PLANFILE_DIR BUILDER_PACKAGE_DIR BUILDER_SOURCE_DIR BUILDER_INSTALL_DIR BUILDER_BUILD_DIR BUILDER_LOG_DIR CONFIG_FILE_PATH MODELS_DIR BUILDER_CONFIG_PATH OUTPUT_DIR RESULTS_DIR ; do
+    # RESULTS_REPO_TOKEN
       eval val=\$$var
       echo "${var}=${val}" >> "$CI_PROJECT_DIR/benchmark_variables.env"
     done
