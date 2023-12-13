@@ -77,6 +77,7 @@ for model_name, benchmark_config in config["benchmarks"].items():
     model_script_path = run_parameters["script_path"]
     metrics = benchmark_config.get("metrics_mean", [])
     metrics_sum = benchmark_config.get("metrics_sum", [])
+    step_data_keys = benchmark_config.get("step_data_keys", [])
     all_metrics = metrics + metrics_sum
 
     # Write all metrics to a file to later extract timer data depending on the desired metrics
@@ -161,6 +162,8 @@ for model_name, benchmark_config in config["benchmarks"].items():
     substitutions["iofile"] = {"in": model_script_path, "out": model_script_path}
     for param in benchmark_config.get("model_parameters", []):
         substitutions["sub"].append({"source": "{" + param["name"] + "}", "dest": "$" + param["name"]})
+    if step_data_keys:
+        substitutions["sub"].append({"source": "{step_data_keys}", "dest": ",".join(step_data_keys)})
     for param in machine_params.keys():
         substitutions["sub"].append({"source": "{" + param + "}", "dest": "$" + param})
 
