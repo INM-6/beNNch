@@ -84,7 +84,7 @@ variables:
     - !reference [ .environment-vars ]
     - 'cd "$USER_DATA_DIR/user_files"'
     - !reference [ .environment-load ]
-  results: []
+  results:
     # Set result repository
     # The additional empty value for credential.helper causes any existing credential helpers to be removed, preventing the addition of this token into the user's credential helper. If you'd like the user to be able to save it, then remove that directive. See https://stackoverflow.com/questions/70960407/keep-git-auth-as-environment-variable-instead-of-evaluated-value
     # - |
