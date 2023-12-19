@@ -93,6 +93,7 @@ variables:
     - 'cd "$RESULTS_DIR"'
     # - 'git config --local --unset credential.helper'
     - 'git annex init'
+    - 'git annex enableremote oursharedremote'  # TODO: Make this part of a config as well
   clone-repositories:
     - |
       export CB_SIMULATOR_REPO=$(python3 -c "import yaml; f = open('$CONFIG_FILE_PATH', 'r'); print(yaml.safe_load(f)['software_parameters']['simulator_repo_url']);f.close()")
@@ -216,7 +217,10 @@ variables:
   # Push data to remote repository
   - 'git commit -m "Adding benchmark data for ${BENCHMARK_ID}"'
   - 'git push origin $RESULTS_BRANCH'
-  - 'git annex copy --to=origin'
+  - 'git annex copy --to=oursharedremote'
+  - 'git annex dead $(git config annex.uuid)'
+  - 'git annex forget --drop-dead --force'
+  - 'git annex sync'
 
 .variables-as-artifacts:
   - 'rm -f "$CI_PROJECT_DIR/benchmark_variables.env"'
