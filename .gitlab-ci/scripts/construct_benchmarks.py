@@ -77,7 +77,7 @@ for model_name, benchmark_config in config["benchmarks"].items():
     model_script_path = run_parameters["script_path"]
     metrics = benchmark_config.get("metrics_mean", [])
     metrics_sum = benchmark_config.get("metrics_sum", [])
-    step_data_keys = benchmark_config.get("step_data_keys", [])
+    step_data_keys = benchmark_config.get("metrics_step", [])
     all_metrics = metrics + metrics_sum
 
     # Write all metrics to a file to later extract timer data depending on the desired metrics
