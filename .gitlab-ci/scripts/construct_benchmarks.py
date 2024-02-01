@@ -162,10 +162,9 @@ for model_name, benchmark_config in config["benchmarks"].items():
     substitutions["iofile"] = {"in": model_script_path, "out": model_script_path}
     for param in benchmark_config.get("model_parameters", []):
         substitutions["sub"].append({"source": "{" + param["name"] + "}", "dest": "$" + param["name"]})
-    if step_data_keys:
-        substitutions["sub"].append({"source": "step_data_keys", "dest": ",".join(step_data_keys)})
     for param in machine_params.keys():
         substitutions["sub"].append({"source": "{" + param + "}", "dest": "$" + param})
+    substitutions["sub"].append({"source": "{step_data_keys}", "dest": ",".join(step_data_keys)})
 
     # Analyser
     jube_benchmark["patternset"] = {"name": "bench_patternset", "pattern": [
