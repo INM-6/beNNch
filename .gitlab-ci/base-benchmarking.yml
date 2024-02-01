@@ -124,6 +124,8 @@ variables:
 # Requires jube, python3
 # Run once per model-machine combination
 .run-benchmarks:
+  # Log quota before and after run
+  - 'jutil user cpuquota -u $USER -A ${CB_RUNNER_ACCOUNT} --currsys'
   # Wait until all other jube benchmarks have been started until the JUBE_BENCHMARK_ID of this subpipeline
   - 'cd $JUBE_RESULTS_DIR'
   - |
@@ -173,6 +175,8 @@ variables:
     done
   - 'jube info --id=$JUBE_BENCHMARK_ID "$JUBE_RESULTS_DIR"'
   - 'jube result --analyse --id=$JUBE_BENCHMARK_ID "$JUBE_RESULTS_DIR"'
+  # Log quota before and after run
+  - 'jutil user cpuquota -u $USER -A ${CB_RUNNER_ACCOUNT} --currsys'
 
 # Requires python3, gathermetadata
 # Run once per model-machine combination
