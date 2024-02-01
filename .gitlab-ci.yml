@@ -41,7 +41,7 @@ variables:
     # value: "https://gin.g-node.org/janvog/CI-Bennch-results-devel"
   RESULTS_BRANCH:
     description: "Branch of result repository to upload benchmark results to."
-    value: "master"
+    value: "main"
   RESULTS_PATH:
     description: "Path to results directory relative to results repository root."
     value: "."
