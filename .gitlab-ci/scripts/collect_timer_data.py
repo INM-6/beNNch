@@ -100,16 +100,17 @@ with open(os.path.join(workpackage_path, 'cpu.json'), 'w') as f:
 all_step_logfiles = glob.glob(os.path.join(log_path, '*logfile*_steps.dat'))
 
 N = len(all_step_logfiles)
-output_df = pd.read_csv(all_step_logfiles[0], sep=" ", header=0)
-for logfile in all_step_logfiles[1:]:
-    df = pd.read_csv(logfile, sep=" ", header=0)
-    output_df.add(df, fill_value=0)
-output_df["time"] /= N
-output_df["time_std"] = 0
-for logfile in all_step_logfiles:
-    df = pd.read_csv(logfile, sep=" ", header=0)
-    output_df["time_std"] += (df["time"] - output_df["time"])**2
-output_df["time_std"] /= N
-output_df["time_std"] = np.sqrt(output_df["time_std"])
+if N > 0:
+    output_df = pd.read_csv(all_step_logfiles[0], sep=" ", header=0)
+    for logfile in all_step_logfiles[1:]:
+        df = pd.read_csv(logfile, sep=" ", header=0)
+        output_df.add(df, fill_value=0)
+    output_df["time"] /= N
+    output_df["time_std"] = 0
+    for logfile in all_step_logfiles:
+        df = pd.read_csv(logfile, sep=" ", header=0)
+        output_df["time_std"] += (df["time"] - output_df["time"])**2
+    output_df["time_std"] /= N
+    output_df["time_std"] = np.sqrt(output_df["time_std"])
 
-output_df.to_csv('timer_step_data.txt', sep='\t', encoding='utf-8', index=False)
+    output_df.to_csv('timer_step_data.txt', sep='\t', encoding='utf-8', index=False)
