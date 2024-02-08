@@ -22,10 +22,10 @@ config_path = sys.argv[7]
 
 
 def lower_keys(x):
-    if isinstance(x, list):
+    if isinstance(x, list) or isinstance(x, tuple):
         return [lower_keys(v) for v in x]
     elif isinstance(x, dict):
-        return dict((k.lower(), lower_keys(v)) for k, v in x.iteritems())
+        return {k.lower(): lower_keys(v) for k, v in x.items()}
     else:
         return x
 
