@@ -19,10 +19,10 @@ variables:
   BENCHMARK_ID:
     description: "Label given to the CI pipeline to identify a benchmark."
     value: "My Benchmark"
-  SOFTWARE_PARAMETERS__SIMULATOR_REPO_URL:
+  CB_SOFTWARE_PARAMETERS__SIMULATOR_REPO_URL:
     description: "Simulator repository to use for benchmarking."
     value: "https://github.com/JanVogelsang/nest-simulator"
-  SOFTWARE_PARAMETERS__SIMULATOR_REPO_BRANCH:
+  CB_SOFTWARE_PARAMETERS__SIMULATOR_REPO_BRANCH:
     description: "Simulator repository branch to use for benchmarking."
     value: "master"
   CONFIG_REPO:
