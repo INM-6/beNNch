@@ -21,6 +21,15 @@ config_branch = sys.argv[6]
 config_path = sys.argv[7]
 
 
+def lower_keys(x):
+    if isinstance(x, list):
+        return [lower_keys(v) for v in x]
+    elif isinstance(x, dict):
+        return dict((k.lower(), lower_keys(v)) for k, v in x.iteritems())
+    else:
+        return x
+
+
 def patch_element(config, key, value):
     if key not in config:
         config[key] = value
@@ -72,7 +81,7 @@ def extend_config(config, level):
     return base_config
 
 # Recursively get extended config file until reaching root. Starting with the root config, iteratively patch the configuration.
-config = extend_config({"extends": {"repo": "base", "config_file": config_path}, "repositories": {"base": {"url": config_repo, "branch": config_branch}}}, 0)
+config = lower_keys(extend_config({"extends": {"repo": "base", "config_file": config_path}, "repositories": {"base": {"url": config_repo, "branch": config_branch}}}, 0))
 
 # Load dependencies
 with open(config["dependencies"], 'r') as dependencies_file:
@@ -84,8 +93,8 @@ shutil.copyfile(config["software_parameters"]["planfile"], planfile_out_path)
 
 # After patching the configuration using various base configurations, patch the final config using environment variables provided by the user when triggering the pipeline.
 for env_var_key, env_var_value in os.environ.items():
-    if env_var_key.startswith("CB_") and env_var_key not in ("CB_MODELS", "CB_MACHINES"):
-        keys = env_var_key[3:].split("__")
+    if env_var_key.startswith("CB_") and env_var_key.lower() not in ("cb_models", "cb_machines"):
+        keys = [k.lower() for k in env_var_key[3:].split("__")]
         try:
             reduce(operator.getitem, keys[:-1], config)[keys[-1]] = env_var_value
         except Exception as e:
@@ -134,7 +143,6 @@ for model_name, benchmark_config in config["benchmarks"].items():
                     for c in param["_"].split(","):
                         int(c)
             except ValueError:
-                raise ValueError(param)
                 raise ValueError(f"Parameter {param['name']} for model {model_name} with value {param['_']} of type {param['type']} contains non-numeric values (e.g. variables), but 'mode' is not set to 'python'.")
 
 
