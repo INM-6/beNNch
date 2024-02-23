@@ -48,6 +48,10 @@ variables:
   CB_MODELS:
     description: "Comma-seperated list of the names of all models for which benchmarks should be run. Leave empty to run benchmarks for all models specified in the configuration file."
     value: "hpc_benchmark"
+    options:
+      - "hpc_benchmark"
+      - "multi_area"
+      - "microcircuit"
   CB_MACHINES:
     description: "Comma-seperated list of the names of all machines on which benchmarks should be run. Leave empty to trigger benchmark runs for manually for each individual machine for which configuration was found."
     value: "jusuf"
