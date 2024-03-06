@@ -186,7 +186,7 @@ variables:
   - 'mkdir -p "${OUTPUT_DIR}/${JUBE_BENCHMARK_FILE}_${MACHINE}/"'
   - 'cp "${CONFIG_FILE_PATH}" "${OUTPUT_DIR}/${JUBE_BENCHMARK_FILE}_${MACHINE}/config.yml"'
   # Add actual benchmark data
-  - 'cp "$JUBE_RESULTS_DIR/$JUBE_BENCHMARK_ID/result/result_table.dat" "$OUTPUT_DIR/${JUBE_BENCHMARK_FILE}_${MACHINE}.csv"'
+  - 'cp "$JUBE_RESULTS_DIR/$JUBE_BENCHMARK_ID/result/result_table.dat" "$OUTPUT_DIR/${JUBE_BENCHMARK_FILE}_${MACHINE}/benchmark_results.csv"'
   - 'tar -czf "${RESULTS_DIR}/${RESULTS_PATH}/${RESULTS_UID}.tgz" -C "${OUTPUT_DIR}" "${JUBE_BENCHMARK_FILE}_${MACHINE}"'
   # Add metadata to output archive
   - 'cd "${SIMULATOR_REPO_DIR}"'
