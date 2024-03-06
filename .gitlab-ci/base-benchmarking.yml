@@ -39,7 +39,7 @@ variables:
 .prepare-benchmarks:
   get-uid:
     - |
-      export BENCHMARK_UID="$(echo $BENCHMARK_ID | sed -e 's/[^A-Za-z0-9._-]/_/g')-$(date +%d-%m-%y-%H-%M-%S)"
+      export BENCHMARK_UID="$(echo $BENCHMARK_ID | sed -e 's/[^A-Za-z0-9._-]/_/g')-$(date +%Y-%m-%d-%H-%M-%S)"
   # Move all artifacts to user data directory
   artifacts:
     - 'if [[ $(realpath "$CI_PROJECT_DIR/config.yml") != $(realpath "$CONFIG_FILE_PATH") ]]; then mv "$CI_PROJECT_DIR/config.yml" "$CONFIG_FILE_PATH"; fi'
