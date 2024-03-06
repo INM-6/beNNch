@@ -21,7 +21,7 @@ variables:
     value: "My Benchmark"
   CONFIG_REPO:
     description: "Configuration repository to use for benchmarking."
-    value: "https://github.com/JanVogelsang/CI-Bennch-config.git"
+    value: "https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.jsc.fz-juelich.de/nest/bennch/configs/configs.git"
   CONFIG_BRANCH:
     description: "Configuration repository branch to use for benchmarking."
     value: "main"
@@ -55,7 +55,10 @@ variables:
   CB_MACHINES:
     description: "Comma-seperated list of the names of all machines on which benchmarks should be run. Leave empty to trigger benchmark runs for manually for each individual machine for which configuration was found."
     value: "jusuf"
-
+    options:
+      - "jusuf"
+      - "jureca"
+      - "juwels"
 
 # Specify all machines for which configurations exist
 .machines: &machines_anchor [ "jureca", "jusuf" ]
