@@ -56,7 +56,7 @@ def patch_element(config, key, value):
 
 def extend_config(config, level):
     base_repo_alias = config["extends"]["repo"]
-    base_repo_url = config["repositories"][base_repo_alias]["url"]
+    base_repo_url = config["repositories"][base_repo_alias]["url"].replace("${CI_JOB_TOKEN}", os.environ['CI_JOB_TOKEN'])
     base_repo_branch = config["repositories"][base_repo_alias]["branch"]
     base_repo_config_path = config["extends"]["config_file"]
 
