@@ -63,6 +63,7 @@ step:
       - bench_parameters, run_benchmark, bench_files, bench_substitutions, slurm_jobfile, user_config, model_parameters, machine_parameters, software_parameters
     do:
       done_file: ready
+      error_file: error
       _: sbatch job.slurm
 
 analyser:
