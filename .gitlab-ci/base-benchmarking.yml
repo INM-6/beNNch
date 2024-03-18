@@ -112,6 +112,7 @@ variables:
     - 'cp "$SIMULATOR_MODULEFILE_PATH" "$BUILDER_PLANFILE_DIR/simulator/$CB_SIMULATOR_BRANCH/default.module"'
   build-simulator:
     - 'build -f simulator $CB_SIMULATOR_BRANCH'
+    - 'rm -r "$SIMULATOR_REPO_DIR"'
   construct-benchmarks:
     - |
       echo 'CURR_PATH=$(pwd)' > "$USER_DATA_DIR/prepare.sh"
