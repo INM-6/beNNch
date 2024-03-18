@@ -126,13 +126,18 @@ variables:
   - 'jutil user cpuquota -u $USER -A ${CB_RUNNER_ACCOUNT} --currsys'
   # Wait until all other jube benchmarks have been started until the JUBE_BENCHMARK_ID of this subpipeline
   - 'cd $JUBE_RESULTS_DIR'
+  # Wait until it's my turn to create a workpackage directory (i.e., call jube run)
   - |
     while [ $( find . -mindepth 1 -maxdepth 1 -type d | wc -l) -ne $(expr $JUBE_BENCHMARK_ID + 0) ] ; do
       sleep 3
     done
   # Start the benchmarks now
   - 'cp "$TEMPLATES_DIR/job.slurm.in" "${BENCHMARKS_DIR}/jube/job.slurm.in"'
-  - 'jube run --hide-animation -e "${BENCHMARKS_DIR}/jube/cb_${JUBE_BENCHMARK_FILE}_${MACHINE}.yml"'
+  # If our workpackage directory exists already, we don't call jube run again, as we only need to continue (can only happen if the workflow-job was rerun by the user)
+  - |
+    if [ $( find . -mindepth 1 -maxdepth 1 -type d | wc -l) -ge $(expr $JUBE_BENCHMARK_ID - 1) ]
+      jube run --hide-animation -e "${BENCHMARKS_DIR}/jube/cb_${JUBE_BENCHMARK_FILE}_${MACHINE}.yml"
+    fi
   - |
     COUNTER=0
     NUM_FAILURES=-1
