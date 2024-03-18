@@ -74,9 +74,6 @@ def extend_config(config, level):
         if "planfile" in base_config["software_parameters"]:
             base_config["software_parameters"]["planfile"] = os.path.join(repo_path, base_config["software_parameters"]["planfile"])
 
-        if "simulator_repo_url" in base_config['software_parameters']:
-            base_config["software_parameters"]["simulator_repo_url"] = base_config["software_parameters"]["simulator_repo_url"].replace("${CI_JOB_TOKEN}", os.environ['CI_JOB_TOKEN'])
-
     if "extends" in base_config:
         base_config = extend_config(base_config, level+1)
     for key, value in config.items():
