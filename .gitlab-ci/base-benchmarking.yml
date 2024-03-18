@@ -96,9 +96,6 @@ variables:
     - 'git annex init'
     # - 'git annex enableremote oursharedremote'  # TODO: Make this part of a config as well
   clone-repositories:
-#     - |
-#       export CB_SIMULATOR_REPO=$(python3 -c "import yaml; f = open('$CONFIG_FILE_PATH', 'r'); print(yaml.safe_load(f)['software_parameters']['simulator_repo_url']);f.close()")
-#       export CB_SIMULATOR_BRANCH=$(python3 -c "import yaml; f = open('$CONFIG_FILE_PATH', 'r'); print(yaml.safe_load(f)['software_parameters']['simulator_repo_branch']);f.close()")
     - 'python3 "$SCRIPTS_DIR/clone_models.py" "$CONFIG_FILE_PATH" "$MODELS_DIR" "$CB_MODELS"'
     # Prepare Builder .buildrc
     - |
