@@ -44,7 +44,7 @@ shutil.rmtree(models_tmp_dir)
 
 # Clone the simulator
 env = os.environ.copy()
-env["SOURCE"] = config["software_parameters"]["simulator_repo_url"]
+env["SOURCE"] = config["software_parameters"]["simulator_repo_url"].replace("${CI_JOB_TOKEN}", os.environ['CI_JOB_TOKEN'])
 simulator_branch = config["software_parameters"]["simulator_repo_branch"]
 subprocess.Popen(["build", "--get", "--silent", "simulator", simulator_branch], env=env, stdout=subprocess.DEVNULL)
 
