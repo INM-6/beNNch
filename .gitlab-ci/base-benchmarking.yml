@@ -163,6 +163,8 @@ variables:
                 sbatch job.slurm
                 echo "Detected node failure, rerunning job (#${retries[$(basename $run)]})"
                 (( ++NUM_FAILURES ))
+              else
+                touch "$run/work/error"
               fi
             elif ! squeue -h --job $JOBID >/dev/null 2>&1 || [ $(squeue -h --job $JOBID | wc -l) = 0 ] ; then
               touch "$run/work/ready"
