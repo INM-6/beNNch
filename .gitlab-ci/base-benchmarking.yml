@@ -138,7 +138,7 @@ variables:
   - 'cp "$TEMPLATES_DIR/job.slurm.in" "${BENCHMARKS_DIR}/jube/job.slurm.in"'
   # If our workpackage directory exists already, we don't call jube run again, as we only need to continue (can only happen if the workflow-job was rerun by the user)
   - |
-    if [ $( find . -mindepth 1 -maxdepth 1 -type d | wc -l) -ge $(expr $JUBE_BENCHMARK_ID - 1) ]
+    if [ $( find . -mindepth 1 -maxdepth 1 -type d | wc -l) -ge $(expr $JUBE_BENCHMARK_ID - 1) ] ; do
       jube run --hide-animation -e "${BENCHMARKS_DIR}/jube/cb_${JUBE_BENCHMARK_FILE}_${MACHINE}.yml"
     fi
   - |
