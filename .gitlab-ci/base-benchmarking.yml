@@ -99,6 +99,7 @@ variables:
     - 'python3 "$SCRIPTS_DIR/clone_models.py" "$CONFIG_FILE_PATH" "$MODELS_DIR" "$CB_MODELS"'
     # Prepare Builder .buildrc
     - |
+      export CB_SIMULATOR_BRANCH=$(python3 -c "import yaml; f = open('$CONFIG_FILE_PATH', 'r'); print(yaml.safe_load(f)['software_parameters']['simulator_repo_branch']);f.close()")
       echo PLANFILE_PATH="$BUILDER_PLANFILE_DIR" > "$BUILDER_CONFIG_PATH"
       echo PACKAGE_CACHE="$BUILDER_PACKAGE_DIR" >> "$BUILDER_CONFIG_PATH"
       echo SOURCE_PATH="$BUILDER_SOURCE_DIR" >> "$BUILDER_CONFIG_PATH"
@@ -111,8 +112,6 @@ variables:
     - 'cp "$SIMULATOR_PLANFILE_PATH" "$BUILDER_PLANFILE_DIR/simulator/$CB_SIMULATOR_BRANCH/default"'
     - 'cp "$SIMULATOR_MODULEFILE_PATH" "$BUILDER_PLANFILE_DIR/simulator/$CB_SIMULATOR_BRANCH/default.module"'
   build-simulator:
-    - |
-      export CB_SIMULATOR_BRANCH=$(python3 -c "import yaml; f = open('$CONFIG_FILE_PATH', 'r'); print(yaml.safe_load(f)['software_parameters']['simulator_repo_branch']);f.close()")
     - 'build -f simulator $CB_SIMULATOR_BRANCH'
     - 'rm -r "$SIMULATOR_REPO_DIR"'
   construct-benchmarks:
