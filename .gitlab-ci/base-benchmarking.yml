@@ -74,9 +74,6 @@ variables:
     - 'eval RESULTS_REPO_URL="$RESULTS_REPO_URL"'
     - 'eval RESULTS_BRANCH="$RESULTS_BRANCH"'
     # - 'eval RESULTS_REPO_TOKEN="$RESULTS_REPO_TOKEN"'
-    - 'cd "${SIMULATOR_REPO_DIR}"'
-    - 'export simulator_git_commit_hash=$(git rev-parse HEAD)'
-
   create-dirs:
     - 'mkdir -p "$USER_DATA_DIR" "$SIMULATOR_REPO_DIR" "$BENCHMARKS_DIR/metrics" "$JUBE_RESULTS_DIR" "$RESULTS_DIR" "$BENCHMARKS_DIR/jube" "$BUILDER_MODULES_DIR" "$BUILDER_PLANFILE_DIR/simulator" "$BUILDER_PACKAGE_DIR" "$BUILDER_SOURCE_DIR" "$BUILDER_INSTALL_DIR" "$BUILDER_BUILD_DIR" "$BUILDER_LOG_DIR" "$MODELS_DIR" "$OUTPUT_DIR"  "$CI_PROJECT_DIR/flipbooks"'
   environment-init:
@@ -117,6 +114,8 @@ variables:
     - 'cp "$SIMULATOR_MODULEFILE_PATH" "$BUILDER_PLANFILE_DIR/simulator/$CB_SIMULATOR_BRANCH/default.module"'
   build-simulator:
     - 'build -f simulator $CB_SIMULATOR_BRANCH'
+    - 'cd "${SIMULATOR_REPO_DIR}"'
+    - 'export simulator_git_commit_hash=$(git rev-parse HEAD)'
     - 'rm -r "$SIMULATOR_REPO_DIR"'
   construct-benchmarks:
     - |
