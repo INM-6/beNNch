@@ -170,6 +170,8 @@ variables:
                 (( ++retries[$(basename $run)] ))
                 rm -f "$run/work/ready" "$run/work/stderr" "$run/work/stdout"
                 cd "$run/work/"
+                cp "stdout" "stdout_NodeFailure_${NUM_FAILURES}"
+                cp "stderr" "stderr_NodeFailure_${NUM_FAILURES}"
                 sbatch job.slurm
                 echo "Detected node failure, rerunning job (#${retries[$(basename $run)]})"
                 (( ++NUM_FAILURES ))
