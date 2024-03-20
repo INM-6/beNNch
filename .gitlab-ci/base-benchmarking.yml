@@ -168,10 +168,10 @@ variables:
             if grep -q -E 'terminated due to failure of node|Force Terminated StepId' "$run/work/stderr" ; then
               if [[ ${retries[$(basename $run)]} -lt 4 ]] ; then
                 (( ++retries[$(basename $run)] ))
+                cp "$run/work/stdout" "$run/work/stdout_NodeFailure_${retries[$(basename $run)]}"
+                cp "$run/work/stderr" "$run/work/stderr_NodeFailure_${retries[$(basename $run)]}"
                 rm -f "$run/work/ready" "$run/work/stderr" "$run/work/stdout"
                 cd "$run/work/"
-                cp "stdout" "stdout_NodeFailure_${retries[$(basename $run)]}"
-                cp "stderr" "stderr_NodeFailure_${retries[$(basename $run)]}"
                 sbatch job.slurm
                 echo "Detected node failure, rerunning job (#${retries[$(basename $run)]})"
                 (( ++NUM_FAILURES ))
