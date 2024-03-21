@@ -67,7 +67,7 @@ variables:
 workflow:
   name: $BENCHMARK_ID
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "web"' || $CI_PIPELINE_SOURCE == "trigger"
+    - if: '$CI_PIPELINE_SOURCE == "web" || $CI_PIPELINE_SOURCE == "trigger"'
 
 
 stages: [ validate, benchmarking ]
