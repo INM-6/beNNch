@@ -49,7 +49,13 @@ variables:
   #   value: "$GIN_GNODE_TOKEN"
   EXTRA_CMAKE_FLAGS:
     description: "Any extra CMake flags which should be used to compile NEST. Only single quotes allowed! Multiple values for a single parameter must be single quoted and separated by semicolons."
-    value: "-Dwith-optimize='-O3;-march=native' -Dwith-defines='-DNDEBUG' -Dwith-ltdl=ON -Dwith-boost=ON -Dwith-detailed-timers=OFF"
+    value: "-Dwith-optimize='-O3;-march=native' -Dwith-defines='-DNDEBUG' -Dwith-ltdl=ON -Dwith-boost=ON"
+  DETAILED_TIMERS_FLAG:
+    description: "Determines whether detailed timers are shown."
+    value: "-Dwith-detailed-timers=OFF"
+    options:
+      - "-Dwith-detailed-timers=OFF"
+      - "-Dwith-detailed-timers=ON"
   CB_MODELS:
     description: "Comma-seperated list of the names of all models for which benchmarks should be run. Leave empty to run benchmarks for all models specified in the configuration file."
     value: "hpc_benchmark"
