@@ -20,6 +20,7 @@ import shutil
 
 from nbformat import v4 as nbf
 import nbformat
+import yaml
 import numpy as np
 from matplotlib import pyplot as plt
 import matplotlib.gridspec as gridspec
@@ -27,73 +28,119 @@ import matplotlib.transforms as mtransforms
 
 import bennchplot as bp
 
+# get path of the .gitlab-ci.yml file
+base_path = os.environ.get('USERSOFTWARE', '/ci-bennch/jureca/JUBE')
+file_path = os.path.join(base_path, '.gitlab-ci.yml')
+
+# Read the YAML configuration file
+with open(file_path, 'r') as file:
+    config = yaml.safe_load(file)
+
+# Extract the value of DETAILED_TIMERS_FLAG
+detailed_timers = config['DETAILED_TIMERS_FLAG']['value']
 
 def plot_nodes(timer_file, save_path):
+
     B = bp.Plot(data_file=timer_file, x_axis=['num_nodes'], time_scaling=1e3)
 
-    # Plotting
-    widths = [1, 1]
-    heights = [3, 1]
-    fig = plt.figure(figsize=(12, 6), constrained_layout=True)
-    spec = gridspec.GridSpec(ncols=2, nrows=2, figure=fig, width_ratios=widths, height_ratios=heights)
+    if detailed_timers == 'ON':
+        # Plotting with detailed timers
+        widths = [1, 1]
+        heights = [3, 1]
+        fig = plt.figure(figsize=(12, 6), constrained_layout=True)
+        spec = gridspec.GridSpec(ncols=2, nrows=2, figure=fig, width_ratios=widths, height_ratios=heights)
 
-    ax1 = fig.add_subplot(spec[:, 0])
-    ax2 = fig.add_subplot(spec[0, 1])
-    ax3 = fig.add_subplot(spec[1, 1])
+        ax1 = fig.add_subplot(spec[:, 0])
+        ax2 = fig.add_subplot(spec[0, 1])
+        ax3 = fig.add_subplot(spec[1, 1])
 
-    trans = mtransforms.ScaledTranslation(-20 /
-                                            72, 7 / 72, fig.dpi_scale_trans)
-    ax1.text(0.0, 1.0, 'A', transform=ax1.transAxes + trans,
-                fontsize='medium', va='bottom', fontweight='bold')
-    ax2.text(0.0, 1.0, 'B', transform=ax2.transAxes + trans,
-                fontsize='medium', va='bottom', fontweight='bold')
-    ax3.text(0.0, 1.0, 'C', transform=ax3.transAxes + trans,
-                fontsize='medium', va='bottom', fontweight='bold')
+        trans = mtransforms.ScaledTranslation(-20 /
+                                                72, 7 / 72, fig.dpi_scale_trans)
+        ax1.text(0.0, 1.0, 'A', transform=ax1.transAxes + trans,
+                    fontsize='medium', va='bottom', fontweight='bold')
+        ax2.text(0.0, 1.0, 'B', transform=ax2.transAxes + trans,
+                    fontsize='medium', va='bottom', fontweight='bold')
+        ax3.text(0.0, 1.0, 'C', transform=ax3.transAxes + trans,
+                    fontsize='medium', va='bottom', fontweight='bold')
 
-    B.plot_fractions(axis=ax1,
-                     fill_variables=[
-                         'wall_time_create+wall_time_connect',
-                         'wall_time_sim', ],
-                     interpolate=True,
-                     step=None,
-                     error=True)
-    B.plot_main(quantities=['sim_factor'], axis=ax2,
-                error=True)
-    B.plot_fractions(axis=ax2,
-                     fill_variables=[
-                         'phase_update_factor',
-                         'phase_collocate_factor',
-                         'phase_communicate_factor',
-                         'phase_deliver_factor'
-                     ])
-    B.plot_fractions(axis=ax3,
-                     fill_variables=[
-                         'frac_phase_update',
-                         'frac_phase_collocate',
-                         'frac_phase_communicate',
-                         'frac_phase_deliver'
-                     ])
+        B.plot_fractions(axis=ax1,
+                        fill_variables=[
+                            'wall_time_create+wall_time_connect',
+                            'wall_time_sim', ],
+                        interpolate=True,
+                        step=None,
+                        error=True)
+        B.plot_main(quantities=['sim_factor'], axis=ax2,
+                    error=True)
+        B.plot_fractions(axis=ax2,
+                        fill_variables=[
+                            'phase_update_factor',
+                            'phase_collocate_factor',
+                            'phase_communicate_factor',
+                            'phase_deliver_factor'
+                        ])
+        B.plot_fractions(axis=ax3,
+                        fill_variables=[
+                            'frac_phase_update',
+                            'frac_phase_collocate',
+                            'frac_phase_communicate',
+                            'frac_phase_deliver'
+                        ])
 
-    ax1.set_xlabel('Number of Nodes')
-    ax1.set_ylabel(r'$T_{\mathrm{wall}}$ [s] for $T_{\mathrm{model}} =$'
-                    + f'{np.unique(B.df.model_time_sim.values)[0]} s')
-    ax2.set_ylabel(r'real-time factor $T_{\mathrm{wall}}/$'
-                    r'$T_{\mathrm{model}}$')
-    ax3.set_xlabel('Number of Nodes')
-    ax3.set_ylabel(r'relative $T_{\mathrm{wall}}$ [%]')
+        ax1.set_xlabel('Number of Nodes')
+        ax1.set_ylabel(r'$T_{\mathrm{wall}}$ [s] for $T_{\mathrm{model}} =$'
+                        + f'{np.unique(B.df.model_time_sim.values)[0]} s')
+        ax2.set_ylabel(r'real-time factor $T_{\mathrm{wall}}/$'
+                        r'$T_{\mathrm{model}}$')
+        ax3.set_xlabel('Number of Nodes')
+        ax3.set_ylabel(r'relative $T_{\mathrm{wall}}$ [%]')
 
-    handles1, labels1 = ax1.get_legend_handles_labels()
-    handles2, labels2 = ax2.get_legend_handles_labels()
+        handles1, labels1 = ax1.get_legend_handles_labels()
+        handles2, labels2 = ax2.get_legend_handles_labels()
 
-    ax1.legend(handles1[::-1], labels1[::-1])
-    ax2.legend(handles2[::-1], labels2[::-1], loc='upper right')
+        ax1.legend(handles1[::-1], labels1[::-1])
+        ax2.legend(handles2[::-1], labels2[::-1], loc='upper right')
 
-    ax3.set_ylim(0, 100)
+        ax3.set_ylim(0, 100)
 
-    for ax in [ax1, ax2, ax3]:
+        for ax in [ax1, ax2, ax3]:
+            ax.margins(x=0)
+        for ax in [ax1, ax2]:
+            B.simple_axis(ax)
+
+    elif detailed_timers == 'OFF': 
+        # Plotting without detailed timers
+        fig = plt.figure(figsize=(12, 6), constrained_layout=True)
+        spec = gridspec.GridSpec(ncols=1, nrows=1, figure=fig)
+
+        ax = fig.add_subplot(spec[0, 0])
+
+        trans = mtransforms.ScaledTranslation(-20 /
+                                                72, 7 / 72, fig.dpi_scale_trans)
+        ax.text(0.0, 1.0, 'A', transform=ax1.transAxes + trans,
+                    fontsize='medium', va='bottom', fontweight='bold')
+
+        B.plot_fractions(axis=ax,
+                        fill_variables=[
+                            'wall_time_create+wall_time_connect',
+                            'wall_time_sim', ],
+                        interpolate=True,
+                        step=None,
+                        error=True)
+        
+        ax.set_xlabel('Number of Nodes')
+        ax.set_ylabel(r'$T_{\mathrm{wall}}$ [s] for $T_{\mathrm{model}} =$'
+                        + f'{np.unique(B.df.model_time_sim.values)[0]} s')
+
+        handles, labels = ax.get_legend_handles_labels()
+
+        ax.legend(handles[::-1], labels[::-1])
+
+
         ax.margins(x=0)
-    for ax in [ax1, ax2]:
         B.simple_axis(ax)
+    else:
+        raise NameError('Detailed timers must either be set to ON or OFF')
 
     plt.savefig(save_path, dpi=400)
 
