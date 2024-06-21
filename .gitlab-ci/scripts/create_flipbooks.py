@@ -107,7 +107,7 @@ def plot_nodes(timer_file, save_path):
 
         trans = mtransforms.ScaledTranslation(-20 /
                                                 72, 7 / 72, fig.dpi_scale_trans)
-        ax.text(0.0, 1.0, 'A', transform=ax1.transAxes + trans,
+        ax.text(0.0, 1.0, 'A', transform=ax.transAxes + trans,
                     fontsize='medium', va='bottom', fontweight='bold')
 
         B.plot_fractions(axis=ax,
