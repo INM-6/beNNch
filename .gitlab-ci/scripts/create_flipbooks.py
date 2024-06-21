@@ -219,15 +219,17 @@ if __name__ == '__main__':
     attributes_to_display = sys.argv[4:]
 
     # get path of the .gitlab-ci.yml file
-    base_path = os.environ.get('USERSOFTWARE', '/ci-bennch/jureca/JUBE')
-    file_path = os.path.join(base_path, '.gitlab-ci.yml')
+    #base_path = os.environ.get('USERSOFTWARE', '/ci-bennch/jureca/JUBE')
+    #file_path = os.path.join(base_path, '.gitlab-ci.yml')
 
     # Read the YAML configuration file
-    with open(file_path, 'r') as file:
-        config = yaml.safe_load(file)
+    #with open(file_path, 'r') as file:
+    #    config = yaml.safe_load(file)
 
     # Extract the value of DETAILED_TIMERS_FLAG
-    detailed_timers = config['DETAILED_TIMERS_FLAG']['value']
+    #detailed_timers = config['DETAILED_TIMERS_FLAG']['value']
+
+    detailed_timers = 'OFF'
 
     plots_dir = os.path.join(output_dir, "plots")
     for benchmark_id in os.listdir(jube_results_dir):
