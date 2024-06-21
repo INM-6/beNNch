@@ -229,7 +229,7 @@ if __name__ == '__main__':
     # Extract the value of DETAILED_TIMERS_FLAG
     #detailed_timers = config['DETAILED_TIMERS_FLAG']['value']
 
-    detailed_timers = 'OFF'
+    detailed_timers = 'ON'
 
     plots_dir = os.path.join(output_dir, "plots")
     for benchmark_id in os.listdir(jube_results_dir):
