@@ -91,6 +91,19 @@ def plot_nodes(timer_file, save_path):
         ax1.legend(handles1[::-1], labels1[::-1])
         ax2.legend(handles2[::-1], labels2[::-1], loc='upper right')
 
+        # Set the ylim for benchmark plots to make different runs of same model visually comparable
+        if benchmark_model == "microcircuit":
+            ax1.set_ylim(0, 15)
+            ax2.set_ylim(0, 1.5)
+        elif benchmark_model == "hpc_benchmark":
+            ax1.set_ylim(0, 45)
+            ax2.set_ylim(0, 45)
+        elif benchmark_model == "multi_area":
+            ax1.set_ylim(0, 1500)
+            ax2.set_ylim(0, 150)
+        else:
+            pass # Let the ylim creation automatic for potential other models
+
         ax3.set_ylim(0, 100)
 
         for ax in [ax1, ax2, ax3]:
@@ -123,7 +136,17 @@ def plot_nodes(timer_file, save_path):
         handles, labels = ax.get_legend_handles_labels()
 
         ax.legend(handles[::-1], labels[::-1])
-
+        
+        # Set the ylim for benchmark plots to make different runs of same model visually comparable
+        if benchmark_model == "microcircuit":
+            ax.set_ylim(0, 15)
+        elif benchmark_model == "hpc_benchmark":
+            ax.set_ylim(0, 45)
+        elif benchmark_model == "multi_area":
+            ax.set_ylim(0, 1500)
+        else:
+            pass # Let the ylim creation automatic for potential other models
+            
 
         ax.margins(x=0)
         B.simple_axis(ax)
@@ -211,16 +234,17 @@ def make_notebook(plot_path: str, output_dir: str, notebook_filename: str, heade
 
 
 if __name__ == '__main__':
-    detailed_timers = sys.argv[1]
-    jube_results_dir = sys.argv[2]
-    output_dir = sys.argv[3]
-    pipeline_id = sys.argv[4]
-    attributes_to_display = sys.argv[5:]
+    benchmark_model = sys.argv[1]
+    detailed_timers = sys.argv[2]
+    jube_results_dir = sys.argv[3]
+    output_dir = sys.argv[4]
+    pipeline_id = sys.argv[5]
+    attributes_to_display = sys.argv[6:]
 
     plots_dir = os.path.join(output_dir, "plots")
-    for benchmark_id in os.listdir(jube_results_dir):
-        os.makedirs(plots_dir)
-        
+    os.makedirs(plots_dir)
+
+    for benchmark_id in os.listdir(jube_results_dir): 
         result_table = os.path.join(jube_results_dir, benchmark_id, "result", "result_table.dat")
         
         benchmark_name = os.popen(f"jube info {jube_results_dir} --id {benchmark_id}").read().split("\n")[1].split(" id")[0][2:]
@@ -230,4 +254,3 @@ if __name__ == '__main__':
         plot_threads(timer_file=result_table, save_path=os.path.join(plots_dir, "threads.png"))
         make_notebook(os.path.join(plots_dir, "threads.png"), output_dir, f"{pipeline_id}_{benchmark_name}_threads.ipynb", f"{pipeline_id} - {benchmark_name} (threads)", result_table, attributes_to_display)
 
-        shutil.rmtree(plots_dir)
