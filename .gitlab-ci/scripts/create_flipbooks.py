@@ -218,9 +218,9 @@ if __name__ == '__main__':
     attributes_to_display = sys.argv[5:]
 
     plots_dir = os.path.join(output_dir, "plots")
-    for benchmark_id in os.listdir(jube_results_dir):
-        os.makedirs(plots_dir)
-        
+    os.makedirs(plots_dir)
+
+    for benchmark_id in os.listdir(jube_results_dir): 
         result_table = os.path.join(jube_results_dir, benchmark_id, "result", "result_table.dat")
         
         benchmark_name = os.popen(f"jube info {jube_results_dir} --id {benchmark_id}").read().split("\n")[1].split(" id")[0][2:]
@@ -230,4 +230,3 @@ if __name__ == '__main__':
         plot_threads(timer_file=result_table, save_path=os.path.join(plots_dir, "threads.png"))
         make_notebook(os.path.join(plots_dir, "threads.png"), output_dir, f"{pipeline_id}_{benchmark_name}_threads.ipynb", f"{pipeline_id} - {benchmark_name} (threads)", result_table, attributes_to_display)
 
-        shutil.rmtree(plots_dir)
