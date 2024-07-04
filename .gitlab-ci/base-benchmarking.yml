@@ -103,7 +103,6 @@ variables:
   clone-repositories:
     - |
       export CB_SIMULATOR_BRANCH=$(python3 -c "import yaml; f = open('$CONFIG_FILE_PATH', 'r'); print(yaml.safe_load(f)['software_parameters']['simulator_repo_branch']);f.close()")
-    - 'python3 "$SCRIPTS_DIR/clone_models.py" "$CONFIG_FILE_PATH" "$MODELS_DIR" "$CB_MODELS"'
     # Prepare Builder .buildrc
     - |
       echo PLANFILE_PATH="$BUILDER_PLANFILE_DIR" > "$BUILDER_CONFIG_PATH"
@@ -117,6 +116,7 @@ variables:
     - 'mkdir -p "$BUILDER_PLANFILE_DIR/simulator/$CB_SIMULATOR_BRANCH"'
     - 'cp "$SIMULATOR_PLANFILE_PATH" "$BUILDER_PLANFILE_DIR/simulator/$CB_SIMULATOR_BRANCH/default"'
     - 'cp "$SIMULATOR_MODULEFILE_PATH" "$BUILDER_PLANFILE_DIR/simulator/$CB_SIMULATOR_BRANCH/default.module"'
+    - 'python3 "$SCRIPTS_DIR/clone_models.py" "$CONFIG_FILE_PATH" "$MODELS_DIR" "$CB_MODELS"'
   build-simulator:
     - 'build -f simulator $CB_SIMULATOR_BRANCH'
     - 'cd "${SIMULATOR_REPO_DIR}"'
