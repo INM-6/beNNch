@@ -161,12 +161,9 @@ def plot_nodes(timer_file, save_path):
         if plotting_style == "Docs":
             ax2 = fig.add_subplot(spec[0, 1])
             
-            B.plot_fractions(axis=ax2,
-                            fill_variables=[
-                                'sim_time_factor', ],
-                            interpolate=True,
-                            step=None,
-                            error=True)
+            B.plot_main(quantities=['sim_timer_factor'], axis=ax2,
+                        error=True)
+
             ax2.set_xlabel('Number of Nodes')
             ax2.set_ylabel(r'real-time factor $T_{\mathrm{wall}}/$'
                             r'$T_{\mathrm{model}}/$')
