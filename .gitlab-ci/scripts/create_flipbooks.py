@@ -155,6 +155,9 @@ def plot_nodes(timer_file, save_path):
         else:
             pass # Let the ylim creation automatic for potential other models
             
+        ax1.margins(x=0)
+        B.simple_axis(ax1)
+
         if plotting_style == "Docs":
             ax2 = fig.add_subplot(spec[0, 1])
             
@@ -166,13 +169,14 @@ def plot_nodes(timer_file, save_path):
                             error=True)
             ax2.set_xlabel('Number of Nodes')
             ax2.set_ylabel(r'real-time factor $T_{\mathrm{wall}}/$'
-                            r'$T_{\mathrm{model}}/$'
+                            r'$T_{\mathrm{model}}/$')
 
             handles2, labels2 = ax2.get_legend_handles_labels()
             ax2.legend(handles2[::-1], labels2[::-1])
+            
+            ax2.margins(x=0)
+            B.simple_axis(ax2)
 
-        ax1.margins(x=0)
-        B.simple_axis(ax1)
     else:
         raise NameError('Detailed timers must either be set to ON or OFF')
 
