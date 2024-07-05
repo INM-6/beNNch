@@ -163,7 +163,7 @@ def plot_nodes(timer_file, save_path):
             
             B.plot_fractions(axis=ax2,
                         fill_variables=[
-                            'phase_update_factor+phase_collocate_factor+phase_communicate_factor+phase_deliver_factor', ],
+                            'sim_factor', ],
                         interpolate=True,
                         step=None,
                         error=True)
