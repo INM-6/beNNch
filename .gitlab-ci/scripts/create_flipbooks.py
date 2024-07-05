@@ -123,7 +123,7 @@ def plot_nodes(timer_file, save_path):
 
         elif plotting_style == 'Docs':
             fig = plt.figure(figsize=(12, 6), constrained_layout=True)
-            spec = gridspec.GridSpec(ncols=1, nrows=2, figure=fig)
+            spec = gridspec.GridSpec(ncols=2, nrows=1, figure=fig)
 
         ax1 = fig.add_subplot(spec[0, 0])
 
