@@ -30,6 +30,10 @@ import bennchplot as bp
 
 
 def plot_nodes(timer_file, save_path):
+    
+    # If Docs is chosen as plotting style there are no detailed timers in the plot
+    if plotting_style = 'Docs':
+        detailed_timers == 'OFF'
 
     B = bp.Plot(data_file=timer_file, x_axis=['num_nodes'], time_scaling=1e3)
 
@@ -111,17 +115,22 @@ def plot_nodes(timer_file, save_path):
         for ax in [ax1, ax2]:
             B.simple_axis(ax)
 
-    elif detailed_timers == 'OFF': 
+    elif detailed_timers == 'OFF':
+        if plotting_style == 'Standard':
         # Plotting without detailed timers
-        fig = plt.figure(figsize=(12, 6), constrained_layout=True)
-        spec = gridspec.GridSpec(ncols=1, nrows=1, figure=fig)
+            fig = plt.figure(figsize=(12, 6), constrained_layout=True)
+            spec = gridspec.GridSpec(ncols=1, nrows=1, figure=fig)
 
-        ax = fig.add_subplot(spec[0, 0])
+        elif plotting_style == 'Docs':
+            fig = plt.figure(figsize=(12, 6), constrained_layout=True)
+            spec = gridspec.GridSpec(ncols=1, nrows=2, figure=fig)
+
+        ax1 = fig.add_subplot(spec[0, 0])
 
         trans = mtransforms.ScaledTranslation(-20 /
                                                 72, 7 / 72, fig.dpi_scale_trans)
 
-        B.plot_fractions(axis=ax,
+        B.plot_fractions(axis=ax1,
                         fill_variables=[
                             'wall_time_create+wall_time_connect',
                             'wall_time_sim', ],
@@ -129,27 +138,41 @@ def plot_nodes(timer_file, save_path):
                         step=None,
                         error=True)
         
-        ax.set_xlabel('Number of Nodes')
-        ax.set_ylabel(r'$T_{\mathrm{wall}}$ [s] for $T_{\mathrm{model}} =$'
+        ax1.set_xlabel('Number of Nodes')
+        ax1.set_ylabel(r'$T_{\mathrm{wall}}$ [s] for $T_{\mathrm{model}} =$'
                         + f'{np.unique(B.df.model_time_sim.values)[0]} s')
 
-        handles, labels = ax.get_legend_handles_labels()
+        handles1, labels1 = ax1.get_legend_handles_labels()
+        ax1.legend(handles1[::-1], labels1[::-1])
 
-        ax.legend(handles[::-1], labels[::-1])
-        
         # Set the ylim for benchmark plots to make different runs of same model visually comparable
         if benchmark_model == "microcircuit":
-            ax.set_ylim(0, 15)
+            ax1.set_ylim(0, 15)
         elif benchmark_model == "hpc_benchmark":
-            ax.set_ylim(0, 45)
+            ax1.set_ylim(0, 45)
         elif benchmark_model == "multi_area":
-            ax.set_ylim(0, 1500)
+            ax1.set_ylim(0, 1500)
         else:
             pass # Let the ylim creation automatic for potential other models
             
+        if plotting_style == "Docs":
+            ax2 = fig.add_subplot(spec[0, 1])
+            
+            B.plot_fractions(axis=ax2,
+                            fill_variables=[
+                                'sim_time_factor', ],
+                            interpolate=True,
+                            step=None,
+                            error=True)
+            ax2.set_xlabel('Number of Nodes')
+            ax2.set_ylabel(r'real-time factor $T_{\mathrm{wall}}/$'
+                            r'$T_{\mathrm{model}}/$'
 
-        ax.margins(x=0)
-        B.simple_axis(ax)
+            handles2, labels2 = ax2.get_legend_handles_labels()
+            ax2.legend(handles2[::-1], labels2[::-1])
+
+        ax1.margins(x=0)
+        B.simple_axis(ax1)
     else:
         raise NameError('Detailed timers must either be set to ON or OFF')
 
@@ -234,12 +257,13 @@ def make_notebook(plot_path: str, output_dir: str, notebook_filename: str, heade
 
 
 if __name__ == '__main__':
-    benchmark_model = sys.argv[1]
-    detailed_timers = sys.argv[2]
-    jube_results_dir = sys.argv[3]
-    output_dir = sys.argv[4]
-    pipeline_id = sys.argv[5]
-    attributes_to_display = sys.argv[6:]
+    plotting_style = sys.argv[1]
+    benchmark_model = sys.argv[2]
+    detailed_timers = sys.argv[3]
+    jube_results_dir = sys.argv[4]
+    output_dir = sys.argv[5]
+    pipeline_id = sys.argv[6]
+    attributes_to_display = sys.argv[7:]
 
     plots_dir = os.path.join(output_dir, "plots")
     os.makedirs(plots_dir)

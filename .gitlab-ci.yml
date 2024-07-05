@@ -56,6 +56,12 @@ variables:
     options:
       - "OFF"
       - "ON"
+  PLOTTING_STYLE:
+    description: "Setting this to docs will set detailed timers to OFF and instead of a detailed timers plot will plot the realtime factor"
+    value: "Standard"
+    options:
+      - "Standard"
+      - "Docs"
   CB_MODELS:
     description: "Comma-seperated list of the names of all models for which benchmarks should be run. Leave empty to run benchmarks for all models specified in the configuration file."
     value: "hpc_benchmark"
