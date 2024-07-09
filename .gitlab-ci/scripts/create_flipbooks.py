@@ -161,11 +161,7 @@ def plot_nodes(timer_file, save_path):
         if plotting_style == "Docs":
             ax2 = fig.add_subplot(spec[0, 1])
             
-            B.plot_fractions(axis=ax2,
-                        fill_variables=[
-                            'sim_factor', ],
-                        interpolate=True,
-                        step=None,
+            B.plot_main(quantities=['sim_factor'], axis=ax2,
                         error=True)
 
             ax2.set_xlabel('Number of Nodes')
