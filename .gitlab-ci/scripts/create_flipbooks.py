@@ -123,7 +123,7 @@ def plot_nodes(timer_file, save_path):
 
         elif plotting_style == 'Docs':
             fig = plt.figure(figsize=(12, 6), constrained_layout=True)
-            spec = gridspec.GridSpec(ncols=2, nrows=1, figure=fig)
+            spec = gridspec.GridSpec(ncols=2, nrows=1, figure=fig, hspace=0.2)
 
         ax1 = fig.add_subplot(spec[0, 0])
 
@@ -162,7 +162,7 @@ def plot_nodes(timer_file, save_path):
             ax2 = fig.add_subplot(spec[0, 1])
             
             B.plot_main(quantities=['sim_factor'], axis=ax2,
-                        error=True, fmt='o-')
+                        error=True, fmt='-')
 
             ax2.set_xlabel('Number of Nodes')
             ax2.set_ylabel(r'real-time factor $T_{\mathrm{wall}}/$'
@@ -181,8 +181,6 @@ def plot_nodes(timer_file, save_path):
 
             ax2.text(0.0, 1.0, 'B', transform=ax1.transAxes + trans,
                     fontsize='medium', va='bottom', fontweight='bold')
-            
-            plt.subplots_adjust(top=0.9, bottom=0.1, left=0.1, right=0.9)
 
     else:
         raise NameError('Detailed timers must either be set to ON or OFF')
