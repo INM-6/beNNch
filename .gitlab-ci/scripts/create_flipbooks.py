@@ -167,6 +167,8 @@ def plot_nodes(timer_file, save_path):
             ax2.set_xlabel('Number of Nodes')
             ax2.set_ylabel(r'real-time factor $T_{\mathrm{wall}}/$'
                             r'$T_{\mathrm{model}}/$')
+            
+            ax2.set_ylim(0)
 
             handles2, labels2 = ax2.get_legend_handles_labels()
             ax2.legend(handles2[::-1], labels2[::-1])
