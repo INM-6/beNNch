@@ -57,7 +57,7 @@ variables:
       - "OFF"
       - "ON"
   PLOTTING_STYLE:
-    description: "Setting this to docs will set detailed timers to OFF and instead of a detailed timers plot will plot the realtime factor"
+    description: "Setting this to docs will set detailed timers to OFF and will instead plot the realtime factor"
     value: "Standard"
     options:
       - "Standard"
