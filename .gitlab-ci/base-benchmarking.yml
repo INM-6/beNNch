@@ -225,7 +225,7 @@ variables:
 .flipbook:
   # TODO: Add another stage which can be triggered manually to create flipbooks or other plots with additional configuration
   - 'mkdir -p "${OUTPUT_DIR}/${JUBE_BENCHMARK_FILE}_${MACHINE}/flipbooks"'
-  - 'python3 "${SCRIPTS_DIR}/create_flipbooks.py" "$CB_MODELS"  "$DETAILED_TIMERS_FLAG" "$JUBE_RESULTS_DIR" "${OUTPUT_DIR}/${JUBE_BENCHMARK_FILE}_${MACHINE}/flipbooks" "$BENCHMARK_UID"'
+  - 'python3 "${SCRIPTS_DIR}/create_flipbooks.py" "$PLOTTING_STYLE" "$CB_MODELS"  "$DETAILED_TIMERS_FLAG" "$JUBE_RESULTS_DIR" "${OUTPUT_DIR}/${JUBE_BENCHMARK_FILE}_${MACHINE}/flipbooks" "$BENCHMARK_UID"'
   - 'cp -r "${OUTPUT_DIR}/${JUBE_BENCHMARK_FILE}_${MACHINE}/flipbooks" "$CI_PROJECT_DIR/flipbooks"'
 
 # Requires git, python3, pyyaml, bennchplot
