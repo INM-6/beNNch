@@ -168,6 +168,9 @@ def plot_nodes(timer_file, save_path):
             ax2.set_ylabel(r'real-time factor $T_{\mathrm{wall}}/$'
                             r'$T_{\mathrm{model}}/$')
 
+            # Set the xlim
+            ax2.set_xlim(left=0)
+
             # Set the ylim for benchmark plots to make different runs of same model visually comparable
             if benchmark_model == "microcircuit":
                 ax2.set_ylim(0, 1.)
