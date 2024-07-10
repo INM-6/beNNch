@@ -167,8 +167,18 @@ def plot_nodes(timer_file, save_path):
             ax2.set_xlabel('Number of Nodes')
             ax2.set_ylabel(r'real-time factor $T_{\mathrm{wall}}/$'
                             r'$T_{\mathrm{model}}/$')
-            
-            ax2.set_ylim(0)
+
+            # Set the ylim for benchmark plots to make different runs of same model visually comparable
+            if benchmark_model == "microcircuit":
+                ax2.set_ylim(0, 1.)
+            elif benchmark_model == "hpc_benchmark":
+                ax2.set_ylim(0, 35)
+            elif benchmark_model == "multi_area":
+                ax2.set_ylim(0, 120)
+            else:
+                pass # Let the ylim creation automatic for potential other models
+
+            ax.hlines(y=1, xmin=0, xmax=np.max(B.df[B.x_axis].values), color='gray', linestyle='--')
 
             handles2, labels2 = ax2.get_legend_handles_labels()
             ax2.legend(handles2[::-1], labels2[::-1])
