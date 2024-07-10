@@ -175,12 +175,14 @@ def plot_nodes(timer_file, save_path):
             
             ax2.margins(x=0)
             B.simple_axis(ax2)
-
+            
+            """
             ax1.text(0.0, 1.0, 'A', transform=ax1.transAxes + trans,
                     fontsize='medium', va='bottom', fontweight='bold')
 
             ax2.text(0.0, 1.0, 'B', transform=ax1.transAxes + trans,
                     fontsize='medium', va='bottom', fontweight='bold')
+            """
 
     else:
         raise NameError('Detailed timers must either be set to ON or OFF')
