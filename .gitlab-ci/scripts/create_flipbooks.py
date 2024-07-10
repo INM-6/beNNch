@@ -178,7 +178,7 @@ def plot_nodes(timer_file, save_path):
             else:
                 pass # Let the ylim creation automatic for potential other models
 
-            ax.hlines(y=1, xmin=0, xmax=np.max(B.df[B.x_axis].values), color='gray', linestyle='--')
+            ax2.hlines(y=1, xmin=0, xmax=np.max(B.df[B.x_axis].values), color='gray', linestyle='--')
 
             handles2, labels2 = ax2.get_legend_handles_labels()
             ax2.legend(handles2[::-1], labels2[::-1])
