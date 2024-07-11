@@ -166,7 +166,7 @@ def plot_nodes(timer_file, save_path):
 
             ax2.set_xlabel('Number of Nodes')
             ax2.set_ylabel(r'real-time factor $T_{\mathrm{wall}}/$'
-                            r'$T_{\mathrm{model}}/$')
+                            r'$T_{\mathrm{model}}$')
 
             # Set the xlim
             ax2.set_xlim(left=0)
