@@ -148,7 +148,7 @@ for model_name, benchmark_config in config["benchmarks"].items():
         {"name": "log_path", "type": "string", "_": "${jube_wp_abspath}" + os.sep + run_parameters.get("log_path", "")},
         {"name": "scripts_dir", "type": "string", "_": scripts_dir},
         {"name": "metrics_path", "type": "string", "_": metrics_out_path},
-        {"name": "optional_run_command", "type": "string", "_": run_parameters.get("optional_run_command", "")},
+        {"name": "optional_run_command", "type": "string", "separator": ";", "_": run_parameters.get("optional_run_command", "")},
         {"name": "run_args", "type": "string", "_": run_parameters.get("run_args", "")},
         {"name": "model_path", "type": "string", "_": os.path.abspath(benchmark_model_files_dir)},
         {"name": "prepare_file_path", "type": "string", "_": prepare_file_path}
