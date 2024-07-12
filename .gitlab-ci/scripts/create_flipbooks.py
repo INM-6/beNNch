@@ -34,6 +34,9 @@ def plot_nodes(timer_file, save_path):
     # If Docs is chosen as plotting style there are no detailed timers in the plot
     if plotting_style == 'Docs':
         detailed_timers = 'OFF'
+    elif plotting_style == 'Standard':
+        detailed_timers = 'ON'
+
 
     B = bp.Plot(data_file=timer_file, x_axis=['num_nodes'], time_scaling=1e3)
 
