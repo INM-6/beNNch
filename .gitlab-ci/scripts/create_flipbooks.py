@@ -297,7 +297,7 @@ if __name__ == '__main__':
         
         benchmark_name = os.popen(f"jube info {jube_results_dir} --id {benchmark_id}").read().split("\n")[1].split(" id")[0][2:]
 
-        plot_nodes(timer_file=result_table, save_path=os.path.join(plots_dir, "nodes.png"), plotting_style, detailed_timers)
+        plot_nodes(timer_file=result_table, save_path=os.path.join(plots_dir, "nodes.png"), plotting_style=plotting_style, detailed_timers=detailed_timers)
         make_notebook(os.path.join(plots_dir, "nodes.png"), output_dir, f"{pipeline_id}_{benchmark_name}_nodes.ipynb", f"{pipeline_id} - {benchmark_name} (nodes)", result_table, attributes_to_display)
         plot_threads(timer_file=result_table, save_path=os.path.join(plots_dir, "threads.png"))
         make_notebook(os.path.join(plots_dir, "threads.png"), output_dir, f"{pipeline_id}_{benchmark_name}_threads.ipynb", f"{pipeline_id} - {benchmark_name} (threads)", result_table, attributes_to_display)
