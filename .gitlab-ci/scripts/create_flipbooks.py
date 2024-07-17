@@ -10,7 +10,6 @@ WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 PARTICULAR PURPOSE. See the GNU General Public License for more details.
 You should have received a copy of the GNU General Public License along with
 this program. If not, see <https://www.gnu.org/licenses/>.
-
 SPDX-License-Identifier: GPL-3.0-or-later
 """
 
@@ -157,7 +156,7 @@ def plot_nodes(timer_file, save_path):
             ax1.set_ylim(0, 1500)
         else:
             pass # Let the ylim creation automatic for potential other models
-            
+        
         ax1.margins(x=0)
         B.simple_axis(ax1)
 
@@ -172,19 +171,20 @@ def plot_nodes(timer_file, save_path):
                             r'$T_{\mathrm{model}}$')
 
             # Set the xlim
-            ax2.set_xlim(left=0)
+            automatic_xlim = ax2.get_xlim()
+            ax2.set_xlim(automatic_xlim[0] - 0.005, automatic_xlim[1])
 
             # Set the ylim for benchmark plots to make different runs of same model visually comparable
             if benchmark_model == "microcircuit":
                 ax2.set_ylim(0, 1.)
+                # explicitly show realtime factor of 1
+                ax2.hlines(y=1, xmin=0, xmax=np.max(B.df[B.x_axis].values), color='gray', linestyle='--')
             elif benchmark_model == "hpc_benchmark":
                 ax2.set_ylim(0, 35)
             elif benchmark_model == "multi_area":
                 ax2.set_ylim(0, 120)
             else:
                 pass # Let the ylim creation automatic for potential other models
-
-            ax2.hlines(y=1, xmin=0, xmax=np.max(B.df[B.x_axis].values), color='gray', linestyle='--')
 
             handles2, labels2 = ax2.get_legend_handles_labels()
             ax2.legend(handles2[::-1], labels2[::-1])
