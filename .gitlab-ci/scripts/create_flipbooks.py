@@ -172,7 +172,7 @@ def plot_nodes(timer_file, save_path):
 
             # Set the xlim
             automatic_xlim = ax2.get_xlim()
-            ax2.set_xlim(automatic_xlim[0] - 0.005, automatic_xlim[1])
+            ax2.set_xlim(automatic_xlim[0], automatic_xlim[1])
 
             # Set the ylim for benchmark plots to make different runs of same model visually comparable
             if benchmark_model == "microcircuit":
