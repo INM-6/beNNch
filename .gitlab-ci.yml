@@ -71,14 +71,15 @@ variables:
       - "microcircuit"
   CB_MACHINES:
     description: "Comma-seperated list of the names of all machines on which benchmarks should be run. Leave empty to trigger benchmark runs for manually for each individual machine for which configuration was found."
-    value: "jusuf"
+    value: "hambach"
     options:
+      - "hambach"
       - "jusuf"
       - "jureca"
       - "juwels"
 
 # Specify all machines for which configurations exist
-.machines: &machines_anchor [ "jureca", "jusuf" ]
+.machines: &machines_anchor [ "hambach", "jureca", "jusuf" ]
 
 # Only run pipelines manually triggered from the web
 workflow:
@@ -95,7 +96,7 @@ Validate Input:
   stage: validate
   image: python:3-alpine
   variables:
-    MACHINES: "jureca,jusuf"  # TODO: Check if the anchor can be used here somehow to avoid duplication
+    MACHINES: "hambach,jureca,jusuf"  # TODO: Check if the anchor can be used here somehow to avoid duplication
   script:
     - |+
       # Make sure values were provided for all mandatory variables
