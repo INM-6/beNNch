@@ -35,6 +35,10 @@ variables:
 Preparation:
   extends: [ .base-benchmarking, .preparation ]
   artifacts:
+    paths:
+      - beNNch-plot/
+      - JUBE/
+      - Builder/
     reports:
       dotenv: benchmark_variables.env
     when: on_success
@@ -53,6 +57,21 @@ Preparation:
     - !reference [ .prepare-benchmarks, environment-init ]
     # Prepare environment using user-defined commands
     - !reference [ .prepare-benchmarks, environment-load ]
+    # install bennchplot
+    - 'git clone https://github.com/INM-6/beNNch-plot.git'
+    - 'cd beNNch-plot'
+    - 'git checkout metadata_plotting'
+    - 'pip install .'
+    - 'cd ..'
+    # install jube
+    - 'git clone https://github.com/FZJ-JSC/JUBE.git'
+    - 'cd JUBE'
+    - 'pip install .'
+    - 'jube --version'
+    - 'cd ..'
+    # install builder
+    - 'git clone https://github.com/INM-6/Builder.git'
+    - 'mv Builder $USER_DATA_DIR'
     # TODO: Metadata
     # - 'pip install git+https://github.com/INM-6/gather-metadata.git'
     # Clone simulator and model repositories and prepare builder
@@ -71,6 +90,9 @@ Build:
     - job: "Preparation"
       artifacts: true
   artifacts:
+    paths:
+      - beNNch-plot/
+      - JUBE/
     reports:
       dotenv: benchmark_variables.env
     when: on_success
@@ -90,6 +112,8 @@ Benchmarking:
       artifacts: true
   artifacts:
     paths:
+      - beNNch-plot/
+      - JUBE/
       - "specifications"
       - "flipbooks"
     reports:
