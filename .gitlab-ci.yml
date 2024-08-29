@@ -64,7 +64,7 @@ variables:
       - "Docs"
   CB_MODELS:
     description: "Comma-seperated list of the names of all models for which benchmarks should be run. Leave empty to run benchmarks for all models specified in the configuration file."
-    value: "hpc_benchmark"
+    value: "microcircuit"
     options:
       - "hpc_benchmark"
       - "multi_area"
