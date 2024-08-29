@@ -17,9 +17,6 @@
 
 include: .gitlab-ci/jacamar-benchmarking.yml
 
-variables:
-
-
 .preparation:
   tags:
     - hambach
