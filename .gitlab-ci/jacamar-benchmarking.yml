@@ -18,7 +18,6 @@
 include:
   local: .gitlab-ci/base-benchmarking.yml
 
-
 variables:
   SIMULATOR_MODULEFILE_PATH: "$$USER_DATA_DIR/simulator.module"
   SIMULATOR_PLANFILE_PATH: "$$USER_DATA_DIR/simulator.planfile"
@@ -48,10 +47,6 @@ Preparation:
     - |
       eval USER="$SLURM_JOB_USER"
       eval USER_DATA_DIR="$TEMP_DIR/$USER/${BENCHMARK_UID}"
-    - 'echo "$TEMP_DIR"'
-    - 'echo "$USER"'
-    - 'printenv'
-    - 'echo "$USER_DATA_DIR"'
     # Load all environment variables
     - !reference [ .prepare-benchmarks, environment-variables ]
     # Create all required directories
