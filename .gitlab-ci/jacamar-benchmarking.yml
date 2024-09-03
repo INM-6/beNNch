@@ -29,6 +29,7 @@ variables:
   BUILDER_BUILD_DIR: "$$USER_DATA_DIR/Builder/build"
   BUILDER_LOG_DIR: "$$USER_DATA_DIR/Builder/log/"
   BUILDER_CONFIG_PATH: "$$USER_DATA_DIR/.buildrc"
+  BUILDER_PATH: "$$USER_DATA_DIR/Builder"
 
 # Must define USER_DATA_DIR
 Preparation:
