@@ -45,9 +45,10 @@ Preparation:
     # Get unique id for benchmark
     - !reference [ .prepare-benchmarks, get-uid ]
     - |
+      set -euo pipefail
       eval USER="$SLURM_JOB_USER"
       eval USER_DATA_DIR="$TEMP_DIR/$USER/${BENCHMARK_UID}"
-      export PLANFILE_PATH="$USER_DATADIR/Builder/plans"
+      export PLANFILE_PATH="$USER_DATA_DIR/Builder/plans"
     # Load all environment variables
     - !reference [ .prepare-benchmarks, environment-variables ]
     # Create all required directories
