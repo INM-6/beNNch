@@ -131,7 +131,7 @@ Benchmarking:
     # Generate flipbook
     - !reference [ .flipbook ]
     # Collect metadata and prepare
-    - !reference [ .collect-metadata ]
+    #- !reference [ .collect-metadata ]
     # Forward all environment variables to next stage
     - !reference [ .variables-as-artifacts ]
 

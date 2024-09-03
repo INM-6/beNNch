@@ -19,8 +19,6 @@ default:
   id_tokens:
     SITE_ID_TOKEN:
       aud: https://gitlab.jsc.fz-juelich.de
-    CI_JOB_JWT:
-      aud: https://gitlab.jsc.fz-juelich.de
 
 variables:
   SIMULATOR_REPO_DIR: "$$USER_DATA_DIR/repository"
@@ -97,10 +95,10 @@ variables:
     # The additional empty value for credential.helper causes any existing credential helpers to be removed, preventing the addition of this token into the user's credential helper. If you'd like the user to be able to save it, then remove that directive. See https://stackoverflow.com/questions/70960407/keep-git-auth-as-environment-variable-instead-of-evaluated-value
     # - |
     #   git clone -c credential.helper='!f() { echo "username=$RESULTS_REPO_TOKEN"; echo "password="; };f' --single-branch --branch="$RESULTS_BRANCH" --depth=1 "$RESULTS_REPO_URL" "$RESULTS_DIR"
-    - 'git clone --single-branch --branch="$RESULTS_BRANCH" "$RESULTS_REPO_URL" "$RESULTS_DIR"'
-    - 'cd "$RESULTS_DIR"'
+    #- 'git clone --single-branch --branch="$RESULTS_BRANCH" "$RESULTS_REPO_URL" "$RESULTS_DIR"'
+    #- 'cd "$RESULTS_DIR"'
     # - 'git config --local --unset credential.helper'
-    - 'git annex init'
+    #- 'git annex init'
     # - 'git annex enableremote oursharedremote'  # TODO: Make this part of a config as well
   clone-repositories:
     - |
