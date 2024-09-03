@@ -35,10 +35,10 @@ variables:
 Preparation:
   extends: [ .base-benchmarking, .preparation ]
   artifacts:
-    paths:
-      - "$USER_DATA_DIR/beNNch-plot/"
-      - "$USER_DATA_DIR/JUBE/"
-      - "$USER_DATA_DIR/Builder/"
+    #paths:
+    #  - "$USER_DATA_DIR/beNNch-plot/"
+    #  - "$USER_DATA_DIR/JUBE/"
+    #  - "$USER_DATA_DIR/Builder/"
     reports:
       dotenv: benchmark_variables.env
     when: on_success
@@ -92,9 +92,9 @@ Build:
     - job: "Preparation"
       artifacts: true
   artifacts:
-    paths:
-      - beNNch-plot/
-      - JUBE/
+    #paths:
+      #- beNNch-plot/
+      #- JUBE/
     reports:
       dotenv: benchmark_variables.env
     when: on_success
@@ -114,8 +114,8 @@ Benchmarking:
       artifacts: true
   artifacts:
     paths:
-      - beNNch-plot/
-      - JUBE/
+      #- beNNch-plot/
+      #- JUBE/
       - "specifications"
       - "flipbooks"
     reports:
