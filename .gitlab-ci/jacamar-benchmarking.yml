@@ -47,7 +47,7 @@ Preparation:
     - |
       set -euo pipefail
       eval USER="$SLURM_JOB_USER"
-      eval USER_DATA_DIR="$TEMP_DIR/$USER/${BENCHMARK_UID}"
+      export USER_DATA_DIR="$TEMP_DIR/$USER/${BENCHMARK_UID}"
       export PLANFILE_PATH="$USER_DATA_DIR/Builder/plans"
     # Load all environment variables
     - !reference [ .prepare-benchmarks, environment-variables ]
