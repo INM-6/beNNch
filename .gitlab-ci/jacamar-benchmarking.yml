@@ -36,9 +36,9 @@ Preparation:
   extends: [ .base-benchmarking, .preparation ]
   artifacts:
     paths:
-      - beNNch-plot/
-      - JUBE/
-      - Builder/
+      - "$USER_DATA_DIR/beNNch-plot/"
+      - "$USER_DATA_DIR/JUBE/"
+      - "$USER_DATA_DIR/Builder/"
     reports:
       dotenv: benchmark_variables.env
     when: on_success
