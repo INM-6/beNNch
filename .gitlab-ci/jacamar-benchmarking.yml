@@ -45,13 +45,13 @@ Preparation:
   script:
     # Get unique id for benchmark
     - !reference [ .prepare-benchmarks, get-uid ]
+    # Load all environment variables
+    - !reference [ .prepare-benchmarks, environment-variables ]
     - |
       eval USER_DATA_DIR="$TEMP_DIR/$USER/${BENCHMARK_UID}"
       echo "$TEMP_DIR"
       echo "$USER"
       echo "$USER_DATA_DIR"
-    # Load all environment variables
-    - !reference [ .prepare-benchmarks, environment-variables ]
     # Create all required directories
     - !reference [ .prepare-benchmarks, create-dirs ]
     # Move all artifacts to user data directory
