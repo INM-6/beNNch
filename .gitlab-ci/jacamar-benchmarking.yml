@@ -48,6 +48,7 @@ Preparation:
     - |
       eval USER_DATA_DIR="$TEMP_DIR/$USER/${BENCHMARK_UID}"
     - 'echo "$TEMP_DIR"'
+    - 'eval USER="$SLURM_JOB_USER"'
     - 'echo "$USER"'
     - 'printenv'
     - 'echo "$USER_DATA_DIR"'
