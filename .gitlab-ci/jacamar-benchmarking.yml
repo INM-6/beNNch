@@ -71,7 +71,7 @@ Preparation:
     - 'cd ..'
     # install builder
     - 'git clone https://github.com/INM-6/Builder.git'
-    - 'mv Builder $USER_DATA_DIR'
+    #- 'mv Builder $USER_DATA_DIR'
     # TODO: Metadata
     # - 'pip install git+https://github.com/INM-6/gather-metadata.git'
     # Clone simulator and model repositories and prepare builder
