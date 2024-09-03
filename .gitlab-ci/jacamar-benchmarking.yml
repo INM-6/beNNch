@@ -47,6 +47,7 @@ Preparation:
     - !reference [ .prepare-benchmarks, get-uid ]
     - |
       eval USER_DATA_DIR="$TEMP_DIR/$USER/${BENCHMARK_UID}"
+      echo "$USER_DATA_DIR"
     # Load all environment variables
     - !reference [ .prepare-benchmarks, environment-variables ]
     # Create all required directories
