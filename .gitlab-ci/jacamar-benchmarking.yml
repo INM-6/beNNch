@@ -39,7 +39,7 @@ Preparation:
     #  - "$USER_DATA_DIR/JUBE/"
     #  - "$USER_DATA_DIR/Builder/"
     reports:
-      dotenv: benchmark_variables.env
+      dotenv: "$CI_PROJECT_DIR/benchmark_variables.env"
     when: on_success
   script:
     # Get unique id for benchmark
