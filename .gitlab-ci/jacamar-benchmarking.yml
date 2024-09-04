@@ -34,10 +34,9 @@ variables:
 Preparation:
   extends: [ .base-benchmarking, .preparation ]
   artifacts:
-    #paths:
-    #  - "$USER_DATA_DIR/beNNch-plot/"
-    #  - "$USER_DATA_DIR/JUBE/"
-    #  - "$USER_DATA_DIR/Builder/"
+    paths:
+      - "JUBE/"
+      - "Builder/"
     reports:
       dotenv: benchmark_variables.env
     when: on_success
@@ -60,20 +59,21 @@ Preparation:
     # Prepare environment using user-defined commands
     - !reference [ .prepare-benchmarks, environment-load ]
     # install bennchplot
-    - 'git clone https://github.com/INM-6/beNNch-plot.git'
-    - 'cd beNNch-plot'
-    - 'git checkout metadata_plotting'
-    - 'pip install .'
-    - 'cd ..'
+    #- 'git clone https://github.com/INM-6/beNNch-plot.git'
+    #- 'cd beNNch-plot'
+    #- 'git checkout metadata_plotting'
+    #- 'pip install .'
+    #- 'cd ..'
     # install jube
+    - 'cd $CI_PROJECT_DIR'
     - 'git clone https://github.com/FZJ-JSC/JUBE.git'
     - 'cd JUBE'
     - 'pip install .'
     - 'jube --version'
-    - 'cd ..'
     # install builder
     - 'git clone https://github.com/INM-6/Builder.git'
-    - 'ln -s "Builder/build.sh" "$(pwd)/build"' 
+    - 'ln -s "Builder/build.sh" "build"'
+    - 'cd $USER_DATA_DIR'
     #- 'mv Builder $USER_DATA_DIR'
     # TODO: Metadata
     # - 'pip install git+https://github.com/INM-6/gather-metadata.git'
@@ -100,6 +100,7 @@ Build:
       dotenv: benchmark_variables.env
     when: on_success
   script:
+    - 'set -euo pipefail'
     # Prepare environment
     - !reference [ .prepare-benchmarks, environment-load ]
     # Build simulator
