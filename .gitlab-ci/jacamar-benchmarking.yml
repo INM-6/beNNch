@@ -70,12 +70,13 @@ Preparation:
     - 'cd JUBE'
     - 'pip install .'
     - 'jube --version'
+    - 'cd ..'
     # install builder
     - 'git clone https://github.com/INM-6/Builder.git'
+    - 'cd "${USER_DATA_DIR}/user_files"'
+    - 'ln -s "${CI_PROJECT_DIR}/Builder/build.sh" build'
     - 'pwd'
     - 'ls -al'
-    - 'cd "${USER_DATA_DIR}/user_files"'
-    - 'ln -s "${CI_PROJECT_DIR}/Builder/build.sh" "build"'
     #- 'mv Builder $USER_DATA_DIR'
     # TODO: Metadata
     # - 'pip install git+https://github.com/INM-6/gather-metadata.git'
