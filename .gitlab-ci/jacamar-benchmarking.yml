@@ -108,8 +108,6 @@ Build:
     - 'export BUILDER_CONFIG_PATH="$BUILDER_CONFIG_PATH"'
     - 'mv $BUILDER_CONFIG_PATH ~/.buildrc'
     - 'export MAKE_THREADS=$(nproc)'
-    - 'export CB_SIMULATOR_REPO="$CB_SIMULATOR_REPO"'
-    - 'echo $CB_SIMULATOR_REPO'
     - !reference [ .prepare-benchmarks, build-simulator ]
     # Forward all environment variables to next stage
     - !reference [ .variables-as-artifacts ]
