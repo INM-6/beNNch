@@ -58,6 +58,8 @@ Preparation:
     - !reference [ .prepare-benchmarks, environment-init ]
     # Prepare environment using user-defined commands
     - !reference [ .prepare-benchmarks, environment-load ]
+    - 'which mpicc'
+    - 'which mpicxx'
     # install bennchplot
     #- 'git clone https://github.com/INM-6/beNNch-plot.git'
     #- 'cd beNNch-plot'
