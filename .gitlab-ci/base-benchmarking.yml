@@ -254,6 +254,8 @@ variables:
     # RESULTS_REPO_TOKEN
     if [ ! -z "${!var+x}" ]; then
         echo "${var}=${!var}" >> "$CI_PROJECT_DIR/benchmark_variables.env"
+    else
+        echo "${var} not defined" 
       fi
     done
     cat "$CI_PROJECT_DIR/benchmark_variables.env"
