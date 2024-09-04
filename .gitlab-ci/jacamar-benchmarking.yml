@@ -28,7 +28,7 @@ variables:
   BUILDER_INSTALL_DIR: "$$USER_DATA_DIR/install"
   BUILDER_BUILD_DIR: "$$USER_DATA_DIR/Builder/build"
   BUILDER_LOG_DIR: "$$USER_DATA_DIR/Builder/log/"
-  BUILDER_CONFIG_PATH: "$$USER_DATA_DIR/.buildrc"
+  BUILDER_CONFIG_PATH: ".buildrc"
 
 # Must define USER_DATA_DIR
 Preparation:
@@ -37,6 +37,7 @@ Preparation:
     paths:
       - "JUBE/"
       - "Builder/"
+      - ".buildrc"
     reports:
       dotenv: benchmark_variables.env
     when: on_success
@@ -75,9 +76,6 @@ Preparation:
     - 'git clone https://github.com/INM-6/Builder.git'
     - 'cd "${USER_DATA_DIR}/user_files"'
     - 'ln -s "${CI_PROJECT_DIR}/Builder/build.sh" build'
-    - 'pwd'
-    - 'ls -al'
-    #- 'mv Builder $USER_DATA_DIR'
     # TODO: Metadata
     # - 'pip install git+https://github.com/INM-6/gather-metadata.git'
     # Clone simulator and model repositories and prepare builder
