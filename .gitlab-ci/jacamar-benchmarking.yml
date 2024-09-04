@@ -28,7 +28,7 @@ variables:
   BUILDER_INSTALL_DIR: "$$USER_DATA_DIR/install"
   BUILDER_BUILD_DIR: "$$USER_DATA_DIR/Builder/build"
   BUILDER_LOG_DIR: "$$USER_DATA_DIR/Builder/log/"
-  BUILDER_CONFIG_PATH: ".buildrc"
+  BUILDER_CONFIG_PATH: "$$USER_DATA_DIR/.buildrc"
 
 # Must define USER_DATA_DIR
 Preparation:
@@ -37,7 +37,6 @@ Preparation:
     paths:
       - "JUBE/"
       - "Builder/"
-      - ".buildrc"
     reports:
       dotenv: benchmark_variables.env
     when: on_success
@@ -106,6 +105,7 @@ Build:
     - !reference [ .prepare-benchmarks, environment-load ]
     # Build simulator
     - 'export MAKE_THREADS=$(nproc)'
+    - 'source $$USER_DATA_DIR/.buildrc'
     - !reference [ .prepare-benchmarks, build-simulator ]
     # Forward all environment variables to next stage
     - !reference [ .variables-as-artifacts ]
