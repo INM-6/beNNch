@@ -104,8 +104,8 @@ Build:
     # Prepare environment
     - !reference [ .prepare-benchmarks, environment-load ]
     # Build simulator
+    - 'eval BUILDER_CONFIG_PATH="$BUILDER_CONFIG_PATH"'
     - 'export MAKE_THREADS=$(nproc)'
-    - 'source $$USER_DATA_DIR/.buildrc'
     - !reference [ .prepare-benchmarks, build-simulator ]
     # Forward all environment variables to next stage
     - !reference [ .variables-as-artifacts ]
