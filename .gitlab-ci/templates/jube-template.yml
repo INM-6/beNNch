@@ -21,9 +21,30 @@ parameterset:
         type: string
         separator: ;
         mode: python
-        "_": |
-           exec("cpu_bind_masks = list()\nbits_per_task = $threads_per_task\ncurrent_block = 0\nnum_blocks = 0\ncurrent_block_free = 4\nfor _ in range($tasks_per_node):\n    bits_left = bits_per_task\n    cpu_bind_masks.append('0x')\n    while bits_left >= current_block_free:\n        mask = '1'*current_block_free\n        cpu_bind_masks[-1] += hex(int(mask, 2))[2:].upper()\n        bits_left -= current_block_free\n        current_block_free = 4\n        num_blocks += 1\n    if bits_left > 0:\n        mask = '1'*bits_left + '0'*(4-bits_left)\n        cpu_bind_masks[-1] += hex(int(mask, 2))[2:].upper()\n        current_block_free -= bits_left\n    cpu_bind_masks[-1] += '0'*current_block\n    current_block += num_blocks\n    num_blocks = 0");return ",".join(cpu_bind_masks)
-  - name: run_benchmark
+        _: |
+           cpu_bind_masks = list()
+           bits_per_task = $threads_per_task
+           current_block = 0
+           num_blocks = 0
+           current_block_free = 4
+           for _ in range($tasks_per_node):
+               bits_left = bits_per_task
+               cpu_bind_masks.append('0x')
+               while bits_left >= current_block_free:
+                   mask = '1'*current_block_free
+                   cpu_bind_masks[-1] += hex(int(mask, 2))[2:].upper()
+                   bits_left -= current_block_free
+                   current_block_free = 4
+                   num_blocks += 1
+               if bits_left > 0:
+                   mask = '1'*bits_left + '0'*(4-bits_left)
+                   cpu_bind_masks[-1] += hex(int(mask, 2))[2:].upper()
+                   current_block_free -= bits_left
+               cpu_bind_masks[-1] += '0'*current_block
+               current_block += num_blocks
+               num_blocks = 0
+               return ",".join(cpu_bind_masks)
+      - name: run_benchmark
     parameter:
       - name: exec_bench
         separator: ;
