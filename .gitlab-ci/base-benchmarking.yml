@@ -108,13 +108,14 @@ variables:
       export CB_SIMULATOR_BRANCH=$(python3 -c "import yaml; f = open('$CONFIG_FILE_PATH', 'r'); print(yaml.safe_load(f)['software_parameters']['simulator_repo_branch']);f.close()")
     # Prepare Builder .buildrc
     - |
-      echo PLANFILE_PATH="$BUILDER_PLANFILE_DIR" > "$BUILDER_CONFIG_PATH"
-      echo PACKAGE_CACHE="$BUILDER_PACKAGE_DIR" >> "$BUILDER_CONFIG_PATH"
-      echo SOURCE_PATH="$BUILDER_SOURCE_DIR" >> "$BUILDER_CONFIG_PATH"
-      echo BUILD_PATH="$BUILDER_BUILD_DIR" >> "$BUILDER_CONFIG_PATH"
-      echo TARGET_PATH="$BUILDER_INSTALL_DIR" >> "$BUILDER_CONFIG_PATH"
-      echo MODULE_INSTALL_PATH="$BUILDER_MODULES_DIR" >> "$BUILDER_CONFIG_PATH"
-      echo LOG_PATH="$BUILDER_LOG_DIR" >> "$BUILDER_CONFIG_PATH"
+      export PLANFILE_PATH="$BUILDER_PLANFILE_DIR"
+      echo $PLANFILE_PATH
+      export PACKAGE_CACHE="$BUILDER_PACKAGE_DIR"
+      export SOURCE_PATH="$BUILDER_SOURCE_DIR"
+      export BUILD_PATH="$BUILDER_BUILD_DIR"
+      export TARGET_PATH="$BUILDER_INSTALL_DIR"
+      export MODULE_INSTALL_PATH="$BUILDER_MODULES_DIR"
+      export LOG_PATH="$BUILDER_LOG_DIR"
     # Prepare simulator installation (builder plan and module)
     - 'mkdir -p "$BUILDER_PLANFILE_DIR/simulator/$CB_SIMULATOR_BRANCH"'
     - 'cp "$SIMULATOR_PLANFILE_PATH" "$BUILDER_PLANFILE_DIR/simulator/$CB_SIMULATOR_BRANCH/default"'

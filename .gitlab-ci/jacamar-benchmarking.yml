@@ -108,7 +108,7 @@ Build:
     - 'eval BUILDER_CONFIG_PATH="$BUILDER_CONFIG_PATH"'
     - 'export BUILDER_CONFIG_PATH="$BUILDER_CONFIG_PATH"'
       #- 'mv $BUILDER_CONFIG_PATH ~/.buildrc'
-      #- 'export MAKE_THREADS=$(nproc)'
+    - 'export MAKE_THREADS=$(nproc)'
     - !reference [ .prepare-benchmarks, build-simulator ]
     # Forward all environment variables to next stage
     - !reference [ .variables-as-artifacts ]
