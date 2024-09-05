@@ -43,9 +43,8 @@ parameterset:
                cpu_bind_masks[-1] += '0' * current_block
                current_block += num_blocks
                num_blocks = 0
-
+           
            ",".join(cpu_bind_masks)
-
   - name: run_benchmark
     parameter:
       - name: exec_bench
