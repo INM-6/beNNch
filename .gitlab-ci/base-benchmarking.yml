@@ -109,7 +109,6 @@ variables:
     # Prepare Builder .buildrc
     - |
       export PLANFILE_PATH="$BUILDER_PLANFILE_DIR"
-      echo $PLANFILE_PATH
       export PACKAGE_CACHE="$BUILDER_PACKAGE_DIR"
       export SOURCE_PATH="$BUILDER_SOURCE_DIR"
       export BUILD_PATH="$BUILDER_BUILD_DIR"
@@ -122,6 +121,7 @@ variables:
     - 'cp "$SIMULATOR_MODULEFILE_PATH" "$BUILDER_PLANFILE_DIR/simulator/$CB_SIMULATOR_BRANCH/default.module"'
     - 'python3 "$SCRIPTS_DIR/clone_models.py" "$CONFIG_FILE_PATH" "$MODELS_DIR" "$CB_MODELS"'
   build-simulator:
+    - 'printenv '
     - 'build -f simulator $CB_SIMULATOR_BRANCH'
     - 'cd "${SIMULATOR_REPO_DIR}"'
     - 'export simulator_git_commit_hash=$(git rev-parse HEAD)'
