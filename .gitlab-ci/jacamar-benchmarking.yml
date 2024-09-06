@@ -106,16 +106,16 @@ Build:
     # Prepare environment
     - !reference [ .prepare-benchmarks, environment-load ]
     # Build simulator
-    #- 'eval BUILDER_CONFIG_PATH="$BUILDER_CONFIG_PATH"'
-      #- 'export BUILDER_CONFIG_PATH="$BUILDER_CONFIG_PATH"'
-      #- |
-      #  export PLANFILE_PATH="$BUILDER_PLANFILE_DIR"
-      # export PACKAGE_CACHE="$BUILDER_PACKAGE_DIR"
-      #export SOURCE_PATH="$BUILDER_SOURCE_DIR"
-      #export BUILD_PATH="$BUILDER_BUILD_DIR"
-      #export TARGET_PATH="$BUILDER_INSTALL_DIR"
-      #export MODULE_INSTALL_PATH="$BUILDER_MODULES_DIR"
-      #export LOG_PATH="$BUILDER_LOG_DIR"
+    - 'eval BUILDER_CONFIG_PATH="$BUILDER_CONFIG_PATH"'
+    - 'export BUILDER_CONFIG_PATH="$BUILDER_CONFIG_PATH"'
+    - |
+      export PLANFILE_PATH="$BUILDER_PLANFILE_DIR"
+      export PACKAGE_CACHE="$BUILDER_PACKAGE_DIR"
+      export SOURCE_PATH="$BUILDER_SOURCE_DIR"
+      export BUILD_PATH="$BUILDER_BUILD_DIR"
+      export TARGET_PATH="$BUILDER_INSTALL_DIR"
+      export MODULE_INSTALL_PATH="$BUILDER_MODULES_DIR"
+      export LOG_PATH="$BUILDER_LOG_DIR"
     - 'export MAKE_THREADS=$(nproc)'
     - !reference [ .prepare-benchmarks, build-simulator ]
     # Forward all environment variables to next stage
