@@ -43,8 +43,8 @@ Preparation:
   script:
     # Get unique id for benchmark
     - !reference [ .prepare-benchmarks, get-uid ]
+    #- 'set -euo pipefail'
     - |
-      set -euo pipefail
       eval USER="$GITLAB_USER_LOGIN"
       export USER_DATA_DIR="$TEMP_DIR/$USER/${BENCHMARK_UID}"
       #export PLANFILE_PATH="$USER_DATA_DIR/Builder/plans"
