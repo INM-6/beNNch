@@ -69,8 +69,7 @@ for machine, machine_conf in config["user_config"].items():
         pipeline_yml[".environment-init"].extend(config["dependencies"][machine]["init"])
         pipeline_yml[".environment-load"].extend(config["dependencies"][machine]["load"])
         
-        if machine=="hambach":
-            pipeline_yml["variables"]["CB_SIMULATOR_REPO"] = config["software_parameters"]["simulator_repo_url"]
+        pipeline_yml["variables"]["CB_SIMULATOR_REPO"] = config["software_parameters"]["simulator_repo_url"]
 
         if manual:
             pipeline_yml[".preparation"]["when"] = "manual"
