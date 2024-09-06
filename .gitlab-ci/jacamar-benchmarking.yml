@@ -67,7 +67,7 @@ Preparation:
     #- 'cd ..'
     # install jube
     - 'cd $CI_PROJECT_DIR'
-    - 'git clone https://github.com/FZJ-JSC/JUBE.git'
+    - 'git clone --depth=1 --branch=feature-python-exec https://github.com/JanVogelsang/JUBE.git JUBE'
     - 'cd JUBE'
     - 'pip install .'
     - 'jube --version'
