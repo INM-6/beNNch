@@ -44,11 +44,11 @@ Preparation:
     # Get unique id for benchmark
     - !reference [ .prepare-benchmarks, get-uid ]
     - 'set -euo pipefail'
+    - 'eval USER="$GITLAB_USER_LOGIN"'
+    - 'echo $USER'
     - |
       eval USER_DATA_DIR="$TEMP_DIR/$USER/${BENCHMARK_UID}"
       #export PLANFILE_PATH="$USER_DATA_DIR/Builder/plans"
-    - 'eval USER="$GITLAB_USER_LOGIN"'
-    - 'echo $USER'
     # Load all environment variables
     - !reference [ .prepare-benchmarks, environment-variables ]
     # Create all required directories
