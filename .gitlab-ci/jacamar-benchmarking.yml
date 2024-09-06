@@ -28,7 +28,7 @@ variables:
   BUILDER_INSTALL_DIR: "$$USER_DATA_DIR/install"
   BUILDER_BUILD_DIR: "$$USER_DATA_DIR/Builder/build"
   BUILDER_LOG_DIR: "$$USER_DATA_DIR/Builder/log/"
-  BUILDER_CONFIG_PATH: "$$USER_DATA_DIR/.buildrc"
+    #BUILDER_CONFIG_PATH: "$$USER_DATA_DIR/.buildrc"
 
 # Must define USER_DATA_DIR
 Preparation:
@@ -106,8 +106,8 @@ Build:
     # Prepare environment
     - !reference [ .prepare-benchmarks, environment-load ]
     # Build simulator
-    - 'eval BUILDER_CONFIG_PATH="$BUILDER_CONFIG_PATH"'
-    - 'export BUILDER_CONFIG_PATH="$BUILDER_CONFIG_PATH"'
+    #- 'eval BUILDER_CONFIG_PATH="$BUILDER_CONFIG_PATH"'
+    #- 'export BUILDER_CONFIG_PATH="$BUILDER_CONFIG_PATH"'
     - |
       export PLANFILE_PATH="$BUILDER_PLANFILE_DIR"
       export PACKAGE_CACHE="$BUILDER_PACKAGE_DIR"
