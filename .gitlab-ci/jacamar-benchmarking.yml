@@ -45,7 +45,7 @@ Preparation:
     - !reference [ .prepare-benchmarks, get-uid ]
     #- 'set -euo pipefail'
     - |
-      export USER_DATA_DIR="$TEMP_DIR/$USER/${BENCHMARK_UID}"
+      eval USER_DATA_DIR="$TEMP_DIR/$USER/${BENCHMARK_UID}"
       #export PLANFILE_PATH="$USER_DATA_DIR/Builder/plans"
     #- 'eval USER="$GITLAB_USER_LOGIN"'
     - 'echo $USER'
