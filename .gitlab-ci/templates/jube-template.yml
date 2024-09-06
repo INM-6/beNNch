@@ -24,11 +24,11 @@ parameterset:
         "_": |
              exec("""
 cpu_bind_masks = list()
-bits_per_task = threads_per_task
+bits_per_task = $threads_per_task
 current_block = 0
 num_blocks = 0
 current_block_free = 4
-for _ in range(tasks_per_node):
+for _ in range($tasks_per_node):
     bits_left = bits_per_task
     cpu_bind_masks.append('0x')
     while bits_left >= current_block_free:
@@ -44,9 +44,8 @@ for _ in range(tasks_per_node):
     cpu_bind_masks[-1] += '0' * current_block
     current_block += num_blocks
     num_blocks = 0
-result = ",".join(cpu_bind_masks)
-""")
-            cpu_bind_mask = result
+result = ",".join(cpu_bind_masks)""")
+             cpu_bind_mask = result
   - name: run_benchmark
     parameter:
       - name: exec_bench
