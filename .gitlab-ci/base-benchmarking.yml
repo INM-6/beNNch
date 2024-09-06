@@ -125,7 +125,7 @@ variables:
     - 'build -f simulator $CB_SIMULATOR_BRANCH'
     - 'cd "${SIMULATOR_REPO_DIR}"'
     - 'export simulator_git_commit_hash=$(git rev-parse HEAD)'
-    - 'rm -r "$SIMULATOR_REPO_DIR"'
+      #- 'rm -r "$SIMULATOR_REPO_DIR"'
   construct-benchmarks:
     - |
       echo 'CURR_PATH=$(pwd)' > "$USER_DATA_DIR/prepare.sh"
