@@ -49,4 +49,4 @@ env["CB_SIMULATOR_REPO"] = os.path.expandvars(config["software_parameters"]["sim
 simulator_branch = os.path.expandvars(config["software_parameters"]["simulator_repo_branch"])
 subprocess.Popen(["build", "--get", "simulator", simulator_branch], env=env, stdout=subprocess.DEVNULL)
 
-print(simulator_branch)
+print(env["CB_SIMULATOR_REPO"])
