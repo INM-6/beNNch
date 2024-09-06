@@ -51,5 +51,8 @@ process = subprocess.Popen(["build", "--get", "simulator", simulator_branch], en
 output, errors = process.communicate()
 if errors:
     print(f"Error: {errors.decode()}")
+if output:
+    print(f"Error: {output.decode()}")
+
 
 print(simulator_branch)
