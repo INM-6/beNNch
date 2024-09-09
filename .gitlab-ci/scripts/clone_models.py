@@ -45,6 +45,7 @@ shutil.rmtree(models_tmp_dir)
 # Clone the simulator
 env = os.environ.copy()
 env["CB_SIMULATOR_REPO"] = os.path.expandvars(config["software_parameters"]["simulator_repo_url"])
-#os.environ["CB_SIMULATOR_REPO"] = config["software_parameters"]["simulator_repo_url"]
 simulator_branch = os.path.expandvars(config["software_parameters"]["simulator_repo_branch"])
-#subprocess.run(["build", "--get", "--silent", "simulator", simulator_branch], env=env)#, stdout=subprocess.DEVNULL)
+subprocess.Popen(["build", "--get", "--silent", "simulator", simulator_branch], env=env, stdout=subprocess.DEVNULL)
+
+print(simulator_branch)

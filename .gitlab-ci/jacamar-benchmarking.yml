@@ -75,7 +75,7 @@ Preparation:
     # install builder
     - 'git clone https://github.com/INM-6/Builder.git'
     - 'cd "${USER_DATA_DIR}/user_files"'
-    - 'ln -s "${CI_PROJECT_DIR}/Builder/build.sh" build'
+    - 'ln -s "${CI_PROJECT_DIR}/Builder/build.sh" "$(pwd)/build"'
     # TODO: Metadata
     # - 'pip install git+https://github.com/INM-6/gather-metadata.git'
     # Clone simulator and model repositories and prepare builder
@@ -83,7 +83,7 @@ Preparation:
     # Construct JUBE benchmark files from provided config
     - 'which build'
     - 'ls -la build || true'
-    - '${CI_PROJECT_DIR}/Builder/build.sh --get --silent simulator $CB_SIMULATOR_BRANCH'
+      #- '${CI_PROJECT_DIR}/Builder/build.sh --get --silent simulator $CB_SIMULATOR_BRANCH'
       #- 'mv simulator $SIMULATOR_REPO_DIR'
       #- 'build -f simulator $CB_SIMULATOR_BRANCH'
     - !reference [ .prepare-benchmarks, construct-benchmarks ]
