@@ -83,7 +83,7 @@ Preparation:
     # Construct JUBE benchmark files from provided config
     - 'which build'
     - 'ls -la build || true'
-    - './build --get --silent simulator $CB_SIMULATOR_BRANCH'
+    - '${CI_PROJECT_DIR}/Builder/build.sh --get --silent simulator $CB_SIMULATOR_BRANCH'
     - 'echo $SIMULATOR_REPO_DIR'
       #- 'mv simulator $SIMULATOR_REPO_DIR'
       #- 'build -f simulator $CB_SIMULATOR_BRANCH'
