@@ -79,6 +79,9 @@ variables:
       - "jusuf"
       - "jureca"
       - "juwels"
+  FF_SCRIPT_SECTIONS: "true"    # see https://docs.gitlab.com/runner/configuration/feature-flags.html#available-feature-flags
+  FF_TIMESTAMPS: "true"
+  #FF_ENABLE_JOB_CLEANUP: "true"  # project directory will be deleted at the end of each job
 
 # Specify all machines for which configurations exist
 .machines: &machines_anchor [ "hambach", "jureca", "jusuf" ]

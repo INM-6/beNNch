@@ -75,7 +75,7 @@ Preparation:
     # install builder
     - 'git clone https://github.com/INM-6/Builder.git'
     - 'cd "${USER_DATA_DIR}/user_files"'
-    - 'ln -s "${CI_PROJECT_DIR}/Builder/build.sh" "$(pwd)/build"'
+    - 'ln -s "${CI_PROJECT_DIR}/Builder/build.sh" "$(pwd)/build" -v'
     # TODO: Metadata
     # - 'pip install git+https://github.com/INM-6/gather-metadata.git'
     # Clone simulator and model repositories and prepare builder
