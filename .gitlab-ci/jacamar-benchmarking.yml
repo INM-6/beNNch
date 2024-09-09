@@ -81,6 +81,7 @@ Preparation:
     # Clone simulator and model repositories and prepare builder
     - !reference [ .prepare-benchmarks, clone-repositories ]
     # Construct JUBE benchmark files from provided config
+    - 'git clone --single-branch --branch="$CB_SIMULATOR_BRANCH" --depth=1 "$CB_SIMULATOR_REPO" "$SIMULATOR_REPO_DIR"'
     - 'which build'
     - 'ls -la build || true'
       #- '${CI_PROJECT_DIR}/Builder/build.sh --get --silent simulator $CB_SIMULATOR_BRANCH'
