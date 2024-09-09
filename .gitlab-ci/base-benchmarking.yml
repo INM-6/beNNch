@@ -120,6 +120,8 @@ variables:
       export SIMULATOR_PLANFILE_PATH="$SIMULATOR_PLANFILE_PATH"
       export MAKE_THREDS=$(nproc)
     # Prepare simulator installation (builder plan and module)
+    - 'echo $BUILD_PATH'
+    - 'echo $SOURCE_PATH'
     - 'mkdir -p "$BUILDER_PLANFILE_DIR/simulator/$CB_SIMULATOR_BRANCH"'
     - 'cp "$SIMULATOR_PLANFILE_PATH" "$BUILDER_PLANFILE_DIR/simulator/$CB_SIMULATOR_BRANCH/default"'
     - 'cp "$SIMULATOR_MODULEFILE_PATH" "$BUILDER_PLANFILE_DIR/simulator/$CB_SIMULATOR_BRANCH/default.module"'
