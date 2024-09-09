@@ -84,12 +84,11 @@ Preparation:
     - 'which build'
     - 'ls -la build || true'
     - '${CI_PROJECT_DIR}/Builder/build.sh --get --silent simulator $CB_SIMULATOR_BRANCH'
-    - 'echo $SIMULATOR_REPO_DIR'
       #- 'mv simulator $SIMULATOR_REPO_DIR'
       #- 'build -f simulator $CB_SIMULATOR_BRANCH'
     - !reference [ .prepare-benchmarks, construct-benchmarks ]
     # Prepare results repository
-    #- !reference [ .prepare-benchmarks, results ]
+    - !reference [ .prepare-benchmarks, results ]
     # Forward all environment variables to next stage
     - !reference [ .variables-as-artifacts ]
 
