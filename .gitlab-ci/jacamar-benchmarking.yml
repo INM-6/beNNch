@@ -81,7 +81,7 @@ Preparation:
     # Clone simulator and model repositories and prepare builder
     - !reference [ .prepare-benchmarks, clone-repositories ]
     # Construct JUBE benchmark files from provided config
-    - 'build --get --silent simulator'
+    - 'build --get --silent simulator $CB_SIMULATOR_BRANCH'
     - !reference [ .prepare-benchmarks, construct-benchmarks ]
     # Prepare results repository
     #- !reference [ .prepare-benchmarks, results ]

@@ -70,6 +70,7 @@ for machine, machine_conf in config["user_config"].items():
         pipeline_yml[".environment-load"].extend(config["dependencies"][machine]["load"])
         
         pipeline_yml["variables"]["CB_SIMULATOR_REPO"] = config["software_parameters"]["simulator_repo_url"]
+        pipeline_yml["variables"]["CB_SIMULATOR_BRANCH"] = config["software_parameters"]["simulator_repo_branch"]
 
         if manual:
             pipeline_yml[".preparation"]["when"] = "manual"
