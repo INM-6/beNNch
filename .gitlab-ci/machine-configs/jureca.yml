@@ -17,7 +17,6 @@
 
 include: .gitlab-ci/jacamar-benchmarking.yml
 
-
 .preparation:
   tags:
     - shell
