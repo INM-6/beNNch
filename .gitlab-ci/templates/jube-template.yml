@@ -12,7 +12,7 @@
 
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-parameterset:
+parameterset: []
  
 fileset:
   name: bench_files
