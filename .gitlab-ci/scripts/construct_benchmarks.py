@@ -42,6 +42,7 @@ jube_results_dir = sys.argv[9]       # path to directory where all benchmark res
 prepare_file_path = sys.argv[10]     # path to the prepare.sh file which is loaded on the compute node
 pipeline_file_path = sys.argv[11]    # path to current pipeline definition file
 machine = sys.argv[12]               # name of the machine the benchmark is running on
+machine_config_dir = sys.argv[13]
 
 config_dir = os.path.dirname(config_path)
 
@@ -66,7 +67,7 @@ with open(jube_template_path, 'r') as template_file:
 with open(config_path, 'r') as config_file:
     config = yaml.safe_load(config_file)
 
-with open(os.path.join('${CI_PROJECT_DIR}/.gitlab-ci/machine_configs', machine + '.yml'), 'r') as machine_config_file:
+with open(os.path.join(machine_config_dir, machine + '.yml'), 'r') as machine_config_file:
     	machine_config = yaml.safe_load(machine_config_file)
 
 for model_name, benchmark_config in config["benchmarks"].items():
