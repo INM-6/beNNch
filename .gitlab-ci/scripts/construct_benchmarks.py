@@ -148,10 +148,75 @@ for model_name, benchmark_config in config["benchmarks"].items():
     {
         "name": "machine_config",
         "parameter": [
-            {"name": "extra_slurm_flags", "type": "string", "_": machine_config["variables"]["extra_slurm_flags"]},
+            {"name": "extra_srun_flags", "type": "string", "_": machine_config["variables"]["extra_srun_flags"]},
+            {"name": "extra_sbatch_flags", "type": "string", "_": machine_config["variables"]["extra_sbatch_flags"]}
         ]
     })
 
+    jube_benchmark["parameterset"].append(
+    {
+        "name": "bench_parameters",
+        "parameter": [
+            {
+                "name": "num_vps",
+                "type": "int",
+                "mode": "python",
+                "_": "$tasks_per_node * $threads_per_task * $num_nodes"
+            },
+            {
+                "name": "num_tasks",
+                "type": "int",
+                "mode": "python",
+                "_": "$tasks_per_node * $num_nodes"
+            },
+            {
+                "name": "cpu_bind_mask",
+                "type": "string",
+                "separator": ";",
+                "mode": "python",
+                "_": """
+                  exec("""
+                  cpu_bind_masks = list()
+                  bits_per_task = $threads_per_task
+                  current_block = 0
+                  num_blocks = 0
+                  current_block_free = 4
+                  for _ in range($tasks_per_node):
+                      bits_left = bits_per_task
+                      cpu_bind_masks.append('0x')
+                      while bits_left >= current_block_free:
+                          mask = '1' * current_block_free
+                          cpu_bind_masks[-1] += hex(int(mask, 2))[2:].upper()
+                          bits_left -= current_block_free
+                          current_block_free = 4
+                          num_blocks += 1
+                      if bits_left > 0:
+                          mask = '1' * bits_left + '0' * (4 - bits_left)
+                          cpu_bind_masks[-1] += hex(int(mask, 2))[2:].upper()
+                          current_block_free -= bits_left
+                      cpu_bind_masks[-1] += '0' * current_block
+                      current_block += num_blocks
+                      num_blocks = 0
+                  """)
+                  return ",".join(cpu_bind_masks)
+                """
+            }
+        ]
+    })
+
+    jube_benchmark["parameterset"].append(
+    { 
+        "name": "run_benchmark",
+        "parameter": [
+               {"name": "exec_bench",
+                "separator": ";",
+                "_": """
+                  ${optional_run_command}
+                  srun --cpu-bind=mask_cpu:${cpu_bind_mask} python ${run_file} ${run_args}
+                  srun -n 1 --nodes 1 python ${scripts_dir}/collect_timer_data.py ${metrics_path} ${jube_wp_abspath} ${log_path}
+                """}
+        ]
+    })
     print(jube_benchmark["parameterset"])
 
     # TODO: Logpath is currently hardcoded in models
