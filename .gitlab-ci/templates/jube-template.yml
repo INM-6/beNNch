@@ -22,44 +22,37 @@ parameterset:
         separator: ;
         mode: bash
         "_": |
-	cpu_bind_masks=()
-	bits_per_task=$THREADS_PER_TASK  # Replace with the actual number of threads per task
-	tasks_per_node=$TASKS_PER_NODE  # Replace with the actual number of tasks per node
-	current_block=0
-	num_blocks=0
-	current_block_free=4
-
-	for ((i=0; i<tasks_per_node; i++)); do
-	    bits_left=$bits_per_task
-	    mask="0x"
-	    
-	    while ((bits_left >= current_block_free)); do
-		mask_bits=$(printf "%0${current_block_free}d" $(echo "obase=2; 2^${current_block_free} - 1" | bc))
-		mask_hex=$(printf "%X" "$((2#$mask_bits))")
-		mask+="$mask_hex"
-		bits_left=$((bits_left - current_block_free))
-		num_blocks=$((num_blocks + 1))
-	    done
-	    
-	    if ((bits_left > 0)); then
-		mask_bits=$(printf "%0${bits_left}d" $(echo "obase=2; 2^${bits_left} - 1" | bc))
-		mask_bits=$(printf "%0${current_block_free}d" "$mask_bits")
-		mask_hex=$(printf "%X" "$((2#$mask_bits))")
-		mask+="$mask_hex"
-	    fi
-
-	    # Padding for the end of the mask
-	    if ((current_block > 0)); then
-		mask=$(printf "%s%0${current_block}X" "$mask" 0)
-	    fi
-	    
-	    cpu_bind_masks+=("$mask")
-	    current_block=$((current_block + num_blocks))
-	    num_blocks=0
-	done
-
-	cpu_bind_mask=$(IFS=,; echo "${cpu_bind_masks[*]}")
-	echo "${cpu_bind_masks[*]}"
+        cpu_bind_masks=()
+        bits_per_task=$threads_per_task  # Replace with the actual number of threads per task
+        tasks_per_node=$tasks_per_node # Replace with the actual number of tasks per node
+        current_block=0
+        num_blocks=0
+        current_block_free=4
+        for ((i=0; i<tasks_per_node; i++)); do
+            bits_left=$bits_per_task
+            mask="0x"
+            while ((bits_left >= current_block_free)); do
+                mask_bits=$(printf "%0${current_block_free}d" $(echo "obase=2; 2^${current_block_free} - 1" | bc))
+                mask_hex=$(printf "%X" "$((2#$mask_bits))")
+                mask+="$mask_hex"
+                bits_left=$((bits_left - current_block_free))
+                num_blocks=$((num_blocks + 1))
+            done
+            if ((bits_left > 0)); then
+                mask_bits=$(printf "%0${bits_left}d" $(echo "obase=2; 2^${bits_left} - 1" | bc))
+                mask_bits=$(printf "%0${current_block_free}d" "$mask_bits")
+                mask_hex=$(printf "%X" "$((2#$mask_bits))")
+                mask+="$mask_hex"
+            fi
+            if ((current_block > 0)); then
+                mask=$(printf "%s%0${current_block}X" "$mask" 0)
+            fi
+            cpu_bind_masks+=("$mask")
+            current_block=$((current_block + num_blocks))
+            num_blocks=0
+        done
+        cpu_bind_mask=$(IFS=,; echo "${cpu_bind_masks[*]}")
+        echo "${cpu_bind_masks[*]}"
   - name: run_benchmark
     parameter:
       - name: exec_bench
