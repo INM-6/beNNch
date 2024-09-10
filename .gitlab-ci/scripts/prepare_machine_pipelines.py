@@ -85,9 +85,6 @@ for machine, machine_conf in config["user_config"].items():
                 benchmarks.append({"JUBE_BENCHMARK_FILE": model_name,
                                    "JUBE_BENCHMARK_ID": str(benchmark_id).zfill(6)})
                 benchmark_id += 1
-		pipeline_yml["variables"]["THREADS_PER_TASK"] = config["benchmarks"][model_name]["machine_parameters"][machine]["threads_per_task"]
-        	pipeline_yml["variables"]["TASKS_PER_NODE"] = config["benchmarks"][model_name]["machine_parameters"][machine]["tasks_per_node"]
-
 
         pipeline_yml[".parallel-benchmark"] = {"parallel": {"matrix": benchmarks}}
         # pipeline_yml[".aggregation"] = {"parallel": {"matrix": benchmarks}}
