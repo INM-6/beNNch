@@ -171,16 +171,16 @@ for model_name, benchmark_config in config["benchmarks"].items():
         }]
     })
 
-    extra_srun_flags = machine_config["variables"]["extra_srun_flags"]
+    #extra_srun_flags = machine_config["variables"]["extra_srun_flags"]
     jube_benchmark["parameterset"].append(
     { 
         "name": "run_benchmark",
         "parameter": [
                {"name": "exec_bench",
                 "separator": ";",
-                "_": f"""${{optional_run_command}}
-srun python {extra_srun_flags} ${{run_file}} ${{run_args}}
-srun -n 1 --nodes 1 python ${{scripts_dir}}/collect_timer_data.py ${{metrics_path}} ${{jube_wp_abspath}} ${{log_path}}"""}
+                "_": """${optional_run_command}
+srun python ${extra_srun_flags} ${run_file} ${run_args}
+srun -n 1 --nodes 1 python ${scripts_dir}/collect_timer_data.py ${metrics_path} ${jube_wp_abspath} ${log_path}"""}
         ]
     })
     print(jube_benchmark["parameterset"])
