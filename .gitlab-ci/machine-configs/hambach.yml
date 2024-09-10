@@ -37,7 +37,7 @@ include: .gitlab-ci/jacamar-benchmarking.yml
 
 variables:
     extra_srun_flags: "--mpi=pmix"
-    extra_sbatch_flags: []
+    extra_sbatch_flags: ""
 
 .environment-init:
   - 'export PYTHONNOUSERSITE=1'
