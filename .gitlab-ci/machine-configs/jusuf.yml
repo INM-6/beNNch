@@ -41,7 +41,7 @@ include: .gitlab-ci/jacamar-benchmarking.yml
 .aggregation:
   tags:
     - shell
-    - jureca
+    - jusuf
     - jacamar
 
 .environment-init:
