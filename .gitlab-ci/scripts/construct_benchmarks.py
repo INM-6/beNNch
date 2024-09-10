@@ -152,6 +152,8 @@ for model_name, benchmark_config in config["benchmarks"].items():
         ]
     })
 
+    print(jube_benchmark["parameterset"])
+
     # TODO: Logpath is currently hardcoded in models
     # Parameterset
     benchmark_model_files_dir = os.path.join(benchmark_models_dir, model_name)
