@@ -169,7 +169,6 @@ for model_name, benchmark_config in config["benchmarks"].items():
                 "mode": "python",
                 "_": "$tasks_per_node * $num_nodes"
             },
-            {
                 "name": "cpu_bind_mask",
                 "type": "string",
                 "separator": ";",
@@ -196,7 +195,6 @@ for model_name, benchmark_config in config["benchmarks"].items():
                           "    current_block += num_blocks\n"
                           "    num_blocks = 0\n"
                           "return \",\".join(cpu_bind_masks)")
-            }
         ]
     })
 
