@@ -146,7 +146,7 @@ for model_name, benchmark_config in config["benchmarks"].items():
 
     jube_benchmark["parameterset"].append(
     {
-        "name": "extra_slurm_flags",
+        "name": "machine_config",
         "parameter": [
             {"name": "extra_slurm_flags", "type": "string", "_": machine_config["variables"]["extra_slurm_flags"]},
         ]
