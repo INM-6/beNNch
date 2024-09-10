@@ -168,34 +168,7 @@ for model_name, benchmark_config in config["benchmarks"].items():
                 "type": "int",
                 "mode": "python",
                 "_": "$tasks_per_node * $num_nodes"
-            },
-                "name": "cpu_bind_mask",
-                "type": "string",
-                "separator": ";",
-                "mode": "python",
-                "_": exec("cpu_bind_masks = list()\n"
-                          "bits_per_task = $threads_per_task\n"
-                          "current_block = 0\n"
-                          "num_blocks = 0\n"
-                          "current_block_free = 4\n"
-                          "for _ in range($tasks_per_node):\n"
-                          "    bits_left = bits_per_task\n"
-                          "    cpu_bind_masks.append('0x')\n"
-                          "    while bits_left >= current_block_free:\n"
-                          "        mask = '1' * current_block_free\n"
-                          "        cpu_bind_masks[-1] += hex(int(mask, 2))[2:].upper()\n"
-                          "        bits_left -= current_block_free\n"
-                          "        current_block_free = 4\n"
-                          "        num_blocks += 1\n"
-                          "    if bits_left > 0:\n"
-                          "        mask = '1' * bits_left + '0' * (4 - bits_left)\n"
-                          "        cpu_bind_masks[-1] += hex(int(mask, 2))[2:].upper()\n"
-                          "        current_block_free -= bits_left\n"
-                          "    cpu_bind_masks[-1] += '0' * current_block\n"
-                          "    current_block += num_blocks\n"
-                          "    num_blocks = 0\n"
-                          "return \",\".join(cpu_bind_masks)")
-        ]
+        }]
     })
 
     jube_benchmark["parameterset"].append(
@@ -206,7 +179,7 @@ for model_name, benchmark_config in config["benchmarks"].items():
                 "separator": ";",
                 "_": """
                   ${optional_run_command}
-                  srun --cpu-bind=mask_cpu:${cpu_bind_mask} python ${run_file} ${run_args}
+                  srun python ${run_file} ${run_args}
                   srun -n 1 --nodes 1 python ${scripts_dir}/collect_timer_data.py ${metrics_path} ${jube_wp_abspath} ${log_path}
                 """}
         ]
