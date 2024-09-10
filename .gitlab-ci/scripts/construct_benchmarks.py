@@ -66,7 +66,7 @@ with open(jube_template_path, 'r') as template_file:
 with open(config_path, 'r') as config_file:
     config = yaml.safe_load(config_file)
 
-with open(os.path.join('.gitlab-ci/machine_configs', machine + '.yml'), 'r') as machine_config_file:
+with open(os.path.join('${CI_PROJECT_DIR}/.gitlab-ci/machine_configs', machine + '.yml'), 'r') as machine_config_file:
     	machine_config = yaml.safe_load(machine_config_file)
 
 for model_name, benchmark_config in config["benchmarks"].items():
