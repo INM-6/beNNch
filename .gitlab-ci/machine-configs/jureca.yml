@@ -44,7 +44,8 @@ include: .gitlab-ci/jacamar-benchmarking.yml
     - jacamar
 
 variables:
-    extra_slurm_flags: "--disable-turbomode"
+    extra_sbatch_flags: "--disable-turbomode"
+    extra_srun_flags: ""
 
 .environment-init:
   - 'export PYTHONNOUSERSITE=1'

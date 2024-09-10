@@ -36,7 +36,8 @@ include: .gitlab-ci/jacamar-benchmarking.yml
     - hambach
 
 variables:
-    extra_slurm_flags: "--mpi=pmix"
+    extra_srun_flags: "--mpi=pmix"
+    extra_sbatch_flags: []
 
 .environment-init:
   - 'export PYTHONNOUSERSITE=1'
