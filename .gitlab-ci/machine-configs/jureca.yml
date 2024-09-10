@@ -44,6 +44,9 @@ include: .gitlab-ci/jacamar-benchmarking.yml
     - jureca
     - jacamar
 
+variables:
+    extra_slurm_flags: "--disable-turbomode"
+
 .environment-init:
   - 'export PYTHONNOUSERSITE=1'
 

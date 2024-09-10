@@ -66,11 +66,14 @@ with open(jube_template_path, 'r') as template_file:
 with open(config_path, 'r') as config_file:
     config = yaml.safe_load(config_file)
 
+with open(os.path.join('.gitlab-ci/machine_configs', machine + '.yml'), 'r') as machine_config_file:
+    	machine_config = yaml.safe_load(machine_config_file)
+
 for model_name, benchmark_config in config["benchmarks"].items():
     if machine not in benchmark_config["machine_parameters"]:
         print(f"{COLOR_WARNING}Skipping config file generation for model {model_name} because no configuration was provided for machine {machine}!{COLOR_END}")
         continue
-
+   
     jube_benchmark = copy.deepcopy(jube_benchmark_template)
 
     run_parameters = benchmark_config.get("run_parameters", dict())
@@ -138,6 +141,14 @@ for model_name, benchmark_config in config["benchmarks"].items():
     {
         "name": "model_parameters",
         "parameter": benchmark_config.get("model_parameters", [])
+    })
+
+    jube_benchmark["parameterset"].append(
+    {
+        "name": "extra_slurm_flags",
+        "parameter": [
+            {"name": "extra_slurm_flags", "type": "string", "_": machine_config["variables"]["extra_slurm_flags"]},
+        ]
     })
 
     # TODO: Logpath is currently hardcoded in models

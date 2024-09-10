@@ -24,9 +24,9 @@
 #SBATCH --time=#TIME#
 #SBATCH --exclusive
 #SBATCH --account=#ACCOUNT#
-##SBATCH --disable-turbomode
 #SBATCH --hint=nomultithread
 #SBATCH --distribution=block:block:fcyclic
+#SBATCH #EXTRA_SLURM_FLAGS#
 
 echo "JobId: $SLURM_JOB_ID"
 

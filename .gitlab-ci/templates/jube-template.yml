@@ -29,7 +29,7 @@ parameterset:
         separator: ;
         _: |
           ${optional_run_command}
-          srun --mpi=pmix python ${run_file} ${run_args}
+          srun python ${run_file} ${run_args}
           srun -n 1 --nodes 1 python ${scripts_dir}/collect_timer_data.py ${metrics_path} ${jube_wp_abspath} ${log_path}
           #--cpu-bind=mask_cpu:${cpu_bind_mask} 
 fileset:
@@ -52,6 +52,7 @@ substituteset:
       - {source: "#MODULES_DIR#", dest: $buildermod}
       - {source: "#BRANCH#", dest: $simulator_branch}
       - {source: "#PREPARE_FILE#", dest: $prepare_file_path}
+      - {source: "#EXTRA_SLURM_FLAGS#", dest: $extra_slurm_flags}
   - name: bench_substitutions
     sub:
       - {source: "{num_vps}", dest: $num_vps}
