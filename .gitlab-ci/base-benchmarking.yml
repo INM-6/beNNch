@@ -213,6 +213,8 @@ variables:
   # Add metadata as zip file
   - 'mkdir -v "${OUTPUT_DIR}/${JUBE_BENCHMARK_FILE}_${MACHINE}/metadata"'
   - 'mkdir -p "${CI_PROJECT_DIR}/results"'
+  - 'chmod +x ${SCRIPTS_DIR}/pack_results.sh'
+  - 'chmod +x ${SCRIPTS_DIR}/token_removal.sh'
   - 'OUTPATH="${JUBE_RESULTS_DIR}" SCRIPTS_DIR="${SCRIPTS_DIR}" CB_DATADUMP="${CI_PROJECT_DIR}/results" ${SCRIPTS_DIR}/pack_results.sh'
   - 'tar -czf "${LOCAL_STORAGE_DIR}/${RESULTS_UID}.tgz" -C "${JUBE_RESULTS_DIR}" "000000"'
   # Add metadata to output archive
