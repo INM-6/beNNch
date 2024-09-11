@@ -59,13 +59,6 @@ Preparation:
     - !reference [ .prepare-benchmarks, environment-init ]
     # Prepare environment using user-defined commands
     - !reference [ .prepare-benchmarks, environment-load ]
-    # install bennchplot
-    - 'cd $CI_PROJECT_DIR'
-    - 'git clone https://github.com/INM-6/beNNch-plot.git'
-    - 'cd beNNch-plot'
-    - 'git checkout metadata_plotting'
-    - 'pip install .'
-    - 'cd ..'
     # install jube
     - 'git clone --depth=1 --branch=feature-python-exec https://github.com/JanVogelsang/JUBE.git JUBE'
     - 'cd JUBE'
@@ -136,7 +129,7 @@ Benchmarking:
       artifacts: true
   artifacts:
     paths:
-      - "variables.txt"
+      - "env/variables.txt"
       - "specifications"
     reports:
       dotenv: benchmark_variables.env

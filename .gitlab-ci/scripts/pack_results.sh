@@ -7,24 +7,19 @@
 set -euo pipefail
 set +x
 
-function info() {
-	echo "$@" >&2
-}
-
-if [ -x "${CI_PROJECTS_DIR:-.}/token_removal.sh" ]; then
-	info "Removing sensitive data from $OUTPATH"
-	"${CI_PROJECTS_DIR:-.}/token_removal.sh" "$OUTPATH"
-	info "cleaning done. – Remember to always check carefully if any secrets are forgotten before publishing data packets!"
+if [ -x "${SCRIPTS_DIR:-.}/token_removal.sh" ]; then
+	echo "Removing sensitive data from $OUTPATH"
+	"${SCRIPTS_DIR:-.}/token_removal.sh" "$OUTPATH"
+	echo "cleaning done. – Remember to always check carefully if any secrets are forgotten before publishing data packets!"
 fi
 cd "$OUTPATH/000000";
 
 for job in 0*; do
     ID=$(uuidgen);
     if tar -czf "${ID}.tgz" "$job" *.xml; then
-        info "$job stored as ${ID}.tgz";
-	echo "$ID";
+        echo "$job stored as ${ID}.tgz";
     else
-        info "$job packing failed";
+        echo "$job packing failed";
     fi
 
     # export result blobs to datadump if available.
@@ -33,17 +28,17 @@ for job in 0*; do
     fi
     if [ -d "${CB_DATADUMP}" -a -w "${CB_DATADUMP}" ] ; then
         if [ -e "${CB_DATADUMP}/${ID}.tgz" ]; then
-            info "ERROR: UUID COLLISION! This is highly unlikely. Probably something else is horribly wrong! PLEASE CHECK CAREFULLY!";
+            echo "ERROR: UUID COLLISION! This is highly unlikely. Probably something else is horribly wrong! PLEASE CHECK CAREFULLY!";
             exit 1;
         fi
         cp -v "${ID}.tgz" "${CB_DATADUMP}/";  # choose 'mv' instead of 'cp' if the results should not be added to the artifact.
     else
-        info "CB_DATADUMP=\"$CB_DATADUMP\" is not a usable directory:"
+        echo "CB_DATADUMP=\"$CB_DATADUMP\" is not a usable directory:"
         ls -lisad "$CB_DATADUMP"
     fi;
 done;
 
 if [ ! -d "$CB_DATADUMP" ] ; then
-    info "WARNING: ${CB_DATADUMP} is not a directory! Results are only available in this ephemeral artifact!";
+    echo "WARNING: ${CB_DATADUMP} is not a directory! Results are only available in this ephemeral artifact!";
 fi;
 
