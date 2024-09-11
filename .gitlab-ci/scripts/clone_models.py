@@ -43,9 +43,9 @@ for model_name, benchmark_configs in config["benchmarks"].items():
 shutil.rmtree(models_tmp_dir)
 
 # Clone the simulator
-env = os.environ.copy()
-env["CB_SIMULATOR_REPO"] = os.path.expandvars(config["software_parameters"]["simulator_repo_url"])
-simulator_branch = os.path.expandvars(config["software_parameters"]["simulator_repo_branch"])
-subprocess.Popen(["Builder/build.sh", "--get", "--silent", "simulator", simulator_branch], env=env, stdout=subprocess.DEVNULL)
+#env = os.environ.copy()
+#env["CB_SIMULATOR_REPO"] = os.path.expandvars(config["software_parameters"]["simulator_repo_url"])
+#simulator_branch = os.path.expandvars(config["software_parameters"]["simulator_repo_branch"])
+#subprocess.Popen(["Builder/build.sh", "--get", "--silent", "simulator", simulator_branch], env=env, stdout=subprocess.DEVNULL)
 
-print(simulator_branch)
+#print(simulator_branch)
