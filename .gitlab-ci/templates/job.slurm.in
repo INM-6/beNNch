@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -l
 
 # Copyright (C) 2023 Forschungszentrum Juelich GmbH, INM-6
 

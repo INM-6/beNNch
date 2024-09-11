@@ -193,9 +193,9 @@ Transfer:
       eval "$(grep '^CB_SIMULATOR_BRANCH=' env/variables.txt)"
     # copy packed data to a temp dir
     - 'mkdir -p "${CB_STORAGE_DIR}/temp"'
-    - 'cp -r jube_results_dir/data/* "${STORAGE_DIR}/temp"'
-    - 'cp -r config/config.txt "${STORAGE_DIR}/temp"'
-    - 'cd "${STORAGE_DIR}/temp"'
+    - 'cp -r jube_results_dir/data/* "${CB_STORAGE_DIR}/temp"'
+    - 'cp -r config/config.txt "${CB_STORAGE_DIR}/temp"'
+    - 'cd "${CB_STORAGE_DIR}/temp"'
     - 'tar -xvf *.tgz'
     - 'pwd'
     - 'ls -la'
