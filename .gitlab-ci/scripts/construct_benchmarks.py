@@ -148,8 +148,8 @@ for model_name, benchmark_config in config["benchmarks"].items():
     {
         "name": "machine_config",
         "parameter": [
-            {"name": "extra_srun_flags", "type": "string", "_": machine_config["variables"]["extra_srun_flags"]},
-            {"name": "extra_sbatch_flags", "type": "string", "_": machine_config["variables"]["extra_sbatch_flags"]}
+            {"name": "extra_srun_flags", "separator": ";", "type": "string", "_": machine_config["variables"]["extra_srun_flags"]},
+            {"name": "extra_sbatch_flags", "separator": ";", "type": "string", "_": machine_config["variables"]["extra_sbatch_flags"]}
         ]
     })
 
