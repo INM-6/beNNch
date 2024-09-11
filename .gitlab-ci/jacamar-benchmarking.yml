@@ -129,7 +129,8 @@ Benchmarking:
       artifacts: true
   artifacts:
     paths:
-      - "env/variables.txt"
+      - "env"
+      - "results"
       - "specifications"
     reports:
       dotenv: benchmark_variables.env
@@ -167,8 +168,14 @@ Transfer:
   needs: 
     - job: "Benchmarking"
       artifacts: true
+  artifacts:
+    paths:
+      - "run_uuid.txt"
   script:
     - 'set -euo pipefail'
+    # create one uuid for all runs of one benchmark
+    - 'run_uuid=$(uuidgen)'
+    - 'echo "$run_uuid" > run_uuid.txt'
     # get variables from .collect-metadata subpipeline
     - |
       eval "$(grep '^USER=' env/variables.txt)"
@@ -290,3 +297,15 @@ Transfer:
       done
     - 'rm -rf temp/'
 
+Plotting:
+  extends: [ .plotting ]
+  stage: plotting
+  trigger:
+  - project: 'nest/bennch/metadata_plotting'
+    ref: main                                      # Git branch
+    file: '.gitlab-ci.yml'
+  variables:
+  needs:
+    - job: "Transfer"
+      artifacts: true
+  
