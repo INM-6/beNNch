@@ -78,7 +78,7 @@ variables:
       - "juwels"
 
 # Specify all machines for which configurations exist
-.machines: &machines_anchor [ "jureca", "jusuf" ]
+.machines: &machines_anchor [ "jureca", "jusuf", "juwels" ]
 
 # Only run pipelines manually triggered from the web
 workflow:
@@ -95,7 +95,7 @@ Validate Input:
   stage: validate
   image: python:3-alpine
   variables:
-    MACHINES: "jureca,jusuf"  # TODO: Check if the anchor can be used here somehow to avoid duplication
+    MACHINES: "jureca,jusuf,juwels"  # TODO: Check if the anchor can be used here somehow to avoid duplication
   script:
     - |+
       # Make sure values were provided for all mandatory variables
