@@ -219,6 +219,7 @@ variables:
   - 'cd ${MODELS_DIR}/${JUBE_BENCHMARK_FILE}'
   - 'export model_git_commit_hash=$(git rev-parse HEAD)'
   # get all variables to use them in Transfer for metadata annotation
+  - 'mkdir ${CI_PROJECT_DIR}/env'
   - 'printenv > "${CI_PROJECT_DIR}/env/variables.txt"'
 
 # Requires git, python3, pyyaml, bennchplot
