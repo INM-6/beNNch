@@ -35,6 +35,12 @@ include: .gitlab-ci/jacamar-benchmarking.yml
   tags:
     - hambach
 
+.transfer:
+  variables:
+    CB_STORAGE_DIR: "/work/datasets/bennch/data"
+  tags:
+    - hambach
+
 variables:
     extra_srun_flags: "--mpi=pmix"
     extra_sbatch_flags: "--reservation=nest"
