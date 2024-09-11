@@ -142,7 +142,6 @@ variables:
 # Requires jube, python3
 # Run once per model-machine combination
 .run-benchmarks:
-  # Log quota before and after run
   # Wait until all other jube benchmarks have been started until the JUBE_BENCHMARK_ID of this subpipeline
   - 'cd $JUBE_RESULTS_DIR'
   # Wait until it's my turn to create a workpackage directory (i.e., call jube run)
@@ -216,17 +215,11 @@ variables:
   - 'chmod +x ${SCRIPTS_DIR}/pack_results.sh'
   - 'chmod +x ${SCRIPTS_DIR}/token_removal.sh'
   - 'OUTPATH="${JUBE_RESULTS_DIR}" SCRIPTS_DIR="${SCRIPTS_DIR}" CB_DATADUMP="${CI_PROJECT_DIR}/results" ${SCRIPTS_DIR}/pack_results.sh'
-  - 'tar -czf "${LOCAL_STORAGE_DIR}/${RESULTS_UID}.tgz" -C "${JUBE_RESULTS_DIR}" "000000"'
   # Add metadata to output archive
   - 'cd ${MODELS_DIR}/${JUBE_BENCHMARK_FILE}'
   - 'export model_git_commit_hash=$(git rev-parse HEAD)'
-  ### export data and environment ###
-  # benchmark data export
-  - 'cp -r "${RESULTS_UID}.tgz" "${TRANSFER_DIR}/data"'
-  # get all variables to use them in aftermath
+  # get all variables to use them in Transfer for metadata annotation
   - 'printenv > "${CI_PROJECT_DIR}/env/variables.txt"'
-  # get config file for aftermath metadata annotation
-  #- 'cp -r $CONFIG_FILE_PATH "${TRANSFER_DIR}/config.txt"'
 
 # Requires git, python3, pyyaml, bennchplot
 # Run once per machine for all models
