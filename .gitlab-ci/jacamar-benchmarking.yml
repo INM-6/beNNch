@@ -299,10 +299,9 @@ Transfer:
 
 Plotting:
   trigger:
-  - project: 'nest/bennch/metadata_plotting'
-    ref: main                                      # Git branch
-    file: '.gitlab-ci.yml'
-  variables:
+    project: 'nest/bennch/metadata_plotting'
+    branch: main                                      # Git branch
+    #file: '.gitlab-ci.yml'
   needs:
     - job: "Transfer"
       artifacts: true

@@ -73,7 +73,7 @@ variables:
       - "microcircuit"
   CB_MACHINES:
     description: "Comma-seperated list of the names of all machines on which benchmarks should be run. Leave empty to trigger benchmark runs for manually for each individual machine for which configuration was found."
-    value: "hambach"
+    value: "jureca"
     options:
       - "hambach"
       - "jusuf"
