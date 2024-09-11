@@ -43,6 +43,12 @@ include: .gitlab-ci/jacamar-benchmarking.yml
     - jureca
     - jacamar
 
+.transfer:
+  variables:
+    CB_STORAGE_DIR: "/work/datasets/bennch/data"
+  tags:
+    - hambach
+
 variables:
     extra_sbatch_flags: "--disable-turbomode"
     extra_srun_flags: "--cpu-bind=mask_cpu:0xFFFFFFFFFFFFFFFF,0xFFFFFFFFFFFFFFFF0000000000000000"

@@ -136,10 +136,8 @@ Benchmarking:
       artifacts: true
   artifacts:
     paths:
-      #- beNNch-plot/
-      #- JUBE/
+      - "variables.txt"
       - "specifications"
-      - "flipbooks"
     reports:
       dotenv: benchmark_variables.env
     when: on_success
@@ -152,9 +150,9 @@ Benchmarking:
     # Copy jube benchmark files for archiving as artifacts
     - 'cp -r "$BENCHMARKS_DIR/jube" "$CI_PROJECT_DIR/specifications"'
     # Generate flipbook
-    - !reference [ .flipbook ]
+    #- !reference [ .flipbook ]
     # Collect metadata and prepare
-    #- !reference [ .collect-metadata ]
+    - !reference [ .collect-metadata ]
     # Forward all environment variables to next stage
     - !reference [ .variables-as-artifacts ]
 
@@ -170,3 +168,132 @@ Aggregation:
     - !reference [ .upload-results ]
     # - 'chmod -R 777 "$USER_DATA_DIR/bennch/results/.git"'  # Todo: Probably not required, needs fix
     # - 'rm -rf $USER_DATA_DIR'
+
+Transfer:
+  extends: [ .transfer ]
+  needs: 
+    - job: "Benchmarking"
+      artifacts: true
+  script:
+    - 'set -euo pipefail'
+    # get variables from .collect-metadata subpipeline
+    - |
+      eval "$(grep '^USER=' env/variables.txt)"
+      eval "$(grep '^MACHINE=' env/variables.txt)"
+      eval "$(grep '^CB_MODELS=' env/variables.txt)"
+      eval "$(grep '^LOCAL_STORAGE_DIR=' env/variables.txt)"
+      eval "$(grep '^BENCHMARK_UID=' env/variables.txt)"
+      eval "$(grep '^RESULTS_UID=' env/variables.txt)"
+      eval "$(grep '^JUBE_BENCHMARK_FILE=' env/variables.txt)"
+      eval "$(grep '^model_git_commit_hash=' env/variables.txt)"
+      eval "$(grep '^CB_SIMULATOR_BRANCH=' env/variables.txt)"
+      eval "$(grep '^simulator_git_commit_hash=' env/variables.txt)"
+      eval "$(grep '^CB_SIMULATOR_BRANCH=' env/variables.txt)"
+      eval "$(grep '^CB_SIMULATOR_BRANCH=' env/variables.txt)"
+    # copy packed data to a temp dir
+    - 'mkdir -p "${CB_STORAGE_DIR}/temp"'
+    - 'cp -r jube_results_dir/data/* "${STORAGE_DIR}/temp"'
+    - 'cp -r config/config.txt "${STORAGE_DIR}/temp"'
+    - 'cd "${STORAGE_DIR}/temp"'
+    - 'tar -xvf *.tgz'
+    - 'pwd'
+    - 'ls -la'
+    # unpack the single runs to the main file
+    #- 'OUTPATH="." CI_PROJECTS_DIR="${SCRIPTS_DIR}" ${SCRIPTS_DIR}/pack_results.sh'
+    - 'cd 000000/'
+    - 'added_files=$(ls *.tgz)'
+    - 'COMPLETION_TIME=$(date +"%Y-%m-%d@%H-%M-%S")'
+    # extract number of nodes
+    - |
+      NUM_NODES=()
+      SCALE_N=()
+      SCALE_K=()
+      POISSON_INPUT=()
+      V0_TYPE=()
+      SYNAPSE_TYPE=()
+      RNG_SEED=()
+      THREADS_PER_TASK=()
+      TASKS_PER_NODE=()
+      MODEL_TIME_SIM=()
+      MODEL_TIME_PRESIM=() 
+      for added_file in $added_files; do
+        tar -xvf $added_file
+        ROW=$(echo *_bench | awk -F_ '{print $1 + 0}')+2
+        # Extract the num_nodes value from result_table.dat
+        num_nodes=$(awk -F, -v column="num_nodes" \
+          'NR==1 {for (i=1; i<=NF; i++) if ($i == column) col_num = i} NR=='"$ROW"' {print $col_num}' result/result_table.dat)
+        NUM_NODES+=("$num_nodes")
+        scale_N=$(awk -F, -v column="scale_N" \
+          'NR==1 {for (i=1; i<=NF; i++) if ($i == column) col_num = i} NR=='"$ROW"' {print $col_num}' result/result_table.dat)
+        SCALE_N+=("$scale_N")
+        scale_K=$(awk -F, -v column="scale_K" \
+          'NR==1 {for (i=1; i<=NF; i++) if ($i == column) col_num = i} NR=='"$ROW"' {print $col_num}' result/result_table.dat)
+        SCALE_K+=("$scale_K")
+        poisson_input=$(awk -F, -v column="poisson_input" \
+          'NR==1 {for (i=1; i<=NF; i++) if ($i == column) col_num = i} NR=='"$ROW"' {print $col_num}' result/result_table.dat)
+        POISSON_INPUT+=("$poisson_input")
+        V0_type=$(awk -F, -v column="V0_type" \
+          'NR==1 {for (i=1; i<=NF; i++) if ($i == column) col_num = i} NR=='"$ROW"' {print $col_num}' result/result_table.dat)
+        V0_TYPE+=("$V0_type")
+        synapse_type=$(awk -F, -v column="synapse_type" \
+          'NR==1 {for (i=1; i<=NF; i++) if ($i == column) col_num = i} NR=='"$ROW"' {print $col_num}' result/result_table.dat)
+        SYNAPSE_TYPE+=("$synapse_type")
+        rng_seed=$(awk -F, -v column="rng_seed" \
+          'NR==1 {for (i=1; i<=NF; i++) if ($i == column) col_num = i} NR=='"$ROW"' {print $col_num}' result/result_table.dat)
+        RNG_SEED+=("$rng_seed")
+        threads_per_task=$(awk -F, -v column="threads_per_task" \
+          'NR==1 {for (i=1; i<=NF; i++) if ($i == column) col_num = i} NR=='"$ROW"' {print $col_num}' result/result_table.dat)
+        THREADS_PER_TASK+=("$threads_per_task")
+        tasks_per_node=$(awk -F, -v column="tasks_per_node" \
+          'NR==1 {for (i=1; i<=NF; i++) if ($i == column) col_num = i} NR=='"$ROW"' {print $col_num}' result/result_table.dat)
+        TASKS_PER_NODE+=("$tasks_per_node")
+        model_time_sim=$(awk -F, -v column="model_time_sim" \
+          'NR==1 {for (i=1; i<=NF; i++) if ($i == column) col_num = i} NR=='"$ROW"' {print $col_num}' result/result_table.dat)
+        MODEL_TIME_SIM+=("$model_time_sim")
+        model_time_presim=$(awk -F, -v column="model_time_presim" \
+          'NR==1 {for (i=1; i<=NF; i++) if ($i == column) col_num = i} NR=='"$ROW"' {print $col_num}' result/result_table.dat)
+        MODEL_TIME_PRESIM+=("$model_time_presim")
+        rm -rf *_bench
+      done
+    - 'cd ../'
+    - 'mv 000000/*.tgz ../'
+    - 'cd ../'
+    - 'counter=0'
+    - |
+      for file in $added_files; do
+        chmod u+w $file
+        git annex add "$file"
+        git annex metadata $file --set user=$USER
+        git annex metadata $file --set machine=$MACHINE
+        git annex metadata $file --set benchmark_model=$CB_MODELS
+        git annex metadata $file --set detailed_timers=$DETAILED_TIMERS_FLAG
+        git annex metadata $file --set export_data_dir=$LOCAL_STORAGE_DIR
+        git annex metadata $file --set benchmark_uid=$BENCHMARK_UID
+        git annex metadata $file --set key=$RESULTS_UID
+        git annex metadata $file --set model_name=$JUBE_BENCHMARK_FILE
+        git annex metadata $file --set model_git_commit_hash="$model_git_commit_hash"
+        git annex metadata $file --set simulator_version=$CB_SIMULATOR_BRANCH
+        git annex metadata $file --set simulator_git_commit_hash="$simulator_git_commit_hash"
+        git annex metadata $file --set completion_time="$COMPLETION_TIME"
+        # Add metadata coming from lscpu and from user config
+        tar -xvf $added_file -C temp/000000/
+        cpu_path=$(echo temp/000000/*_bench/work/cpu.json)
+        python3 ${CI_PROJECT_DIR}/.gitlab-ci/scripts/add_metadata.py $file "$cpu_path" "temp/config.txt" "$MACHINE" "$CB_MODELS"
+        git annex metadata $file --set num_nodes=${NUM_NODES[counter]}
+        git annex metadata $file --set scale_N=${SCALE_N[counter]}
+        git annex metadata $file --set scale_K=${SCALE_K[counter]}
+        git annex metadata $file --set poisson_input=${POISSON_INPUT[counter]}
+        git annex metadata $file --set V0_type=${V0_TYPE[counter]}
+        git annex metadata $file --set synapse_type=${SYNAPSE_TYPE[counter]}
+        git annex metadata $file --set rng_seed=${RNG_SEED[counter]}
+        git annex metadata $file --set threads_per_task=${THREADS_PER_TASK[counter]}
+        git annex metadata $file --set tasks_per_node=${TASKS_PER_NODE[counter]}
+        git annex metadata $file --set model_time_sim=${MODEL_TIME_SIM[counter]}
+        git annex metadata $file --set model_time_presim=${MODEL_TIME_PRESIM[counter]}
+        git commit -a -m "add file: '$file'"
+        bench_path=$(echo temp/000000/*_bench)
+        rm -rf bench_path
+        counter=$((counter + 1))  
+      done
+    - 'rm -rf temp/'
+

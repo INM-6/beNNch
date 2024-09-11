@@ -213,45 +213,29 @@ variables:
   - 'cp "${CONFIG_FILE_PATH}" "${OUTPUT_DIR}/${JUBE_BENCHMARK_FILE}_${MACHINE}/config.yml"'
   # Add actual benchmark data
   - 'cp "$JUBE_RESULTS_DIR/$JUBE_BENCHMARK_ID/result/result_table.dat" "$OUTPUT_DIR/${JUBE_BENCHMARK_FILE}_${MACHINE}/benchmark_results.csv"'
-  - 'tar -czf "${RESULTS_DIR}/${RESULTS_PATH}/${RESULTS_UID}.tgz" -C "${OUTPUT_DIR}" "${JUBE_BENCHMARK_FILE}_${MACHINE}"'
+  # Add metadata as zip file
+  - 'mkdir -v "${OUTPUT_DIR}/${JUBE_BENCHMARK_FILE}_${MACHINE}/metadata"'
+  - 'OUTPATH="${JUBE_RESULTS_DIR}" CI_PROJECTS_DIR="${SCRIPTS_DIR}" CB_DATADUMP="${LOCAL_STORAGE_DIR}" ${SCRIPTS_DIR}/pack_results.sh 2> "${CB_PROJECT_DIR}/packed_uuids.list"'
+  - 'tar -czf "${LOCAL_STORAGE_DIR}/${RESULTS_UID}.tgz" -C "${JUBE_RESULTS_DIR}" "000000"'
   # Add metadata to output archive
   - 'cd ${MODELS_DIR}/${JUBE_BENCHMARK_FILE}'
   - 'export model_git_commit_hash=$(git rev-parse HEAD)'
-  # - 'cd "$RESULTS_DIR/$RESULTS_PATH/"'
-  - 'cd "$RESULTS_DIR/$RESULTS_PATH"'
-  - 'git annex add "${RESULTS_UID}.tgz"'
-  - 'git annex metadata "${RESULTS_UID}.tgz" --set user=$USER'
-  - 'git annex metadata "${RESULTS_UID}.tgz" --set machine=$MACHINE'
-  - 'git annex metadata "${RESULTS_UID}.tgz" --set key=$RESULTS_UID'
-  - 'git annex metadata "${RESULTS_UID}.tgz" --set model_name=$JUBE_BENCHMARK_FILE'
-  - 'git annex metadata "${RESULTS_UID}.tgz" --set model_git_commit_hash="$model_git_commit_hash"'
-  - 'git annex metadata "${RESULTS_UID}.tgz" --set simulator_version=$CB_SIMULATOR_BRANCH'
-  - 'git annex metadata "${RESULTS_UID}.tgz" --set simulator_git_commit_hash="$simulator_git_commit_hash"'
-  # Add metadata coming from lscpu and from user config
-  - 'python ${SCRIPTS_DIR}/add_metadata.py "${RESULTS_UID}.tgz" "${JUBE_RESULTS_DIR}/000000/000000_bench/work/cpu.json" "$CONFIG_FILE_PATH" "$MACHINE" "$JUBE_BENCHMARK_FILE"'
-
-# Requires python3, pyyaml, jupyter, nbconvert, git, and git-annex
-# Run once per model-machine combination
-.flipbook:
-  # TODO: Add another stage which can be triggered manually to create flipbooks or other plots with additional configuration
-  - 'mkdir -p "${OUTPUT_DIR}/${JUBE_BENCHMARK_FILE}_${MACHINE}/flipbooks"'
-  - 'python3 "${SCRIPTS_DIR}/create_flipbooks.py" "$PLOTTING_STYLE" "$CB_MODELS" "$DETAILED_TIMERS_FLAG" "$JUBE_RESULTS_DIR" "${OUTPUT_DIR}/${JUBE_BENCHMARK_FILE}_${MACHINE}/flipbooks" "$BENCHMARK_UID"'
-  - 'cp -r "${OUTPUT_DIR}/${JUBE_BENCHMARK_FILE}_${MACHINE}/flipbooks" "$CI_PROJECT_DIR/flipbooks"'
+  - 'cd "$LOCAL_STORAGE_DIR"'
+  ### export data and environment ###
+  # benchmark data export
+  - 'mkdir -p "${TRANSFER_DIR}/data"'
+  - 'cp -r "${RESULTS_UID}.tgz" "${TRANSFER_DIR}/data"'
+  # get all variables to use them in aftermath
+  - 'printenv > "${CI_PROJECT_DIR}/variables.txt"'
+  # get config file for aftermath metadata annotation
+  #- 'cp -r $CONFIG_FILE_PATH "${TRANSFER_DIR}/config.txt"'
 
 # Requires git, python3, pyyaml, bennchplot
 # Run once per machine for all models
 .upload-results:
   - 'cd "$RESULTS_DIR/$RESULTS_PATH"'
-  # - |
-  #   git config --local credential.helper '!f() { echo "username=$RESULTS_REPO_TOKEN"; echo "password="; };f'
   - 'git config --local user.name "${USER}"'
-  # Push data to remote repository
   - 'git commit -m "Adding benchmark data for ${BENCHMARK_ID}"'
-  # - 'git push origin $RESULTS_BRANCH'
-  # - 'git annex copy --to=oursharedremote'
-  # - 'git annex dead $(git config annex.uuid)'
-  # - 'git annex forget --drop-dead --force'
-  # - 'git annex sync'
 
 .variables-as-artifacts:
   - 'rm -f "$CI_PROJECT_DIR/benchmark_variables.env"'
