@@ -194,7 +194,6 @@ Transfer:
     # copy packed data to a temp dir
     - 'mkdir -p "${CB_STORAGE_DIR}/temp"'
     - 'cp -r results/* "${CB_STORAGE_DIR}/temp"'
-    - 'cp -r ${CONFIG_FILE_PATH} "${CB_STORAGE_DIR}/temp"'
     - 'cd "${CB_STORAGE_DIR}/temp"'
     - 'tar -xvf *.tgz'
     - 'pwd'
@@ -279,7 +278,7 @@ Transfer:
         # Add metadata coming from lscpu and from user config
         tar -xvf $added_file -C temp/000000/
         cpu_path=$(echo temp/000000/*_bench/work/cpu.json)
-        python3 ${CI_PROJECT_DIR}/.gitlab-ci/scripts/add_metadata.py $file "$cpu_path" "temp/config.txt" "$MACHINE" "$CB_MODELS"
+        # python3 ${CI_PROJECT_DIR}/.gitlab-ci/scripts/add_metadata.py $file "$cpu_path" "temp/config.txt" "$MACHINE" "$CB_MODELS"
         git annex metadata $file --set num_nodes=${NUM_NODES[counter]}
         git annex metadata $file --set scale_N=${SCALE_N[counter]}
         git annex metadata $file --set scale_K=${SCALE_K[counter]}
