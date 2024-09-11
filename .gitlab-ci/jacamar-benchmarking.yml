@@ -298,8 +298,6 @@ Transfer:
     - 'rm -rf temp/'
 
 Plotting:
-  extends: [ .plotting ]
-  stage: plotting
   trigger:
   - project: 'nest/bennch/metadata_plotting'
     ref: main                                      # Git branch
