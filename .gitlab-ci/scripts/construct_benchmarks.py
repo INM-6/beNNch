@@ -179,7 +179,7 @@ for model_name, benchmark_config in config["benchmarks"].items():
                {"name": "exec_bench",
                 "separator": ";",
                 "_": """${optional_run_command}
-srun python ${extra_srun_flags} ${run_file} ${run_args}
+srun ${extra_srun_flags} python ${run_file} ${run_args}
 srun -n 1 --nodes 1 python ${scripts_dir}/collect_timer_data.py ${metrics_path} ${jube_wp_abspath} ${log_path}"""}
         ]
     })
