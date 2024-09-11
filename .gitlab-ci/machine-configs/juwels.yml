@@ -1,0 +1,51 @@
+# Copyright (C) 2023 Forschungszentrum Jülich GmbH, INM-6
+#
+# Builder is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# Builder is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Builder.  If not, see <https://www.gnu.org/licenses/>.
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+include: .gitlab-ci/jacamar-benchmarking.yml
+
+
+.preparation:
+  tags:
+    - shell
+    - juwels
+    - jacamar
+
+.build:
+  variables:
+    SCHEDULER_PARAMETERS: "--account=$CB_RUNNER_ACCOUNT --time=$CB_BUILD_TIME_LIMIT --nodes=1"
+  tags:
+    - compute
+    - juwels
+    - jacamar
+
+.benchmark:
+  tags:
+    - shell
+    - juwels
+    - jacamar
+
+.aggregation:
+  tags:
+    - shell
+    - juwels
+    - jacamar
+
+.environment-init:
+  - 'export PYTHONNOUSERSITE=1'
+
+.environment-load:
+  - 'export PYTHONNOUSERSITE=1'
