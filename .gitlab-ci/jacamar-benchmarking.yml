@@ -72,6 +72,9 @@ Preparation:
     - 'eval BUILDER_INSTALL_DIR="$BUILDER_INSTALL_DIR"'
     - 'eval BUILDER_BUILD_DIR="$BUILDER_BUILD_DIR"'
     - 'eval BUILDER_LOG_DIR="$BUILDER_LOG_DIR"'
+    - 'eval CONFIG_FILE_PATH="$CONFIG_FILE_PATH"'
+    - 'eval SIMULATOR_MODULEFILE_PATH="$SIMULATOR_MODULEFILE_PATH"'
+    - 'eval SIMULATOR_PLANFILE_PATH="$SIMULATOR_PLANFILE_PATH"'
     - 'eval MODELS_DIR="$MODELS_DIR"'
     - 'eval OUTPUT_DIR="$OUTPUT_DIR"'
     # Create all required directories
@@ -256,11 +259,15 @@ Transfer:
   artifacts:
     paths:
       - "run_uuid.txt"
+      - "uuids.txt"
   script:
     - 'set -euo pipefail'
     # create one uuid for all runs of one benchmark
     - 'run_uuid=$(uuidgen)'
     - 'echo "$run_uuid" > run_uuid.txt'
+    # get uuids of single files
+    - 'ls results/ > uuids.txt'
+    # actual data transfer
     - 'cp -r results/* "${CB_STORAGE_DIR}"'
     - 'pwd'
     - 'ls -la'
