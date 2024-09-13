@@ -19,6 +19,7 @@ include:
   local: .gitlab-ci/base-benchmarking.yml
 
 variables:
+# Builder variables
   SIMULATOR_MODULEFILE_PATH: "$$USER_DATA_DIR/simulator.module"
   SIMULATOR_PLANFILE_PATH: "$$USER_DATA_DIR/simulator.planfile"
   BUILDER_MODULES_DIR: "$$USER_DATA_DIR/modules"
@@ -28,6 +29,17 @@ variables:
   BUILDER_INSTALL_DIR: "$$USER_DATA_DIR/install"
   BUILDER_BUILD_DIR: "$$USER_DATA_DIR/Builder/build"
   BUILDER_LOG_DIR: "$$USER_DATA_DIR/Builder/log/"
+# repository dependent variables
+  SIMULATOR_REPO_DIR: "$$USER_DATA_DIR/repository"
+  RESULTS_DIR: "$$USER_DATA_DIR/results"
+  SCRIPTS_DIR: "$CI_PROJECT_DIR/.gitlab-ci/scripts"
+  TEMPLATES_DIR: "$CI_PROJECT_DIR/.gitlab-ci/templates"
+  JUBE_RESULTS_DIR: "$$USER_DATA_DIR/jube_results"
+  BENCHMARKS_DIR: "$$USER_DATA_DIR/benchmarks"
+  CONFIG_FILE_PATH: "$$USER_DATA_DIR/config.yml"
+  MODELS_DIR: "$$USER_DATA_DIR/models"
+  OUTPUT_DIR: "$$USER_DATA_DIR/benchmark_results"
+  MACHINE: "$CB_MACHINE"
 
 # Must define USER_DATA_DIR
 Preparation:
@@ -41,13 +53,13 @@ Preparation:
     when: on_success
   script:
     # Get unique id for benchmark
-    - !reference [ .prepare-benchmarks, get-uid ]
+    - |
+      export BENCHMARK_UID="$(echo $BENCHMARK_ID | sed -e 's/[^A-Za-z0-9._-]/_/g')-$(date +%Y-%m-%d-%H-%M-%S)"
     - 'set -euo pipefail'
     - 'eval USER="$GITLAB_USER_LOGIN"'
     - 'echo $USER'
     - |
       eval USER_DATA_DIR="$TEMP_DIR/$USER/${BENCHMARK_UID}"
-      #export PLANFILE_PATH="$USER_DATA_DIR/Builder/plans"
     # Load all environment variables
     - !reference [ .prepare-benchmarks, environment-variables ]
     # Create all required directories
@@ -177,7 +189,6 @@ Transfer:
     - 'run_uuid=$(uuidgen)'
     - 'echo "$run_uuid" > run_uuid.txt'
     - 'cp -r results/* "${CB_STORAGE_DIR}"'
-    - 'tar -xvf *.tgz'
     - 'pwd'
     - 'ls -la'
 
