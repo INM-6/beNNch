@@ -26,9 +26,10 @@ benchmarks:
     model_parameters:
       - {name: "", type: "float|int|string|text", _: ""}  # Any parameter that should be substituted in the model 'script_path' file (see #Model templating).
     run_parameters:
-      log_path: ""  # Path where the model stores logfiles which are used to extract timer data.
-      script_path: ""  # Path to the Python script which will be run to start the benchmark for the specific model.
+      run_command: ""  # Which command to execute to run the script, e.g. 'python'.
+      script_path: ""  # Path to the script which will be run to start the benchmark for the specific model.
       run_args: ""  # Any arguments that should be passed to the script. Can contain variables using $VARIABLE which come either from the "model_parameters" or the globally defined variables (see # Global variables).
+      log_path: ""  # Path where the model stores logfiles which are used to extract timer data.
       optional_run_command: ""  # Any command or list of commands that should be run prior to the script given via the "script_path".
     params_rec: []  # List of strings containing all model parameter keys which should be added as a column to the result.csv file
     metrics_mean: []  # List of strings containing all output parameters in log files which should be added as a column to the result.csv file. Aggregation function for multiple MPI processes (multiple log files): Average of all values
