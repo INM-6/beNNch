@@ -37,11 +37,11 @@ include: .gitlab-ci/jacamar-benchmarking.yml
     - jureca
     - jacamar
 
-.aggregation:
-  tags:
-    - shell
-    - jureca
-    - jacamar
+#.aggregation:
+#  tags:
+#    - shell
+#    - jureca
+#    - jacamar
 
 .transfer:
   variables:

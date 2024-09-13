@@ -162,18 +162,18 @@ Benchmarking:
     # Forward all environment variables to next stage
     - !reference [ .variables-as-artifacts ]
 
-Aggregation:
-  extends: [ .aggregation ]
-  needs: 
-    - job: "Benchmarking"
-      artifacts: true
-  script:
-    # Prepare environment
-    - !reference [ .prepare-benchmarks, environment-load ]
-    # Collect and upload metadata and results
-    - !reference [ .upload-results ]
-    # - 'chmod -R 777 "$USER_DATA_DIR/bennch/results/.git"'  # Todo: Probably not required, needs fix
-    # - 'rm -rf $USER_DATA_DIR'
+#Aggregation:
+#  extends: [ .aggregation ]
+#  needs: 
+#    - job: "Benchmarking"
+#      artifacts: true
+#  script:
+#    # Prepare environment
+#    - !reference [ .prepare-benchmarks, environment-load ]
+#    # Collect and upload metadata and results
+#    - !reference [ .upload-results ]
+#    # - 'chmod -R 777 "$USER_DATA_DIR/bennch/results/.git"'  # Todo: Probably not required, needs fix
+#    # - 'rm -rf $USER_DATA_DIR'
 
 Transfer:
   extends: [ .transfer ]
