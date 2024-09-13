@@ -42,6 +42,7 @@ include: .gitlab-ci/jacamar-benchmarking.yml
     - hambach
 
 variables:
+    TEMP_DIR: "/work/users"
     extra_srun_flags: "--mpi=pmix"
     extra_sbatch_flags: "--reservation=nest --exclusive"
 

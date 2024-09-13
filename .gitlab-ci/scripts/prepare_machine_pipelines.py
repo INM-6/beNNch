@@ -31,6 +31,8 @@ pipelines_dir_in = sys.argv[1]
 pipelines_dir_out = sys.argv[2]
 config_file_path = sys.argv[3]
 available_machines = sys.argv[4].split(",")
+cb_machine = sys.argv[5]
+jacamar_path = sys.argv[6]
 
 manual = True
 user_machines = os.environ["CB_MACHINES"].split(",") if os.environ["CB_MACHINES"] else None
@@ -47,8 +49,6 @@ for machine, machine_conf in config["user_config"].items():
         with open(os.path.join(pipelines_dir_in, machine + ".yml")) as pipeline_in:
             pipeline_yml = yaml.safe_load(pipeline_in)
 
-        if "variables" not in pipeline_yml:
-            pipeline_yml["variables"] = dict()
         if ".environment-vars" not in pipeline_yml:
             pipeline_yml[".environment-vars"] = list()
         if ".environment-init" not in pipeline_yml:
@@ -65,9 +65,6 @@ for machine, machine_conf in config["user_config"].items():
         pipeline_yml["variables"]["CB_BUILD_TIME_LIMIT"] = machine_conf.get('build-time-limit', '')
         pipeline_yml["variables"].update(config["dependencies"][machine]["variables"])
 
-        pipeline_yml[".environment-vars"].extend(config["dependencies"][machine]["vars"])
-        pipeline_yml[".environment-init"].extend(config["dependencies"][machine]["init"])
-        pipeline_yml[".environment-load"].extend(config["dependencies"][machine]["load"])
         
         pipeline_yml["variables"]["CB_SIMULATOR_REPO"] = config["software_parameters"]["simulator_repo_url"]
         pipeline_yml["variables"]["CB_SIMULATOR_BRANCH"] = config["software_parameters"]["simulator_repo_branch"]
@@ -87,7 +84,6 @@ for machine, machine_conf in config["user_config"].items():
                 benchmark_id += 1
 
         pipeline_yml[".parallel-benchmark"] = {"parallel": {"matrix": benchmarks}}
-        # pipeline_yml[".aggregation"] = {"parallel": {"matrix": benchmarks}}
         
     except Exception as e:
         traceback.print_exc()
@@ -96,6 +92,14 @@ for machine, machine_conf in config["user_config"].items():
     with open(os.path.join(pipelines_dir_out, machine + ".yml"), 'w') as pipeline_out:
         yaml.dump(pipeline_yml, pipeline_out, default_flow_style=False)
         available_machines.remove(machine)
+
+
+with open(jacamar_path) as jacamar_file:
+    jacamar_yml = yaml.safe_load(jacamar_file)
+
+jacamar_yml[".environment-vars"].extend(config["dependencies"][machine]["vars"])
+jacamar_yml[".environment-init"].extend(config["dependencies"][machine]["init"])
+jacamar_yml[".environment-load"].extend(config["dependencies"][machine]["load"])
 
 # All machines for which no config exists are ignored
 for machine in available_machines:
