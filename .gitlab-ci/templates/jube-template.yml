@@ -29,7 +29,7 @@ parameterset:
         separator: ;
         _: |
           ${optional_run_command}
-          srun --cpu-bind=mask_cpu:${cpu_bind_mask} python ${run_file} ${run_args}
+          srun --cpu-bind=mask_cpu:${cpu_bind_mask} ${run_command} ${run_file} ${run_args}
           srun -n 1 --nodes 1 python ${scripts_dir}/collect_timer_data.py ${metrics_path} ${jube_wp_abspath} ${log_path}
 
 fileset:

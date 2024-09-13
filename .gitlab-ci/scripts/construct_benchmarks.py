@@ -144,6 +144,7 @@ for model_name, benchmark_config in config["benchmarks"].items():
     # Parameterset
     benchmark_model_files_dir = os.path.join(benchmark_models_dir, model_name)
     next(p for p in jube_benchmark["parameterset"] if p["name"] == "bench_parameters")["parameter"].extend([
+        {"name": "run_command", "type": "string", "_": run_parameters.get("run_command", "")},
         {"name": "run_file", "type": "string", "_": "${jube_wp_abspath}" + os.sep + model_script_path},
         {"name": "log_path", "type": "string", "_": "${jube_wp_abspath}" + os.sep + run_parameters.get("log_path", "")},
         {"name": "scripts_dir", "type": "string", "_": scripts_dir},
