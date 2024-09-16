@@ -57,8 +57,6 @@ for machine, machine_conf in config["user_config"].items():
             pipeline_yml[".environment-load"] = list()
         if "variables" not in pipeline_yml:
             pipeline_yml["variables"] = list()
-        if ".preparation" not in pipeline_yml:
-            pipeline_yml[".preparation"] = dict()
         pipeline_yml["variables"]["CB_DATA_PROJECT"] = machine_conf.get('data-project', '')
         pipeline_yml["variables"]["CB_COMPUTE_PROJECT"] = machine_conf.get('compute-project', '')
         pipeline_yml["variables"]["CB_RUNNER_ACCOUNT"] = machine_conf.get('account', '')
@@ -68,12 +66,6 @@ for machine, machine_conf in config["user_config"].items():
         
         pipeline_yml["variables"]["CB_SIMULATOR_REPO"] = config["software_parameters"]["simulator_repo_url"]
         pipeline_yml["variables"]["CB_SIMULATOR_BRANCH"] = config["software_parameters"]["simulator_repo_branch"]
-
-        
-        if manual:
-            pipeline_yml[".preparation"]["when"] = "manual"
-        else:
-            pipeline_yml[".preparation"]["when"] = "always"
 
         benchmarks = list()
         benchmark_id = 0
@@ -97,9 +89,9 @@ for machine, machine_conf in config["user_config"].items():
 with open(jacamar_path) as jacamar_file:
     jacamar_yml = yaml.safe_load(jacamar_file)
 
-jacamar_yml[".environment-vars"].extend(config["dependencies"][machine]["vars"])
-jacamar_yml[".environment-init"].extend(config["dependencies"][machine]["init"])
-jacamar_yml[".environment-load"].extend(config["dependencies"][machine]["load"])
+jacamar_yml[".environment-vars"]["before_script"].extend(config["dependencies"][machine]["vars"])
+jacamar_yml[".environment-init"]["before_script"].extend(config["dependencies"][machine]["init"])
+jacamar_yml[".environment-load"]["before_script"].extend(config["dependencies"][machine]["load"])
 
 # All machines for which no config exists are ignored
 for machine in available_machines:

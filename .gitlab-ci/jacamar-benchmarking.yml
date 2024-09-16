@@ -16,7 +16,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 include:
-  local: .gitlab-ci/base-benchmarking.yml
+  local: .gitlab-ci/machine_configs/{{ CB_MACHINES }}.yml
 
 variables:
 # Builder variables
@@ -40,10 +40,12 @@ variables:
   MODELS_DIR: "$$USER_DATA_DIR/models"
   OUTPUT_DIR: "$$USER_DATA_DIR/benchmark_results"
   MACHINE: "$CB_MACHINE"
+# Empty variable to fill with the uuid.tgz names of the benchmark results
+  BENCHMARK_UUIDS: None
 
 # Must define USER_DATA_DIR
 Preparation:
-  extends: [ .base-benchmarking, .preparation ]
+  extends: [ .load_env ]
   artifacts:
     paths:
       - "JUBE/"
@@ -114,7 +116,20 @@ Preparation:
       python3 "$SCRIPTS_DIR/construct_benchmarks.py" "$TEMPLATES_DIR/jube-template.yml" "$CONFIG_FILE_PATH" "$BUILDER_MODULES_DIR" "$CB_SIMULATOR_BRANCH" "$MODELS_DIR" "$BENCHMARKS_DIR/jube" "$BENCHMARKS_DIR/metrics" "$SCRIPTS_DIR" "$JUBE_RESULTS_DIR" "$USER_DATA_DIR/prepare.sh" "$CI_PROJECT_DIR/pipelines/${MACHINE}.yml" "$MACHINE" "$CI_PROJECT_DIR/.gitlab-ci/machine-configs/"
       echo 'cd "$CURR_PATH"' >> "$USER_DATA_DIR/prepare.sh"
     # Forward all environment variables to next stage
-    - !reference [ .variables-as-artifacts ]
+# Forward all environment variables to next stage
+    - 'rm -f "$CI_PROJECT_DIR/benchmark_variables.env"'
+    - |
+      cd "$CI_PROJECT_DIR"
+      touch benchmark_variables.env
+      for var in BENCHMARK_ID BENCHMARK_UID CB_RUNNER_ACCOUNT CB_COMPUTE_PROJECT CB_DATA_PROJECT CB_DEPENDENCIES USER_DATA_DIR BENCHMARKS_DIR CB_SIMULATOR_REPO CB_SIMULATOR_BRANCH SIMULATOR_REPO_DIR JUBE_RESULTS_DIR RESULTS_REPO_URL RESULTS_BRANCH RESULTS_PATH BUILDER_MODULES_DIR BUILDER_PLANFILE_DIR BUILDER_PACKAGE_DIR BUILDER_SOURCE_DIR BUILDER_INSTALL_DIR BUILDER_BUILD_DIR BUILDER_LOG_DIR CONFIG_FILE_PATH MODELS_DIR BUILDER_CONFIG_PATH OUTPUT_DIR RESULTS_DIR simulator_git_commit_hash ; do
+      # RESULTS_REPO_TOKEN
+      if [ ! -z "${!var+x}" ]; then
+          echo "${var}=${!var}" >> "$CI_PROJECT_DIR/benchmark_variables.env"
+      else
+          echo "${var} not defined" 
+        fi
+      done
+      cat "$CI_PROJECT_DIR/benchmark_variables.env"
 
 Build:
   extends: [ .build ]
@@ -150,8 +165,21 @@ Build:
     - 'export simulator_git_commit_hash=$(git rev-parse HEAD)'
     - 'rm -r "$SIMULATOR_REPO_DIR"'
     # Forward all environment variables to next stage
-    - !reference [ .variables-as-artifacts ]
-  
+# Forward all environment variables to next stage
+    - 'rm -f "$CI_PROJECT_DIR/benchmark_variables.env"'
+    - |
+      cd "$CI_PROJECT_DIR"
+      touch benchmark_variables.env
+      for var in BENCHMARK_ID BENCHMARK_UID CB_RUNNER_ACCOUNT CB_COMPUTE_PROJECT CB_DATA_PROJECT CB_DEPENDENCIES USER_DATA_DIR BENCHMARKS_DIR CB_SIMULATOR_REPO CB_SIMULATOR_BRANCH SIMULATOR_REPO_DIR JUBE_RESULTS_DIR RESULTS_REPO_URL RESULTS_BRANCH RESULTS_PATH BUILDER_MODULES_DIR BUILDER_PLANFILE_DIR BUILDER_PACKAGE_DIR BUILDER_SOURCE_DIR BUILDER_INSTALL_DIR BUILDER_BUILD_DIR BUILDER_LOG_DIR CONFIG_FILE_PATH MODELS_DIR BUILDER_CONFIG_PATH OUTPUT_DIR RESULTS_DIR simulator_git_commit_hash ; do
+      # RESULTS_REPO_TOKEN
+      if [ ! -z "${!var+x}" ]; then
+          echo "${var}=${!var}" >> "$CI_PROJECT_DIR/benchmark_variables.env"
+      else
+          echo "${var} not defined" 
+        fi
+      done
+      cat "$CI_PROJECT_DIR/benchmark_variables.env"
+ 
 Benchmarking:
   extends: [ .parallel-benchmark, .benchmark ]
   needs:
@@ -249,24 +277,29 @@ Benchmarking:
     - 'mkdir ${CI_PROJECT_DIR}/env'
     - 'printenv > "${CI_PROJECT_DIR}/env/variables.txt"'
     # Forward all environment variables to next stage
-    - !reference [ .variables-as-artifacts ]
+    - 'rm -f "$CI_PROJECT_DIR/benchmark_variables.env"'
+    - |
+      cd "$CI_PROJECT_DIR"
+      touch benchmark_variables.env
+      for var in BENCHMARK_ID BENCHMARK_UID CB_RUNNER_ACCOUNT CB_COMPUTE_PROJECT CB_DATA_PROJECT CB_DEPENDENCIES USER_DATA_DIR BENCHMARKS_DIR CB_SIMULATOR_REPO CB_SIMULATOR_BRANCH SIMULATOR_REPO_DIR JUBE_RESULTS_DIR RESULTS_REPO_URL RESULTS_BRANCH RESULTS_PATH BUILDER_MODULES_DIR BUILDER_PLANFILE_DIR BUILDER_PACKAGE_DIR BUILDER_SOURCE_DIR BUILDER_INSTALL_DIR BUILDER_BUILD_DIR BUILDER_LOG_DIR CONFIG_FILE_PATH MODELS_DIR BUILDER_CONFIG_PATH OUTPUT_DIR RESULTS_DIR simulator_git_commit_hash ; do
+      # RESULTS_REPO_TOKEN
+      if [ ! -z "${!var+x}" ]; then
+          echo "${var}=${!var}" >> "$CI_PROJECT_DIR/benchmark_variables.env"
+      else
+          echo "${var} not defined" 
+        fi
+      done
+      cat "$CI_PROJECT_DIR/benchmark_variables.env"
 
 Transfer:
   extends: [ .transfer ]
   needs: 
     - job: "Benchmarking"
       artifacts: true
-  artifacts:
-    paths:
-      - "run_uuid.txt"
-      - "uuids.txt"
   script:
     - 'set -euo pipefail'
-    # create one uuid for all runs of one benchmark
-    - 'run_uuid=$(uuidgen)'
-    - 'echo "$run_uuid" > run_uuid.txt'
-    # get uuids of single files
-    - 'ls results/ > uuids.txt'
+    # get uuids of single files and store them in a variable passed to the plotting pipeline
+    - 'BENCHMARK_UUID_NAMES=$(ls results/)'
     # actual data transfer
     - 'cp -r results/* "${CB_STORAGE_DIR}"'
     - 'pwd'
