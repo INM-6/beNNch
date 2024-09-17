@@ -40,14 +40,30 @@ variables:
   MODELS_DIR: "$$USER_DATA_DIR/models"
   OUTPUT_DIR: "$$USER_DATA_DIR/benchmark_results"
   MACHINE: "$CB_MACHINE"
+# required to install gathermetadata
+  GITHUB_TOKEN: "-S2LYMA21rzx3EW_gRGa"
 # Empty variable to fill with the uuid.tgz names of the benchmark results
   BENCHMARK_UUIDS: None
 
-# Must define USER_DATA_DIR
-Preparation:
-  extends: [ .load_env ]
+stages: [ initialise, preparation, build, benchmarking, transfer, plotting ]
+
+Initialise environment:
+  stage: initialise
+  extends: [ .initialise ]
   artifacts:
     paths:
+      - "benchmarking-env"
+
+# Must define USER_DATA_DIR
+Preparation:
+  stage: preparation
+  extends: [ .preparation ]
+  needs:
+    - job: "Initialise environment"
+      artifacts: true
+  artifacts:
+    paths:
+      - "benchmarking-env"
       - "JUBE/"
       - "Builder/"
     reports:
@@ -62,8 +78,6 @@ Preparation:
     - 'echo $USER'
     - |
       eval USER_DATA_DIR="$TEMP_DIR/$USER/${BENCHMARK_UID}"
-    # Load all environment variables
-    - !reference [ .environment-vars ]
     - 'eval SIMULATOR_REPO_DIR="$SIMULATOR_REPO_DIR"'
     - 'eval BENCHMARKS_DIR="$BENCHMARKS_DIR"'
     - 'eval JUBE_RESULTS_DIR="$JUBE_RESULTS_DIR"'
@@ -80,17 +94,15 @@ Preparation:
     - 'eval MODELS_DIR="$MODELS_DIR"'
     - 'eval OUTPUT_DIR="$OUTPUT_DIR"'
     # Create all required directories
-    - 'mkdir -p "$USER_DATA_DIR" "$SIMULATOR_REPO_DIR" "$BENCHMARKS_DIR/metrics" "$JUBE_RESULTS_DIR" "$BENCHMARKS_DIR/jube" "$BUILDER_MODULES_DIR" "$BUILDER_PLANFILE_DIR/simulator" "$BUILDER_PACKAGE_DIR" "$BUILDER_SOURCE_DIR" "$BUILDER_INSTALL_DIR" "$BUILDER_BUILD_DIR" "$BUILDER_LOG_DIR" "$MODELS_DIR" "$OUTPUT_DIR"  "$CI_PROJECT_DIR/flipbooks"'
+    - 'mkdir -p "$USER_DATA_DIR" "$USER_DATA_DIR/user_files" "$SIMULATOR_REPO_DIR" "$BENCHMARKS_DIR/metrics" "$JUBE_RESULTS_DIR" "$BENCHMARKS_DIR/jube" "$BUILDER_MODULES_DIR" "$BUILDER_PLANFILE_DIR/simulator" "$BUILDER_PACKAGE_DIR" "$BUILDER_SOURCE_DIR" "$BUILDER_INSTALL_DIR" "$BUILDER_BUILD_DIR" "$BUILDER_LOG_DIR" "$MODELS_DIR" "$OUTPUT_DIR"  "$CI_PROJECT_DIR/flipbooks"'
     # Move all artifacts to user data directory
     - 'if [[ $(realpath "$CI_PROJECT_DIR/config.yml") != $(realpath "$CONFIG_FILE_PATH") ]]; then mv "$CI_PROJECT_DIR/config.yml" "$CONFIG_FILE_PATH"; fi'
     - 'if [[ $(realpath "$CI_PROJECT_DIR/simulator.module") != $(realpath "$SIMULATOR_MODULEFILE_PATH") ]]; then mv "$CI_PROJECT_DIR/simulator.module" "$SIMULATOR_MODULEFILE_PATH"; fi'
     - 'if [[ $(realpath "$CI_PROJECT_DIR/simulator.planfile") != $(realpath "$SIMULATOR_PLANFILE_PATH") ]]; then mv "$CI_PROJECT_DIR/simulator.planfile" "$SIMULATOR_PLANFILE_PATH"; fi'
-    # Apply general preparation steps defined by the user in the config file
-    - !reference [ .prepare-benchmarks, environment-init ]
-    # Prepare environment using user-defined commands
-    - !reference [ .prepare-benchmarks, environment-load ]
-    # install jube
     - 'cd $CI_PROJECT_DIR'
+    # install gathermetadata
+    - 'python -m pip install git+https://$GITHUB_TOKEN@github.com/inm-6/gather-metadata'
+    # install jube
     - 'git clone --depth=1 --branch=feature-python-exec https://github.com/JanVogelsang/JUBE.git JUBE'
     - 'cd JUBE'
     - 'pip install .'
@@ -132,11 +144,14 @@ Preparation:
       cat "$CI_PROJECT_DIR/benchmark_variables.env"
 
 Build:
+  stage: build
   extends: [ .build ]
   needs:
     - job: "Preparation"
       artifacts: true
   artifacts:
+    paths:
+      - "benchmarking-env"
     reports:
       dotenv: benchmark_variables.env
     when: on_success
@@ -181,6 +196,7 @@ Build:
       cat "$CI_PROJECT_DIR/benchmark_variables.env"
  
 Benchmarking:
+  stage: benchmark
   extends: [ .parallel-benchmark, .benchmark ]
   needs:
     - job: "Build"
@@ -292,6 +308,7 @@ Benchmarking:
       cat "$CI_PROJECT_DIR/benchmark_variables.env"
 
 Transfer:
+  stage: transfer
   extends: [ .transfer ]
   needs: 
     - job: "Benchmarking"
@@ -306,6 +323,7 @@ Transfer:
     - 'ls -la'
 
 Plotting:
+  stage: plotting
   trigger:
     project: 'nest/bennch/metadata_plotting'
     branch: main                                      # Git branch

@@ -26,7 +26,6 @@ import traceback
 import yaml
 yaml.add_representer(str, lambda dumper, data: dumper.represent_scalar('tag:yaml.org,2002:str', data, style='"'))
 
-
 pipelines_dir_in = sys.argv[1]
 pipelines_dir_out = sys.argv[2]
 config_file_path = sys.argv[3]
@@ -34,67 +33,39 @@ available_machines = sys.argv[4].split(",")
 cb_machine = sys.argv[5]
 jacamar_path = sys.argv[6]
 
-manual = True
-user_machines = os.environ["CB_MACHINES"].split(",") if os.environ["CB_MACHINES"] else None
-manual = os.environ["CB_MANUAL"] != "0"
-
+user_machine = os.environ["CB_MACHINES"]
 
 with open(config_file_path) as config_file:
     config = yaml.safe_load(config_file)
 
-for machine, machine_conf in config["user_config"].items():
-    if not manual and user_machines is not None and machine not in user_machines:
-        continue
-    try:
-        with open(os.path.join(pipelines_dir_in, machine + ".yml")) as pipeline_in:
-            pipeline_yml = yaml.safe_load(pipeline_in)
-
-        if ".environment-vars" not in pipeline_yml:
-            pipeline_yml[".environment-vars"] = list()
-        if ".environment-init" not in pipeline_yml:
-            pipeline_yml[".environment-init"] = list()
-        if ".environment-load" not in pipeline_yml:
-            pipeline_yml[".environment-load"] = list()
-        if "variables" not in pipeline_yml:
-            pipeline_yml["variables"] = list()
-        pipeline_yml["variables"]["CB_DATA_PROJECT"] = machine_conf.get('data-project', '')
-        pipeline_yml["variables"]["CB_COMPUTE_PROJECT"] = machine_conf.get('compute-project', '')
-        pipeline_yml["variables"]["CB_RUNNER_ACCOUNT"] = machine_conf.get('account', '')
-        pipeline_yml["variables"]["CB_BUILD_TIME_LIMIT"] = machine_conf.get('build-time-limit', '')
-        pipeline_yml["variables"].update(config["dependencies"][machine]["variables"])
-
+machine_conf = config["user_config"][user_machine].items():
         
-        pipeline_yml["variables"]["CB_SIMULATOR_REPO"] = config["software_parameters"]["simulator_repo_url"]
-        pipeline_yml["variables"]["CB_SIMULATOR_BRANCH"] = config["software_parameters"]["simulator_repo_branch"]
+with open(os.path.join(pipelines_dir_in, user_machine + ".yml")) as pipeline_in:
+          pipeline_yml = yaml.safe_load(pipeline_in)
 
-        benchmarks = list()
-        benchmark_id = 0
-        for model_name, model_config in config["benchmarks"].items():
-            if machine in model_config["machine_parameters"]:
-                benchmarks.append({"JUBE_BENCHMARK_FILE": model_name,
-                                   "JUBE_BENCHMARK_ID": str(benchmark_id).zfill(6)})
-                benchmark_id += 1
+if "variables" not in pipeline_yml:
+    pipeline_yml["variables"] = list()
 
-        pipeline_yml[".parallel-benchmark"] = {"parallel": {"matrix": benchmarks}}
-        
-    except Exception as e:
-        traceback.print_exc()
-        continue
+pipeline_yml["variables"]["CB_DATA_PROJECT"] = machine_conf.get('data-project', '')
+pipeline_yml["variables"]["CB_COMPUTE_PROJECT"] = machine_conf.get('compute-project', '')
+pipeline_yml["variables"]["CB_RUNNER_ACCOUNT"] = machine_conf.get('account', '')
+pipeline_yml["variables"]["CB_BUILD_TIME_LIMIT"] = machine_conf.get('build-time-limit', '')
+pipeline_yml["variables"].update(config["dependencies"][machine]["variables"])
 
-    with open(os.path.join(pipelines_dir_out, machine + ".yml"), 'w') as pipeline_out:
-        yaml.dump(pipeline_yml, pipeline_out, default_flow_style=False)
-        available_machines.remove(machine)
+# get the desired simulator version
+pipeline_yml["variables"]["CB_SIMULATOR_REPO"] = config["software_parameters"]["simulator_repo_url"]
+pipeline_yml["variables"]["CB_SIMULATOR_BRANCH"] = config["software_parameters"]["simulator_repo_branch"]
 
+# write package dependencies to the machine config
+pipeline_yml["variables"]["PIP_LIST"] = config["dependencies"][user_machine]["variables"]["PIP_LIST"]
+pipeline_yml["variables"]["MODULE_LIST"] = config["dependencies"][user_machine]["variables"]["MODULE_LIST"]
 
-with open(jacamar_path) as jacamar_file:
-    jacamar_yml = yaml.safe_load(jacamar_file)
+benchmarks = list()
+benchmark_id = 0
+for model_name, model_config in config["benchmarks"].items():
+    if user_machine in model_config["machine_parameters"]:
+	benchmarks.append({"JUBE_BENCHMARK_FILE": model_name,
+			   "JUBE_BENCHMARK_ID": str(benchmark_id).zfill(6)})
+	benchmark_id += 1
 
-jacamar_yml[".environment-vars"]["before_script"].extend(config["dependencies"][machine]["vars"])
-jacamar_yml[".environment-init"]["before_script"].extend(config["dependencies"][machine]["init"])
-jacamar_yml[".environment-load"]["before_script"].extend(config["dependencies"][machine]["load"])
-
-# All machines for which no config exists are ignored
-for machine in available_machines:
-    print("Skipping pipeline generation for machine " + machine)
-    with open(os.path.join(pipelines_dir_out, machine + ".yml"), 'w') as pipeline_out:
-        pipeline_out.write(r"{stages: [fail], Fail: {stage: fail, rules: [{when: never}], script: ['']}}")
+pipeline_yml[".parallel-benchmark"] = {"parallel": {"matrix": benchmarks}}

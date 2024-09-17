@@ -85,15 +85,15 @@ workflow:
   rules:
     - if: '$CI_PIPELINE_SOURCE == "web" || $CI_PIPELINE_SOURCE == "trigger"'
 
-
 stages: [ validate, benchmarking ]
-
 
 Validate Input:
   tags: [ "public-docker" ]  # any runner with internet connection and support for alpine image
   stage: validate
   image: python:3-alpine
   script:
+    # Overwrite ANNOTATE_EXPERIMENT_ID with an uuid
+    - 'ANNOTATE_EXPERIMENT_ID=$(uuidgen)'
     - |+
       # Make sure values were provided for all mandatory variables
       for var in BENCHMARK_ID CONFIG_REPO CONFIG_BRANCH CONFIG_PATH RESULTS_REPO_URL RESULTS_BRANCH RESULTS_PATH ; do  # RESULTS_REPO_TOKEN
@@ -105,23 +105,15 @@ Validate Input:
       done
     - 'apk update && apk add git'
     - 'python -m pip install pyyaml'
-    - |
-      if [ -z "$CB_MACHINES" ] ; then
-        export CB_MANUAL="1"
-      else
-        export CB_MANUAL="0"
-      fi
     - 'mkdir "$CI_PROJECT_DIR/tmp"'
     - 'export CB_MACHINES=$(python "$CI_PROJECT_DIR/.gitlab-ci/scripts/patch_config.py" "$CI_PROJECT_DIR/tmp" "$CI_PROJECT_DIR/config.yml" "$CI_PROJECT_DIR/simulator.planfile" "$CI_PROJECT_DIR/simulator.module" "$CONFIG_REPO" "$CONFIG_BRANCH" "$CONFIG_PATH")'
     - 'rm -rf $CI_PROJECT_DIR/tmp'
-    - 'mkdir "$CI_PROJECT_DIR/pipelines"'
+    # merge config into machine config
     - 'python "$CI_PROJECT_DIR/.gitlab-ci/scripts/prepare_machine_pipelines.py" "$CI_PROJECT_DIR/.gitlab-ci/machine-configs" "$CI_PROJECT_DIR/pipelines" "$CI_PROJECT_DIR/config.yml" "$MACHINES" "$CB_MACHINES" "${CI_PROJECT_DIR}/.gitlab-ci/jacamar-benchmarking.yml"'
-    # Overwrite ANNOTATE_EXPERIMENT_ID with an uuid
-    - 'ANNOTATE_EXPERIMENT_ID=$(uuidgen)'
-    # create pipeline
+    # merge machine config into main pipeline
     - "sed -e \"s/{{ CB_MACHINES }}/$CB_MACHINES/g\" jacamar-benchmarking.yml > run-benchmarks.yml"
-    - "cat metadata-run.yml"
-    - "! grep '${STORAGE_MACHINE}.yml' metadata-run.yml"
+    - "cat run-benchmarks.yml"
+    - "! grep '${STORAGE_MACHINE}.yml' run-benchmarks.yml"
   artifacts:
     paths:
       - "config.yml"
