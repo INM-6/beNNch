@@ -105,6 +105,7 @@ models = os.environ.get("CB_MODELS", "")
 if models:
     models = models.split(",")
 
+"""
 user_machine = os.environ["CB_MACHINES"]
 
 machine_models = {user_machine: 0}
@@ -122,7 +123,7 @@ for model_name, benchmark_config in config["benchmarks"].items():
             machine_models[machine] += 1
 for model in to_remove:
     del config["benchmarks"][model]
-
+"""
 #for machine, count in machine_models.items():
 #    if count == 0:
 #        machines.remove(machine)
@@ -142,7 +143,6 @@ for model_name, benchmark_config in config["benchmarks"].items():
                         int(c)
             except ValueError:
                 raise ValueError(f"Parameter {param['name']} for model {model_name} with value {param['_']} of type {param['type']} contains non-numeric values (e.g. variables), but 'mode' is not set to 'python'.")
-
 
 # Write patched config file
 with open(config_out_path, 'w') as config_outfile:
