@@ -74,7 +74,7 @@ with open(os.path.join(machine_config_dir, machine + '.yml'), 'r') as machine_co
 benchmark_config = config["benchmarks"][model_name]
 if machine not in benchmark_config["machine_parameters"]:
     print(f"{COLOR_WARNING}Skipping config file generation for model {model_name} because no configuration was provided for machine {machine}!{COLOR_END}")
-    continue
+    sys.exit(1)
 
 jube_benchmark = copy.deepcopy(jube_benchmark_template)
 
