@@ -56,7 +56,8 @@ stages: [ initialise, preparation, build, benchmarking, transfer, plotting ]
 
 Initialise environment:
   needs:
-    - job: "Trigger"
+    - pipeline: "$PARENT_PIPELINE_ID"
+      job: "Validate Input"
   stage: initialise
   extends: [ .initialise ]
   artifacts:
