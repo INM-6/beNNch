@@ -132,9 +132,7 @@ Trigger:
       artifacts: true
   trigger:
     strategy: depend
-    include:
-      - artifact: run-benchmarks.yml
-        job: "Validate Input"
+    include: "run-benchmarks.yml"
     forward:
       pipeline_variables: true
   variables:
