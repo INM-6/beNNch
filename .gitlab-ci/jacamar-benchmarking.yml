@@ -48,7 +48,7 @@ variables:
   OUTPUT_DIR: "$$USER_DATA_DIR/benchmark_results"
   MACHINE: "$CB_MACHINE"
 # required to install gathermetadata
-  GITHUB_TOKEN: "-S2LYMA21rzx3EW_gRGa"
+  GITHUB_TOKEN: "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"
 # Empty variable to fill with the uuid.tgz names of the benchmark results
   BENCHMARK_UUIDS: None
 
