@@ -16,7 +16,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 include:
-  local: .gitlab-ci/machine_configs/{{ CB_MACHINES }}.yml
+  local: .gitlab-ci/machine-configs/{{ CB_MACHINES }}.yml
 
 variables:
 # Builder variables
