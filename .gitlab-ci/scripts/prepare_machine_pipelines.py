@@ -67,6 +67,6 @@ for model_name, model_config in config["benchmarks"].items():
 
 pipeline_yml[".parallel-benchmark"] = {"parallel": {"matrix": benchmarks}}
 
-with open(os.path.join(pipelines_dir_out, machine + ".yml"), 'w') as pipeline_out:
+with open(os.path.join(pipelines_dir_out, user_machine + ".yml"), 'w') as pipeline_out:
         yaml.dump(pipeline_yml, pipeline_out, default_flow_style=False)
 
