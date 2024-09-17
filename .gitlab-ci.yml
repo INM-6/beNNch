@@ -111,7 +111,7 @@ Validate Input:
     # merge config into machine config
     - 'python "$CI_PROJECT_DIR/.gitlab-ci/scripts/prepare_machine_pipelines.py" "$CI_PROJECT_DIR/.gitlab-ci/machine-configs" "$CI_PROJECT_DIR/pipelines" "$CI_PROJECT_DIR/config.yml" "$MACHINES" "$CB_MACHINES" "${CI_PROJECT_DIR}/.gitlab-ci/jacamar-benchmarking.yml"'
     # merge machine config into main pipeline
-    - "sed -e \"s/{{ CB_MACHINES }}/$CB_MACHINES/g\" jacamar-benchmarking.yml > run-benchmarks.yml"
+    - "sed -e \"s/{{ CB_MACHINES }}/$CB_MACHINES/g\" .gitlab-ci/jacamar-benchmarking.yml > run-benchmarks.yml"
     - "cat run-benchmarks.yml"
     - "! grep '${STORAGE_MACHINE}.yml' run-benchmarks.yml"
   artifacts:
