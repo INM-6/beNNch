@@ -158,8 +158,6 @@ Build:
   timeout: "1 day"
   script:
     - 'set -euo pipefail'
-    # Prepare environment
-    - !reference [ .prepare-benchmarks, environment-load ]
     # Build simulator
     - |
       export PLANFILE_PATH="$BUILDER_PLANFILE_DIR"
@@ -211,8 +209,6 @@ Benchmarking:
     when: on_success
   timeout: "1 day"
   script:
-    # Prepare environment
-    - !reference [ .prepare-benchmarks, environment-load ]
     # Run benchmarks
     # Wait until all other jube benchmarks have been started until the JUBE_BENCHMARK_ID of this subpipeline
     - 'cd $JUBE_RESULTS_DIR'
