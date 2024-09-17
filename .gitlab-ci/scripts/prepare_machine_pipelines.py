@@ -29,9 +29,6 @@ yaml.add_representer(str, lambda dumper, data: dumper.represent_scalar('tag:yaml
 pipelines_dir_in = sys.argv[1]
 pipelines_dir_out = sys.argv[2]
 config_file_path = sys.argv[3]
-available_machines = sys.argv[4].split(",")
-cb_machine = sys.argv[5]
-jacamar_path = sys.argv[6]
 
 user_machine = os.environ["CB_MACHINES"]
 
@@ -69,3 +66,7 @@ for model_name, model_config in config["benchmarks"].items():
         benchmark_id += 1
 
 pipeline_yml[".parallel-benchmark"] = {"parallel": {"matrix": benchmarks}}
+
+with open(os.path.join(pipelines_dir_out, machine + ".yml"), 'w') as pipeline_out:
+        yaml.dump(pipeline_yml, pipeline_out, default_flow_style=False)
+
