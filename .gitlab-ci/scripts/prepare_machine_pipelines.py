@@ -31,11 +31,11 @@ pipelines_dir_out = sys.argv[2]
 config_file_path = sys.argv[3]
 
 user_machine = os.environ["CB_MACHINES"]
+print(user_machine)
 
 with open(config_file_path) as config_file:
     config = yaml.safe_load(config_file)
 
-print(config)
 machine_conf = config["user_config"][user_machine]
 print(machine_conf)
 with open(os.path.join(pipelines_dir_in)) as pipeline_in:
