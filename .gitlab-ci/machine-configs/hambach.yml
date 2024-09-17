@@ -21,7 +21,7 @@
   script:
     - 'eval TEMP_DIR="$TEMP_DIR"'
     - 'export PYTHONNOUSERSITE=1'
-    - 'module load stable/24.02 ias6'
+    - 'module load $MODULE_LIST'
     - 'python -m venv --system-site-packages benchmarking-env'
     - 'benchmarking-env/bin/pip install $PIP_LIST'
 
@@ -52,12 +52,11 @@ variables:
     TEMP_DIR: "/work/users"
     extra_srun_flags: "--mpi=pmix"
     extra_sbatch_flags: "--exclusive"
-#    PIP_LIST: null # prepare_machine_pipelines fills this field with packages defined in dependencies.yml
 
 .environment-load:
   before_script:
     - 'eval TEMP_DIR="$TEMP_DIR"'
     - 'export PYTHONNOUSERSITE=1'
-    - 'module load stable/24.02 ias6'
+    - 'module load $MODULE_LIST'
     - 'source benchmarking-env/bin/activate'
     - 'export PATH="$(pwd):$PATH"'
