@@ -68,7 +68,7 @@ variables:
       - "microcircuit"
   CB_MACHINES:
     description: "Machine on which benchmarks should be run."
-    value: "hambach"
+    value: "jureca"
     options:
       - "hambach"
       - "jusuf"
@@ -115,6 +115,7 @@ Validate Input:
     - "sed -e \"s/{{ CB_MACHINES }}/$CB_MACHINES/g\" prepared-jacamar-benchmarking.yml > run-benchmarks.yml"
     - "cat run-benchmarks.yml"
     - "! grep '${CB_MACHINES}.yml' run-benchmarks.yml"
+    - "ls -al"
   artifacts:
     paths:
       - "config.yml"

@@ -28,6 +28,7 @@
     - 'module load $MODULE_LIST'
     - 'python -m venv --system-site-packages benchmarking-env'
     - 'benchmarking-env/bin/pip install $PIP_LIST'
+    - 'ls -al'
 
 .preparation:
   extends: [ .environment-load ]
@@ -73,3 +74,4 @@ variables:
     - 'module load $MODULE_LIST'
     - 'source benchmarking-env/bin/activate'
     - 'export PATH="$(pwd):$PATH"'
+    - 'ls -al'
