@@ -110,9 +110,9 @@ Validate Input:
     - 'rm -rf $CI_PROJECT_DIR/tmp'
     # merge config into machine config
     - 'mkdir $CI_PROJECT_DIR/prepared-machine-config'
-    - 'python "$CI_PROJECT_DIR/.gitlab-ci/scripts/prepare_machine_pipelines.py" "$CI_PROJECT_DIR/.gitlab-ci/machine-configs" "$CI_PROJECT_DIR/prepared-machine-config" "$CI_PROJECT_DIR/config.yml"'
+    - 'python "$CI_PROJECT_DIR/.gitlab-ci/scripts/prepare_machine_pipelines.py" "$CI_PROJECT_DIR/.gitlab-ci/jacamar-benchmarking.yml" "$CI_PROJECT_DIR/prepared-jacamar-benchmarking.yml" "$CI_PROJECT_DIR/config.yml"'
     # merge machine config into main pipeline
-    - "sed -e \"s/{{ CB_MACHINES }}/$CB_MACHINES/g\" .gitlab-ci/jacamar-benchmarking.yml > run-benchmarks.yml"
+    - "sed -e \"s/{{ CB_MACHINES }}/$CB_MACHINES/g\" prepared-jacamar-benchmarking.yml > run-benchmarks.yml"
     - "cat run-benchmarks.yml"
     - "! grep '${CB_MACHINES}.yml' run-benchmarks.yml"
   artifacts:
@@ -121,7 +121,6 @@ Validate Input:
       - "simulator.module"
       - "simulator.planfile"
       - "run-benchmarks.yml"
-      - "prepared-machine-config"
     when: on_success
 
 Trigger:

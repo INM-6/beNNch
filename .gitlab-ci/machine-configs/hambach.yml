@@ -52,7 +52,7 @@ variables:
     TEMP_DIR: "/work/users"
     extra_srun_flags: "--mpi=pmix"
     extra_sbatch_flags: "--reservation=nest --exclusive"
-    PIP_LIST: null # prepare_machine_pipelines fills this field with packages defined in dependencies.yml
+#    PIP_LIST: null # prepare_machine_pipelines fills this field with packages defined in dependencies.yml
 
 .environment-load:
   before_script:

@@ -37,11 +37,8 @@ with open(config_file_path) as config_file:
 
 machine_conf = config["user_config"][user_machine]
 print(machine_conf)
-with open(os.path.join(pipelines_dir_in, user_machine + ".yml")) as pipeline_in:
+with open(os.path.join(pipelines_dir_in)) as pipeline_in:
           pipeline_yml = yaml.safe_load(pipeline_in)
-
-if "variables" not in pipeline_yml:
-    pipeline_yml["variables"] = list()
 
 pipeline_yml["variables"]["CB_DATA_PROJECT"] = machine_conf.get('data-project', '')
 pipeline_yml["variables"]["CB_COMPUTE_PROJECT"] = machine_conf.get('compute-project', '')
@@ -67,6 +64,6 @@ for model_name, model_config in config["benchmarks"].items():
 
 pipeline_yml[".parallel-benchmark"] = {"parallel": {"matrix": benchmarks}}
 print(os.path.join(pipelines_dir_out, user_machine + ".yml"))
-with open(os.path.join(pipelines_dir_out, user_machine + ".yml"), 'w') as pipeline_out:
+with open(os.path.join(pipelines_dir_out), 'w') as pipeline_out:
           yaml.dump(pipeline_yml, pipeline_out, default_flow_style=False)
 
