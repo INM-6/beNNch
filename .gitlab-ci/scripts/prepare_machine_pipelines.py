@@ -50,7 +50,7 @@ pipeline_yml["variables"]["CB_DATA_PROJECT"] = machine_conf.get('data-project', 
 pipeline_yml["variables"]["CB_COMPUTE_PROJECT"] = machine_conf.get('compute-project', '')
 pipeline_yml["variables"]["CB_RUNNER_ACCOUNT"] = machine_conf.get('account', '')
 pipeline_yml["variables"]["CB_BUILD_TIME_LIMIT"] = machine_conf.get('build-time-limit', '')
-pipeline_yml["variables"].update(config["dependencies"][machine]["variables"])
+pipeline_yml["variables"].update(config["dependencies"][user_machine]["variables"])
 
 # get the desired simulator version
 pipeline_yml["variables"]["CB_SIMULATOR_REPO"] = config["software_parameters"]["simulator_repo_url"]
