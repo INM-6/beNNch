@@ -39,17 +39,17 @@ with open(config_file_path) as config_file:
     config = yaml.safe_load(config_file)
 
 machine_conf = config["user_config"][user_machine].items()
-        
+print(machine_conf)
 with open(os.path.join(pipelines_dir_in, user_machine + ".yml")) as pipeline_in:
           pipeline_yml = yaml.safe_load(pipeline_in)
 
 if "variables" not in pipeline_yml:
     pipeline_yml["variables"] = list()
 
-pipeline_yml["variables"]["CB_DATA_PROJECT"] = machine_conf.get('data-project', '')
-pipeline_yml["variables"]["CB_COMPUTE_PROJECT"] = machine_conf.get('compute-project', '')
-pipeline_yml["variables"]["CB_RUNNER_ACCOUNT"] = machine_conf.get('account', '')
-pipeline_yml["variables"]["CB_BUILD_TIME_LIMIT"] = machine_conf.get('build-time-limit', '')
+pipeline_yml["variables"]["CB_DATA_PROJECT"] = machine_conf('data-project', '')
+pipeline_yml["variables"]["CB_COMPUTE_PROJECT"] = machine_conf('compute-project', '')
+pipeline_yml["variables"]["CB_RUNNER_ACCOUNT"] = machine_conf('account', '')
+pipeline_yml["variables"]["CB_BUILD_TIME_LIMIT"] = machine_conf('build-time-limit', '')
 pipeline_yml["variables"].update(config["dependencies"][machine]["variables"])
 
 # get the desired simulator version
