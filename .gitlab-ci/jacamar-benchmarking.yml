@@ -113,7 +113,7 @@ Preparation:
     - 'if [[ $(realpath "$CI_PROJECT_DIR/simulator.planfile") != $(realpath "$SIMULATOR_PLANFILE_PATH") ]]; then mv "$CI_PROJECT_DIR/simulator.planfile" "$SIMULATOR_PLANFILE_PATH"; fi'
     - 'cd $CI_PROJECT_DIR'
     # install gathermetadata
-    - 'python -m pip install git+https://$GITHUB_TOKEN@github.com/inm-6/gather-metadata'
+    - 'python -m pip install git+https://SATheinen:$GITHUB_TOKEN@github.com/inm-6/gather-metadata'
     # install jube
     - 'git clone --depth=1 --branch=feature-python-exec https://github.com/JanVogelsang/JUBE.git JUBE'
     - 'cd JUBE'
