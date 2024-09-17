@@ -125,12 +125,12 @@ Validate Input:
     when: on_success
 
 Trigger:
-  artifacts:
-    paths:
-      - "config.yml"
-      - "simulator.module"
-      - "simulator.planfile"
-      - "run-benchmarks.yml"
+ # artifacts:
+ #   paths:
+ #     - "config.yml"
+ #     - "simulator.module"
+ #     - "simulator.planfile"
+ #     - "run-benchmarks.yml"
   stage: benchmarking
   allow_failure: true
   needs:
