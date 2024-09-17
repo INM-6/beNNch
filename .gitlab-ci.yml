@@ -92,8 +92,6 @@ Validate Input:
   stage: validate
   image: python:3-alpine
   script:
-    # Overwrite ANNOTATE_EXPERIMENT_ID with an uuid
-    #- 'ANNOTATE_EXPERIMENT_ID=$(uuidgen)'
     - |+
       # Make sure values were provided for all mandatory variables
       for var in BENCHMARK_ID CONFIG_REPO CONFIG_BRANCH CONFIG_PATH RESULTS_REPO_URL RESULTS_BRANCH RESULTS_PATH ; do  # RESULTS_REPO_TOKEN
@@ -103,8 +101,10 @@ Validate Input:
           exit 1
         fi
       done
-    - 'apk update && apk add git'
+    - 'apk update && apk add git util-linux'
     - 'python -m pip install pyyaml'
+    # Overwrite ANNOTATE_EXPERIMENT_ID with an uuid
+    - 'ANNOTATE_EXPERIMENT_ID=$(uuidgen)'
     - 'mkdir "$CI_PROJECT_DIR/tmp"'
     - 'export CB_MACHINES=$(python "$CI_PROJECT_DIR/.gitlab-ci/scripts/patch_config.py" "$CI_PROJECT_DIR/tmp" "$CI_PROJECT_DIR/config.yml" "$CI_PROJECT_DIR/simulator.planfile" "$CI_PROJECT_DIR/simulator.module" "$CONFIG_REPO" "$CONFIG_BRANCH" "$CONFIG_PATH")'
     - 'rm -rf $CI_PROJECT_DIR/tmp'

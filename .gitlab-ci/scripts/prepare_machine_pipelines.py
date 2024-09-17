@@ -38,7 +38,7 @@ user_machine = os.environ["CB_MACHINES"]
 with open(config_file_path) as config_file:
     config = yaml.safe_load(config_file)
 
-machine_conf = config["user_config"][user_machine].items():
+machine_conf = config["user_config"][user_machine].items()
         
 with open(os.path.join(pipelines_dir_in, user_machine + ".yml")) as pipeline_in:
           pipeline_yml = yaml.safe_load(pipeline_in)
