@@ -109,8 +109,8 @@ Validate Input:
     - 'export CB_MACHINES=$(python "$CI_PROJECT_DIR/.gitlab-ci/scripts/patch_config.py" "$CI_PROJECT_DIR/tmp" "$CI_PROJECT_DIR/config.yml" "$CI_PROJECT_DIR/simulator.planfile" "$CI_PROJECT_DIR/simulator.module" "$CONFIG_REPO" "$CONFIG_BRANCH" "$CONFIG_PATH")'
     - 'rm -rf $CI_PROJECT_DIR/tmp'
     # merge config into machine config
-    - 'mkdir $CI_PROJECT_DIR/prepared-machine-config'
-    - 'python "$CI_PROJECT_DIR/.gitlab-ci/scripts/prepare_machine_pipelines.py" "$CI_PROJECT_DIR/.gitlab-ci/machine-configs" "$CI_PROJECT_DIR/prepared-machine-config" "$CI_PROJECT_DIR/config.yml"'
+    - 'mkdir $CI_PROJECT_DIR/.gitlab-ci/prepared-machine-config'
+    - 'python "$CI_PROJECT_DIR/.gitlab-ci/scripts/prepare_machine_pipelines.py" "$CI_PROJECT_DIR/.gitlab-ci/machine-configs" "$CI_PROJECT_DIR/.gitlab-ci/prepared-machine-config" "$CI_PROJECT_DIR/config.yml"'
     # merge machine config into main pipeline
     - "sed -e \"s/{{ CB_MACHINES }}/$CB_MACHINES/g\" .gitlab-ci/jacamar-benchmarking.yml > run-benchmarks.yml"
     - "cat run-benchmarks.yml"
