@@ -43,6 +43,7 @@ prepare_file_path = sys.argv[10]     # path to the prepare.sh file which is load
 pipeline_file_path = sys.argv[11]    # path to current pipeline definition file
 machine = sys.argv[12]               # name of the machine the benchmark is running on
 machine_config_dir = sys.argv[13]
+model_name = os.environ("CB_MODELS")
 
 config_dir = os.path.dirname(config_path)
 
@@ -70,156 +71,156 @@ with open(config_path, 'r') as config_file:
 with open(os.path.join(machine_config_dir, machine + '.yml'), 'r') as machine_config_file:
     	machine_config = yaml.safe_load(machine_config_file)
 
-for model_name, benchmark_config in config["benchmarks"].items():
-    if machine not in benchmark_config["machine_parameters"]:
-        print(f"{COLOR_WARNING}Skipping config file generation for model {model_name} because no configuration was provided for machine {machine}!{COLOR_END}")
-        continue
-   
-    jube_benchmark = copy.deepcopy(jube_benchmark_template)
+benchmark_config = config["benchmarks"][model_name]
+if machine not in benchmark_config["machine_parameters"]:
+    print(f"{COLOR_WARNING}Skipping config file generation for model {model_name} because no configuration was provided for machine {machine}!{COLOR_END}")
+    continue
 
-    run_parameters = benchmark_config.get("run_parameters", dict())
-    model_script_path = run_parameters["script_path"]
-    metrics = benchmark_config.get("metrics_mean", [])
-    metrics_sum = benchmark_config.get("metrics_sum", [])
-    step_data_keys = benchmark_config.get("metrics_step", [])
-    all_metrics = metrics + metrics_sum
+jube_benchmark = copy.deepcopy(jube_benchmark_template)
 
-    # Write all metrics to a file to later extract timer data depending on the desired metrics
-    metrics_out = {"metrics_mean": metrics, "metrics_sum": metrics_sum}
-    metrics_out_path = os.path.join(config_output_dir, f"cb_{model_name}_{machine}_metrics.yml")
-    with open(metrics_out_path, 'w') as metrics_outfile:
-        yaml.dump(metrics_out, metrics_outfile, default_flow_style=False)
+run_parameters = benchmark_config.get("run_parameters", dict())
+model_script_path = run_parameters["script_path"]
+metrics = benchmark_config.get("metrics_mean", [])
+metrics_sum = benchmark_config.get("metrics_sum", [])
+step_data_keys = benchmark_config.get("metrics_step", [])
+all_metrics = metrics + metrics_sum
 
-    # Name
-    jube_benchmark["name"] = model_name
+# Write all metrics to a file to later extract timer data depending on the desired metrics
+metrics_out = {"metrics_mean": metrics, "metrics_sum": metrics_sum}
+metrics_out_path = os.path.join(config_output_dir, f"cb_{model_name}_{machine}_metrics.yml")
+with open(metrics_out_path, 'w') as metrics_outfile:
+    yaml.dump(metrics_out, metrics_outfile, default_flow_style=False)
 
-    # Machine parameters
-    machine_params = benchmark_config["machine_parameters"][machine]
+# Name
+jube_benchmark["name"] = model_name
 
-    machine_param_list = list()
-    for k in ["num_nodes", "tasks_per_node", "threads_per_task"]:
-        try:
-            for c in machine_params[k].split(","):
-                float(c)
-            machine_param_list.append({"name": k, "type": "int", "_": machine_params[k]})
-        except ValueError:
-            machine_param_list.append({"name": k, "mode": "python", "type": "int", "_": machine_params[k]})
-            
-        w = machine_params["walltime"]
-        if w[2] != ":" or w[5] != ":" or len(w) != 8 or not all(w[p].isdigit() for p in [0,1,3,4,6,7]):
-            machine_param_list.append({"name": "walltime", "mode": "python", "type": "string", "_": w})
-        else:
-            machine_param_list.append({"name": "walltime", "type": "string", "_": w})
+# Machine parameters
+machine_params = benchmark_config["machine_parameters"][machine]
 
-    jube_benchmark["parameterset"].append(
-        {
-            "name": "machine_parameters",
-            "parameter": machine_param_list
-        })
-                
+machine_param_list = list()
+for k in ["num_nodes", "tasks_per_node", "threads_per_task"]:
+    try:
+	for c in machine_params[k].split(","):
+	    float(c)
+	machine_param_list.append({"name": k, "type": "int", "_": machine_params[k]})
+    except ValueError:
+	machine_param_list.append({"name": k, "mode": "python", "type": "int", "_": machine_params[k]})
+	
+    w = machine_params["walltime"]
+    if w[2] != ":" or w[5] != ":" or len(w) != 8 or not all(w[p].isdigit() for p in [0,1,3,4,6,7]):
+	machine_param_list.append({"name": "walltime", "mode": "python", "type": "string", "_": w})
+    else:
+	machine_param_list.append({"name": "walltime", "type": "string", "_": w})
 
-    jube_benchmark["parameterset"].append(
-        {
-            "name": "user_config",
-            "parameter": [
-                {"name": "account", "type": "string", "_": config["user_config"][machine]["account"]},
-                {"name": "partition", "type": "string", "_": config["user_config"][machine]["partition"]}
-            ]
-        })
-
-    # Software parameters
-    jube_benchmark["parameterset"].append(
-        {
-            "name": "software_parameters",
-            "parameter": [
-                {"name": "simulator_branch", "_": simulator_branch},
-                {"name": "buildermod", "_": builder_modules_dir}
-            ]
-        })
-
-    # Model parameters
-    jube_benchmark["parameterset"].append(
+jube_benchmark["parameterset"].append(
     {
-        "name": "model_parameters",
-        "parameter": benchmark_config.get("model_parameters", [])
+	"name": "machine_parameters",
+	"parameter": machine_param_list
+    })
+	    
+
+jube_benchmark["parameterset"].append(
+    {
+	"name": "user_config",
+	"parameter": [
+	    {"name": "account", "type": "string", "_": config["user_config"][machine]["account"]},
+	    {"name": "partition", "type": "string", "_": config["user_config"][machine]["partition"]}
+	]
     })
 
-    jube_benchmark["parameterset"].append(
+# Software parameters
+jube_benchmark["parameterset"].append(
     {
-        "name": "machine_config",
-        "parameter": [
-            {"name": "extra_srun_flags", "separator": ";", "type": "string", "_": machine_config["variables"]["extra_srun_flags"]},
-            {"name": "extra_sbatch_flags", "separator": ";", "type": "string", "_": machine_config["variables"]["extra_sbatch_flags"]}
-        ]
+	"name": "software_parameters",
+	"parameter": [
+	    {"name": "simulator_branch", "_": simulator_branch},
+	    {"name": "buildermod", "_": builder_modules_dir}
+	]
     })
 
-    jube_benchmark["parameterset"].append(
-    {
-        "name": "bench_parameters",
-        "parameter": [
-            {
-                "name": "num_vps",
-                "type": "int",
-                "mode": "python",
-                "_": "$tasks_per_node * $threads_per_task * $num_nodes"
-            },
-            {
-                "name": "num_tasks",
-                "type": "int",
-                "mode": "python",
-                "_": "$tasks_per_node * $num_nodes"
-        }]
-    })
+# Model parameters
+jube_benchmark["parameterset"].append(
+{
+    "name": "model_parameters",
+    "parameter": benchmark_config.get("model_parameters", [])
+})
 
-    #extra_srun_flags = machine_config["variables"]["extra_srun_flags"]
-    jube_benchmark["parameterset"].append(
-    { 
-        "name": "run_benchmark",
-        "parameter": [
-               {"name": "exec_bench",
-                "separator": ";",
-                "_": """${optional_run_command}
+jube_benchmark["parameterset"].append(
+{
+    "name": "machine_config",
+    "parameter": [
+	{"name": "extra_srun_flags", "separator": ";", "type": "string", "_": machine_config["variables"]["extra_srun_flags"]},
+	{"name": "extra_sbatch_flags", "separator": ";", "type": "string", "_": machine_config["variables"]["extra_sbatch_flags"]}
+    ]
+})
+
+jube_benchmark["parameterset"].append(
+{
+    "name": "bench_parameters",
+    "parameter": [
+	{
+	    "name": "num_vps",
+	    "type": "int",
+	    "mode": "python",
+	    "_": "$tasks_per_node * $threads_per_task * $num_nodes"
+	},
+	{
+	    "name": "num_tasks",
+	    "type": "int",
+	    "mode": "python",
+	    "_": "$tasks_per_node * $num_nodes"
+    }]
+})
+
+#extra_srun_flags = machine_config["variables"]["extra_srun_flags"]
+jube_benchmark["parameterset"].append(
+{ 
+    "name": "run_benchmark",
+    "parameter": [
+	   {"name": "exec_bench",
+	    "separator": ";",
+	    "_": """${optional_run_command}
 srun ${extra_srun_flags} python ${run_file} ${run_args}
 srun -n 1 --nodes 1 python ${scripts_dir}/collect_timer_data.py ${metrics_path} ${jube_wp_abspath} ${log_path}
 gathermetadata metadata"""}
-        ]
-    })
-    print(jube_benchmark["parameterset"])
+    ]
+})
+print(jube_benchmark["parameterset"])
 
-    # TODO: Logpath is currently hardcoded in models
-    # Parameterset
-    benchmark_model_files_dir = os.path.join(benchmark_models_dir, model_name)
-    next(p for p in jube_benchmark["parameterset"] if p["name"] == "bench_parameters")["parameter"].extend([
-        {"name": "run_file", "type": "string", "_": "${jube_wp_abspath}" + os.sep + model_script_path},
-        {"name": "log_path", "type": "string", "_": "${jube_wp_abspath}" + os.sep + run_parameters.get("log_path", "")},
-        {"name": "scripts_dir", "type": "string", "_": scripts_dir},
-        {"name": "metrics_path", "type": "string", "_": metrics_out_path},
-        {"name": "optional_run_command", "type": "string", "separator": ";", "_": run_parameters.get("optional_run_command", "")},
-        {"name": "run_args", "type": "string", "_": run_parameters.get("run_args", "")},
-        {"name": "model_path", "type": "string", "_": os.path.abspath(benchmark_model_files_dir)},
-        {"name": "prepare_file_path", "type": "string", "_": prepare_file_path}
-    ])
+# TODO: Logpath is currently hardcoded in models
+# Parameterset
+benchmark_model_files_dir = os.path.join(benchmark_models_dir, model_name)
+next(p for p in jube_benchmark["parameterset"] if p["name"] == "bench_parameters")["parameter"].extend([
+    {"name": "run_file", "type": "string", "_": "${jube_wp_abspath}" + os.sep + model_script_path},
+    {"name": "log_path", "type": "string", "_": "${jube_wp_abspath}" + os.sep + run_parameters.get("log_path", "")},
+    {"name": "scripts_dir", "type": "string", "_": scripts_dir},
+    {"name": "metrics_path", "type": "string", "_": metrics_out_path},
+    {"name": "optional_run_command", "type": "string", "separator": ";", "_": run_parameters.get("optional_run_command", "")},
+    {"name": "run_args", "type": "string", "_": run_parameters.get("run_args", "")},
+    {"name": "model_path", "type": "string", "_": os.path.abspath(benchmark_model_files_dir)},
+    {"name": "prepare_file_path", "type": "string", "_": prepare_file_path}
+])
 
-    # Fileset
-    jube_benchmark["fileset"]["copy"].extend([os.path.join(benchmark_model_files_dir, f) for f in os.listdir(benchmark_model_files_dir)])
+# Fileset
+jube_benchmark["fileset"]["copy"].extend([os.path.join(benchmark_model_files_dir, f) for f in os.listdir(benchmark_model_files_dir)])
 
-    # Substituteset
-    substitutions = next(s for s in jube_benchmark["substituteset"] if s["name"] == "bench_substitutions")
-    substitutions["iofile"] = {"in": model_script_path, "out": model_script_path}
-    for param in benchmark_config.get("model_parameters", []):
-        substitutions["sub"].append({"source": "{" + param["name"] + "}", "dest": "$" + param["name"]})
-    for param in machine_params.keys():
-        substitutions["sub"].append({"source": "{" + param + "}", "dest": "$" + param})
-    substitutions["sub"].append({"source": "{step_data_keys}", "dest": ",".join(step_data_keys)})
+# Substituteset
+substitutions = next(s for s in jube_benchmark["substituteset"] if s["name"] == "bench_substitutions")
+substitutions["iofile"] = {"in": model_script_path, "out": model_script_path}
+for param in benchmark_config.get("model_parameters", []):
+    substitutions["sub"].append({"source": "{" + param["name"] + "}", "dest": "$" + param["name"]})
+for param in machine_params.keys():
+    substitutions["sub"].append({"source": "{" + param + "}", "dest": "$" + param})
+substitutions["sub"].append({"source": "{step_data_keys}", "dest": ",".join(step_data_keys)})
 
-    # Analyser
-    jube_benchmark["patternset"] = {"name": "bench_patternset", "pattern": [
-        {"name": key, "mode": "pattern", "type": "float", "_": key + " $jube_pat_fp"} for key in all_metrics
-    ]}
+# Analyser
+jube_benchmark["patternset"] = {"name": "bench_patternset", "pattern": [
+    {"name": key, "mode": "pattern", "type": "float", "_": key + " $jube_pat_fp"} for key in all_metrics
+]}
 
-    # Parameters to record
-    jube_benchmark["result"]["table"]["column"] = benchmark_config.get("params_rec", []) + all_metrics
+# Parameters to record
+jube_benchmark["result"]["table"]["column"] = benchmark_config.get("params_rec", []) + all_metrics
 
-    # Write jube benchmark file
-    with open(os.path.join(benchmark_output_dir, f"cb_{model_name}_{machine}.yml"), 'w') as jube_outfile:
-        yaml.dump(jube_benchmark, jube_outfile, default_flow_style=False)
+# Write jube benchmark file
+with open(os.path.join(benchmark_output_dir, f"cb_{model_name}_{machine}.yml"), 'w') as jube_outfile:
+    yaml.dump(jube_benchmark, jube_outfile, default_flow_style=False)
