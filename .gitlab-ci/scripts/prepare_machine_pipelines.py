@@ -55,15 +55,6 @@ pipeline_yml["variables"]["CB_SIMULATOR_BRANCH"] = config["software_parameters"]
 pipeline_yml["variables"]["PIP_LIST"] = config["dependencies"][user_machine]["variables"]["PIP_LIST"]
 pipeline_yml["variables"]["MODULE_LIST"] = config["dependencies"][user_machine]["variables"]["MODULE_LIST"]
 
-benchmarks = list()
-benchmark_id = 0
-for model_name, model_config in config["benchmarks"].items():
-    if user_machine in model_config["machine_parameters"]:
-        benchmarks.append({"JUBE_BENCHMARK_FILE": model_name,
-               		   "JUBE_BENCHMARK_ID": str(benchmark_id).zfill(6)})
-        benchmark_id += 1
-
-pipeline_yml[".parallel-benchmark"] = {"parallel": {"matrix": benchmarks}}
 print(os.path.join(pipelines_dir_out, user_machine + ".yml"))
 with open(os.path.join(pipelines_dir_out), 'w') as pipeline_out:
           yaml.dump(pipeline_yml, pipeline_out, default_flow_style=False)
