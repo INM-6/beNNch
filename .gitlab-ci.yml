@@ -132,7 +132,7 @@ Trigger:
       artifacts: true
   trigger:
     strategy: depend
-    include: "run-benchmarks.yml"
+    include: "${CI_PROJECT_DIR}/run-benchmarks.yml"
     forward:
       pipeline_variables: true
   variables:
