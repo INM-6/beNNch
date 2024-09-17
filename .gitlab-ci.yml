@@ -31,7 +31,7 @@ variables:
     value: "https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.jsc.fz-juelich.de/nest/bennch/configs/configs.git"
   CONFIG_BRANCH:
     description: "Configuration repository branch to use for benchmarking."
-    value: "hambach"
+    value: "restructure"
   CONFIG_PATH:
     description: "Path to configuration file (e.g. config.yml) relative to the config repository root."
     value: "config.yml"
@@ -68,7 +68,7 @@ variables:
       - "microcircuit"
   CB_MACHINES:
     description: "Machine on which benchmarks should be run."
-    value: "jureca"
+    value: "hambach"
     options:
       - "hambach"
       - "jusuf"
