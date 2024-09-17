@@ -93,7 +93,7 @@ Validate Input:
   image: python:3-alpine
   script:
     # Overwrite ANNOTATE_EXPERIMENT_ID with an uuid
-    - 'ANNOTATE_EXPERIMENT_ID=$(uuidgen)'
+    #- 'ANNOTATE_EXPERIMENT_ID=$(uuidgen)'
     - |+
       # Make sure values were provided for all mandatory variables
       for var in BENCHMARK_ID CONFIG_REPO CONFIG_BRANCH CONFIG_PATH RESULTS_REPO_URL RESULTS_BRANCH RESULTS_PATH ; do  # RESULTS_REPO_TOKEN
