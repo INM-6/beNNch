@@ -43,7 +43,7 @@ prepare_file_path = sys.argv[10]     # path to the prepare.sh file which is load
 pipeline_file_path = sys.argv[11]    # path to current pipeline definition file
 machine = sys.argv[12]               # name of the machine the benchmark is running on
 machine_config_dir = sys.argv[13]
-model_name = os.environ("CB_MODELS")
+model_name = os.environ["CB_MODELS"]
 
 config_dir = os.path.dirname(config_path)
 
