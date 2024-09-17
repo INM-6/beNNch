@@ -46,7 +46,6 @@ variables:
   CONFIG_FILE_PATH: "$$USER_DATA_DIR/config.yml"
   MODELS_DIR: "$$USER_DATA_DIR/models"
   OUTPUT_DIR: "$$USER_DATA_DIR/benchmark_results"
-  MACHINE: "$CB_MACHINE"
 # required to install gathermetadata
   GITHUB_TOKEN: "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"
 # Empty variable to fill with the uuid.tgz names of the benchmark results
@@ -233,7 +232,7 @@ Benchmarking:
     - 'cp "$TEMPLATES_DIR/job.slurm.in" "${BENCHMARKS_DIR}/jube/job.slurm.in"'
     - 'JUBE_BENCHMARK_FILE=$CB_MODELS'
     # If our workpackage directory exists already, we don't call jube run again, as we only need to continue (can only happen if the workflow-job was rerun by the user)
-    - 'jube run --hide-animation -e "${BENCHMARKS_DIR}/jube/cb_${JUBE_BENCHMARK_FILE}_${MACHINE}.yml"'
+    - 'jube run --hide-animation -e "${BENCHMARKS_DIR}/jube/cb_${JUBE_BENCHMARK_FILE}_${CB_MACHINES}.yml"'
     - |
       JUBE_BENCHMARK_ID=000000
       COUNTER=0
@@ -283,12 +282,12 @@ Benchmarking:
     - 'cp -r "$BENCHMARKS_DIR/jube" "$CI_PROJECT_DIR/specifications"'
     # Collect metadata and prepare
     - 'export RESULTS_UID=$(uuidgen)'
-    - 'mkdir -p "${OUTPUT_DIR}/${JUBE_BENCHMARK_FILE}_${MACHINE}/"'
-    - 'cp "${CONFIG_FILE_PATH}" "${OUTPUT_DIR}/${JUBE_BENCHMARK_FILE}_${MACHINE}/config.yml"'
+    - 'mkdir -p "${OUTPUT_DIR}/${JUBE_BENCHMARK_FILE}_${CB_MACHINES}/"'
+    - 'cp "${CONFIG_FILE_PATH}" "${OUTPUT_DIR}/${JUBE_BENCHMARK_FILE}_${CB_MACHINES}/config.yml"'
     # Add actual benchmark data
-    - 'cp "$JUBE_RESULTS_DIR/$JUBE_BENCHMARK_ID/result/result_table.dat" "$OUTPUT_DIR/${JUBE_BENCHMARK_FILE}_${MACHINE}/benchmark_results.csv"'
+    - 'cp "$JUBE_RESULTS_DIR/$JUBE_BENCHMARK_ID/result/result_table.dat" "$OUTPUT_DIR/${JUBE_BENCHMARK_FILE}_${CB_MACHINES}/benchmark_results.csv"'
     # Add metadata as zip file
-    - 'mkdir -v "${OUTPUT_DIR}/${JUBE_BENCHMARK_FILE}_${MACHINE}/metadata"'
+    - 'mkdir -v "${OUTPUT_DIR}/${JUBE_BENCHMARK_FILE}_${CB_MACHINES}/metadata"'
     - 'mkdir -p "${CI_PROJECT_DIR}/results"'
     - 'chmod +x ${SCRIPTS_DIR}/pack_results.sh'
     - 'chmod +x ${SCRIPTS_DIR}/token_removal.sh'
