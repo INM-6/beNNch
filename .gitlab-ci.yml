@@ -114,7 +114,7 @@ Validate Input:
     # merge machine config into main pipeline
     - "sed -e \"s/{{ CB_MACHINES }}/$CB_MACHINES/g\" .gitlab-ci/jacamar-benchmarking.yml > run-benchmarks.yml"
     - "cat run-benchmarks.yml"
-    - "! grep '${STORAGE_MACHINE}.yml' run-benchmarks.yml"
+    - "! grep '${CB_MACHINES}.yml' run-benchmarks.yml"
   artifacts:
     paths:
       - "config.yml"
