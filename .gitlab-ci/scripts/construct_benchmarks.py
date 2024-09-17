@@ -69,7 +69,7 @@ with open(config_path, 'r') as config_file:
     config = yaml.safe_load(config_file)
 
 with open(os.path.join(machine_config_dir, machine + '.yml'), 'r') as machine_config_file:
-    	machine_config = yaml.safe_load(machine_config_file)
+            machine_config = yaml.safe_load(machine_config_file)
 
 benchmark_config = config["benchmarks"][model_name]
 if machine not in benchmark_config["machine_parameters"]:
@@ -100,42 +100,42 @@ machine_params = benchmark_config["machine_parameters"][machine]
 machine_param_list = list()
 for k in ["num_nodes", "tasks_per_node", "threads_per_task"]:
     try:
-	for c in machine_params[k].split(","):
-	    float(c)
-	machine_param_list.append({"name": k, "type": "int", "_": machine_params[k]})
+        for c in machine_params[k].split(","):
+            float(c)
+        machine_param_list.append({"name": k, "type": "int", "_": machine_params[k]})
     except ValueError:
-	machine_param_list.append({"name": k, "mode": "python", "type": "int", "_": machine_params[k]})
-	
+        machine_param_list.append({"name": k, "mode": "python", "type": "int", "_": machine_params[k]})
+        
     w = machine_params["walltime"]
     if w[2] != ":" or w[5] != ":" or len(w) != 8 or not all(w[p].isdigit() for p in [0,1,3,4,6,7]):
-	machine_param_list.append({"name": "walltime", "mode": "python", "type": "string", "_": w})
+        machine_param_list.append({"name": "walltime", "mode": "python", "type": "string", "_": w})
     else:
-	machine_param_list.append({"name": "walltime", "type": "string", "_": w})
+        machine_param_list.append({"name": "walltime", "type": "string", "_": w})
 
 jube_benchmark["parameterset"].append(
     {
-	"name": "machine_parameters",
-	"parameter": machine_param_list
+        "name": "machine_parameters",
+        "parameter": machine_param_list
     })
-	    
+            
 
 jube_benchmark["parameterset"].append(
     {
-	"name": "user_config",
-	"parameter": [
-	    {"name": "account", "type": "string", "_": config["user_config"][machine]["account"]},
-	    {"name": "partition", "type": "string", "_": config["user_config"][machine]["partition"]}
-	]
+        "name": "user_config",
+        "parameter": [
+            {"name": "account", "type": "string", "_": config["user_config"][machine]["account"]},
+            {"name": "partition", "type": "string", "_": config["user_config"][machine]["partition"]}
+        ]
     })
 
 # Software parameters
 jube_benchmark["parameterset"].append(
     {
-	"name": "software_parameters",
-	"parameter": [
-	    {"name": "simulator_branch", "_": simulator_branch},
-	    {"name": "buildermod", "_": builder_modules_dir}
-	]
+        "name": "software_parameters",
+        "parameter": [
+            {"name": "simulator_branch", "_": simulator_branch},
+            {"name": "buildermod", "_": builder_modules_dir}
+        ]
     })
 
 # Model parameters
@@ -149,8 +149,8 @@ jube_benchmark["parameterset"].append(
 {
     "name": "machine_config",
     "parameter": [
-	{"name": "extra_srun_flags", "separator": ";", "type": "string", "_": machine_config["variables"]["extra_srun_flags"]},
-	{"name": "extra_sbatch_flags", "separator": ";", "type": "string", "_": machine_config["variables"]["extra_sbatch_flags"]}
+        {"name": "extra_srun_flags", "separator": ";", "type": "string", "_": machine_config["variables"]["extra_srun_flags"]},
+        {"name": "extra_sbatch_flags", "separator": ";", "type": "string", "_": machine_config["variables"]["extra_sbatch_flags"]}
     ]
 })
 
@@ -158,17 +158,17 @@ jube_benchmark["parameterset"].append(
 {
     "name": "bench_parameters",
     "parameter": [
-	{
-	    "name": "num_vps",
-	    "type": "int",
-	    "mode": "python",
-	    "_": "$tasks_per_node * $threads_per_task * $num_nodes"
-	},
-	{
-	    "name": "num_tasks",
-	    "type": "int",
-	    "mode": "python",
-	    "_": "$tasks_per_node * $num_nodes"
+        {
+            "name": "num_vps",
+            "type": "int",
+            "mode": "python",
+            "_": "$tasks_per_node * $threads_per_task * $num_nodes"
+        },
+        {
+            "name": "num_tasks",
+            "type": "int",
+            "mode": "python",
+            "_": "$tasks_per_node * $num_nodes"
     }]
 })
 
@@ -177,9 +177,9 @@ jube_benchmark["parameterset"].append(
 { 
     "name": "run_benchmark",
     "parameter": [
-	   {"name": "exec_bench",
-	    "separator": ";",
-	    "_": """${optional_run_command}
+           {"name": "exec_bench",
+            "separator": ";",
+            "_": """${optional_run_command}
 srun ${extra_srun_flags} python ${run_file} ${run_args}
 srun -n 1 --nodes 1 python ${scripts_dir}/collect_timer_data.py ${metrics_path} ${jube_wp_abspath} ${log_path}
 gathermetadata metadata"""}
