@@ -194,7 +194,7 @@ Build:
       cat "$CI_PROJECT_DIR/benchmark_variables.env"
  
 Benchmarking:
-  stage: benchmark
+  stage: benchmarking
   extends: [ .parallel-benchmark, .benchmark ]
   needs:
     - job: "Build"
