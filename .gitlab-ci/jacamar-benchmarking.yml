@@ -123,7 +123,6 @@ Preparation:
     # install builder
     - 'git clone https://github.com/INM-6/Builder.git'
     - 'cd "${USER_DATA_DIR}/user_files"'
-    - 'ln -s "${CI_PROJECT_DIR}/Builder/build.sh" "build" -v'
     # Clone simulator and model repositories
     - |
       export CB_SIMULATOR_BRANCH=$(python3 -c "import yaml; f = open('$CONFIG_FILE_PATH', 'r'); print(yaml.safe_load(f)['software_parameters']['simulator_repo_branch']);f.close()")
@@ -186,7 +185,7 @@ Build:
     - 'export MAKE_THREADS=$(nproc)'
     # Build simulator
     - 'printenv '
-    - 'build -f simulator $CB_SIMULATOR_BRANCH'
+    - '${CI_PROJECT_DIR}/Builder/build.sh -f simulator $CB_SIMULATOR_BRANCH'
     - 'cd "${SIMULATOR_REPO_DIR}"'
     - 'export simulator_git_commit_hash=$(git rev-parse HEAD)'
     - 'rm -r "$SIMULATOR_REPO_DIR"'
