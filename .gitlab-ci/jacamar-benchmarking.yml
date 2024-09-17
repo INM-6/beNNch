@@ -71,6 +71,8 @@ Preparation:
   needs:
     - job: "Initialise environment"
       artifacts: true
+    - pipeline: "$PARENT_PIPELINE_ID"
+      job: "Validate Input"
   artifacts:
     paths:
       - "benchmarking-env"
@@ -159,6 +161,8 @@ Build:
   needs:
     - job: "Preparation"
       artifacts: true
+    - pipeline: "$PARENT_PIPELINE_ID"
+      job: "Validate Input"
   artifacts:
     paths:
       - "benchmarking-env"
