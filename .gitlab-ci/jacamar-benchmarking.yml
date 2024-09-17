@@ -137,10 +137,9 @@ Preparation:
     - |
       echo 'CURR_PATH=$(pwd)' > "$USER_DATA_DIR/prepare.sh"
       echo 'cd "$USER_DATA_DIR/user_files"' >> "$USER_DATA_DIR/prepare.sh"
-      python3 "$SCRIPTS_DIR/construct_benchmarks.py" "$TEMPLATES_DIR/jube-template.yml" "$CONFIG_FILE_PATH" "$BUILDER_MODULES_DIR" "$CB_SIMULATOR_BRANCH" "$MODELS_DIR" "$BENCHMARKS_DIR/jube" "$BENCHMARKS_DIR/metrics" "$SCRIPTS_DIR" "$JUBE_RESULTS_DIR" "$USER_DATA_DIR/prepare.sh" "$CI_PROJECT_DIR/run-benchmarks.yml" "CB_$MACHINES" "$CI_PROJECT_DIR/.gitlab-ci/machine-configs/"
+      python3 "$SCRIPTS_DIR/construct_benchmarks.py" "$TEMPLATES_DIR/jube-template.yml" "$CONFIG_FILE_PATH" "$BUILDER_MODULES_DIR" "$CB_SIMULATOR_BRANCH" "$MODELS_DIR" "$BENCHMARKS_DIR/jube" "$BENCHMARKS_DIR/metrics" "$SCRIPTS_DIR" "$JUBE_RESULTS_DIR" "$USER_DATA_DIR/prepare.sh" "$CI_PROJECT_DIR/run-benchmarks.yml" "$CB_MACHINES" "$CI_PROJECT_DIR/.gitlab-ci/machine-configs/"
       echo 'cd "$CURR_PATH"' >> "$USER_DATA_DIR/prepare.sh"
     # Forward all environment variables to next stage
-# Forward all environment variables to next stage
     - 'rm -f "$CI_PROJECT_DIR/benchmark_variables.env"'
     - |
       cd "$CI_PROJECT_DIR"

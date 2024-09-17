@@ -104,12 +104,10 @@ success = False
 models = os.environ.get("CB_MODELS", "")
 if models:
     models = models.split(",")
-if os.environ["CB_MACHINES"]:
-    machines = list(set(os.environ["CB_MACHINES"].split(",")) & set(config["user_config"].keys()))
-else:
-    machines = list(config["user_config"].keys())
 
-machine_models = {machine: 0 for machine in machines}
+user_machine = os.environ["CB_MACHINES"]
+
+machine_models = {user_machine: 0}
 to_remove = list()
 for model_name, benchmark_config in config["benchmarks"].items():
     if models and model_name not in models:
@@ -118,18 +116,18 @@ for model_name, benchmark_config in config["benchmarks"].items():
         continue
 
     for machine in list(benchmark_config["machine_parameters"].keys()):
-        if machine not in machines:
+        if machine != user_machine:
             del benchmark_config["machine_parameters"][machine]
         else:
             machine_models[machine] += 1
 for model in to_remove:
     del config["benchmarks"][model]
 
-for machine, count in machine_models.items():
-    if count == 0:
-        machines.remove(machine)
+#for machine, count in machine_models.items():
+#    if count == 0:
+#        machines.remove(machine)
 # Return list of machines from script to use it in the shell
-print(",".join(machines))
+#print(",".join(machines))
 
 # Validate model parameters
 for model_name, benchmark_config in config["benchmarks"].items():
