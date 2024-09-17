@@ -55,6 +55,8 @@ variables:
 stages: [ initialise, preparation, build, benchmarking, transfer, plotting ]
 
 Initialise environment:
+  needs:
+    - job: "Trigger"
   stage: initialise
   extends: [ .initialise ]
   artifacts:

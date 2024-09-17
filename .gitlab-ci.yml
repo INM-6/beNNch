@@ -125,6 +125,12 @@ Validate Input:
     when: on_success
 
 Trigger:
+  artifacts:
+    paths:
+      - "config.yml"
+      - "simulator.module"
+      - "simulator.planfile"
+      - "run-benchmarks.yml"
   stage: benchmarking
   allow_failure: true
   needs:
@@ -132,7 +138,9 @@ Trigger:
       artifacts: true
   trigger:
     strategy: depend
-    include: "${CI_PROJECT_DIR}/run-benchmarks.yml"
+    include: 
+      - artifact: run-benchmarks.yml
+        job: "Validate input"
     forward:
       pipeline_variables: true
   variables:
