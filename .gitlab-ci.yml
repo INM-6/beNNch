@@ -118,8 +118,8 @@ Validate Input:
     - 'mkdir $CI_PROJECT_DIR/prepared-machine-config'
     - 'python "$CI_PROJECT_DIR/.gitlab-ci/scripts/prepare_machine_pipelines.py" "$CI_PROJECT_DIR/.gitlab-ci/jacamar-benchmarking.yml" "$CI_PROJECT_DIR/prepared-jacamar-benchmarking.yml" "$CI_PROJECT_DIR/config.yml"'
     # merge machine config into main pipeline
-    - "sed -e \"s/{{ CB_MACHINES }}/$CB_MACHINES/g\" prepared-jacamar-benchmarking.yml > run-benchmarks.yml"
-    - "sed -e \"s/{{ CB_STORAGE_MACHINE }}/$CB_STORAGE_MACHINE/g\" run-benchmarks.yml > run-benchmarks.yml"
+    - "sed -e \"s/{{ CB_MACHINES }}/$CB_MACHINES/g\" prepared-jacamar-benchmarking.yml > add-machine-configs.yml"
+    - "sed -e \"s/{{ CB_STORAGE_MACHINE }}/$CB_STORAGE_MACHINE/g\" add-machine-configs.yml > run-benchmarks.yml"
     - "cat run-benchmarks.yml"
     - "! grep '${CB_MACHINES}.yml' run-benchmarks.yml"
     - "ls -al"
