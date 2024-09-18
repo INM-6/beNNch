@@ -51,7 +51,7 @@ variables:
 # Empty variable to fill with the uuid.tgz names of the benchmark results
   BENCHMARK_UUIDS: None
 
-stages: [ initialise, preparation, build, benchmarking, transfer, plotting ]
+stages: [ initialise, preparation, build, benchmarking, transfer, annotate, plot ]
 
 Initialise environment:
   needs:
@@ -206,7 +206,7 @@ Build:
  
 Benchmarking:
   stage: benchmarking
-  extends: [ .compute, .environment-load ]
+  extends: [ .front, .environment-load ]
   needs:
     - job: "Build"
       artifacts: true
@@ -329,11 +329,24 @@ Transfer:
     - 'pwd'
     - 'ls -la'
 
-Plotting:
-  stage: plotting
+Annotation:
+  stage: annotate
   trigger:
-    project: 'nest/bennch/metadata_plotting'
-    branch: main                                      # Git branch
+    project: 'nest/bennch/annotate'
+    branch: main
+    forward:
+      pipeline_variables: true
   needs:
     - job: "Transfer"
+      artifacts: true
+
+Plotting:
+  stage: plot
+  trigger:
+    project: 'nest/bennch/metadata_plotting'
+    branch: main
+    forward:
+      pipeline_variables: true
+  needs:
+    - job: "Annotation"
       artifacts: true
