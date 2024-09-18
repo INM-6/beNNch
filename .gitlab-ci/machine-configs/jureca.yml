@@ -28,7 +28,7 @@
     - jacamar
 
 .initialise:
-  before_script:
+  script:
     - 'jutil env activate -p cjinb33'
     - 'jutil env activate -p djinb33'
     - 'eval TEMP_DIR="$TEMP_DIR"'
