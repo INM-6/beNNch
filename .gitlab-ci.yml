@@ -74,6 +74,12 @@ variables:
       - "jusuf"
       - "jureca"
       - "juwels"
+  CB_STORAGE_MACHINE:
+    description: "Runner Tags of the storage machine"
+    value: "hambach"
+  CB_STORAGE_DIR:
+    description: "Directory of the storage in the CB_STORAGE_MACHINE"
+    value: "/work/datasets/bennch/data"
   ANNOTATE_EXPERIMENT_ID: null
   FF_SCRIPT_SECTIONS: "true"    # see https://docs.gitlab.com/runner/configuration/feature-flags.html#available-feature-flags
   FF_TIMESTAMPS: "true"

@@ -58,7 +58,7 @@ Initialise environment:
     - pipeline: "$PARENT_PIPELINE_ID"
       job: "Validate Input"
   stage: initialise
-  extends: [ .initialise ]
+  extends: [ .front, .initialise ]
   artifacts:
     paths:
       - "benchmarking-env"
@@ -66,7 +66,7 @@ Initialise environment:
 # Must define USER_DATA_DIR
 Preparation:
   stage: preparation
-  extends: [ .preparation ]
+  extends: [ .front, .environment-load ]
   needs:
     - job: "Initialise environment"
       artifacts: true
@@ -154,7 +154,7 @@ Preparation:
 
 Build:
   stage: build
-  extends: [ .build ]
+  extends: [ .compute, .environment-load, .build ]
   needs:
     - job: "Preparation"
       artifacts: true
@@ -206,7 +206,7 @@ Build:
  
 Benchmarking:
   stage: benchmarking
-  extends: [ .benchmark ]
+  extends: [ .compute, .environment-load ]
   needs:
     - job: "Build"
       artifacts: true
