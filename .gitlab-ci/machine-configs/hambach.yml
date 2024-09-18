@@ -15,38 +15,26 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-.initialise:
+.front:
   tags:
     - hambach
+
+.compute:
+  tags:
+    - hambach
+
+.initialise:
   script:
     - 'eval TEMP_DIR="$TEMP_DIR"'
     - 'export PYTHONNOUSERSITE=1'
     - 'module load $MODULE_LIST'
     - 'python -m venv --system-site-packages benchmarking-env'
     - 'benchmarking-env/bin/pip install $PIP_LIST'
-
-.preparation:
-  extends: [ .environment-load ]
-  tags:
-    - hambach
+    - 'ls -al'
 
 .build:
   variables:
     SCHEDULER_PARAMETERS: "--account=$CB_RUNNER_ACCOUNT --time=$CB_BUILD_TIME_LIMIT --nodes=1 --exclusive"
-  extends: [ .environment-load ]
-  tags:
-    - hambach
-
-.benchmark:
-  extends: [ .environment-load ]
-  tags:
-    - hambach
-
-.transfer:
-  variables:
-    CB_STORAGE_DIR: "/work/datasets/bennch/data"
-  tags:
-    - hambach
 
 variables:
     TEMP_DIR: "/work/users"
@@ -60,3 +48,4 @@ variables:
     - 'module load $MODULE_LIST'
     - 'source benchmarking-env/bin/activate'
     - 'export PATH="$(pwd):$PATH"'
+    - 'ls -al'
