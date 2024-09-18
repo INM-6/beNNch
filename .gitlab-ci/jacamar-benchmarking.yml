@@ -315,7 +315,8 @@ Benchmarking:
 
 Transfer:
   stage: transfer
-  tags: "{{ CB_STORAGE_MACHINE }}"
+  tags: 
+    - "{{ CB_STORAGE_MACHINE }}"
   needs: 
     - job: "Benchmarking"
       artifacts: true
