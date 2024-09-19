@@ -180,7 +180,7 @@ jube_benchmark["parameterset"].append(
            {"name": "exec_bench",
             "separator": ";",
             "_": """${optional_run_command}
-srun ${extra_srun_flags} ${run_command} ${run_file} ${run_args}
+srun ${extra_srun_flags} python ${run_file} ${run_args}
 srun -n 1 --nodes 1 python ${scripts_dir}/collect_timer_data.py ${metrics_path} ${jube_wp_abspath} ${log_path}
 gathermetadata metadata"""}
     ]
@@ -191,7 +191,6 @@ print(jube_benchmark["parameterset"])
 # Parameterset
 benchmark_model_files_dir = os.path.join(benchmark_models_dir, model_name)
 next(p for p in jube_benchmark["parameterset"] if p["name"] == "bench_parameters")["parameter"].extend([
-    {"name": "run_command", "type": "string", "_": run_parameters.get("run_command", "")},
     {"name": "run_file", "type": "string", "_": "${jube_wp_abspath}" + os.sep + model_script_path},
     {"name": "log_path", "type": "string", "_": "${jube_wp_abspath}" + os.sep + run_parameters.get("log_path", "")},
     {"name": "scripts_dir", "type": "string", "_": scripts_dir},

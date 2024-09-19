@@ -266,7 +266,6 @@ Benchmarking:
                 touch "$run/work/ready"
               fi
             fi
-            gathermetadata metadata
           done
         fi
       done
