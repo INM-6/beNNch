@@ -322,7 +322,7 @@ Transfer:
     - 'BENCHMARK_FILES=$(ls results/)'
     - 'echo $BENCHMARK_FILES'
     - 'touch BENCHMARK_UUIDS.env'
-    - 'echo "BENCHMARK_UUIDS=${BENCHMARK_UUIDS}" >> BENCHMARK_UUIDS.env'
+    - 'echo "BENCHMARK_UUIDS=${BENCHMARK_FILES}" >> BENCHMARK_UUIDS.env'
     # actual data transfer
     - 'cp -r results/* "${CB_STORAGE_DIR}"'
     - 'pwd'
