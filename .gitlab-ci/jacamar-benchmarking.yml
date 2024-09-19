@@ -353,5 +353,7 @@ Plotting:
   needs:
     - job: "Annotation"
       artifacts: true
+    - job: "Transfer"
+      artifacts: true
   variables:
     PARENT_PIPELINE_ID: "$CI_PIPELINE_ID"
