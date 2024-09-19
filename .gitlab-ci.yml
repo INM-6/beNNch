@@ -80,7 +80,6 @@ variables:
   CB_STORAGE_DIR:
     description: "Directory of the storage in the CB_STORAGE_MACHINE"
     value: "/work/datasets/bennch/data"
-  ANNOTATE_EXPERIMENT_ID: null
   FF_SCRIPT_SECTIONS: "true"    # see https://docs.gitlab.com/runner/configuration/feature-flags.html#available-feature-flags
   FF_TIMESTAMPS: "true"
   #FF_ENABLE_JOB_CLEANUP: "true"  # project directory will be deleted at the end of each job
@@ -109,8 +108,6 @@ Validate Input:
       done
     - 'apk update && apk add git util-linux'
     - 'python -m pip install pyyaml'
-    # Overwrite ANNOTATE_EXPERIMENT_ID with an uuid
-    - 'ANNOTATE_EXPERIMENT_ID=$(uuidgen)'
     - 'mkdir "$CI_PROJECT_DIR/tmp"'
     - 'python "$CI_PROJECT_DIR/.gitlab-ci/scripts/patch_config.py" "$CI_PROJECT_DIR/tmp" "$CI_PROJECT_DIR/config.yml" "$CI_PROJECT_DIR/simulator.planfile" "$CI_PROJECT_DIR/simulator.module" "$CONFIG_REPO" "$CONFIG_BRANCH" "$CONFIG_PATH"'
     - 'rm -rf $CI_PROJECT_DIR/tmp'

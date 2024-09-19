@@ -322,8 +322,10 @@ Transfer:
     - |
       BENCHMARK_FILES=$(ls results/ | tr '\n' ',' | sed 's/,$//')
     - 'echo $BENCHMARK_FILES'
+    - 'ANNOTATE_EXPERIMENT_ID=$(uuidgen)'
     - 'touch BENCHMARK_UUIDS.env'
     - 'echo "BENCHMARK_UUIDS=${BENCHMARK_FILES}" >> BENCHMARK_UUIDS.env'
+    - 'echo "ANNOTATE_EXPERIMENT_ID=${ANNOTATE_EXPERIMENT_ID}" >> BENCHMARK_UUIDS.env'
     # actual data transfer
     - 'cp -r results/* "${CB_STORAGE_DIR}"'
     - 'pwd'
