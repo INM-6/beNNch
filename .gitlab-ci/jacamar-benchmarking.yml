@@ -48,8 +48,6 @@ variables:
   OUTPUT_DIR: "$$USER_DATA_DIR/benchmark_results"
 # required to install gathermetadata
   GITHUB_TOKEN: "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"
-# Empty variable to fill with the uuid.tgz names of the benchmark results
-  BENCHMARK_UUIDS: None
 
 stages: [ initialise, preparation, build, benchmarking, transfer, annotate, plot ]
 
@@ -323,7 +321,9 @@ Transfer:
   script:
     - 'set -euo pipefail'
     # get uuids of single files and store them in a variable passed to the plotting pipeline
-    - 'BENCHMARK_UUIDS=$(ls results/)'
+    - 'BENCHMARK_FILES=$(ls results/)'
+    - 'echo $BENCHMARK_FILES'
+    - 'git push -o ci.variable="BENCHMARK_UUIDS=$BENCHMARK_FILES"'
     - 'echo $BENCHMARK_UUIDS'
     # actual data transfer
     - 'cp -r results/* "${CB_STORAGE_DIR}"'
