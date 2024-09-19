@@ -221,11 +221,6 @@ Benchmarking:
     # Run benchmarks
     # Wait until all other jube benchmarks have been started until the JUBE_BENCHMARK_ID of this subpipeline
     - 'cd $JUBE_RESULTS_DIR'
-    # Wait until it's my turn to create a workpackage directory (i.e., call jube run)
-    #- |
-    #  while [ $( find . -mindepth 1 -maxdepth 1 -type d | wc -l) -ne $(expr $JUBE_BENCHMARK_ID + 0) ] ; do
-    #    sleep 3
-    #  done
     # Start the benchmarks now
     - 'cp "$TEMPLATES_DIR/job.slurm.in" "${BENCHMARKS_DIR}/jube/job.slurm.in"'
     - 'JUBE_BENCHMARK_FILE=$CB_MODELS'
@@ -318,15 +313,16 @@ Transfer:
   needs: 
     - job: "Benchmarking"
       artifacts: true
+  artifacts:
+    reports:
+      dotenv: BENCHMARK_UUIDS.env
   script:
     - 'set -euo pipefail'
     # get uuids of single files and store them in a variable passed to the plotting pipeline
-    - |
-      BENCHMARK_FILES=$(ls results/ | tr '\n' ' ' | sed 's/ /,/g')
+    - 'BENCHMARK_FILES=$(ls results/)'
     - 'echo $BENCHMARK_FILES'
-    - |
-      git push -o ci.variable="BENCHMARK_UUIDS=$BENCHMARK_FILES"
-    - 'echo $BENCHMARK_UUIDS'
+    - 'touch BENCHMARK_UUIDS.env'
+    - 'echo "BENCHMARK_UUIDS=${BENCHMARK_UUIDS}" >> BENCHMARK_UUIDS.env'
     # actual data transfer
     - 'cp -r results/* "${CB_STORAGE_DIR}"'
     - 'pwd'
