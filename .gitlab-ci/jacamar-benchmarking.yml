@@ -323,7 +323,8 @@ Transfer:
   script:
     - 'set -euo pipefail'
     # get uuids of single files and store them in a variable passed to the plotting pipeline
-    - 'BENCHMARK_UUID_NAMES=$(ls results/)'
+    - 'BENCHMARK_UUIDS=$(ls results/)'
+    - 'echo $BENCHMARK_UUIDS'
     # actual data transfer
     - 'cp -r results/* "${CB_STORAGE_DIR}"'
     - 'pwd'
@@ -332,6 +333,7 @@ Transfer:
 Annotation:
   stage: annotate
   trigger:
+    strategy: depend
     project: 'nest/bennch/annotate'
     branch: main
     forward:
@@ -339,10 +341,13 @@ Annotation:
   needs:
     - job: "Transfer"
       artifacts: true
+  variables:
+    PARENT_PIPELINE_ID: "$CI_PIPELINE_ID"
 
 Plotting:
   stage: plot
   trigger:
+    strategy: depend
     project: 'nest/bennch/metadata_plotting'
     branch: main
     forward:
@@ -350,3 +355,5 @@ Plotting:
   needs:
     - job: "Annotation"
       artifacts: true
+  variables:
+    PARENT_PIPELINE_ID: "$CI_PIPELINE_ID"
