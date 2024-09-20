@@ -1,0 +1,59 @@
+# Copyright (C) 2023 Forschungszentrum Jülich GmbH, INM-6
+#
+# Builder is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# Builder is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Builder.  If not, see <https://www.gnu.org/licenses/>.
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+.front:
+  tags:
+    - shell
+    - juwels
+    - jacamar
+
+.compute:
+  tags:
+    - compute
+    - juwels
+    - jacamar
+
+.initialise:
+  script:
+    - 'jutil env activate -p cjinb33'
+    - 'jutil env activate -p djinb33'
+    - 'eval TEMP_DIR="$TEMP_DIR"'
+    - 'export PYTHONNOUSERSITE=1'
+    - 'module load $MODULE_LIST'
+    - 'python -m venv --system-site-packages benchmarking-env'
+    - 'benchmarking-env/bin/pip install $PIP_LIST'
+    - 'ls -al'
+
+.build:
+  variables:
+    SCHEDULER_PARAMETERS: "--account=$CB_RUNNER_ACCOUNT --time=$CB_BUILD_TIME_LIMIT --nodes=1"
+
+variables:
+    TEMP_DIR: "$$SCRATCH_cjinb33/ci-bennch/jureca/userdata"
+    extra_sbatch_flags: "--disable-turbomode --disable-perfparanoid"
+    extra_srun_flags: "--cpu-bind=mask_cpu:0xFFFFFFFFFFFFFFFF,0xFFFFFFFFFFFFFFFF0000000000000000"
+
+.environment-load:
+  before_script:
+    - 'eval TEMP_DIR="$TEMP_DIR"'
+    - 'jutil env activate -p cjinb33'
+    - 'jutil env activate -p djinb33'
+    - 'export PYTHONNOUSERSITE=1'
+    - 'module load $MODULE_LIST'
+    - 'source benchmarking-env/bin/activate'
+    - 'export PATH="$(pwd):$PATH"'
+    - 'ls -al'
