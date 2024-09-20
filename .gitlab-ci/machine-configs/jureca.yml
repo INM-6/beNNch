@@ -44,7 +44,7 @@
 
 variables:
     TEMP_DIR: "$$SCRATCH_cjinb33/ci-bennch/jureca/userdata"
-    extra_sbatch_flags: "--disable-turbomode"
+    extra_sbatch_flags: "--disable-turbomode --disable-perfparanoid"
     extra_srun_flags: "--cpu-bind=mask_cpu:0xFFFFFFFFFFFFFFFF,0xFFFFFFFFFFFFFFFF0000000000000000"
 
 .environment-load:
