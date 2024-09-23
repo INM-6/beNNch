@@ -15,41 +15,45 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-include: .gitlab-ci/jacamar-benchmarking.yml
-
-.preparation:
+.front:
   tags:
     - shell
     - jusuf
     - jacamar
 
-.build:
-  variables:
-    SCHEDULER_PARAMETERS: "--account=$CB_RUNNER_ACCOUNT --time=$CB_BUILD_TIME_LIMIT --nodes=1"
+.compute:
   tags:
     - compute
     - jusuf
     - jacamar
 
-.benchmark:
-  tags:
-    - shell
-    - jusuf
-    - jacamar
+.initialise:
+  script:
+    - 'jutil env activate -p cjinb33'
+    - 'jutil env activate -p djinb33'
+    - 'eval TEMP_DIR="$TEMP_DIR"'
+    - 'export PYTHONNOUSERSITE=1'
+    - 'module load $MODULE_LIST'
+    - 'python -m venv --system-site-packages benchmarking-env'
+    - 'benchmarking-env/bin/pip install $PIP_LIST'
+    - 'ls -al'
 
-.transfer:
+.build:
   variables:
-    CB_STORAGE_DIR: "/work/datasets/bennch/data"
-  tags:
-    - hambach
+    SCHEDULER_PARAMETERS: "--account=$CB_RUNNER_ACCOUNT --time=$CB_BUILD_TIME_LIMIT --nodes=1"
 
 variables:
     TEMP_DIR: "$$SCRATCH_cjinb33/ci-bennch/jusuf/userdata"
     extra_sbatch_flags: "--disable-turbomode --disable-perfparanoid"
     extra_srun_flags: "--cpu-bind=mask_cpu:0xFFFFFFFFFFFFFFFF,0xFFFFFFFFFFFFFFFF0000000000000000"
 
-.environment-init:
-  - 'export PYTHONNOUSERSITE=1'
-
 .environment-load:
-  - 'export PYTHONNOUSERSITE=1'
+  before_script:
+    - 'eval TEMP_DIR="$TEMP_DIR"'
+    - 'jutil env activate -p cjinb33'
+    - 'jutil env activate -p djinb33'
+    - 'export PYTHONNOUSERSITE=1'
+    - 'module load $MODULE_LIST'
+    - 'source benchmarking-env/bin/activate'
+    - 'export PATH="$(pwd):$PATH"'
+    - 'ls -al'
