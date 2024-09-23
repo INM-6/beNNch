@@ -41,7 +41,7 @@
 .build:
   variables:
     SCHEDULER_PARAMETERS: "--account=$CB_RUNNER_ACCOUNT --time=$CB_BUILD_TIME_LIMIT --nodes=1"
-    CUSTOM_CI_BUILDS_DIR: "/p/scratch/$CB_RUNNER_ACCOUNT/.jacamar-ci/"
+   # CUSTOM_CI_BUILDS_DIR: "/p/scratch/$CB_RUNNER_ACCOUNT/.jacamar-ci/"
 
 variables:
     TEMP_DIR: "$$SCRATCH_cjinb33/ci-bennch/jureca/userdata"
