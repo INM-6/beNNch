@@ -327,8 +327,8 @@ Transfer:
     - 'echo "BENCHMARK_UUIDS=${BENCHMARK_FILES}" >> BENCHMARK_UUIDS.env'
     - 'echo "ANNOTATE_EXPERIMENT_ID=${ANNOTATE_EXPERIMENT_ID}" >> BENCHMARK_UUIDS.env'
     # actual data transfer
-    - 'git clone ${CB_STORAGE_DIR} ${CI_PROJECT_DIR}'
-    - 'cp -r results/* "${CB_STORAGE_DIR}/bennch/data"'
+    - 'git clone ${CB_STORAGE_DIR}'
+    - 'cp -r results/* "${CB_STORAGE_DIR}/bennch-data/data"'
     - 'cd "${CB_STORAGE_DIR}/bennch/data"'
     - 'pwd'
     - 'ls -la'
