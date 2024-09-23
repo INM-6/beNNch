@@ -79,7 +79,7 @@ variables:
     value: "hambach"
   CB_STORAGE_DIR:
     description: "Directory of the bare repository in the CB_STORAGE_MACHINE"
-    value: "/work/datasets/bennch.git"
+    value: "/work/datasets/bennch-data.git"
   FF_SCRIPT_SECTIONS: "true"    # see https://docs.gitlab.com/runner/configuration/feature-flags.html#available-feature-flags
   FF_TIMESTAMPS: "true"
   #FF_ENABLE_JOB_CLEANUP: "true"  # project directory will be deleted at the end of each job
