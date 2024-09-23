@@ -327,9 +327,13 @@ Transfer:
     - 'echo "BENCHMARK_UUIDS=${BENCHMARK_FILES}" >> BENCHMARK_UUIDS.env'
     - 'echo "ANNOTATE_EXPERIMENT_ID=${ANNOTATE_EXPERIMENT_ID}" >> BENCHMARK_UUIDS.env'
     # actual data transfer
-    - 'cp -r results/* "${CB_STORAGE_DIR}"'
+    - 'git clone ${CB_STORAGE_DIR} ${CI_PROJECT_DIR}'
+    - 'cp -r results/* "${CB_STORAGE_DIR}/bennch/data"'
+    - 'cd "${CB_STORAGE_DIR}/bennch/data"'
     - 'pwd'
     - 'ls -la'
+    - 'git commit -a -m "add benchmarking data of run ${BENCHMARK_UID}"'
+    - 'git push origin main'
 
 Annotation:
   stage: annotate
