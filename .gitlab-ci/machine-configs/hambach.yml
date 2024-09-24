@@ -34,7 +34,7 @@
 
 .build:
   variables:
-    SCHEDULER_PARAMETERS: "--mem=4G --account=$CB_RUNNER_ACCOUNT --time=$CB_BUILD_TIME_LIMIT --nodes=1"
+    SCHEDULER_PARAMETERS: "--mem=4G --partition=$CB_RUNNER_PARTITION --account=$CB_RUNNER_ACCOUNT --time=$CB_BUILD_TIME_LIMIT --nodes=1"
 
 variables:
     TEMP_DIR: "/work/users"
