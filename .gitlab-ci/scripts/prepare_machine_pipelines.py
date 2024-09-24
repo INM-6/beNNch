@@ -48,6 +48,7 @@ pipeline_yml["variables"]["CB_RUNNER_PARTITION"] = machine_conf.get('partition',
 pipeline_yml["variables"]["CB_BUILD_TIME_LIMIT"] = machine_conf.get('build-time-limit', '')
 pipeline_yml["variables"]["CB_PARTITION"] = machine_conf.get('partition', '')
 pipeline_yml["variables"].update(config["dependencies"][user_machine]["variables"])
+print(machine_conf.get('partition', ''))
 
 # get the desired simulator version
 pipeline_yml["variables"]["CB_SIMULATOR_REPO"] = config["software_parameters"]["simulator_repo_url"]
