@@ -44,7 +44,6 @@ variables:
   script:
     - 'eval TEMP_DIR="$TEMP_DIR"'
     - 'export PYTHONNOUSERSITE=1'
-    - 'module load $MODULE_LIST'
     - 'python -m venv --system-site-packages benchmarking-env'
     - 'benchmarking-env/bin/pip install $PIP_LIST'
     - 'ls -al'
@@ -53,7 +52,6 @@ variables:
   before_script:
     - 'eval TEMP_DIR="$TEMP_DIR"'
     - 'export PYTHONNOUSERSITE=1'
-    - 'module load $MODULE_LIST'
     - 'source benchmarking-env/bin/activate'
     - 'export PATH="$(pwd):$PATH"'
     - 'ls -al'
