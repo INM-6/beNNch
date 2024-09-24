@@ -53,6 +53,12 @@ variables:
     options:
       - "OFF"
       - "ON"
+  MPI_FLAG:
+    description: "Determines whether nest is compiled with mpi"
+    value: "ON"
+    options:
+      - "OFF"
+      - "ON"
   PLOTTING_STYLE:
     description: "Setting this to docs will set detailed timers to OFF and will instead plot the realtime factor"
     value: "Standard"
