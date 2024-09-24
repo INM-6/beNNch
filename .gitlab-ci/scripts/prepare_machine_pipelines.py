@@ -44,6 +44,7 @@ with open(os.path.join(pipelines_dir_in)) as pipeline_in:
 pipeline_yml["variables"]["CB_DATA_PROJECT"] = machine_conf.get('data-project', '')
 pipeline_yml["variables"]["CB_COMPUTE_PROJECT"] = machine_conf.get('compute-project', '')
 pipeline_yml["variables"]["CB_RUNNER_ACCOUNT"] = machine_conf.get('account', '')
+pipeline_yml["variables"]["CB_RUNNER_PARTITION"] = machine_conf.get('partition', '')
 pipeline_yml["variables"]["CB_BUILD_TIME_LIMIT"] = machine_conf.get('build-time-limit', '')
 pipeline_yml["variables"].update(config["dependencies"][user_machine]["variables"])
 
