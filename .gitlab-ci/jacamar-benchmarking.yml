@@ -152,7 +152,7 @@ Preparation:
 
 Build:
   stage: build
-  extends: [ .compute, .environment-load, .build ]
+  extends: [ .compute, .environment-load ]
   needs:
     - job: "Preparation"
       artifacts: true
