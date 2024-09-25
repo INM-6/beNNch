@@ -45,7 +45,6 @@
     - 'export PYTHONNOUSERSITE=1'
     - 'module load $MODULE_LIST'
     - 'python -m venv --system-site-packages benchmarking-env'
-    - 'benchmarking-env/bin/pip install $PIP_LIST'
     - 'ls -al'
 
 variables:
@@ -62,5 +61,6 @@ variables:
     - 'export PYTHONNOUSERSITE=1'
     - 'module load $MODULE_LIST'
     - 'source benchmarking-env/bin/activate'
+    - 'benchmarking-env/bin/pip install --no-index --find-links=./pip_packages ./pip_packages/*'
     - 'export PATH="$(pwd):$PATH"'
     - 'ls -al'
