@@ -80,6 +80,7 @@ Preparation:
       dotenv: benchmark_variables.env
     when: on_success
   script:
+    - "echo $CPU_BIND_MASK"
     # Get unique id for benchmark
     - |
       export BENCHMARK_UID="$(echo $BENCHMARK_ID | sed -e 's/[^A-Za-z0-9._-]/_/g')-$(date +%Y-%m-%d-%H-%M-%S)"
