@@ -51,12 +51,6 @@ pipeline_yml["variables"]["CB_PARTITION"] = machine_conf.get('partition', '')
 pipeline_yml["variables"].update(config["dependencies"][user_machine]["variables"])
 print(machine_conf.get('partition', ''))
 
-pipeline_yml["variables"]["CB_THREADS_PER_TASK"] = config["benchmarks"][user_model]["machine_parameters"][user_machine]["threads_per_task"]
-pipeline_yml["variables"]["CB_TASKS_PER_NODE"] = config["benchmarks"][user_model]["machine_parameters"][user_machine]["tasks_per_node"]
-print(user_model)
-print(config["benchmarks"][user_model]["machine_parameters"][user_machine]["threads_per_task"])
-print(config["benchmarks"][user_model]["machine_parameters"][user_machine]["tasks_per_node"])
-
 # get the desired simulator version
 pipeline_yml["variables"]["CB_SIMULATOR_REPO"] = config["software_parameters"]["simulator_repo_url"]
 pipeline_yml["variables"]["CB_SIMULATOR_BRANCH"] = config["software_parameters"]["simulator_repo_branch"]

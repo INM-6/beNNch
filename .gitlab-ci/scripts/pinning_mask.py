@@ -1,8 +1,18 @@
 import sys
+import yaml
+yaml.add_representer(str, lambda dumper, data: dumper.represent_scalar('tag:yaml.org,2002:str', data, style='"'))
+
+config_file_path = sys.argv[1]
+
+user_machine = os.environ["CB_MACHINES"]
+user_model = os.environ["CB_MODELS"]
+
+with open(config_file_path) as config_file:
+    config = yaml.safe_load(config_file)
 
 # Retrieve arguments
-threads_per_task = int(sys.argv[1])
-tasks_per_node = int(sys.argv[2])
+threads_per_task = config["benchmarks"][user_model]["machine_parameters"][user_machine]["threads_per_task"]
+tasks_per_node = config["benchmarks"][user_model]["machine_parameters"][user_machine]["tasks_per_node"]
 
 # Execute the code using exec and ensure variables are in the local scope
 cpu_bind_masks = list()

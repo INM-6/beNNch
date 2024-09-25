@@ -128,7 +128,7 @@ Validate Input:
     - "! grep '${CB_MACHINES}.yml' run-benchmarks.yml"
     - "ls -al"
     # calculate cpu bin mask so machine configs may pick it up if they need it
-    - 'export CPU_BIND_MASK=$(python3 $CI_PROJECT_DIR/.gitlab-ci/scripts/pinning_mask.py $CB_THREADS_PER_TASK $CB_TASKS_PER_NODE)'
+    - 'export CPU_BIND_MASK=$(python3 $CI_PROJECT_DIR/.gitlab-ci/scripts/pinning_mask.py $CI_PROJECT_DIR/config.yml)'
     - 'echo $CPU_BIND_MASK'
     - 'echo "CPU_BIND_MASK=$CPU_BIND_MASK" >> $CI_ENVIRONMENT_FILE'
   artifacts:
