@@ -59,7 +59,7 @@ Initialise environment:
   extends: [ .front, .initialise ]
   artifacts:
     paths:
-      - "benchmarking-env"
+      - "pip_packages"
 
 # Must define USER_DATA_DIR
 Preparation:
@@ -72,7 +72,7 @@ Preparation:
       job: "Validate Input"
   artifacts:
     paths:
-      - "benchmarking-env"
+      - "pip_packages"
       - "JUBE/"
       - "Builder/"
     reports:
@@ -110,16 +110,12 @@ Preparation:
     - 'if [[ $(realpath "$CI_PROJECT_DIR/simulator.planfile") != $(realpath "$SIMULATOR_PLANFILE_PATH") ]]; then mv "$CI_PROJECT_DIR/simulator.planfile" "$SIMULATOR_PLANFILE_PATH"; fi'
     - 'cd $CI_PROJECT_DIR'
     # install gathermetadata
+    - 'python -m pip download --no-deps git+https://SATheinen:$GITHUB_TOKEN@github.com/inm-6/gather-metadata --dest ./pip_packages'
     - 'python -m pip install git+https://SATheinen:$GITHUB_TOKEN@github.com/inm-6/gather-metadata'
     # install jube
     - 'git clone --depth=1 --branch=feature-python-exec https://github.com/JanVogelsang/JUBE.git JUBE'
-    - 'cd JUBE'
-    - 'pip install .'
-    - 'jube --version'
-    - 'cd ..'
     # install builder
     - 'git clone https://github.com/INM-6/Builder.git'
-    - 'cd "${USER_DATA_DIR}/user_files"'
     # Clone simulator and model repositories
     - |
       export CB_SIMULATOR_BRANCH=$(python3 -c "import yaml; f = open('$CONFIG_FILE_PATH', 'r'); print(yaml.safe_load(f)['software_parameters']['simulator_repo_branch']);f.close()")
@@ -160,13 +156,14 @@ Build:
       job: "Validate Input"
   artifacts:
     paths:
-      - "benchmarking-env"
+      - "pip_packages"
     reports:
       dotenv: benchmark_variables.env
     when: on_success
   timeout: "1 day"
   script:
     - 'set -euo pipefail'
+    - 'pip install ./Builder'
     # Build simulator
     - |
       export PLANFILE_PATH="$BUILDER_PLANFILE_DIR"
@@ -218,7 +215,7 @@ Benchmarking:
     when: on_success
   timeout: "1 day"
   script:
-    # Run benchmarks
+    - 'pip install ./JUBE'
     # Wait until all other jube benchmarks have been started until the JUBE_BENCHMARK_ID of this subpipeline
     - 'cd $JUBE_RESULTS_DIR'
     # Start the benchmarks now

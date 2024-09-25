@@ -45,7 +45,9 @@ module use #MODULES_DIR#
 module load simulator/#BRANCH#/default
 source #PREPARE_FILE#
 
-source jemalloc.sh
+if ! source jemalloc.sh; then
+  echo "Sourcing jemalloc failed, continue without it"
+fi
 
 module list
 
