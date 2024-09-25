@@ -166,7 +166,6 @@ Build:
   timeout: "1 day"
   script:
     - 'set -euo pipefail'
-    - 'pip install ./Builder'
     # Build simulator
     - |
       export PLANFILE_PATH="$BUILDER_PLANFILE_DIR"

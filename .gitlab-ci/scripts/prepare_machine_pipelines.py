@@ -31,6 +31,7 @@ pipelines_dir_out = sys.argv[2]
 config_file_path = sys.argv[3]
 
 user_machine = os.environ["CB_MACHINES"]
+user_model = os.environ["CB_MODELS"]
 print(user_machine)
 
 with open(config_file_path) as config_file:
@@ -49,6 +50,9 @@ pipeline_yml["variables"]["CB_BUILD_TIME_LIMIT"] = machine_conf.get('build-time-
 pipeline_yml["variables"]["CB_PARTITION"] = machine_conf.get('partition', '')
 pipeline_yml["variables"].update(config["dependencies"][user_machine]["variables"])
 print(machine_conf.get('partition', ''))
+
+pipeline_yml["variables"]["CB_THREADS_PER_TASK"] = config["benchmarks"][user_model]["machine_parameters"][user_machine]["threads_per_task"]
+pipeline_yml["variables"]["CB_TASKS_PER_NODE"] = config["benchmarks"][user_model]["machine_parameters"][user_machine]["tasks_per_node"]
 
 # get the desired simulator version
 pipeline_yml["variables"]["CB_SIMULATOR_REPO"] = config["software_parameters"]["simulator_repo_url"]
