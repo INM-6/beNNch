@@ -1,5 +1,6 @@
 import sys
 import yaml
+import os
 yaml.add_representer(str, lambda dumper, data: dumper.represent_scalar('tag:yaml.org,2002:str', data, style='"'))
 
 config_file_path = sys.argv[1]
