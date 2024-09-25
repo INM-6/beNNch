@@ -45,7 +45,7 @@
     - 'export PYTHONNOUSERSITE=1'
     - 'module load $MODULE_LIST'
     - 'python -m venv --system-site-packages benchmarking-env'
-    - 'benchmarking-env/bin/pip download $PIP_LIST --dest ./pip_packages'
+    - 'benchmarking-env/bin/pip download --no-binary=:all: --dest ./pip_packages $PIP_LIST'
     - 'ls -al'
 
 variables:
