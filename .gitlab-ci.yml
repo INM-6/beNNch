@@ -118,10 +118,6 @@ Validate Input:
     - 'mkdir "$CI_PROJECT_DIR/tmp"'
     - 'python "$CI_PROJECT_DIR/.gitlab-ci/scripts/patch_config.py" "$CI_PROJECT_DIR/tmp" "$CI_PROJECT_DIR/config.yml" "$CI_PROJECT_DIR/simulator.planfile" "$CI_PROJECT_DIR/simulator.module" "$CONFIG_REPO" "$CONFIG_BRANCH" "$CONFIG_PATH"'
     - 'rm -rf $CI_PROJECT_DIR/tmp'
-    # calculate cpu bin mask so machine configs may pick it up if they need it
-    - 'export CPU_BIND_MASK=$(python3 $CI_PROJECT_DIR/.gitlab-ci/scripts/pinning_mask.py $CB_THREADS_PER_TASK $CB_TASKS_PER_NODE)'
-    - 'echo $CPU_BIND_MASK'
-    - 'echo "CPU_BIND_MASK=$CPU_BIND_MASK" >> $CI_ENVIRONMENT_FILE'
     # merge config into machine config
     - 'mkdir $CI_PROJECT_DIR/prepared-machine-config'
     - 'python "$CI_PROJECT_DIR/.gitlab-ci/scripts/prepare_machine_pipelines.py" "$CI_PROJECT_DIR/.gitlab-ci/jacamar-benchmarking.yml" "$CI_PROJECT_DIR/prepared-jacamar-benchmarking.yml" "$CI_PROJECT_DIR/config.yml"'
@@ -131,6 +127,10 @@ Validate Input:
     - "cat run-benchmarks.yml"
     - "! grep '${CB_MACHINES}.yml' run-benchmarks.yml"
     - "ls -al"
+    # calculate cpu bin mask so machine configs may pick it up if they need it
+    - 'export CPU_BIND_MASK=$(python3 $CI_PROJECT_DIR/.gitlab-ci/scripts/pinning_mask.py $CB_THREADS_PER_TASK $CB_TASKS_PER_NODE)'
+    - 'echo $CPU_BIND_MASK'
+    - 'echo "CPU_BIND_MASK=$CPU_BIND_MASK" >> $CI_ENVIRONMENT_FILE'
   artifacts:
     paths:
       - "config.yml"
