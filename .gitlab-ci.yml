@@ -130,13 +130,15 @@ Validate Input:
     # calculate cpu bin mask so machine configs may pick it up if they need it
     - 'export CPU_BIND_MASK=$(python3 $CI_PROJECT_DIR/.gitlab-ci/scripts/pinning_mask.py $CI_PROJECT_DIR/config.yml)'
     - 'echo $CPU_BIND_MASK'
-    - 'echo "CPU_BIND_MASK=$CPU_BIND_MASK" >> $CI_ENVIRONMENT_FILE'
+    - 'echo "CPU_BIND_MASK=$CPU_BIND_MASK" > cpu_bind_mask.env'
   artifacts:
     paths:
       - "config.yml"
       - "simulator.module"
       - "simulator.planfile"
       - "run-benchmarks.yml"
+    reports:
+      dotenv: cpu_bind_mask.env
     when: on_success
 
 Trigger:
