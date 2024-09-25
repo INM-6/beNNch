@@ -12,8 +12,8 @@ with open(config_file_path) as config_file:
     config = yaml.safe_load(config_file)
 
 # Retrieve arguments
-threads_per_task = config["benchmarks"][user_model]["machine_parameters"][user_machine]["threads_per_task"]
-tasks_per_node = config["benchmarks"][user_model]["machine_parameters"][user_machine]["tasks_per_node"]
+threads_per_task = int(config["benchmarks"][user_model]["machine_parameters"][user_machine]["threads_per_task"])
+tasks_per_node = int(config["benchmarks"][user_model]["machine_parameters"][user_machine]["tasks_per_node"])
 
 # Execute the code using exec and ensure variables are in the local scope
 cpu_bind_masks = list()
