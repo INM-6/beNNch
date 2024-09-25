@@ -119,7 +119,7 @@ Validate Input:
     - 'python "$CI_PROJECT_DIR/.gitlab-ci/scripts/patch_config.py" "$CI_PROJECT_DIR/tmp" "$CI_PROJECT_DIR/config.yml" "$CI_PROJECT_DIR/simulator.planfile" "$CI_PROJECT_DIR/simulator.module" "$CONFIG_REPO" "$CONFIG_BRANCH" "$CONFIG_PATH"'
     - 'rm -rf $CI_PROJECT_DIR/tmp'
     # calculate cpu bin mask so machine configs may pick it up if they need it
-    - 'export CPU_BIND_MASK=$(python3 -c "$CI_PROJECT_DIR/.gitlab-ci/scripts/pinning_mask.py")'
+    - 'export CPU_BIND_MASK=$(python3 $CI_PROJECT_DIR/.gitlab-ci/scripts/pinning_mask.py)'
     - 'echo $CPU_BIND_MASK'
     - 'echo "CPU_BIND_MASK=$CPU_BIND_MASK" >> $CI_ENVIRONMENT_FILE'
     # merge config into machine config
