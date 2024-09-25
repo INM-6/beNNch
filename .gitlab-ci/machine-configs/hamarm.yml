@@ -17,21 +17,21 @@
 
 .front:
   variables:
-    SCHEDULER_PARAMETERS: "--mem=$CB_JOB_MEM --account=$CB_RUNNER_ACCOUNT --time=$CB_JOB_TIME_LIMIT --nodes=$CB_NUMNODES"
+    SCHEDULER_PARAMETERS: "--partition=hamstein --mem=$CB_JOB_MEM --account=$CB_RUNNER_ACCOUNT --time=$CB_JOB_TIME_LIMIT --nodes=$CB_NUMNODES"
     CB_NUMNODES: 1
     CB_JOB_TIME_LIMIT: 00:10:00
-    CB_RUNNER_ACCOUNT: hamarm
+    #CB_RUNNER_ACCOUNT: hamarm
     CB_JOB_MEM: "8G"
   tags:
     - hambach
 
 .compute:
   variables:
-    SCHEDULER_PARAMETERS: "--partition=$CB_PARTITION --mem-per-cpu=$CB_JOB_MEM --account=$CB_RUNNER_ACCOUNT --time=$CB_JOB_TIME_LIMIT --nodes=$CB_NUMNODES --ntasks-per-node=16 --cpus-per-task=1"
+    SCHEDULER_PARAMETERS: "--partition=$CB_PARTITION --account=$CB_RUNNER_ACCOUNT --time=$CB_BUILD_TIME_LIMIT --nodes=$CB_NUMNODES --exclusive" # --ntasks-per-node=16 --cpus-per-task=1"
     CB_NUMNODES: 1
-    CB_JOB_TIME_LIMIT: 00:20:00
-    CB_RUNNER_ACCOUNT: hamarm
-    CB_JOB_MEM: "1G"
+    #CB_JOB_TIME_LIMIT: 00:20:00
+    #CB_RUNNER_ACCOUNT: hamarm
+    #CB_JOB_MEMO: "1G" --mem-per-cpu=$CB_JOB_MEMO
   tags:
     - hambach
 
