@@ -72,9 +72,10 @@ Preparation:
       job: "Validate Input"
   artifacts:
     paths:
-      - "pip_packages"
+      - "pip_packages/"
       - "JUBE/"
       - "Builder/"
+      - "gather-metadata/"
     reports:
       dotenv: benchmark_variables.env
     when: on_success
@@ -110,8 +111,7 @@ Preparation:
     - 'if [[ $(realpath "$CI_PROJECT_DIR/simulator.planfile") != $(realpath "$SIMULATOR_PLANFILE_PATH") ]]; then mv "$CI_PROJECT_DIR/simulator.planfile" "$SIMULATOR_PLANFILE_PATH"; fi'
     - 'cd $CI_PROJECT_DIR'
     # install gathermetadata
-    - 'python -m pip download --no-deps git+https://SATheinen:$GITHUB_TOKEN@github.com/inm-6/gather-metadata --dest ./pip_packages'
-    - 'python -m pip install git+https://SATheinen:$GITHUB_TOKEN@github.com/inm-6/gather-metadata'
+    - 'git clone https://SATheinen:$GITHUB_TOKEN@github.com/inm-6/gather-metadata'
     # install jube
     - 'git clone --depth=1 --branch=feature-python-exec https://github.com/JanVogelsang/JUBE.git JUBE'
     # install builder
@@ -157,6 +157,9 @@ Build:
   artifacts:
     paths:
       - "pip_packages"
+      - "JUBE/"
+      - "Builder/"
+      - "gather-metadata/"
     reports:
       dotenv: benchmark_variables.env
     when: on_success
@@ -216,6 +219,7 @@ Benchmarking:
   timeout: "1 day"
   script:
     - 'pip install ./JUBE'
+    - 'pip install ./gather-metadata'
     # Wait until all other jube benchmarks have been started until the JUBE_BENCHMARK_ID of this subpipeline
     - 'cd $JUBE_RESULTS_DIR'
     # Start the benchmarks now
