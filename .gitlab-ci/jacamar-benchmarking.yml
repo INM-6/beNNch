@@ -201,7 +201,7 @@ Build:
  
 Benchmarking:
   stage: benchmarking
-  extends: [ .environment-load, .front ]
+  extends: [ .front, .environment-load ]
   needs:
     - job: "Build"
       artifacts: true

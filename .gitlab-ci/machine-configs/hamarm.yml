@@ -17,11 +17,11 @@
 
 .front:
   variables:
-    SCHEDULER_PARAMETERS: "--partition=hamstein --mem=$CB_JOB_MEM --account=$CB_RUNNER_ACCOUNT --time=$CB_JOB_TIME_LIMIT --nodes=$CB_NUMNODES --exclusive"
+    SCHEDULER_PARAMETERS: "--mem=$CB_JOB_MEM --account=$CB_RUNNER_ACCOUNT --time=$CB_JOB_TIME_LIMIT --nodes=$CB_NUMNODES --exclusive"
     CB_NUMNODES: 1
     CB_JOB_TIME_LIMIT: 00:30:00
     CB_RUNNER_ACCOUNT: hamarm
-    CB_JOB_MEM: "16G"
+    CB_JOB_MEM: "8G"
   tags:
     - hambach
 
@@ -31,7 +31,7 @@
     CB_NUMNODES: 1
     CB_JOB_TIME_LIMIT: 00:30:00
     CB_RUNNER_ACCOUNT: hamarm
-    CB_JOB_MEM: "16G"
+    CB_JOB_MEM: "8G"
   tags:
     - hambach
 
