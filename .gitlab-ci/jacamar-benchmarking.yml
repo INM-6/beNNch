@@ -333,7 +333,7 @@ Transfer:
     - 'cd bennch-data/data'
     - 'pwd'
     - 'ls -la'
-    - 'git annex add ${BENCHMARK_UUIDS}'
+    - 'git annex add ${BENCHMARK_FILES}'
     - 'unset GIT_DIR'
     - 'unset GIT_WORK_TREE'
     - 'git config core.worktree ${CI_PROJECT_DIR}/bennch-data'
