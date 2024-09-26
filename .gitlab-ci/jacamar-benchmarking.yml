@@ -219,7 +219,10 @@ Benchmarking:
   timeout: "1 day"
   script:
     # unset some slurm parameters from the ci job so that they cannot be passed to the benchmark job
-    - 'for var in $(env | grep SLURM | cut -d= -f1); do unset $var; done'
+    #- 'for var in $(env | grep SLURM | cut -d= -f1); do unset $var; done'
+    - 'unset SLURM_MEM_PER_CPU'
+    - 'unset SLURM_MEM_PER_GPU'
+    - 'unset SLURM_MEM_PER_NODE'
     - 'pip install ./JUBE'
     - 'pip install ./gather-metadata'
     # Wait until all other jube benchmarks have been started until the JUBE_BENCHMARK_ID of this subpipeline
