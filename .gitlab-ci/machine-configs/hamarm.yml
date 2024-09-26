@@ -43,6 +43,7 @@ variables:
 
 .initialise:
   script:
+    - 'module load $MODULE_LIST'
     - 'eval TEMP_DIR="$TEMP_DIR"'
     - 'export PYTHONNOUSERSITE=1'
     - 'python -m venv --system-site-packages benchmarking-env'
@@ -51,12 +52,13 @@ variables:
 
 .environment-load:
   before_script:
+    - 'module load $MODULE_LIST'
     - 'eval TEMP_DIR="$TEMP_DIR"'
     - 'export PYTHONNOUSERSITE=1'
     - 'python -m venv --system-site-packages benchmarking-env'
     - 'source benchmarking-env/bin/activate'
-    - 'pip install numpy'
-    - 'pip install pandas'
+    #- 'pip install numpy'
+    #- 'pip install pandas'
     #- 'benchmarking-env/bin/pip install --no-index --find-links=./pip_packages ./pip_packages/*'
     - 'export PATH="$(pwd):$PATH"'
     - 'ls -al'
