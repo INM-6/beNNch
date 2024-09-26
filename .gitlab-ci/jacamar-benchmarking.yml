@@ -326,7 +326,11 @@ Transfer:
     - 'set -euo pipefail'
     # get uuids of single files and store them in a variable passed to the plotting pipeline
     - |
+      # cvs style to pass them as variable to annotate and plotting
       BENCHMARK_FILES=$(ls results/ | tr '\n' ',' | sed 's/,$//')
+      # space separated style for git annex add
+    - |
+      FILES_TO_ADD=$(ls results/)
     - 'echo $BENCHMARK_FILES'
     - 'ANNOTATE_EXPERIMENT_ID=$(uuidgen)'
     - 'touch BENCHMARK_UUIDS.env'
@@ -335,8 +339,6 @@ Transfer:
     # actual data transfer
     - 'cd ${CB_STORAGE_DIR}'
     - 'cp -r ${CI_PROJECT_DIR}/results/* .'
-    - |
-      FILES_TO_ADD=$(ls results/)
     - 'git annex add ${FILES_TO_ADD}'
     - 'git commit -a -m "add benchmarking data of run ${ANNOTATE_EXPERIMENT_ID}"'
     - 'git annex sync --push --content'
