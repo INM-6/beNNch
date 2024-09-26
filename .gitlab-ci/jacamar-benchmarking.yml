@@ -332,16 +332,14 @@ Transfer:
     - 'echo "ANNOTATE_EXPERIMENT_ID=${ANNOTATE_EXPERIMENT_ID}" >> BENCHMARK_UUIDS.env'
     # actual data transfer
     - 'git clone ${CB_STORAGE_DIR}'
-    - 'cp -r results/* bennch-data/data'
     - 'cd bennch-data/data'
-    - 'pwd'
     - 'unset GIT_DIR'
     - 'unset GIT_WORK_TREE'
     - 'git config core.worktree ${CI_PROJECT_DIR}/bennch-data'
     - 'git annex init'
     - 'git annex sync -v'
+    - 'cp -r ${CI_PROJECT_DIR}/results/* ${CI_PROJECT_DIR}/bennch-data/data'
     - 'git annex add ${BENCHMARK_FILES}'
-    #- 'git annex get .'
     - 'git commit -a -m "add benchmarking data of run ${ANNOTATE_EXPERIMENT_ID}"'
     - 'git annex sync --push --content'
 
