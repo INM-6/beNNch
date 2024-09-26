@@ -218,6 +218,9 @@ Benchmarking:
     when: on_success
   timeout: "1 day"
   script:
+    - 'unset SLURM_MEM_PER_CPU'
+    - 'unset SLURM_MEM_PER_GPU'
+    - 'unset SLURM_MEM_PER_NODE'
     - 'pip install ./JUBE'
     - 'pip install ./gather-metadata'
     # Wait until all other jube benchmarks have been started until the JUBE_BENCHMARK_ID of this subpipeline
