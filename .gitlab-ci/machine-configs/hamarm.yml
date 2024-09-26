@@ -37,7 +37,7 @@
 
 variables:
   TEMP_DIR: "/work/users"
-  extra_srun_flags: ""
+  extra_srun_flags: "--ntasks=1 --cpus-per-task=128"
   extra_sbatch_flags: "--exclusive"
 
 .initialise:
