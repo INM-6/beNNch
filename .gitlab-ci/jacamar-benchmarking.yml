@@ -218,6 +218,7 @@ Benchmarking:
     when: on_success
   timeout: "1 day"
   script:
+    # unset some slurm parameters from the ci job so that they cannot be passed to the benchmark job
     - 'unset SLURM_MEM_PER_CPU'
     - 'unset SLURM_MEM_PER_GPU'
     - 'unset SLURM_MEM_PER_NODE'
@@ -331,14 +332,12 @@ Transfer:
     - 'echo "BENCHMARK_UUIDS=${BENCHMARK_FILES}" >> BENCHMARK_UUIDS.env'
     - 'echo "ANNOTATE_EXPERIMENT_ID=${ANNOTATE_EXPERIMENT_ID}" >> BENCHMARK_UUIDS.env'
     # actual data transfer
-    - 'git clone ${CB_STORAGE_DIR}'
-    - 'cd bennch-data/data'
-    - 'unset GIT_DIR'
-    - 'unset GIT_WORK_TREE'
-    - 'git config core.worktree ${CI_PROJECT_DIR}/bennch-data'
-    - 'git annex init'
-    - 'git annex sync -v'
-    - 'cp -r ${CI_PROJECT_DIR}/results/* ${CI_PROJECT_DIR}/bennch-data/data'
+    - 'cd /work/datasets'
+    - 'mkdir bennch-datadump'
+    - 'cd ${CB_STORAGE_DIR}'
+    - 'git init'
+    - 'git annex init "benchmarking data"'
+    - 'cp -r ${CI_PROJECT_DIR}/results/* .'
     - 'git annex add ${BENCHMARK_FILES}'
     - 'git commit -a -m "add benchmarking data of run ${ANNOTATE_EXPERIMENT_ID}"'
     - 'git annex sync --push --content'
