@@ -28,6 +28,8 @@
 #SBATCH --distribution=block:block:fcyclic
 #SBATCH #EXTRA_SBATCH_FLAGS#
 
+source ${CI_PROJECT_DIR}/slurm-env/bin/activate
+
 echo "JobId: $SLURM_JOB_ID"
 
 set -exo pipefail

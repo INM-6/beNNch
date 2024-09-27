@@ -157,7 +157,7 @@ Build:
       job: "Validate Input"
   artifacts:
     paths:
-      - "pip_packages"
+      - "slurm-env"
       - "JUBE/"
       - "Builder/"
       - "gather-metadata/"
@@ -201,6 +201,8 @@ Build:
         fi
       done
       cat "$CI_PROJECT_DIR/benchmark_variables.env"
+    # build and the actual benchamrk might run on different architectures than the rest of the programm
+    - 'mv benchmarking-env slurm-env'
  
 Benchmarking:
   stage: benchmarking
