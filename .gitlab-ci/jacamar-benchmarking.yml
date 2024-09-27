@@ -207,7 +207,7 @@ Build:
  
 Benchmarking:
   stage: benchmarking
-  extends: [ .front, .environment-load ]
+  extends: [ .front ] #.environment-load ]
   needs:
     - job: "Build"
       artifacts: true
@@ -226,6 +226,7 @@ Benchmarking:
     - 'unset SLURM_MEM_PER_CPU'
     - 'unset SLURM_MEM_PER_GPU'
     - 'unset SLURM_MEM_PER_NODE'
+    - 'source slurm-env/bin/activate'
     - 'pip install ./JUBE'
     - 'pip install ./gather-metadata'
     # Wait until all other jube benchmarks have been started until the JUBE_BENCHMARK_ID of this subpipeline

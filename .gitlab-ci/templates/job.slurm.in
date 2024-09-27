@@ -30,10 +30,6 @@
 
 echo "JobId: $SLURM_JOB_ID"
 
-echo "${CI_PROJECT_DIR}/slurm-env/bin/activate"
-deactivate
-source ${CI_PROJECT_DIR}/slurm-env/bin/activate
-
 set -exo pipefail
 
 export OMP_NUM_THREADS=#THREADS_PER_TASK#
