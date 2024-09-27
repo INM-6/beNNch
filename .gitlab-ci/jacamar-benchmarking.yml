@@ -157,6 +157,7 @@ Build:
       job: "Validate Input"
   artifacts:
     paths:
+      - "pip_packages/"
       - "slurm-env"
       - "JUBE/"
       - "Builder/"
