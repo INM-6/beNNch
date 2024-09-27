@@ -21,18 +21,18 @@
     CB_NUMNODES: 1
     CB_PARTITION: "hamstein"
     CB_JOB_TIME_LIMIT: 00:10:00
-    #CB_RUNNER_ACCOUNT: hamarm
+    CB_RUNNER_ACCOUNT: hamarm
     CB_JOB_MEM: "8G"
   tags:
     - hambach
 
 .compute:
   variables:
-    SCHEDULER_PARAMETERS: "--partition=$CB_PARTITION --account=$CB_RUNNER_ACCOUNT --time=$CB_BUILD_TIME_LIMIT --nodes=$CB_NUMNODES --exclusive" # --ntasks-per-node=16 --cpus-per-task=1"
+    SCHEDULER_PARAMETERS: "--partition=$CB_PARTITION --mem-per-cpu=$CB_JOB_MEMO --account=$CB_RUNNER_ACCOUNT --time=$CB_BUILD_TIME_LIMIT --nodes=$CB_NUMNODES --exclusive --ntasks-per-node=16 --cpus-per-task=1"
     CB_NUMNODES: 1
-    #CB_JOB_TIME_LIMIT: 00:20:00
-    #CB_RUNNER_ACCOUNT: hamarm
-    #CB_JOB_MEMO: "1G" --mem-per-cpu=$CB_JOB_MEMO
+    CB_JOB_TIME_LIMIT: 00:20:00
+    CB_RUNNER_ACCOUNT: hamarm
+    CB_JOB_MEMO: "8G" 
   tags:
     - hambach
 
@@ -47,18 +47,17 @@ variables:
     - 'eval TEMP_DIR="$TEMP_DIR"'
     - 'export PYTHONNOUSERSITE=1'
     - 'python -m venv --system-site-packages benchmarking-env'
-    #- 'benchmarking-env/bin/pip download --no-binary=:all: --dest ./pip_packages $PIP_LIST'
     - 'ls -al'
 
 .environment-load:
   before_script:
+    - 'echo $MODULE_LIST'
     - 'module load $MODULE_LIST'
     - 'eval TEMP_DIR="$TEMP_DIR"'
     - 'export PYTHONNOUSERSITE=1'
     - 'python -m venv --system-site-packages benchmarking-env'
     - 'source benchmarking-env/bin/activate'
-    #- 'pip install numpy'
-    #- 'pip install pandas'
-    #- 'benchmarking-env/bin/pip install --no-index --find-links=./pip_packages ./pip_packages/*'
+    - 'pip install numpy'
+    - 'pip install pandas'
     - 'export PATH="$(pwd):$PATH"'
     - 'ls -al'
