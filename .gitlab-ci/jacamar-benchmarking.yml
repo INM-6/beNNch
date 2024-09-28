@@ -226,7 +226,6 @@ Benchmarking:
     - 'unset SLURM_MEM_PER_CPU'
     - 'unset SLURM_MEM_PER_GPU'
     - 'unset SLURM_MEM_PER_NODE'
-    - 'source slurm-env/bin/activate'
     - 'pip install ./JUBE'
     - 'pip install ./gather-metadata'
     # Wait until all other jube benchmarks have been started until the JUBE_BENCHMARK_ID of this subpipeline
@@ -266,7 +265,13 @@ Benchmarking:
                   cp "$run/work/stderr" "$run/work/stderr_NodeFailure_${retries[$(basename $run)]}"
                   rm -f "$run/work/ready" "$run/work/stderr" "$run/work/stdout"
                   cd "$run/work/"
+                  # ensure the correct venv from build is used for the slurm script
+                  #################################################################
+                  source slurm-env/bin/activate
                   sbatch job.slurm
+                  deactivate
+                  source benchmarking-env/bin/activate
+                  #################################################################
                   echo "Detected node failure, rerunning job (#${retries[$(basename $run)]})"
                   (( ++NUM_FAILURES ))
                 else
