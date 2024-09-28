@@ -57,6 +57,7 @@ variables:
     - 'source benchmarking-env/bin/activate'
     - 'pip install numpy'
     - 'pip install pandas'
+    - 'pip install yml'
     - 'export PATH="$(pwd):$PATH"'
     - 'ls -al'
     - |
