@@ -267,10 +267,10 @@ Benchmarking:
                   cd "$run/work/"
                   # ensure the correct venv from build is used for the slurm script
                   #################################################################
-                  source slurm-env/bin/activate
+                  source ${CI_PROJECT_DIR}/slurm-env/bin/activate
                   sbatch job.slurm
                   deactivate
-                  source benchmarking-env/bin/activate
+                  source ${CI_PROJECT_DIR}/benchmarking-env/bin/activate
                   #################################################################
                   echo "Detected node failure, rerunning job (#${retries[$(basename $run)]})"
                   (( ++NUM_FAILURES ))
