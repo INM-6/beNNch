@@ -28,10 +28,6 @@
 #SBATCH --distribution=block:block:fcyclic
 #SBATCH #EXTRA_SBATCH_FLAGS#
 
-python -m venv slurm-venv
-source slurm-venv/bin/activate
-pip install numpy pandas matplotlib
-
 echo "JobId: $SLURM_JOB_ID"
 
 set -exo pipefail

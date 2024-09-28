@@ -59,3 +59,5 @@ variables:
     - 'pip install pandas'
     - 'export PATH="$(pwd):$PATH"'
     - 'ls -al'
+    - |
+      sed -i '30i\python -m venv slurm-venv\nsource slurm-venv/bin/activate\npip install numpy pandas matplotlib yml' $TEMPLATES_DIR/job.slurm.in
