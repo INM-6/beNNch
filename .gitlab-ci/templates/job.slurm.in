@@ -30,7 +30,7 @@
 
 python -m venv slurm-venv
 source slurm-venv/bin/activate
-pip install numpy pandas
+pip install numpy pandas matplotlib
 
 echo "JobId: $SLURM_JOB_ID"
 
