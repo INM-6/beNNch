@@ -158,7 +158,7 @@ Build:
   artifacts:
     paths:
       - "pip_packages/"
-      - "slurm-env"
+      #- "slurm-env"
       - "JUBE/"
       - "Builder/"
       - "gather-metadata/"
@@ -203,7 +203,7 @@ Build:
       done
       cat "$CI_PROJECT_DIR/benchmark_variables.env"
     # build and the actual benchamrk might run on different architectures than the rest of the programm
-    - 'mv benchmarking-env slurm-env'
+    #- 'mv benchmarking-env slurm-env'
  
 Benchmarking:
   stage: benchmarking
@@ -265,13 +265,7 @@ Benchmarking:
                   cp "$run/work/stderr" "$run/work/stderr_NodeFailure_${retries[$(basename $run)]}"
                   rm -f "$run/work/ready" "$run/work/stderr" "$run/work/stdout"
                   cd "$run/work/"
-                  # ensure the correct venv from build is used for the slurm script
-                  #################################################################
-                  source ${CI_PROJECT_DIR}/slurm-env/bin/activate
                   sbatch job.slurm
-                  deactivate
-                  source ${CI_PROJECT_DIR}/benchmarking-env/bin/activate
-                  #################################################################
                   echo "Detected node failure, rerunning job (#${retries[$(basename $run)]})"
                   (( ++NUM_FAILURES ))
                 else
