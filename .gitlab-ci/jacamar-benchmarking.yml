@@ -54,7 +54,7 @@ stages: [ preparation, build, benchmarking, transfer, annotate, plot ]
 # Must define USER_DATA_DIR
 Preparation:
   stage: preparation
-  extends: [ .front, .environment-load ]
+  extends: [ .front ]
   needs:
     - pipeline: "$PARENT_PIPELINE_ID"
       job: "Validate Input"
@@ -137,7 +137,7 @@ Preparation:
 
 Build:
   stage: build
-  extends: [ .compute, .environment-load ]
+  extends: [ .compute ]
   needs:
     - job: "Preparation"
       artifacts: true
@@ -192,7 +192,7 @@ Build:
  
 Benchmarking:
   stage: benchmarking
-  extends: [ .front, .environment-load ]
+  extends: [ .front ]
   needs:
     - job: "Build"
       artifacts: true
