@@ -56,16 +56,3 @@ variables:
   TEMP_DIR: "/work/users"
   extra_srun_flags: "--ntasks=1 --cpus-per-task=128"
   extra_sbatch_flags: "--exclusive"
-
-.environment-load:
-  before_script:
-    - 'echo $MODULE_LIST'
-    - 'module load $MODULE_LIST'
-    - 'eval TEMP_DIR="$TEMP_DIR"'
-    - 'export PYTHONNOUSERSITE=1'
-    - 'python -m venv --system-site-packages benchmarking-env'
-    - 'source benchmarking-env/bin/activate'
-    - 'export PATH="$(pwd):$PATH"'
-    - 'ls -al'
-    - |
-      sed -i '30i\python -m venv slurm-venv\nsource slurm-venv/bin/activate\npip install numpy pandas matplotlib yml' $TEMPLATES_DIR/job.slurm.in
