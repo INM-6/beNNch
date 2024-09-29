@@ -56,8 +56,6 @@ Preparation:
   stage: preparation
   extends: [ .front, .environment-load ]
   needs:
-    - job: "Initialise environment"
-      artifacts: true
     - pipeline: "$PARENT_PIPELINE_ID"
       job: "Validate Input"
   artifacts:
