@@ -28,6 +28,12 @@
 #SBATCH --distribution=block:block:fcyclic
 #SBATCH #EXTRA_SBATCH_FLAGS#
 
+module load $MODULE_LIST
+python -m venv --system-site-packages compute-env
+source compute-env/bin/activate
+compute-env/bin/pip install --no-index --find-links=${CI_PROJECT_DIR}/pip_packages ${CI_PROJECT_DIR}/pip_packages/*
+export PATH="$(pwd):$PATH"
+
 echo "JobId: $SLURM_JOB_ID"
 
 set -exo pipefail
