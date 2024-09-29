@@ -16,6 +16,15 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 .front:
+  before_script:
+    - 'module load $MODULE_LIST'
+    - 'eval TEMP_DIR="$TEMP_DIR"'
+    - 'export PYTHONNOUSERSITE=1'
+    - 'python -m venv --system-site-packages benchmarking-env'
+    - 'source benchmarking-env/bin/activate'
+    - 'compute-env/bin/pip install $PIP_LIST'
+    - 'export PATH="$(pwd):$PATH"'
+    - 'ls -al'
   variables:
     SCHEDULER_PARAMETERS: "--partition=$CB_PARTITION --mem=$CB_JOB_MEM --account=$CB_RUNNER_ACCOUNT --time=$CB_JOB_TIME_LIMIT --nodes=$CB_NUMNODES"
     CB_NUMNODES: 1
@@ -27,6 +36,15 @@
     - jacamar
 
 .compute:
+  before_script:
+    - 'module load $MODULE_LIST'
+    - 'eval TEMP_DIR="$TEMP_DIR"'
+    - 'export PYTHONNOUSERSITE=1'
+    - 'python -m venv --system-site-packages benchmarking-env'
+    - 'source benchmarking-env/bin/activate'
+    - 'compute-env/bin/pip download --dest ./pip_packages $PIP_LIST'
+    - 'export PATH="$(pwd):$PATH"'
+    - 'ls -al'
   variables:
     SCHEDULER_PARAMETERS: "--account=$CB_RUNNER_ACCOUNT --time=$CB_BUILD_TIME_LIMIT --nodes=$CB_NUMNODES"
     CB_NUMNODES: 1

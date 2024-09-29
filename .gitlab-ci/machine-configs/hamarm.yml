@@ -41,7 +41,7 @@
     - 'export PYTHONNOUSERSITE=1'
     - 'python -m venv --system-site-packages benchmarking-env'
     - 'source benchmarking-env/bin/activate'
-    - 'compute-env/bin/pip download --dest ./pip_packages $PIP_LIST'
+    - 'benchmarking-env/bin/pip download --dest ./pip_packages $PIP_LIST'
     - 'export PATH="$(pwd):$PATH"'
     - 'ls -al'
   variables:
