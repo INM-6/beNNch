@@ -29,7 +29,7 @@
 #SBATCH #EXTRA_SBATCH_FLAGS#
 
 module load $MODULE_LIST
-python -m venv --system-site-packages compute-env
+python -m venv --system-site-packages -p python3.8 compute-env
 source compute-env/bin/activate
 compute-env/bin/pip install --no-index --find-links=${CI_PROJECT_DIR}/pip_packages ${CI_PROJECT_DIR}/pip_packages/*
 export PATH="$(pwd):$PATH"

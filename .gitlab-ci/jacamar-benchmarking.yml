@@ -60,7 +60,7 @@ Preparation:
       job: "Validate Input"
   artifacts:
     paths:
-      - "pip_packages/"
+      - "compute-packages/"
       - "JUBE/"
       - "Builder/"
       - "gather-metadata/"
@@ -145,7 +145,6 @@ Build:
       job: "Validate Input"
   artifacts:
     paths:
-      - "pip_packages/"
       - "JUBE/"
       - "Builder/"
       - "gather-metadata/"
