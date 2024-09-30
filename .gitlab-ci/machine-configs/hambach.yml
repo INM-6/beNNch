@@ -54,5 +54,5 @@
 
 variables:
   TEMP_DIR: "/work/users"
-  extra_srun_flags: "--mpi=pmix"
+  extra_srun_flags: "--mpi=pmix --ntasks-per-node=$CB_TASKS_PER_NODE --cpus-per-task=$CB_THREADS_PER_TASK"
   extra_sbatch_flags: "--exclusive"
