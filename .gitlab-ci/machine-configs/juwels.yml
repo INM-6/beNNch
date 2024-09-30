@@ -16,44 +16,52 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 .front:
+  before_script:
+    - 'jutil env activate -p cjinb33'
+    - 'jutil env activate -p djinb33'
+    - 'module load $MODULE_LIST'
+    - 'eval TEMP_DIR="$TEMP_DIR"'
+    - 'export PYTHONNOUSERSITE=1'
+    - 'python -m venv --system-site-packages benchmarking-env'
+    - 'source benchmarking-env/bin/activate'
+    - 'benchmarking-env/bin/pip download $PIP_LIST --dest ./pip-packages'
+    - 'benchmarking-env/bin/pip install --no-index --find-links=${CI_PROJECT_DIR}/pip-packages ${CI_PROJECT_DIR}/pip-packages/*'
+    - 'export PATH="$(pwd):$PATH"'
+    - 'ls -al'
+  variables:
+    SCHEDULER_PARAMETERS: "--partition=$CB_PARTITION --mem=$CB_JOB_MEM --account=$CB_RUNNER_ACCOUNT --time=$CB_JOB_TIME_LIMIT --nodes=$CB_NUMNODES"
+    CB_NUMNODES: 1
+    CB_JOB_TIME_LIMIT: 00:10:00
+    CB_JOB_MEM: "16G"
   tags:
     - shell
     - juwels
     - jacamar
 
 .compute:
+  before_script:
+    - 'jutil env activate -p cjinb33'
+    - 'jutil env activate -p djinb33'
+    - 'module load $MODULE_LIST'
+    - 'eval TEMP_DIR="$TEMP_DIR"'
+    - 'export PYTHONNOUSERSITE=1'
+    - 'python -m venv --system-site-packages benchmarking-env'
+    - 'source benchmarking-env/bin/activate'
+    - 'benchmarking-env/bin/pip install --no-index --find-links=${CI_PROJECT_DIR}/pip-packages ${CI_PROJECT_DIR}/pip-packages/*'
+    - 'export PATH="$(pwd):$PATH"'
+    - 'ls -al'
+  variables:
+    SCHEDULER_PARAMETERS: "--account=$CB_RUNNER_ACCOUNT --time=$CB_BUILD_TIME_LIMIT --nodes=$CB_NUMNODES"
+    CB_NUMNODES: 1
+    #CB_JOB_TIME_LIMIT: 00:10:00
+    #CB_JOB_MEM: "16G"
   tags:
     - compute
     - juwels
     - jacamar
 
-.initialise:
-  script:
-    - 'jutil env activate -p cjinb33'
-    - 'jutil env activate -p djinb33'
-    - 'eval TEMP_DIR="$TEMP_DIR"'
-    - 'export PYTHONNOUSERSITE=1'
-    - 'module load $MODULE_LIST'
-    - 'python -m venv --system-site-packages benchmarking-env'
-    - 'benchmarking-env/bin/pip install $PIP_LIST'
-    - 'ls -al'
-
-.build:
-  variables:
-    SCHEDULER_PARAMETERS: "--account=$CB_RUNNER_ACCOUNT --time=$CB_BUILD_TIME_LIMIT --nodes=1"
-
 variables:
-    TEMP_DIR: "$$SCRATCH_cjinb33/ci-bennch/jureca/userdata"
+    TEMP_DIR: "$$SCRATCH_cjinb33/ci-bennch/juwels/userdata"
     extra_sbatch_flags: "--disable-turbomode --disable-perfparanoid"
-    extra_srun_flags: "--cpu-bind=mask_cpu:0xFFFFFFFFFFFFFFFF,0xFFFFFFFFFFFFFFFF0000000000000000"
-
-.environment-load:
-  before_script:
-    - 'eval TEMP_DIR="$TEMP_DIR"'
-    - 'jutil env activate -p cjinb33'
-    - 'jutil env activate -p djinb33'
-    - 'export PYTHONNOUSERSITE=1'
-    - 'module load $MODULE_LIST'
-    - 'source benchmarking-env/bin/activate'
-    - 'export PATH="$(pwd):$PATH"'
-    - 'ls -al'
+    extra_srun_flags: "--cpu-bind=mask_cpu:$CPU_BIND_MASK" 
+    CUSTOM_CI_BUILDS_DIR: "/p/scratch/cjinb33/.jacamar-ci/"
