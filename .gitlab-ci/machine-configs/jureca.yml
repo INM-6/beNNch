@@ -46,7 +46,7 @@
     - 'eval TEMP_DIR="$TEMP_DIR"'
     - 'export PYTHONNOUSERSITE=1'
     - 'python -m venv --system-site-packages benchmarking-env'
-    - 'source compute-env/bin/activate'
+    - 'source benchmarking-env/bin/activate'
     - 'benchmarking-env/bin/pip install --no-index --find-links=${CI_PROJECT_DIR}/pip-packages ${CI_PROJECT_DIR}/pip-packages/*'
     - 'export PATH="$(pwd):$PATH"'
     - 'ls -al'
