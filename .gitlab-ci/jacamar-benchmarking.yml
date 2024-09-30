@@ -60,7 +60,7 @@ Preparation:
       job: "Validate Input"
   artifacts:
     paths:
-      - "compute-packages/"
+      - "pip-packages/"
       - "JUBE/"
       - "Builder/"
       - "gather-metadata/"

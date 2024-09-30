@@ -24,7 +24,8 @@
     - 'export PYTHONNOUSERSITE=1'
     - 'python -m venv --system-site-packages benchmarking-env'
     - 'source benchmarking-env/bin/activate'
-    - 'benchmarking-env/bin/pip install $PIP_LIST'
+    - 'benchmarking-env/bin/pip download $PIP_LIST --dest ./pip-packages'
+    - 'benchmarking-env/bin/pip install --no-index --find-links=${CI_PROJECT_DIR}/pip-packages ${CI_PROJECT_DIR}/pip-packages/*'
     - 'export PATH="$(pwd):$PATH"'
     - 'ls -al'
   variables:
@@ -44,9 +45,9 @@
     - 'module load $MODULE_LIST'
     - 'eval TEMP_DIR="$TEMP_DIR"'
     - 'export PYTHONNOUSERSITE=1'
-    - 'python -m venv --system-site-packages compute-env'
+    - 'python -m venv --system-site-packages benchmarking-env'
     - 'source compute-env/bin/activate'
-    - 'compute-env/bin/pip download --dest ./pip_packages $PIP_LIST'
+    - 'benchmarking-env/bin/pip install --no-index --find-links=${CI_PROJECT_DIR}/pip-packages ${CI_PROJECT_DIR}/pip-packages/*'
     - 'export PATH="$(pwd):$PATH"'
     - 'ls -al'
   variables:
