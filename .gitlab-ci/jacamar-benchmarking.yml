@@ -205,7 +205,9 @@ Benchmarking:
     reports:
       dotenv: benchmark_variables.env
     when: on_success
-  timeout: "1 day"
+  variables:
+    CB_JOB_TIME_LIMIT: "12:00:00"
+    CB_JOB_MEM: "8G"
   script:
     # unset some slurm parameters from the ci job so that they cannot be passed to the benchmark job
     #- 'for var in $(env | grep SLURM | cut -d= -f1); do unset $var; done'
