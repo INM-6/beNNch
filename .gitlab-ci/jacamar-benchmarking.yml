@@ -151,7 +151,8 @@ Build:
     reports:
       dotenv: benchmark_variables.env
     when: on_success
-  timeout: "1 day"
+  variables:
+    CB_JOB_TIME_LIMIT: "02:00:00"
   script:
     - 'set -euo pipefail'
     # Build simulator
