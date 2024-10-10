@@ -153,6 +153,7 @@ Build:
     when: on_success
   variables:
     CB_JOB_TIME_LIMIT: "02:00:00"
+    CB_JOB_MEM: "16G"
   script:
     - 'set -euo pipefail'
     # Build simulator
