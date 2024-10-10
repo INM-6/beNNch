@@ -47,6 +47,9 @@ variables:
   EXTRA_CMAKE_FLAGS:
     description: "Any extra CMake flags which should be used to compile NEST. Only single quotes allowed! Multiple values for a single parameter must be single quoted and separated by semicolons."
     value: "-Dwith-optimize='-O3;-march=native' -Dwith-defines='-DNDEBUG' -Dwith-ltdl=ON -Dwith-boost=ON"
+  EXTRA_SBATCH_FLAGS:
+    description: "Any extra sbatch flags which should be used to run on machine."
+    value: ""
   DETAILED_TIMERS_FLAG:
     description: "Determines whether detailed timers are shown."
     value: "OFF"
