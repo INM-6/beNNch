@@ -45,9 +45,38 @@
     - 'benchmarking-env/bin/pip install --no-index --find-links=${CI_PROJECT_DIR}/pip-packages ${CI_PROJECT_DIR}/pip-packages/*'
     - 'export PATH="$(pwd):$PATH"'
     - 'ls -al'
+
+  #
+  # Jobstep base definition for running inside a Slurm job (e.g. by Jacamar).
+  #
+  # Set "variable:CB_JOB_TIME" in derived jobs to specify the maximum compute
+  # quota usage of the jobstep.
+  #
+  # NOTE: The `timeout` specifies how long Gitlab waits before considering the
+  # job dead. This includes the time jacamar has to wait in the slurm queue.
+  # The maximum accounted time for the Slurm job is specified by
+  # `CB_JOB_TIME`, which should be defined in each job that extends `.compute-node`.
+  # The deadline parameter helps to cancel a job if the queue is longer than
+  # the given gitlab `timeout` value and should always point a bit before
+  # `timeout` to prevent sheduled jobs to "almost complete" and get aborted
+  # from gitlab side.
+  #
+  #     [-------------- Gitlab job timeout ----------------------]
+  #       [--------------- Slurm deadline -------------------]
+  #     ▲ [  ~  slurm queue wait  ~  |===CB_JOB_TIME===]        ▲
+  #     │                            ▲                       ▲   │
+  #     │ ▲                          └ compute job starts    │   │
+  #     │ └ gitlab job added to slurm queue            ▲     │   │
+  #     └ gitlab pipeline starts job                   │     │   │
+  #                               latest slurm job end ┘     │   │
+  #           latest projected job end time or not scheduled ┘   │
+  #                            Gitlab aborts job if still around ┘
+  #
+  timeout: "4 hours 15 minutes"
   variables:
-    SCHEDULER_PARAMETERS: "--partition=$CB_PARTITION --mem=$CB_JOB_MEM --time=$CB_BUILD_TIME_LIMIT --nodes=$CB_NUMNODES --exclusive"
+    SCHEDULER_PARAMETERS: "--partition=$CB_PARTITION --mem=$CB_JOB_MEM --time=$CB_JOB_TIME_LIMIT --nodes=$CB_NUMNODES --exclusive --deadline=now+4hours"
     CB_NUMNODES: 1
+    CB_JOB_TIME_LIMIT: "00:10:00"
     CB_JOB_MEM: "8G" 
   tags:
     - hambach
