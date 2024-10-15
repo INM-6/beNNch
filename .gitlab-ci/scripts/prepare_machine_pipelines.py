@@ -55,9 +55,6 @@ print(machine_conf.get('partition', ''))
 pipeline_yml["variables"]["CB_SIMULATOR_REPO"] = config["software_parameters"]["simulator_repo_url"]
 pipeline_yml["variables"]["CB_SIMULATOR_BRANCH"] = config["software_parameters"]["simulator_repo_branch"]
 
-pipeline_yml["variables"]["CB_THREADS_PER_TASK"] = int(config["benchmarks"][user_model]["machine_parameters"][user_machine]["threads_per_task"])
-pipeline_yml["variables"]["CB_TASKS_PER_NODE"] = int(config["benchmarks"][user_model]["machine_parameters"][user_machine]["tasks_per_node"])
-
 # write package dependencies to the machine config
 pipeline_yml["variables"]["PIP_LIST"] = config["dependencies"][user_machine]["variables"]["PIP_LIST"]
 pipeline_yml["variables"]["MODULE_LIST"] = config["dependencies"][user_machine]["variables"]["MODULE_LIST"]
