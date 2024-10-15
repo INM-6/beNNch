@@ -73,7 +73,6 @@ Preparation:
     - |
       export BENCHMARK_UID="$(echo $BENCHMARK_ID | sed -e 's/[^A-Za-z0-9._-]/_/g')-$(date +%Y-%m-%d-%H-%M-%S)"
     - 'set -euo pipefail'
-    - 'eval USER="$GITLAB_USER_LOGIN"'
     - 'echo $USER'
     - |
       eval USER_DATA_DIR="$TEMP_DIR/$USER/${BENCHMARK_UID}"
