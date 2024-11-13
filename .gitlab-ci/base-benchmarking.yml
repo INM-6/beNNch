@@ -170,7 +170,7 @@ variables:
         for run in "$JUBE_RESULTS_DIR/$JUBE_BENCHMARK_ID"/*/ ; do
           if [ -f "$run/work/stdout" ] ; then
             JOBID=$(grep -e 'Submitted batch job ' -e 'JobId: ' "$run/work/stdout" | head -1 | grep -oP '\d*')
-            if grep -q -E 'terminated due to failure of node|Force Terminated StepId' "$run/work/stderr" ; then
+            if grep -q -E 'terminated due to failure of node' "$run/work/stderr" ; then
               if [[ ${retries[$(basename $run)]} -lt 4 ]] ; then
                 (( ++retries[$(basename $run)] ))
                 cp "$run/work/stdout" "$run/work/stdout_NodeFailure_${retries[$(basename $run)]}"
