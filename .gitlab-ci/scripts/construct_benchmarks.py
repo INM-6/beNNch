@@ -174,6 +174,7 @@ jube_benchmark["parameterset"].append(
 
 #extra_srun_flags = machine_config["variables"]["extra_srun_flags"]
 # srun ${extra_srun_flags} python ${run_file} ${run_args}
+# python ${run_file} ${run_args}
 jube_benchmark["parameterset"].append(
 { 
     "name": "run_benchmark",
@@ -181,7 +182,7 @@ jube_benchmark["parameterset"].append(
            {"name": "exec_bench",
             "separator": ";",
             "_": """${optional_run_command}
-python ${run_file} ${run_args}
+srun ${extra_srun_flags} python ${run_file} ${run_args}
 srun -n 1 --nodes 1 python ${scripts_dir}/collect_timer_data.py ${metrics_path} ${jube_wp_abspath} ${log_path}
 gathermetadata metadata"""}
     ]
