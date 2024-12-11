@@ -84,4 +84,4 @@
 variables:
   TEMP_DIR: "/work/users"
   extra_srun_flags: "--mpi=pmix"
-  extra_sbatch_flags: "--exclusive --nodelist=hambach48"
+  extra_sbatch_flags: "--exclusive --reservation=hackathon"
