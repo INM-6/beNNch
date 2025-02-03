@@ -53,6 +53,7 @@ module list
 
 #COMMANDS#
 
-scontrol show jobid ${SLURM_JOB_ID} -dd
+scontrol show jobid ${SLURM_JOB_ID} -dd  # This should not be needed anymore, as it is called by gathermetadata
+gathermetadata metadata
 
 touch ready
