@@ -29,7 +29,8 @@
 #SBATCH #EXTRA_SBATCH_FLAGS#
 
 echo "JobId: $SLURM_JOB_ID"
-
+echo "CurrentDirectory: $(pwd)"
+ls -l
 set -exo pipefail
 
 export OMP_NUM_THREADS=#THREADS_PER_TASK#
