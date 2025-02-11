@@ -51,6 +51,8 @@ fi
 
 module list
 
+pip install nested_dict dicthash
+
 #COMMANDS#
 
 scontrol show jobid ${SLURM_JOB_ID} -dd  # This should not be needed anymore, as it is called by gathermetadata
