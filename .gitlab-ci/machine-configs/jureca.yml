@@ -27,6 +27,7 @@
     - 'benchmarking-env/bin/pip download $PIP_LIST --dest ./pip-packages'
     - 'benchmarking-env/bin/pip install --no-index --find-links=${CI_PROJECT_DIR}/pip-packages ${CI_PROJECT_DIR}/pip-packages/*'
     - 'export PATH="$(pwd):$PATH"'
+    - 'pwd'
     - 'ls -al'
   timeout: "2 hours 15 minutes"
   variables:
@@ -50,6 +51,7 @@
     - 'source benchmarking-env/bin/activate'
     - 'benchmarking-env/bin/pip install --no-index --find-links=${CI_PROJECT_DIR}/pip-packages ${CI_PROJECT_DIR}/pip-packages/*'
     - 'export PATH="$(pwd):$PATH"'
+    - 'pwd'
     - 'ls -al'
   timeout: "2 days 30 minutes"
   variables:
