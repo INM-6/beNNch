@@ -45,12 +45,15 @@ export NUMEXPR_MAX_THREADS=$OMP_NUM_THREADS
 module use #MODULES_DIR#
 module load simulator/#BRANCH#/default
 source #PREPARE_FILE#
+source benchmarking-env/bin/activate
 
 if ! source jemalloc.sh; then
   echo "Sourcing jemalloc failed, continue without it"
 fi
 
 module list
+
+gathermetadata metadata-before
 
 #COMMANDS#
 
