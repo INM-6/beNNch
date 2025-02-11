@@ -51,7 +51,7 @@ fi
 
 module list
 
-pip install nested_dict dicthash
+source  /p/scratch/cjinb33/.jacamar-ci/plesser1/builds/bennch_6238/000/nest/bennch/bennch/benchmarking-env/bin/activate
 
 #COMMANDS#
 
