@@ -216,6 +216,8 @@ Benchmarking:
     - 'unset SLURM_MEM_PER_NODE'
     - 'pip install ./JUBE'
     - 'pip install ./gather-metadata'
+    - 'pip install nested_dict'
+    - 'pip install dicthash'
     # Wait until all other jube benchmarks have been started until the JUBE_BENCHMARK_ID of this subpipeline
     - 'cd $JUBE_RESULTS_DIR'
     # Start the benchmarks now
