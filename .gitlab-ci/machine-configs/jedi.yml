@@ -1,0 +1,73 @@
+# Copyright (C) 2025 Forschungszentrum Jülich GmbH, INM-6
+
+# This program is free software: you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation, either version 3 of the License, or (at your option) any later
+# version.
+# This program is distributed in the hope that it will be useful, but WITHOUT ANY
+# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+# PARTICULAR PURPOSE. See the GNU General Public License for more details.
+# You should have received a copy of the GNU General Public License along with
+# this program. If not, see <https://www.gnu.org/licenses/>.
+
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+
+.front:
+  before_script:
+    - 'jutil env activate -p cjinb33'
+    - 'jutil env activate -p djinb33'
+    - 'module load $MODULE_LIST'
+    - 'eval TEMP_DIR="$TEMP_DIR"'
+    - 'export PYTHONNOUSERSITE=1'
+    - 'python -m venv --system-site-packages benchmarking-env'
+    - 'source benchmarking-env/bin/activate'
+    - |
+      if [[ -n "$PIP_LIST" ]]; then
+        benchmarking-env/bin/pip download $PIP_LIST --dest ./pip-packages
+        benchmarking-env/bin/pip install --no-index --find-links=${CI_PROJECT_DIR}/pip-packages ${CI_PROJECT_DIR}/pip-packages/*
+      fi
+    - 'export PATH="$(pwd):$PATH"'
+    - 'ls -al'
+  timeout: "2 hours 15 minutes"
+  variables:
+    SCHEDULER_PARAMETERS: "--partition=$CB_PARTITION --mem=$CB_JOB_MEM --account=$CB_RUNNER_ACCOUNT --time=$CB_JOB_TIME_LIMIT --nodes=$CB_NUMNODES --deadline=now+2hours"
+    CB_NUMNODES: 1
+    CB_JOB_TIME_LIMIT: 00:10:00
+    CB_JOB_MEM: "16G"
+  tags:
+    - shell
+    - jedi
+    - jacamar
+
+.compute:
+  before_script:
+    - 'jutil env activate -p cjinb33'
+    - 'jutil env activate -p djinb33'
+    - 'module load $MODULE_LIST'
+    - 'eval TEMP_DIR="$TEMP_DIR"'
+    - 'export PYTHONNOUSERSITE=1'
+    - 'python -m venv --system-site-packages benchmarking-env'
+    - 'source benchmarking-env/bin/activate'
+    - |
+      if [[ -n "$PIP_LIST" ]]; then
+        benchmarking-env/bin/pip install --no-index --find-links=${CI_PROJECT_DIR}/pip-packages ${CI_PROJECT_DIR}/pip-packages/*
+      fi
+    - 'export PATH="$(pwd):$PATH"'
+    - 'ls -al'
+  timeout: "2 days 30 minutes"
+  variables:
+    SCHEDULER_PARAMETERS: "--account=$CB_RUNNER_ACCOUNT --time=$CB_JOB_TIME_LIMIT --mem=$CB_JOB_MEM --nodes=$CB_NUMNODES --deadline=now+2days"
+    CB_NUMNODES: 1
+    CB_JOB_TIME_LIMIT: 00:10:00
+    CB_JOB_MEM: "16G"
+  tags:
+    - compute
+    - jedi
+    - jacamar
+
+variables:
+    TEMP_DIR: "$$SCRATCH_jureap10/ci-bennch/jedi/userdata"
+    extra_sbatch_flags: "--disable-perfparanoid"
+    extra_srun_flags: "--cpu-bind=mask_cpu:$CPU_BIND_MASK" 
+    CUSTOM_CI_BUILDS_DIR: "/p/scratch/cjinb33/.jacamar-ci/"

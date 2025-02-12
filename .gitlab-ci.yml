@@ -1,18 +1,15 @@
-# Copyright (C) 2023 Forschungszentrum Jülich GmbH, INM-6
-#
-# Builder is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# Builder is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with Builder.  If not, see <https://www.gnu.org/licenses/>.
-#
+# Copyright (C) 2025 Forschungszentrum Jülich GmbH, INM-6
+
+# This program is free software: you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation, either version 3 of the License, or (at your option) any later
+# version.
+# This program is distributed in the hope that it will be useful, but WITHOUT ANY
+# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+# PARTICULAR PURPOSE. See the GNU General Public License for more details.
+# You should have received a copy of the GNU General Public License along with
+# this program. If not, see <https://www.gnu.org/licenses/>.
+
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 default:
@@ -83,6 +80,7 @@ variables:
       - "jusuf"
       - "jureca"
       - "juwels"
+      - "jedi"
   CB_STORAGE_MACHINE:
     description: "Runner Tags of the storage machine"
     value: "hambach"
@@ -118,7 +116,7 @@ Validate Input:
     - 'apk update && apk add git util-linux'
     - 'python -m pip install pyyaml'
     - 'mkdir "$CI_PROJECT_DIR/tmp"'
-    - 'python "$CI_PROJECT_DIR/.gitlab-ci/scripts/patch_config.py" "$CI_PROJECT_DIR/tmp" "$CI_PROJECT_DIR/config.yml" "$CI_PROJECT_DIR/simulator.planfile" "$CI_PROJECT_DIR/simulator.module" "$CONFIG_REPO" "$CONFIG_BRANCH" "$CONFIG_PATH"'
+    - 'python "$CI_PROJECT_DIR/.gitlab-ci/scripts/patch_config.py" "$CI_PROJECT_DIR/tmp" "$CI_PROJECT_DIR/config.yml" "$CONFIG_REPO" "$CONFIG_BRANCH" "$CONFIG_PATH"'
     - 'rm -rf $CI_PROJECT_DIR/tmp'
     # merge config into machine config
     - 'mkdir $CI_PROJECT_DIR/prepared-machine-config'
@@ -129,18 +127,10 @@ Validate Input:
     - "cat run-benchmarks.yml"
     - "! grep '${CB_MACHINES}.yml' run-benchmarks.yml"
     - "ls -al"
-    # calculate cpu bin mask so machine configs may pick it up if they need it
-    - 'export CPU_BIND_MASK=$(python3 $CI_PROJECT_DIR/.gitlab-ci/scripts/pinning_mask.py $CI_PROJECT_DIR/config.yml)'
-    - 'echo $CPU_BIND_MASK'
-    - 'echo "CPU_BIND_MASK=$CPU_BIND_MASK" > cpu_bind_mask.env'
   artifacts:
     paths:
       - "config.yml"
-      - "simulator.module"
-      - "simulator.planfile"
       - "run-benchmarks.yml"
-    reports:
-      dotenv: cpu_bind_mask.env
     when: on_success
 
 Trigger:

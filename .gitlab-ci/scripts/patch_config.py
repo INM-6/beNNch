@@ -14,11 +14,9 @@ COLOR_END = '\033[0m'
 
 tmp_dir = sys.argv[1]
 config_out_path = sys.argv[2]
-planfile_out_path = sys.argv[3]
-modulefile_out_path = sys.argv[4]
-config_repo = sys.argv[5]
-config_branch = sys.argv[6]
-config_path = sys.argv[7]
+config_repo = sys.argv[3]
+config_branch = sys.argv[4]
+config_path = sys.argv[5]
 
 
 def lower_keys(x):
@@ -67,12 +65,6 @@ def extend_config(config, level):
     # Patch dependencies
     if "dependencies" in base_config:
         base_config["dependencies"] = os.path.join(repo_path, base_config["dependencies"])
-    
-    if "software_parameters" in base_config:
-        if "modulefile" in base_config["software_parameters"]:
-            base_config["software_parameters"]["modulefile"] = os.path.join(repo_path, base_config["software_parameters"]["modulefile"])
-        if "planfile" in base_config["software_parameters"]:
-            base_config["software_parameters"]["planfile"] = os.path.join(repo_path, base_config["software_parameters"]["planfile"])
 
     if "extends" in base_config:
         base_config = extend_config(base_config, level+1)
@@ -86,10 +78,6 @@ config = lower_keys(extend_config({"extends": {"repo": "base", "config_file": co
 # Load dependencies
 with open(config["dependencies"], 'r') as dependencies_file:
     config["dependencies"] = yaml.safe_load(dependencies_file)
-
-# Copy module- and planfile
-shutil.copyfile(config["software_parameters"]["modulefile"], modulefile_out_path)
-shutil.copyfile(config["software_parameters"]["planfile"], planfile_out_path)
 
 # After patching the configuration using various base configurations, patch the final config using environment variables provided by the user when triggering the pipeline.
 for env_var_key, env_var_value in os.environ.items():

@@ -5,20 +5,20 @@
 ### Benchmark definitinon
 ```yaml
 repositories:
-  [REPOSITORY_ID]:  # Replace the REPOSITORY_ID by a custom unique identifier for the repository.
-    url: ""  # URL to a git repository in a form that makes it possible to run 'git clone [url]'.
+  <REPOSITORY_ID>:  # Replace the REPOSITORY_ID by a custom unique identifier for the repository.
+    url: ""  # URL to a git repository in a form that makes it possible to run 'git clone <url>'.
     branch: ""  # Branch name of any branch in the repository.
 software_parameters:
-  modulefile: ""  # Path to a modulefile with instructions to load the simulator module once built
-  planfile: ""  # Path to a builder planfile with instructions to get and build the simulator
-  simulator_repo_url: ""  # Git repository url which will be forwarded to the builder planfile
-  simulator_repo_branch: ""  # Git repository branch which will be forwarded to the builder planfile
+  simulator_repo_url: ""  # Git repository url to clone the simulator from
+  simulator_repo_branch: ""  # Git repository branch to use when cloning the simulator
+  build_instructions: []  # List of commands to build the simulator
+  install_instructions: []  # List of commands to install/load the simulator
 benchmarks:
-  [MODEL_ID]:
-    repository: [REPOSITORY_ID]
+  <MODEL_ID>:
+    repository: <REPOSITORY_ID>
     model_dir: ""  # Path to model directory inside repository.
     machine_parameters:
-      [MACHINE_ID]:  # Replace the MACHINE_ID by a custom unique identifier for the machine. Must match the machine identifier used to define the machine-specific subpipeline (see #Pipeline configuration).
+      <MACHINE_ID>:  # Replace the MACHINE_ID by a custom unique identifier for the machine. Must match the machine identifier used to define the machine-specific subpipeline (see #Pipeline configuration).
         num_nodes: ""  # Passed to slurm to set the number of compute nodes to use for the benchmark job.
         tasks_per_node: ""  # Passed to slurm to set the number of MPI processes per compute node to use for the benchmark job.
         threads_per_task: ""  # Passed to slurm to set the number of threads per MPI process to use for the benchmark job.
@@ -36,7 +36,7 @@ benchmarks:
     metrics_sum: []  # List of strings containing all output parameters in log files which should be added as a column to the result.csv file. Aggregation function for multiple MPI processes (multiple log files): Sum of all values
     metrics_step: []  # List of strings containing all output parameters that should be recorded every simulation step.
 user_config:
-  [MACHINE_ID]:  # Replace the MACHINE_ID by a custom unique identifier for the machine. Must match the machine identifier used to define the machine-specific subpipeline (see #Pipeline configuration).
+  <MACHINE_ID>:  # Replace the MACHINE_ID by a custom unique identifier for the machine. Must match the machine identifier used to define the machine-specific subpipeline (see #Pipeline configuration).
     build-time-limit: "HH:MM:SS"  # Upper time limit for the build job passed to slurm.
 dependencies: ""  # Path to a yaml file with dependency specifications (see #Benchmark dependencies).
 ```
@@ -52,15 +52,11 @@ or
 Examples can be found here:
 https://github.com/JanVogelsang/CI-Bennch-config/blob/deliver-events-first/config.yml
 
-Variables are evaluated right when the pipeline is created (i.e., when clicking on the "Run pipeline" button). If a variable is only known on a specific machine and should be evaluated once jobs of the pipeline run on the machine, use double dollar signs (`$$`) instead of a single one inside the _variables_ section to escape the variable (e.g. `TEMP_DIR: "$$SCRATCH_cjinb33"`). Additionally, any variable containing an escaped variable must be evaluated at runtime (e.g. `'eval TEMP_DIR="$TEMP_DIR"'`) in both the _init_ and _load_ sections.
-
+Variables are evaluated right when the pipeline is created (i.e., when clicking on the "Run pipeline" button). If a variable is only known on a specific machine and should be evaluated once jobs of the pipeline run on the machine, use double dollar signs (`$$`) instead of a single one inside the _variables_ section to escape the variable.
 #### Benchmark dependencies
 ```yaml
-[MACHINE_ID]:
-  variables: []  # Any variables that should be available in "vars", "init", and "load"
-  vars: []  # Preparing the environment variables. Called before "init" and "load"
-  init: []  # Called once to initialize the environment. Called after "vars" but before "load".
-  load: []  # Called each time after calling "vars" (but never before "init" was called). Used to load the environment.
+<MACHINE_ID>:
+  variables: []
 ```
 
 ### Pipeline variables
@@ -69,7 +65,7 @@ provided by the user. All of the variables below can be safely accessed by the u
 already set at that time. The columns 1 and 2 indicate two different points in time when the user might access
 these variables. An "X" indicates the variable has already been set at this point.  
 1: In the "run pipeline" form
-2: In simulator-modulefile/-planfile or dependencies
+2: In the dependencies file
 
 | Variable name       | Type                            | Read-only | Mandatory | 1 | 2 | Description                                                                                                                                                                                            |
 |---------------------|---------------------------------|-----------|-----------|---|---|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -82,7 +78,7 @@ these variables. An "X" indicates the variable has already been set at this poin
 | EXTRA_CMAKE_FLAGS   | Any valid input to cmake        | No        | No        | X | X | Any extra CMake flags which should be used to compile NEST. Only single quotes allowed! Multiple values for a single parameter must be single quoted and separated by semicolons.                      |
 | CB_MODELS           | Comma-separated list of strings | No        | No        | X | X | Comma-separated list of the names of all models for which benchmarks should be run. Leave empty to run benchmarks for all models specified in the configuration file.                                  |
 | CB_MACHINES         | Comma-separated list of strings | No        | No        | X | X | Comma-separated list of the names of all machines on which benchmarks should be run. Leave empty to trigger benchmark runs for manually for each individual machine for which configuration was found. |
-| CB_SIMULATOR_REPO   | URL to git repository           | Yes       | /         |   | X | The url to the simulator git repository, which will most likely be used as input to git clone in the builder planfile.                                                                                 |
+| CB_SIMULATOR_REPO   | URL to git repository           | Yes       | /         |   | X | The url to the simulator git repository.                                                                                       |
 | CB_SIMULATOR_BRANCH | String                          | Yes       | /         |   | X | The simulator git branch to be used.                                                                                                                                                                   |
 
 ### Model templating

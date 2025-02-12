@@ -1,5 +1,5 @@
 """
-Copyright (C) 2023 Forschungszentrum Juelich GmbH, INM-6
+Copyright (C) 2025 Forschungszentrum Jülich GmbH, INM-6
 
 This program is free software: you can redistribute it and/or modify it under
 the terms of the GNU General Public License as published by the Free Software
@@ -32,17 +32,14 @@ COLOR_END = '\033[0m'
 
 jube_template_path = sys.argv[1]     # path to template of jube benchmark file
 config_path = sys.argv[2]            # path to configuration file
-builder_modules_dir = sys.argv[3]    # directory where builder installs modules
-simulator_branch = sys.argv[4]       # repository branch of the simulator to benchmark
-benchmark_models_dir = sys.argv[5]   # path to directory of model files for all models
-benchmark_output_dir = sys.argv[6]   # path to directory where all jube benchmark files are placed
-config_output_dir = sys.argv[7]      # path to directory where all benchmark config files are placed
-scripts_dir = sys.argv[8]            # path to directory where all benchmark helper scripts are located
-jube_results_dir = sys.argv[9]       # path to directory where all benchmark results should be placed
-prepare_file_path = sys.argv[10]     # path to the prepare.sh file which is loaded on the compute node
-pipeline_file_path = sys.argv[11]    # path to current pipeline definition file
-machine = sys.argv[12]               # name of the machine the benchmark is running on
-machine_config_dir = sys.argv[13]
+benchmark_models_dir = sys.argv[3]   # path to directory of model files for all models
+benchmark_output_dir = sys.argv[4]   # path to directory where all jube benchmark files are placed
+config_output_dir = sys.argv[5]      # path to directory where all benchmark config files are placed
+scripts_dir = sys.argv[6]            # path to directory where all benchmark helper scripts are located
+jube_results_dir = sys.argv[7]       # path to directory where all benchmark results should be placed
+pipeline_file_path = sys.argv[8]     # path to current pipeline definition file
+machine = sys.argv[9]                # name of the machine the benchmark is running on
+machine_config_dir = sys.argv[10]
 model_name = os.environ["CB_MODELS"]
 
 config_dir = os.path.dirname(config_path)
@@ -50,15 +47,6 @@ config_dir = os.path.dirname(config_path)
 # Prepare output directory
 if not os.path.exists(config_output_dir):
     os.makedirs(config_output_dir)
-
-# Write prepare-file which is run right before the benchmark
-with open(prepare_file_path, 'a') as prepare_file:
-    with open(pipeline_file_path, 'r') as pipeline_file:
-        pipeline = yaml.safe_load(pipeline_file)
-    prepare_commands = pipeline.get(".environment-load", "")
-    if prepare_commands:
-        prepare_file.writelines([c.strip() + '\n' for c in prepare_commands])
-
 
 with open(jube_template_path, 'r') as template_file:
     jube_benchmark_template = yaml.safe_load(template_file)
@@ -128,16 +116,6 @@ jube_benchmark["parameterset"].append(
         ]
     })
 
-# Software parameters
-jube_benchmark["parameterset"].append(
-    {
-        "name": "software_parameters",
-        "parameter": [
-            {"name": "simulator_branch", "_": simulator_branch},
-            {"name": "buildermod", "_": builder_modules_dir}
-        ]
-    })
-
 # Model parameters
 jube_benchmark["parameterset"].append(
 {
@@ -182,9 +160,8 @@ jube_benchmark["parameterset"].append(
            {"name": "exec_bench",
             "separator": ";",
             "_": """${optional_run_command}
-srun ${extra_srun_flags} python ${run_file} ${run_args}
-srun -n 1 --nodes 1 python ${scripts_dir}/collect_timer_data.py ${metrics_path} ${jube_wp_abspath} ${log_path}
-gathermetadata metadata"""}
+srun ${extra_srun_flags} --cpus-per-task=${threads_per_task} python ${run_file} ${run_args}
+srun -n 1 --nodes 1 python ${scripts_dir}/collect_timer_data.py ${metrics_path} ${jube_wp_abspath} ${log_path}"""}
     ]
 })
 print(jube_benchmark["parameterset"])
@@ -200,7 +177,6 @@ next(p for p in jube_benchmark["parameterset"] if p["name"] == "bench_parameters
     {"name": "optional_run_command", "type": "string", "separator": ";", "_": run_parameters.get("optional_run_command", "")},
     {"name": "run_args", "type": "string", "_": run_parameters.get("run_args", "")},
     {"name": "model_path", "type": "string", "_": os.path.abspath(benchmark_model_files_dir)},
-    {"name": "prepare_file_path", "type": "string", "_": prepare_file_path}
 ])
 
 # Fileset

@@ -1,5 +1,5 @@
 """
-Copyright (C) 2023 Forschungszentrum Juelich GmbH, INM-6
+Copyright (C) 2025 Forschungszentrum Jülich GmbH, INM-6
 
 This program is free software: you can redistribute it and/or modify it under
 the terms of the GNU General Public License as published by the Free Software
@@ -48,21 +48,17 @@ pipeline_yml["variables"]["CB_RUNNER_ACCOUNT"] = machine_conf.get('account', '')
 pipeline_yml["variables"]["CB_RUNNER_PARTITION"] = machine_conf.get('partition', '')
 pipeline_yml["variables"]["CB_BUILD_TIME_LIMIT"] = machine_conf.get('build-time-limit', '')
 pipeline_yml["variables"]["CB_PARTITION"] = machine_conf.get('partition', '')
-pipeline_yml["variables"].update(config["dependencies"][user_machine]["variables"])
+pipeline_yml["variables"].update(config["dependencies"][user_machine].get("variables", ''))
 print(machine_conf.get('partition', ''))
 
 # get the desired simulator version
 pipeline_yml["variables"]["CB_SIMULATOR_REPO"] = config["software_parameters"]["simulator_repo_url"]
 pipeline_yml["variables"]["CB_SIMULATOR_BRANCH"] = config["software_parameters"]["simulator_repo_branch"]
 
-#pipeline_yml["variables"]["CB_THREADS_PER_TASK"] = int(config["benchmarks"][user_model]["machine_parameters"][user_machine]["threads_per_task"])
-#pipeline_yml["variables"]["CB_TASKS_PER_NODE"] = int(config["benchmarks"][user_model]["machine_parameters"][user_machine]["tasks_per_node"])
-
 # write package dependencies to the machine config
-pipeline_yml["variables"]["PIP_LIST"] = config["dependencies"][user_machine]["variables"]["PIP_LIST"]
-pipeline_yml["variables"]["MODULE_LIST"] = config["dependencies"][user_machine]["variables"]["MODULE_LIST"]
+pipeline_yml["variables"]["PIP_LIST"] = config["dependencies"][user_machine].get("variables", dict()).get("PIP_LIST", '')
+pipeline_yml["variables"]["MODULE_LIST"] = config["dependencies"][user_machine].get("variables", dict()).get("MODULE_LIST", '')
 
 print(os.path.join(pipelines_dir_out, user_machine + ".yml"))
 with open(os.path.join(pipelines_dir_out), 'w') as pipeline_out:
           yaml.dump(pipeline_yml, pipeline_out, default_flow_style=False)
-
