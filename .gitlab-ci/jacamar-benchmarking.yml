@@ -1,19 +1,17 @@
-# Copyright (C) 2023 Forschungszentrum Jülich GmbH, INM-6
-#
-# Builder is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# Builder is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with Builder.  If not, see <https://www.gnu.org/licenses/>.
-#
+# Copyright (C) 2025 Forschungszentrum Jülich GmbH, INM-6
+
+# This program is free software: you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation, either version 3 of the License, or (at your option) any later
+# version.
+# This program is distributed in the hope that it will be useful, but WITHOUT ANY
+# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+# PARTICULAR PURPOSE. See the GNU General Public License for more details.
+# You should have received a copy of the GNU General Public License along with
+# this program. If not, see <https://www.gnu.org/licenses/>.
+
 # SPDX-License-Identifier: GPL-3.0-or-later
+
 
 default:
   id_tokens:
@@ -26,16 +24,7 @@ include:
   local: .gitlab-ci/machine-configs/{{ CB_MACHINES }}.yml
 
 variables:
-# Builder variables
-  SIMULATOR_MODULEFILE_PATH: "$$USER_DATA_DIR/simulator.module"
-  SIMULATOR_PLANFILE_PATH: "$$USER_DATA_DIR/simulator.planfile"
-  BUILDER_MODULES_DIR: "$$USER_DATA_DIR/modules"
-  BUILDER_PLANFILE_DIR: "$$USER_DATA_DIR/Builder/plans"
-  BUILDER_PACKAGE_DIR: "$$USER_DATA_DIR/Builder/cache/packages"
-  BUILDER_SOURCE_DIR: "$$USER_DATA_DIR/Builder/cache/src"
-  BUILDER_INSTALL_DIR: "$$USER_DATA_DIR/install"
-  BUILDER_BUILD_DIR: "$$USER_DATA_DIR/Builder/build"
-  BUILDER_LOG_DIR: "$$USER_DATA_DIR/Builder/log/"
+  SIMULATOR_BUILD_DIR: "$$USER_DATA_DIR/build/"
 # repository dependent variables
   SIMULATOR_REPO_DIR: "$$USER_DATA_DIR/repository"
   RESULTS_DIR: "$$USER_DATA_DIR/results"
@@ -62,13 +51,11 @@ Preparation:
     paths:
       - "pip-packages/"
       - "JUBE/"
-      - "Builder/"
       - "gather-metadata/"
     reports:
       dotenv: benchmark_variables.env
     when: on_success
   script:
-    - "echo $CPU_BIND_MASK"
     # Get unique id for benchmark
     - |
       export BENCHMARK_UID="$(echo $BENCHMARK_ID | sed -e 's/[^A-Za-z0-9._-]/_/g')-$(date +%Y-%m-%d-%H-%M-%S)"
@@ -80,52 +67,35 @@ Preparation:
     - 'eval SIMULATOR_REPO_DIR="$SIMULATOR_REPO_DIR"'
     - 'eval BENCHMARKS_DIR="$BENCHMARKS_DIR"'
     - 'eval JUBE_RESULTS_DIR="$JUBE_RESULTS_DIR"'
-    - 'eval BUILDER_MODULES_DIR="$BUILDER_MODULES_DIR"'
-    - 'eval BUILDER_PLANFILE_DIR="$BUILDER_PLANFILE_DIR"'
-    - 'eval BUILDER_PACKAGE_DIR="$BUILDER_PACKAGE_DIR"'
-    - 'eval BUILDER_SOURCE_DIR="$BUILDER_SOURCE_DIR"'
-    - 'eval BUILDER_INSTALL_DIR="$BUILDER_INSTALL_DIR"'
-    - 'eval BUILDER_BUILD_DIR="$BUILDER_BUILD_DIR"'
-    - 'eval BUILDER_LOG_DIR="$BUILDER_LOG_DIR"'
+    - 'eval SIMULATOR_BUILD_DIR="$SIMULATOR_BUILD_DIR"'
     - 'eval CONFIG_FILE_PATH="$CONFIG_FILE_PATH"'
-    - 'eval SIMULATOR_MODULEFILE_PATH="$SIMULATOR_MODULEFILE_PATH"'
-    - 'eval SIMULATOR_PLANFILE_PATH="$SIMULATOR_PLANFILE_PATH"'
     - 'eval MODELS_DIR="$MODELS_DIR"'
     - 'eval OUTPUT_DIR="$OUTPUT_DIR"'
+    - 'echo $SIMULATOR_BUILD_DIR'
     # Create all required directories
-    - 'mkdir -p "$USER_DATA_DIR" "$USER_DATA_DIR/user_files" "$SIMULATOR_REPO_DIR" "$BENCHMARKS_DIR/metrics" "$JUBE_RESULTS_DIR" "$BENCHMARKS_DIR/jube" "$BUILDER_MODULES_DIR" "$BUILDER_PLANFILE_DIR/simulator" "$BUILDER_PACKAGE_DIR" "$BUILDER_SOURCE_DIR" "$BUILDER_INSTALL_DIR" "$BUILDER_BUILD_DIR" "$BUILDER_LOG_DIR" "$MODELS_DIR" "$OUTPUT_DIR"  "$CI_PROJECT_DIR/flipbooks"'
+    - 'mkdir -p "$USER_DATA_DIR" "$USER_DATA_DIR/user_files" "$SIMULATOR_REPO_DIR" "$BENCHMARKS_DIR/metrics" "$JUBE_RESULTS_DIR" "$BENCHMARKS_DIR/jube" "$SIMULATOR_BUILD_DIR" "$MODELS_DIR" "$OUTPUT_DIR"  "$CI_PROJECT_DIR/flipbooks"'
     # Move all artifacts to user data directory
     - 'if [[ $(realpath "$CI_PROJECT_DIR/config.yml") != $(realpath "$CONFIG_FILE_PATH") ]]; then mv "$CI_PROJECT_DIR/config.yml" "$CONFIG_FILE_PATH"; fi'
-    - 'if [[ $(realpath "$CI_PROJECT_DIR/simulator.module") != $(realpath "$SIMULATOR_MODULEFILE_PATH") ]]; then mv "$CI_PROJECT_DIR/simulator.module" "$SIMULATOR_MODULEFILE_PATH"; fi'
-    - 'if [[ $(realpath "$CI_PROJECT_DIR/simulator.planfile") != $(realpath "$SIMULATOR_PLANFILE_PATH") ]]; then mv "$CI_PROJECT_DIR/simulator.planfile" "$SIMULATOR_PLANFILE_PATH"; fi'
     - 'cd $CI_PROJECT_DIR'
     # install gathermetadata
     - 'git clone https://github.com/inm-6/gather-metadata'
     # install jube
     - 'git clone --depth=1 --branch=feature-python-exec https://github.com/JanVogelsang/JUBE.git JUBE'
-    # install builder
-    - 'git clone https://github.com/INM-6/Builder.git'
     # Clone simulator and model repositories
     - |
       export CB_SIMULATOR_BRANCH=$(python3 -c "import yaml; f = open('$CONFIG_FILE_PATH', 'r'); print(yaml.safe_load(f)['software_parameters']['simulator_repo_branch']);f.close()")
-    - 'mkdir -p "$BUILDER_PLANFILE_DIR/simulator/$CB_SIMULATOR_BRANCH"'
-    - 'cp "$SIMULATOR_PLANFILE_PATH" "$BUILDER_PLANFILE_DIR/simulator/$CB_SIMULATOR_BRANCH/default"'
-    - 'cp "$SIMULATOR_MODULEFILE_PATH" "$BUILDER_PLANFILE_DIR/simulator/$CB_SIMULATOR_BRANCH/default.module"'
     - 'python3 "$SCRIPTS_DIR/clone_models.py" "$CONFIG_FILE_PATH" "$MODELS_DIR" "$CB_MODELS"'
     # Simulator clone
     - 'git clone --single-branch --branch="$CB_SIMULATOR_BRANCH" --depth=1 "$CB_SIMULATOR_REPO" "$SIMULATOR_REPO_DIR"'
     # construct benchmarks
     - |
-      echo 'CURR_PATH=$(pwd)' > "$USER_DATA_DIR/prepare.sh"
-      echo 'cd "$USER_DATA_DIR/user_files"' >> "$USER_DATA_DIR/prepare.sh"
-      python3 "$SCRIPTS_DIR/construct_benchmarks.py" "$TEMPLATES_DIR/jube-template.yml" "$CONFIG_FILE_PATH" "$BUILDER_MODULES_DIR" "$CB_SIMULATOR_BRANCH" "$MODELS_DIR" "$BENCHMARKS_DIR/jube" "$BENCHMARKS_DIR/metrics" "$SCRIPTS_DIR" "$JUBE_RESULTS_DIR" "$USER_DATA_DIR/prepare.sh" "$CI_PROJECT_DIR/run-benchmarks.yml" "$CB_MACHINES" "$CI_PROJECT_DIR/.gitlab-ci/machine-configs/"
-      echo 'cd "$CURR_PATH"' >> "$USER_DATA_DIR/prepare.sh"
+      python3 "$SCRIPTS_DIR/construct_benchmarks.py" "$TEMPLATES_DIR/jube-template.yml" "$CONFIG_FILE_PATH" "$MODELS_DIR" "$BENCHMARKS_DIR/jube" "$BENCHMARKS_DIR/metrics" "$SCRIPTS_DIR" "$JUBE_RESULTS_DIR" "$CI_PROJECT_DIR/run-benchmarks.yml" "$CB_MACHINES" "$CI_PROJECT_DIR/.gitlab-ci/machine-configs/"
     # Forward all environment variables to next stage
     - 'rm -f "$CI_PROJECT_DIR/benchmark_variables.env"'
     - |
       cd "$CI_PROJECT_DIR"
       touch benchmark_variables.env
-      for var in BENCHMARK_ID BENCHMARK_UID CB_RUNNER_ACCOUNT CB_RUNNER_PARTITION CB_COMPUTE_PROJECT CB_DATA_PROJECT CB_DEPENDENCIES USER_DATA_DIR BENCHMARKS_DIR CB_SIMULATOR_REPO CB_SIMULATOR_BRANCH SIMULATOR_REPO_DIR JUBE_RESULTS_DIR RESULTS_REPO_URL RESULTS_BRANCH RESULTS_PATH BUILDER_MODULES_DIR BUILDER_PLANFILE_DIR BUILDER_PACKAGE_DIR BUILDER_SOURCE_DIR BUILDER_INSTALL_DIR BUILDER_BUILD_DIR BUILDER_LOG_DIR CONFIG_FILE_PATH MODELS_DIR BUILDER_CONFIG_PATH OUTPUT_DIR RESULTS_DIR simulator_git_commit_hash ; do
+      for var in BENCHMARK_ID BENCHMARK_UID CB_RUNNER_ACCOUNT CB_RUNNER_PARTITION CB_COMPUTE_PROJECT CB_DATA_PROJECT CB_DEPENDENCIES USER_DATA_DIR BENCHMARKS_DIR CB_SIMULATOR_REPO CB_SIMULATOR_BRANCH SIMULATOR_REPO_DIR JUBE_RESULTS_DIR RESULTS_REPO_URL RESULTS_BRANCH RESULTS_PATH SIMULATOR_BUILD_DIR CONFIG_FILE_PATH MODELS_DIR OUTPUT_DIR RESULTS_DIR simulator_git_commit_hash ; do
       # RESULTS_REPO_TOKEN
       if [ ! -z "${!var+x}" ]; then
           echo "${var}=${!var}" >> "$CI_PROJECT_DIR/benchmark_variables.env"
@@ -146,8 +116,8 @@ Build:
   artifacts:
     paths:
       - "JUBE/"
-      - "Builder/"
       - "gather-metadata/"
+      - "pip-packages/"
     reports:
       dotenv: benchmark_variables.env
     when: on_success
@@ -156,32 +126,23 @@ Build:
     CB_JOB_MEM: "16G"
   script:
     - 'set -euo pipefail'
-    # Build simulator
-    - |
-      export PLANFILE_PATH="$BUILDER_PLANFILE_DIR"
-      export PACKAGE_CACHE="$BUILDER_PACKAGE_DIR"
-      export SOURCE_PATH="$BUILDER_SOURCE_DIR"
-      export BUILD_PATH="$BUILDER_BUILD_DIR"
-      export TARGET_PATH="$BUILDER_INSTALL_DIR"
-      export MODULE_INSTALL_PATH="$BUILDER_MODULES_DIR"
-      export LOG_PATH="$BUILDER_LOG_DIR"
-      export SIMULATOR_REPO_DIR="$SIMULATOR_REPO_DIR"
-      export SIMULATOR_MODULEFILE_PATH="$SIMULATOR_MODULEFILE_PATH"
-      export SIMULATOR_PLANFILE_PATH="$SIMULATOR_PLANFILE_PATH"
-    - 'export MAKE_THREADS=$(nproc)'
+    - 'echo $SIMULATOR_BUILD_DIR'
     # Build simulator
     - 'printenv '
-    - '${CI_PROJECT_DIR}/Builder/build.sh -f simulator $CB_SIMULATOR_BRANCH'
+    - 'cd "${SIMULATOR_BUILD_DIR}"'
+    - |
+      BUILD_INSTRUCTIONS=$(python3 -c "import yaml; f = open('$CONFIG_FILE_PATH', 'r'); print(' && '.join(yaml.safe_load(f)['software_parameters'].get('build_instructions', [])));f.close()")
+    - 'echo $BUILD_INSTRUCTIONS'
+    - 'eval $BUILD_INSTRUCTIONS'
     - 'cd "${SIMULATOR_REPO_DIR}"'
     - 'export simulator_git_commit_hash=$(git rev-parse HEAD)'
     - 'rm -r "$SIMULATOR_REPO_DIR"'
     # Forward all environment variables to next stage
-# Forward all environment variables to next stage
     - 'rm -f "$CI_PROJECT_DIR/benchmark_variables.env"'
     - |
       cd "$CI_PROJECT_DIR"
       touch benchmark_variables.env
-      for var in BENCHMARK_ID BENCHMARK_UID CB_RUNNER_ACCOUNT CB_RUNNER_PARTITION CB_COMPUTE_PROJECT CB_DATA_PROJECT CB_DEPENDENCIES USER_DATA_DIR BENCHMARKS_DIR CB_SIMULATOR_REPO CB_SIMULATOR_BRANCH SIMULATOR_REPO_DIR JUBE_RESULTS_DIR RESULTS_REPO_URL RESULTS_BRANCH RESULTS_PATH BUILDER_MODULES_DIR BUILDER_PLANFILE_DIR BUILDER_PACKAGE_DIR BUILDER_SOURCE_DIR BUILDER_INSTALL_DIR BUILDER_BUILD_DIR BUILDER_LOG_DIR CONFIG_FILE_PATH MODELS_DIR BUILDER_CONFIG_PATH OUTPUT_DIR RESULTS_DIR simulator_git_commit_hash ; do
+      for var in BENCHMARK_ID BENCHMARK_UID CB_RUNNER_ACCOUNT CB_RUNNER_PARTITION CB_COMPUTE_PROJECT CB_DATA_PROJECT CB_DEPENDENCIES USER_DATA_DIR BENCHMARKS_DIR CB_SIMULATOR_REPO CB_SIMULATOR_BRANCH SIMULATOR_REPO_DIR JUBE_RESULTS_DIR RESULTS_REPO_URL RESULTS_BRANCH RESULTS_PATH SIMULATOR_BUILD_DIR CONFIG_FILE_PATH MODELS_DIR OUTPUT_DIR RESULTS_DIR simulator_git_commit_hash ; do
       # RESULTS_REPO_TOKEN
       if [ ! -z "${!var+x}" ]; then
           echo "${var}=${!var}" >> "$CI_PROJECT_DIR/benchmark_variables.env"
@@ -214,8 +175,14 @@ Benchmarking:
     - 'unset SLURM_MEM_PER_CPU'
     - 'unset SLURM_MEM_PER_GPU'
     - 'unset SLURM_MEM_PER_NODE'
-    - 'pip install ./JUBE'
     - 'pip install ./gather-metadata'
+    - 'pip install ./JUBE'
+    # Load the simulator
+    - 'cd "${SIMULATOR_BUILD_DIR}"'
+    - |
+      INSTALL_INSTRUCTIONS=$(python3 -c "import yaml; f = open('$CONFIG_FILE_PATH', 'r'); print(' && '.join(yaml.safe_load(f)['software_parameters'].get('install_instructions', [])));f.close()")
+    - 'echo $INSTALL_INSTRUCTIONS'
+    - 'eval $INSTALL_INSTRUCTIONS'
     # Wait until all other jube benchmarks have been started until the JUBE_BENCHMARK_ID of this subpipeline
     - 'cd $JUBE_RESULTS_DIR'
     # Start the benchmarks now
@@ -293,7 +260,7 @@ Benchmarking:
     - |
       cd "$CI_PROJECT_DIR"
       touch benchmark_variables.env
-      for var in BENCHMARK_ID BENCHMARK_UID CB_RUNNER_ACCOUNT CB_RUNNER_PARTITION CB_COMPUTE_PROJECT CB_DATA_PROJECT CB_DEPENDENCIES USER_DATA_DIR BENCHMARKS_DIR CB_SIMULATOR_REPO CB_SIMULATOR_BRANCH SIMULATOR_REPO_DIR JUBE_RESULTS_DIR RESULTS_REPO_URL RESULTS_BRANCH RESULTS_PATH BUILDER_MODULES_DIR BUILDER_PLANFILE_DIR BUILDER_PACKAGE_DIR BUILDER_SOURCE_DIR BUILDER_INSTALL_DIR BUILDER_BUILD_DIR BUILDER_LOG_DIR CONFIG_FILE_PATH MODELS_DIR BUILDER_CONFIG_PATH OUTPUT_DIR RESULTS_DIR simulator_git_commit_hash ; do
+      for var in BENCHMARK_ID BENCHMARK_UID CB_RUNNER_ACCOUNT CB_RUNNER_PARTITION CB_COMPUTE_PROJECT CB_DATA_PROJECT CB_DEPENDENCIES USER_DATA_DIR BENCHMARKS_DIR CB_SIMULATOR_REPO CB_SIMULATOR_BRANCH SIMULATOR_REPO_DIR JUBE_RESULTS_DIR RESULTS_REPO_URL RESULTS_BRANCH RESULTS_PATH SIMULATOR_BUILD_DIR CONFIG_FILE_PATH MODELS_DIR OUTPUT_DIR RESULTS_DIR simulator_git_commit_hash ; do
       # RESULTS_REPO_TOKEN
       if [ ! -z "${!var+x}" ]; then
           echo "${var}=${!var}" >> "$CI_PROJECT_DIR/benchmark_variables.env"

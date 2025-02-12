@@ -1,18 +1,15 @@
-# Copyright (C) 2023 Forschungszentrum Jülich GmbH, INM-6
-#
-# Builder is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# Builder is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with Builder.  If not, see <https://www.gnu.org/licenses/>.
-#
+# Copyright (C) 2025 Forschungszentrum Jülich GmbH, INM-6
+
+# This program is free software: you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation, either version 3 of the License, or (at your option) any later
+# version.
+# This program is distributed in the hope that it will be useful, but WITHOUT ANY
+# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+# PARTICULAR PURPOSE. See the GNU General Public License for more details.
+# You should have received a copy of the GNU General Public License along with
+# this program. If not, see <https://www.gnu.org/licenses/>.
+
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 .front:
@@ -20,10 +17,13 @@
     - 'module load $MODULE_LIST'
     - 'eval TEMP_DIR="$TEMP_DIR"'
     - 'export PYTHONNOUSERSITE=1'
-    - 'python -m venv --system-site-packages benchmarking-env'
-    - 'source benchmarking-env/bin/activate'
-    - 'benchmarking-env/bin/pip download $PIP_LIST --dest ./pip-packages'
-    - 'benchmarking-env/bin/pip install --no-index --find-links=${CI_PROJECT_DIR}/pip-packages ${CI_PROJECT_DIR}/pip-packages/*'
+    - |
+      if [[ -n "$PIP_LIST" ]]; then
+        python -m venv --system-site-packages benchmarking-env
+        source benchmarking-env/bin/activate
+        benchmarking-env/bin/pip download $PIP_LIST --dest ./pip-packages
+        benchmarking-env/bin/pip install --no-index --find-links=${CI_PROJECT_DIR}/pip-packages ${CI_PROJECT_DIR}/pip-packages/*
+      fi
     - 'export PATH="$(pwd):$PATH"'
     - 'ls -al'
   variables:
@@ -40,9 +40,12 @@
     - 'module load $MODULE_LIST'
     - 'eval TEMP_DIR="$TEMP_DIR"'
     - 'export PYTHONNOUSERSITE=1'
-    - 'python -m venv --system-site-packages benchmarking-env'
-    - 'source benchmarking-env/bin/activate'
-    - 'benchmarking-env/bin/pip install --no-index --find-links=${CI_PROJECT_DIR}/pip-packages ${CI_PROJECT_DIR}/pip-packages/*'
+    - |
+      if [[ -n "$PIP_LIST" ]]; then
+        python -m venv --system-site-packages benchmarking-env
+        source benchmarking-env/bin/activate
+        benchmarking-env/bin/pip install --no-index --find-links=${CI_PROJECT_DIR}/pip-packages ${CI_PROJECT_DIR}/pip-packages/*
+      fi
     - 'export PATH="$(pwd):$PATH"'
     - 'ls -al'
 
@@ -84,4 +87,4 @@
 variables:
   TEMP_DIR: "/work/users"
   extra_srun_flags: "--mpi=pmix"
-  extra_sbatch_flags: "--exclusive --reservation=hackathon"
+  extra_sbatch_flags: "--exclusive"

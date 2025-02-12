@@ -1,4 +1,16 @@
-# Copyright (C) 2023 Forschungszentrum Juelich GmbH, INM-6
+# Copyright (C) 2025 Forschungszentrum Jülich GmbH, INM-6
+
+# This program is free software: you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation, either version 3 of the License, or (at your option) any later
+# version.
+# This program is distributed in the hope that it will be useful, but WITHOUT ANY
+# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+# PARTICULAR PURPOSE. See the GNU General Public License for more details.
+# You should have received a copy of the GNU General Public License along with
+# this program. If not, see <https://www.gnu.org/licenses/>.
+
+# SPDX-License-Identifier: GPL-3.0-or-later
 
 # This program is free software: you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -31,9 +43,6 @@ substituteset:
       - {source: "#COMMANDS#", dest: $exec_bench}
       - {source: "#ACCOUNT#", dest: $account}
       - {source: "#THREADS_PER_TASK#", dest: $threads_per_task}
-      - {source: "#MODULES_DIR#", dest: $buildermod}
-      - {source: "#BRANCH#", dest: $simulator_branch}
-      - {source: "#PREPARE_FILE#", dest: $prepare_file_path}
       - {source: "#EXTRA_SBATCH_FLAGS#", dest: $extra_sbatch_flags}
   - name: bench_substitutions
     sub:
@@ -43,7 +52,7 @@ substituteset:
 step:
   - name: bench
     use:
-      - bench_parameters, run_benchmark, bench_files, bench_substitutions, slurm_jobfile, user_config, model_parameters, machine_parameters, software_parameters, machine_config
+      - bench_parameters, run_benchmark, bench_files, bench_substitutions, slurm_jobfile, user_config, model_parameters, machine_parameters, machine_config
     do:
       done_file: ready
       error_file: error

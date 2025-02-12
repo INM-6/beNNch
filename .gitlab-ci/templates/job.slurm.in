@@ -1,6 +1,18 @@
 #!/bin/bash -l
 
-# Copyright (C) 2023 Forschungszentrum Juelich GmbH, INM-6
+# Copyright (C) 2025 Forschungszentrum Jülich GmbH, INM-6
+
+# This program is free software: you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation, either version 3 of the License, or (at your option) any later
+# version.
+# This program is distributed in the hope that it will be useful, but WITHOUT ANY
+# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+# PARTICULAR PURPOSE. See the GNU General Public License for more details.
+# You should have received a copy of the GNU General Public License along with
+# this program. If not, see <https://www.gnu.org/licenses/>.
+
+# SPDX-License-Identifier: GPL-3.0-or-later
 
 # This program is free software: you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -33,19 +45,19 @@ echo "CurrentDirectory: $(pwd)"
 ls -l
 set -exo pipefail
 
+export CPU_BIND_MASK="$(python3 "$CI_PROJECT_DIR/.gitlab-ci/scripts/pinning_mask.py" #NTASKS_PER_NODE# #THREADS_PER_TASK#)"
+
 export OMP_NUM_THREADS=#THREADS_PER_TASK#
-export OMP_PROC_BIND=TRUE
+export OMP_PROC_BIND=spread
+export OMP_PLACES=threads
 
 export OMP_DISPLAY_ENV=VERBOSE
 export OMP_DISPLAY_AFFINITY=TRUE
 
+export KMP_AFFINITY=verbose,balanced
+
 # Avoid problems from numexpr Python package
 export NUMEXPR_MAX_THREADS=$OMP_NUM_THREADS
-
-module use #MODULES_DIR#
-module load simulator/#BRANCH#/default
-source #PREPARE_FILE#
-source benchmarking-env/bin/activate
 
 if ! source jemalloc.sh; then
   echo "Sourcing jemalloc failed, continue without it"
@@ -57,7 +69,6 @@ gathermetadata metadata-before
 
 #COMMANDS#
 
-scontrol show jobid ${SLURM_JOB_ID} -dd  # This should not be needed anymore, as it is called by gathermetadata
 gathermetadata metadata
 
 touch ready
