@@ -23,8 +23,8 @@
     - 'source benchmarking-env/bin/activate'
     - |
       if [[ -n "$PIP_LIST" ]]; then
-        benchmarking-env/bin/pip download $PIP_LIST --dest ./pip-packages
-        benchmarking-env/bin/pip install --no-index --find-links=${CI_PROJECT_DIR}/pip-packages ${CI_PROJECT_DIR}/pip-packages/*
+        benchmarking-env/bin/pip download --no-input $PIP_LIST --dest ./pip-packages
+        benchmarking-env/bin/pip install --no-index --no-input --find-links=${CI_PROJECT_DIR}/pip-packages ${CI_PROJECT_DIR}/pip-packages/*
       fi
     - 'export PATH="$(pwd):$PATH"'
     - 'pwd'
