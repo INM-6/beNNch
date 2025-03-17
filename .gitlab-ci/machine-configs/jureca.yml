@@ -22,9 +22,10 @@
     - 'python -m venv --system-site-packages benchmarking-env'
     - 'source benchmarking-env/bin/activate'
     - |
-      if [[ -n "$PIP_LIST" -a ! -d "pip-packages" ]]; then
+      if test -n "$PIP_LIST" -a ! -d "pip-packages"; then
         benchmarking-env/bin/pip download --no-input $PIP_LIST --dest ./pip-packages
       fi
+    - |
       if [[ -n "$PIP_LIST" ]]; then
         benchmarking-env/bin/pip install --no-index --no-input --find-links=${CI_PROJECT_DIR}/pip-packages ${CI_PROJECT_DIR}/pip-packages/*
       fi
