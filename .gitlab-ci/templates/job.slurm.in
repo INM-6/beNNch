@@ -63,8 +63,47 @@ if ! source jemalloc.sh; then
   echo "Sourcing jemalloc failed, continue without it"
 fi
 
+echo "======== DEBUG BEFORE VENV ========"
+echo "Date        : $(date)"
+echo "Hostname    : $(hostname -s)"
+echo "Shell PID   : $$"
+echo "-- which python --"
+which python || true
+python - <<'PY' || true
+import sys, import importlib.util as iu, os, site, subprocess, textwrap
+print("Python exe           :", sys.executable)
+print("sys.prefix           :", sys.prefix)
+print("VIRTUAL_ENV          :", os.environ.get("VIRTUAL_ENV"))
+print("First 5 sys.path     :", sys.path[:5], " …")
+print("matplotlib spec      :", iu.find_spec("matplotlib"))
+print("gathermetadata spec  :", iu.find_spec("gathermetadata"))
+PY
+echo "-- pmix components --"
+pmix_info --param psec all 2>/dev/null | tail -n +1 || echo "pmix_info not found"
+echo "LD_LIBRARY_PATH=$LD_LIBRARY_PATH"
+echo "PATH=$PATH"
+echo "=============================="
+
+
 #activate the venv that already contains gathermetadata
 source "$CI_PROJECT_DIR/benchmarking-env/bin/activate"
+
+echo "======== DEBUG AFTER VENV ========"
+which python
+python - <<'PY'
+import sys, importlib.util as iu, os, site
+print("Python exe           :", sys.executable)
+print("sys.prefix           :", sys.prefix)
+print("VIRTUAL_ENV          :", os.environ.get("VIRTUAL_ENV"))
+print("First 5 sys.path     :", sys.path[:5], " …")
+print("matplotlib spec      :", iu.find_spec("matplotlib"))
+print("gathermetadata spec  :", iu.find_spec("gathermetadata"))
+PY
+pmix_info --param psec all 2>/dev/null | tail -n +1 || true
+echo "LD_LIBRARY_PATH=$LD_LIBRARY_PATH"
+echo "PATH=$PATH"
+echo "=============================="
+
 
 
 module list
