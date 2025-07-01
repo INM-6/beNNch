@@ -63,9 +63,6 @@ if ! source jemalloc.sh; then
   echo "Sourcing jemalloc failed, continue without it"
 fi
 
-#activate the venv that already contains gathermetadata
-source "$CI_PROJECT_DIR/benchmarking-env/bin/activate"
-
 module list
 
 gathermetadata metadata-before
