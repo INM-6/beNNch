@@ -56,6 +56,19 @@ export OMP_DISPLAY_AFFINITY=TRUE
 
 export KMP_AFFINITY=verbose,balanced
 
+case "$MPI_VENDOR" in
+  *open*mpi*)
+    export OMPI_MCA_coll_tuned_use_dynamic_rules=1
+    export OMPI_MCA_coll_tuned_alltoall_algorithm=5
+    ;;
+  *mpich*|*cray*)
+    export MPICH_COLL_OPT_OFF=1
+    ;;
+  *intel*)
+    export I_MPI_ADJUST_ALLTOALL=3
+    ;;
+esac
+
 # Avoid problems from numexpr Python package
 export NUMEXPR_MAX_THREADS=$OMP_NUM_THREADS
 
