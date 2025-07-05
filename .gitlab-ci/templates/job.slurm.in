@@ -58,7 +58,7 @@ export KMP_AFFINITY=verbose,balanced
 
 
 export OMPI_MCA_coll_tuned_use_dynamic_rules=1
-export OMPI_MCA_coll_tuned_alltoall_algorithm=5
+export OMPI_MCA_coll_tuned_alltoall_algorithm=2
 
 
 # Avoid problems from numexpr Python package
