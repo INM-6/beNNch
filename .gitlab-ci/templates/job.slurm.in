@@ -57,9 +57,7 @@ export OMP_DISPLAY_AFFINITY=TRUE
 export KMP_AFFINITY=verbose,balanced
 
 
-export OMPI_MCA_coll_tuned_use_dynamic_rules=1
-export OMPI_MCA_coll_tuned_alltoall_algorithm=2
-
+export LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libjemalloc.so
 
 # Avoid problems from numexpr Python package
 export NUMEXPR_MAX_THREADS=$OMP_NUM_THREADS
@@ -68,21 +66,9 @@ if ! source jemalloc.sh; then
   echo "Sourcing jemalloc failed, continue without it"
 fi
 
-echo "-----DEBUG PATH TEST BEFORE-----"
-echo "PATH=$PATH"
-ls -l "$(which python 2>/dev/null || echo _none_)"    # what python is used
-which gathermetadata 2>&1 || echo "gathermetadata NOT on PATH"
-echo "------------------------"
-
 
 #activate the venv that already contains gathermetadata
 source "$CI_PROJECT_DIR/benchmarking-env/bin/activate"
-
-echo "-----DEBUG PATH TEST AFTER-----"
-echo "PATH=$PATH"
-ls -l "$(which python 2>/dev/null || echo _none_)"    # what python is used
-which gathermetadata 2>&1 || echo "gathermetadata NOT on PATH"
-echo "------------------------"
 
 
 
