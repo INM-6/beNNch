@@ -57,8 +57,6 @@ export OMP_DISPLAY_AFFINITY=TRUE
 export KMP_AFFINITY=verbose,balanced
 
 
-export LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libjemalloc.so
-
 # Avoid problems from numexpr Python package
 export NUMEXPR_MAX_THREADS=$OMP_NUM_THREADS
 
