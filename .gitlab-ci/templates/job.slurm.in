@@ -38,7 +38,9 @@
 #SBATCH --account=#ACCOUNT#
 #SBATCH --hint=nomultithread
 #SBATCH --distribution=block:block:fcyclic
+#SBATCH --mem=0
 #SBATCH #EXTRA_SBATCH_FLAGS#
+
 
 echo "JobId: $SLURM_JOB_ID"
 echo "CurrentDirectory: $(pwd)"
