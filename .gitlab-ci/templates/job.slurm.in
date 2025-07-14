@@ -39,6 +39,7 @@
 #SBATCH --hint=nomultithread
 #SBATCH --distribution=block:block:fcyclic
 #SBATCH --mem=0
+#SBATCH --reservation=mambench
 #SBATCH #EXTRA_SBATCH_FLAGS#
 
 echo "JobId: $SLURM_JOB_ID"
