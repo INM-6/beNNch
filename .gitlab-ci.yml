@@ -53,6 +53,12 @@ variables:
     options:
       - "OFF"
       - "ON"
+  JEMALLOC_FLAG:
+    description: "Determines whether jemalloc is used during the benchmark run"
+    value: "ON"
+    options:
+      - "OFF"
+      - "ON"
   MPI_FLAG:
     description: "Determines whether nest is compiled with mpi"
     value: "ON"

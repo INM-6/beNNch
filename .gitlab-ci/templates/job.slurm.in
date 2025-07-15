@@ -39,6 +39,7 @@
 #SBATCH --hint=nomultithread
 #SBATCH --distribution=block:block:fcyclic
 #SBATCH --mem=0
+#SBATCH --reservation=mambench
 #SBATCH #EXTRA_SBATCH_FLAGS#
 
 
@@ -50,13 +51,16 @@ set -exo pipefail
 export CPU_BIND_MASK="$(python3 "$CI_PROJECT_DIR/.gitlab-ci/scripts/pinning_mask.py" #NTASKS_PER_NODE# #THREADS_PER_TASK#)"
 
 export OMP_NUM_THREADS=#THREADS_PER_TASK#
-export OMP_PROC_BIND=spread
+export OMP_PROC_BIND=TRUE
 export OMP_PLACES=threads
 
 export OMP_DISPLAY_ENV=VERBOSE
 export OMP_DISPLAY_AFFINITY=TRUE
 
 export KMP_AFFINITY=verbose,balanced
+
+export OMPI_MCA_pml_base_verbose=100
+export OMPI_MCA_btl_base_verbose=100
 
 
 # Avoid problems from numexpr Python package
@@ -65,6 +69,12 @@ export NUMEXPR_MAX_THREADS=$OMP_NUM_THREADS
 if ! source jemalloc.sh; then
   echo "Sourcing jemalloc failed, continue without it"
 fi
+
+
+#activate the venv that already contains gathermetadata
+source "$CI_PROJECT_DIR/benchmarking-env/bin/activate"
+
+
 
 module list
 
