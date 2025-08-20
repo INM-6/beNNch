@@ -37,7 +37,7 @@ for model_name, benchmark_configs in config["benchmarks"].items():
     model_repo_dir = os.path.join(model_repos_dir, model_name)
     shutil.copytree(os.path.join(model_tmp_dirs[repo_alias], benchmark_configs["model_dir"]), model_repo_dir)
     # Copy .git for "model_git_commit_hash=$(git rev-parse HEAD)" in bennch helpers
-    shutil.copytree(os.path.join(model_tmp_dirs[repo_alias], ".git"), os.path.join(model_repo_dir, ".git"))
+    shutil.copytree(os.path.join(model_tmp_dirs[repo_alias], ".git"), os.path.join(model_repo_dir, ".git"), dirs_exist_ok=True)
 
 # Remove temporary repositories again
 shutil.rmtree(models_tmp_dir)
