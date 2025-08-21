@@ -24,8 +24,8 @@
         benchmarking-env/bin/pip download $PIP_LIST --dest ./pip-packages
         benchmarking-env/bin/pip install --no-index --find-links=${CI_PROJECT_DIR}/pip-packages ${CI_PROJECT_DIR}/pip-packages/*
       fi
-      if [ -d gather-metadata ]; then
-        pip install ./gather-metadata
+      if [ -d "${CI_PROJECT_DIR}/gather-metadata" ]; then
+        pip install "${CI_PROJECT_DIR}/gather-metadata"
       fi
     - 'export PATH="$(pwd):$PATH"'
     - 'ls -al'
@@ -49,8 +49,8 @@
       if [[ -n "$PIP_LIST" ]]; then
         benchmarking-env/bin/pip install --no-index --find-links=${CI_PROJECT_DIR}/pip-packages ${CI_PROJECT_DIR}/pip-packages/*
       fi
-      if [ -d gather-metadata ]; then
-        pip install ./gather-metadata
+      if [ -d "${CI_PROJECT_DIR}/gather-metadata" ]; then
+        pip install "${CI_PROJECT_DIR}/gather-metadata"
       fi
 
     - 'export PATH="$(pwd):$PATH"'
