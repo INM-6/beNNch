@@ -35,8 +35,8 @@ variables:
   CONFIG_FILE_PATH: "$$USER_DATA_DIR/config.yml"
   MODELS_DIR: "$$USER_DATA_DIR/models"
   OUTPUT_DIR: "$$USER_DATA_DIR/benchmark_results"
-# required to install gathermetadata
-  GITHUB_TOKEN: "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"
+  # required for JSC jacamar runners to work:
+  FF_GIT_INTERACTIVE: true
 
 stages: [ preparation, build, benchmarking, transfer, annotate, plot ]
 
