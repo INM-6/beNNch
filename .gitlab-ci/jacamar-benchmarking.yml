@@ -194,6 +194,7 @@ Benchmarking:
       JUBE_BENCHMARK_ID=000000
       COUNTER=0
       NUM_FAILURES=-1
+      NUM_RETRIES=0
       declare -A retries
       for run in "$JUBE_RESULTS_DIR/$JUBE_BENCHMARK_ID"/*/ ; do
           retries[$(basename $run)]=0
@@ -214,7 +215,7 @@ Benchmarking:
             if [ -f "$run/work/stdout" ] ; then
               JOBID=$(grep -e 'Submitted batch job ' -e 'JobId: ' "$run/work/stdout" | head -1 | grep -oP '\d*')
               if grep -q -E 'terminated due to failure of node|Force Terminated StepId' "$run/work/stderr" ; then
-                if [[ ${retries[$(basename $run)]} -lt 4 ]] ; then
+                if [[ ${retries[$(basename $run)]} -lt NUM_RETRIES ]] ; then
                   (( ++retries[$(basename $run)] ))
                   cp "$run/work/stdout" "$run/work/stdout_NodeFailure_${retries[$(basename $run)]}"
                   cp "$run/work/stderr" "$run/work/stderr_NodeFailure_${retries[$(basename $run)]}"
