@@ -53,7 +53,11 @@ for logfile in all_logfiles:
         for line in fn:
             key, value, *_ = line.split(' ')
             if key in metrics + metrics_sum:
-                log[key] = float(value)
+                try:
+                    val = float(value)
+                except:
+                    print(f"Couldn't process value {value} for key {key}")
+                log[key] = 0.
 
         for m in d:
             try:
