@@ -57,7 +57,7 @@ for logfile in all_logfiles:
                     val = float(value)
                 except:
                     print(f"Couldn't process value {value} for key {key}")
-                log[key] = 0.
+                    log[key] = 0.
 
         for m in d:
             try:
