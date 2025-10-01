@@ -56,8 +56,9 @@ for logfile in all_logfiles:
                 try:
                     val = float(value)
                 except:
+                    val = np.nan
                     print(f"Couldn't process value {value} for key {key}")
-                    log[key] = 0.
+                log[key] = val
 
         for m in d:
             try:
