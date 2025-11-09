@@ -41,11 +41,11 @@
 #SBATCH --mem=0
 #SBATCH #EXTRA_SBATCH_FLAGS#
 
-
 echo "JobId: $SLURM_JOB_ID"
 echo "CurrentDirectory: $(pwd)"
 ls -l
 set -exo pipefail
+ulimit -c 0
 
 export CPU_BIND_MASK="$(python3 "$CI_PROJECT_DIR/.gitlab-ci/scripts/pinning_mask.py" #NTASKS_PER_NODE# #THREADS_PER_TASK#)"
 
