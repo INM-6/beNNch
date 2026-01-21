@@ -64,7 +64,7 @@ export NUMEXPR_MAX_THREADS=$OMP_NUM_THREADS
 
 pwd
 ls -lisa
-env | soft
+env | sort
 pip list
 
 source "benchmarking-env/bin/activate"
