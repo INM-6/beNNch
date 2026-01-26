@@ -76,7 +76,6 @@ Preparation:
     - 'mkdir -p "$USER_DATA_DIR" "$USER_DATA_DIR/user_files" "$SIMULATOR_REPO_DIR" "$BENCHMARKS_DIR/metrics" "$JUBE_RESULTS_DIR" "$BENCHMARKS_DIR/jube" "$SIMULATOR_BUILD_DIR" "$MODELS_DIR" "$OUTPUT_DIR"  "$CI_PROJECT_DIR/flipbooks"'
     # Move all artifacts to user data directory
     - 'if [[ $(realpath "$CI_PROJECT_DIR/config.yml") != $(realpath "$CONFIG_FILE_PATH") ]]; then mv "$CI_PROJECT_DIR/config.yml" "$CONFIG_FILE_PATH"; fi'
-    - 'cd $CI_PROJECT_DIR'
     # install gathermetadata
     - 'git clone https://github.com/inm-6/gather-metadata'
     # install jube
@@ -93,7 +92,6 @@ Preparation:
     # Forward all environment variables to next stage
     - 'rm -f "$CI_PROJECT_DIR/benchmark_variables.env"'
     - |
-      cd "$CI_PROJECT_DIR"
       touch benchmark_variables.env
       for var in BENCHMARK_ID BENCHMARK_UID CB_RUNNER_ACCOUNT CB_RUNNER_PARTITION CB_COMPUTE_PROJECT CB_DATA_PROJECT CB_DEPENDENCIES USER_DATA_DIR BENCHMARKS_DIR CB_SIMULATOR_REPO CB_SIMULATOR_BRANCH SIMULATOR_REPO_DIR JUBE_RESULTS_DIR RESULTS_REPO_URL RESULTS_BRANCH RESULTS_PATH SIMULATOR_BUILD_DIR CONFIG_FILE_PATH MODELS_DIR OUTPUT_DIR RESULTS_DIR simulator_git_commit_hash ; do
       # RESULTS_REPO_TOKEN
@@ -129,18 +127,15 @@ Build:
     - 'echo $SIMULATOR_BUILD_DIR'
     # Build simulator
     - 'printenv '
-    - 'cd "${SIMULATOR_BUILD_DIR}"'
     - |
       BUILD_INSTRUCTIONS=$(python3 -c "import yaml; f = open('$CONFIG_FILE_PATH', 'r'); print(' && '.join(yaml.safe_load(f)['software_parameters'].get('build_instructions', [])));f.close()")
     - 'echo $BUILD_INSTRUCTIONS'
     - 'eval $BUILD_INSTRUCTIONS'
-    - 'cd "${SIMULATOR_REPO_DIR}"'
     - 'export simulator_git_commit_hash=$(git rev-parse HEAD)'
     - 'rm -r "$SIMULATOR_REPO_DIR"'
     # Forward all environment variables to next stage
     - 'rm -f "$CI_PROJECT_DIR/benchmark_variables.env"'
     - |
-      cd "$CI_PROJECT_DIR"
       touch benchmark_variables.env
       for var in BENCHMARK_ID BENCHMARK_UID CB_RUNNER_ACCOUNT CB_RUNNER_PARTITION CB_COMPUTE_PROJECT CB_DATA_PROJECT CB_DEPENDENCIES USER_DATA_DIR BENCHMARKS_DIR CB_SIMULATOR_REPO CB_SIMULATOR_BRANCH SIMULATOR_REPO_DIR JUBE_RESULTS_DIR RESULTS_REPO_URL RESULTS_BRANCH RESULTS_PATH SIMULATOR_BUILD_DIR CONFIG_FILE_PATH MODELS_DIR OUTPUT_DIR RESULTS_DIR simulator_git_commit_hash ; do
       # RESULTS_REPO_TOKEN
@@ -178,13 +173,10 @@ Benchmarking:
     - 'pip install ./gather-metadata'
     - 'pip install ./JUBE'
     # Load the simulator
-    - 'cd "${SIMULATOR_BUILD_DIR}"'
-    - |
       INSTALL_INSTRUCTIONS=$(python3 -c "import yaml; f = open('$CONFIG_FILE_PATH', 'r'); print(' && '.join(yaml.safe_load(f)['software_parameters'].get('install_instructions', [])));f.close()")
     - 'echo $INSTALL_INSTRUCTIONS'
     - 'eval $INSTALL_INSTRUCTIONS'
     # Wait until all other jube benchmarks have been started until the JUBE_BENCHMARK_ID of this subpipeline
-    - 'cd $JUBE_RESULTS_DIR'
     # Start the benchmarks now
     - 'cp "$TEMPLATES_DIR/job.slurm.in" "${BENCHMARKS_DIR}/jube/job.slurm.in"'
     - 'JUBE_BENCHMARK_FILE=$CB_MODELS'
@@ -220,7 +212,6 @@ Benchmarking:
                   cp "$run/work/stdout" "$run/work/stdout_NodeFailure_${retries[$(basename $run)]}"
                   cp "$run/work/stderr" "$run/work/stderr_NodeFailure_${retries[$(basename $run)]}"
                   rm -f "$run/work/ready" "$run/work/stderr" "$run/work/stdout"
-                  cd "$run/work/"
                   sbatch job.slurm
                   echo "Detected node failure, rerunning job (#${retries[$(basename $run)]})"
                   (( ++NUM_FAILURES ))
@@ -251,7 +242,6 @@ Benchmarking:
     - 'chmod +x ${SCRIPTS_DIR}/token_removal.sh'
     - 'OUTPATH="${JUBE_RESULTS_DIR}" SCRIPTS_DIR="${SCRIPTS_DIR}" CB_DATADUMP="${CI_PROJECT_DIR}/results" ${SCRIPTS_DIR}/pack_results.sh'
     # Add metadata to output archive
-    - 'cd ${MODELS_DIR}/${JUBE_BENCHMARK_FILE}'
     - 'export model_git_commit_hash=$(git rev-parse HEAD)'
     # get all variables to use them in Transfer for metadata annotation
     - 'mkdir ${CI_PROJECT_DIR}/env'
@@ -259,7 +249,6 @@ Benchmarking:
     # Forward all environment variables to next stage
     - 'rm -f "$CI_PROJECT_DIR/benchmark_variables.env"'
     - |
-      cd "$CI_PROJECT_DIR"
       touch benchmark_variables.env
       for var in BENCHMARK_ID BENCHMARK_UID CB_RUNNER_ACCOUNT CB_RUNNER_PARTITION CB_COMPUTE_PROJECT CB_DATA_PROJECT CB_DEPENDENCIES USER_DATA_DIR BENCHMARKS_DIR CB_SIMULATOR_REPO CB_SIMULATOR_BRANCH SIMULATOR_REPO_DIR JUBE_RESULTS_DIR RESULTS_REPO_URL RESULTS_BRANCH RESULTS_PATH SIMULATOR_BUILD_DIR CONFIG_FILE_PATH MODELS_DIR OUTPUT_DIR RESULTS_DIR simulator_git_commit_hash ; do
       # RESULTS_REPO_TOKEN
@@ -296,7 +285,6 @@ Transfer:
     - 'echo "BENCHMARK_UUIDS=${BENCHMARK_FILES}" >> BENCHMARK_UUIDS.env'
     - 'echo "ANNOTATE_EXPERIMENT_ID=${ANNOTATE_EXPERIMENT_ID}" >> BENCHMARK_UUIDS.env'
     # actual data transfer
-    - 'cd ${CB_STORAGE_DIR}'
     - 'cp -r ${CI_PROJECT_DIR}/results/* .'
     - 'git annex add ${FILES_TO_ADD}'
     - 'git commit -a -m "add benchmarking data of run ${ANNOTATE_EXPERIMENT_ID}"'
