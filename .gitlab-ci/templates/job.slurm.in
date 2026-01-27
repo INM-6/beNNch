@@ -65,7 +65,6 @@ export NUMEXPR_MAX_THREADS=$OMP_NUM_THREADS
 pwd
 ls -lisa
 env | sort
-pip list
 
 source "$CI_PROJECT_DIR/benchmarking-env/bin/activate"
 
