@@ -95,4 +95,4 @@
 variables:
   TEMP_DIR: "/work/users"
   extra_srun_flags: "--mpi=pmix"
-  extra_sbatch_flags: "--reservation=cMAM"
+  #extra_sbatch_flags: "--reservation=cMAM"
