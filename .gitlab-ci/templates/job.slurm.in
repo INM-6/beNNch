@@ -67,7 +67,7 @@ ls -lisa
 env | sort
 pip list
 
-source "benchmarking-env/bin/activate"
+source "$CI_PROJECT_DIR/benchmarking-env/bin/activate"
 
 if ! source jemalloc.sh; then
   echo "Sourcing jemalloc failed, continue without it"
