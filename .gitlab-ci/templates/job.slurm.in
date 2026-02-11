@@ -51,8 +51,6 @@ fi
 
 module list
 
-source  /p/scratch/cjinb33/.jacamar-ci/plesser1/builds/bennch_6238/000/nest/bennch/bennch/benchmarking-env/bin/activate
-
 #COMMANDS#
 
 scontrol show jobid ${SLURM_JOB_ID} -dd  # This should not be needed anymore, as it is called by gathermetadata
