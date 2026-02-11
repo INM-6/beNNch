@@ -75,6 +75,7 @@ variables:
       - "hpc_benchmark"
       - "multi_area"
       - "microcircuit"
+      - "mesocircuit"
   CB_MACHINES:
     description: "Machine on which benchmarks should be run."
     value: "jureca"
