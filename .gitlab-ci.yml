@@ -74,6 +74,7 @@ variables:
       - "microcircuit"
       - "cmam"
       - "cmam_connect_benchmark"
+      - "mesocircuit"
   CB_MACHINES:
     description: "Machine on which benchmarks should be run."
     value: "jureca"
