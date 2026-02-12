@@ -83,7 +83,7 @@ variables:
       - "jusuf"
       - "jureca"
       - "juwels"
-      - "jedi"
+      - "jupiter"
   CB_STORAGE_MACHINE:
     description: "Runner Tags of the storage machine"
     value: "hambach"
