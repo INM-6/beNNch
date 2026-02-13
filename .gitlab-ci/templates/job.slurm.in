@@ -62,10 +62,6 @@ export KMP_AFFINITY=verbose,balanced
 # Avoid problems from numexpr Python package
 export NUMEXPR_MAX_THREADS=$OMP_NUM_THREADS
 
-pwd
-ls -lisa
-env | sort
-
 source "$CI_PROJECT_DIR/benchmarking-env/bin/activate"
 
 if ! source jemalloc.sh; then
