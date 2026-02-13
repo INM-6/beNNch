@@ -47,7 +47,7 @@
       python -m venv --system-site-packages benchmarking-env
       source benchmarking-env/bin/activate
       if [[ -n "$PIP_LIST" ]]; then
-        benchmarking-env/bin/pip install --no-index --find-links=${CI_PROJECT_DIR}/pip-packages ${CI_PROJECT_DIR}/pip-packages/*
+        pip install --no-index --find-links=${CI_PROJECT_DIR}/pip-packages ${CI_PROJECT_DIR}/pip-packages/*
       fi
       if [ -d "${CI_PROJECT_DIR}/gather-metadata" ]; then
         pip install "${CI_PROJECT_DIR}/gather-metadata"
@@ -95,4 +95,4 @@ variables:
   CUSTOM_CI_BUILDS_DIR: "/work/users/.jacamar-ci"
   TEMP_DIR: "/work/users"
   extra_srun_flags: "--mpi=pmix"
-  extra_sbatch_flags: "--exclusive"
+  extra_sbatch_flags: ""
