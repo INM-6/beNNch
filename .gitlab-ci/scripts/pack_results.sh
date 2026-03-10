@@ -5,7 +5,7 @@
 # If a variable
 #
 set -euo pipefail
-set +x
+set -x
 
 if [ -x "${SCRIPTS_DIR:-.}/token_removal.sh" ]; then
 	echo "Removing sensitive data from $OUTPATH"
