@@ -40,6 +40,7 @@ jube_results_dir = sys.argv[7]       # path to directory where all benchmark res
 pipeline_file_path = sys.argv[8]     # path to current pipeline definition file
 machine = sys.argv[9]                # name of the machine the benchmark is running on
 machine_config_dir = sys.argv[10]
+extra_sbatch_flags = sys.argv[11]    # string containing sbatch flags set by the user in pipeline creating
 model_name = os.environ["CB_MODELS"]
 
 config_dir = os.path.dirname(config_path)
@@ -128,7 +129,7 @@ jube_benchmark["parameterset"].append(
     "name": "machine_config",
     "parameter": [
         {"name": "extra_srun_flags", "separator": ";", "type": "string", "_": machine_config["variables"]["extra_srun_flags"]},
-        {"name": "extra_sbatch_flags", "separator": ";", "type": "string", "_": machine_config["variables"]["extra_sbatch_flags"]}
+        {"name": "extra_sbatch_flags", "separator": ";", "type": "string", "_": machine_config["variables"]["extra_sbatch_flags"] + ' ' + extra_sbatch_flags}
     ]
 })
 
