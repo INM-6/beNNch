@@ -35,6 +35,7 @@ variables:
   CONFIG_FILE_PATH: "$$USER_DATA_DIR/config.yml"
   MODELS_DIR: "$$USER_DATA_DIR/models"
   OUTPUT_DIR: "$$USER_DATA_DIR/benchmark_results"
+  EXTRA_SBATCH_FLAGS: "$EXTRA_SBATCH_FLAGS"
   # required for JSC jacamar runners to work:
   FF_GIT_INTERACTIVE: true
 
@@ -89,7 +90,7 @@ Preparation:
     - 'git clone --single-branch --branch="$CB_SIMULATOR_BRANCH" --depth=1 "$CB_SIMULATOR_REPO" "$SIMULATOR_REPO_DIR"'
     # construct benchmarks
     - |
-      python3 "$SCRIPTS_DIR/construct_benchmarks.py" "$TEMPLATES_DIR/jube-template.yml" "$CONFIG_FILE_PATH" "$MODELS_DIR" "$BENCHMARKS_DIR/jube" "$BENCHMARKS_DIR/metrics" "$SCRIPTS_DIR" "$JUBE_RESULTS_DIR" "$CI_PROJECT_DIR/run-benchmarks.yml" "$CB_MACHINES" "$CI_PROJECT_DIR/.gitlab-ci/machine-configs/"
+      python3 "$SCRIPTS_DIR/construct_benchmarks.py" "$TEMPLATES_DIR/jube-template.yml" "$CONFIG_FILE_PATH" "$MODELS_DIR" "$BENCHMARKS_DIR/jube" "$BENCHMARKS_DIR/metrics" "$SCRIPTS_DIR" "$JUBE_RESULTS_DIR" "$CI_PROJECT_DIR/run-benchmarks.yml" "$CB_MACHINES" "$CI_PROJECT_DIR/.gitlab-ci/machine-configs/" "$EXTRA_SBATCH_FLAGS"
     # Forward all environment variables to next stage
     - 'rm -f "$CI_PROJECT_DIR/benchmark_variables.env"'
     - |
