@@ -3,8 +3,10 @@ import os
 import subprocess
 import copy
 import shutil
-import yaml
-yaml.add_representer(str, lambda dumper, data: dumper.represent_scalar("tag:yaml.org,2002:str", data, style='"'))
+from ruamel.yaml import YAML
+yaml = YAML(typ='safe')
+yaml.preserve_quotes = True
+yaml.default_style = '"'
 
 
 config_file_path = sys.argv[1]
@@ -15,7 +17,7 @@ if models:
 
 
 with open(config_file_path) as config_file:
-    config = yaml.safe_load(config_file)
+    config = yaml.load(config_file)
 
 models_tmp_dir = os.path.join(model_repos_dir, "tmp")
 os.makedirs(models_tmp_dir)

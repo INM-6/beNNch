@@ -24,7 +24,7 @@
   variables:
     SCHEDULER_PARAMETERS: "--partition=$CB_PARTITION --mem=$CB_JOB_MEM --account=$CB_RUNNER_ACCOUNT --time=$CB_JOB_TIME_LIMIT --nodes=$CB_NUMNODES --deadline=now+2hours"
     CB_NUMNODES: 1
-    CB_JOB_TIME_LIMIT: 00:10:00
+    CB_JOB_TIME_LIMIT: "00:10:00"
     CB_JOB_MEM: "16G"
   tags:
     - shell
@@ -43,7 +43,7 @@
   variables:
     SCHEDULER_PARAMETERS: "--account=$CB_RUNNER_ACCOUNT --time=$CB_JOB_TIME_LIMIT --mem=$CB_JOB_MEM --nodes=$CB_NUMNODES --deadline=now+2days"
     CB_NUMNODES: 1
-    CB_JOB_TIME_LIMIT: 00:10:00
+    CB_JOB_TIME_LIMIT: "00:10:00"
     CB_JOB_MEM: "16G"
   tags:
     - compute

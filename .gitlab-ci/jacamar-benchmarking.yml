@@ -25,7 +25,7 @@ include:
 
 variables:
   SIMULATOR_BUILD_DIR: "$$USER_DATA_DIR/build/"
-# repository dependent variables
+  # repository dependent variables
   SIMULATOR_REPO_DIR: "$$USER_DATA_DIR/repository"
   RESULTS_DIR: "$$USER_DATA_DIR/results"
   SCRIPTS_DIR: "$CI_PROJECT_DIR/.gitlab-ci/scripts"
@@ -84,7 +84,7 @@ Preparation:
     - 'git clone --depth=1 --branch=feature-python-exec https://github.com/JanVogelsang/JUBE.git JUBE'
     # Clone simulator and model repositories
     - |
-      export CB_SIMULATOR_BRANCH=$(python3 -c "import yaml; f = open('$CONFIG_FILE_PATH', 'r'); print(yaml.safe_load(f)['software_parameters']['simulator_repo_branch']);f.close()")
+      export CB_SIMULATOR_BRANCH=$(python3 -c "from ruamel.yaml import YAML; yaml = YAML(typ='safe'); f = open('$CONFIG_FILE_PATH', 'r'); print(yaml.load(f)['software_parameters']['simulator_repo_branch']);f.close()")
     - 'python3 "$SCRIPTS_DIR/clone_models.py" "$CONFIG_FILE_PATH" "$MODELS_DIR" "$CB_MODELS"'
     # Simulator clone
     - 'git clone --single-branch --branch="$CB_SIMULATOR_BRANCH" --depth=1 "$CB_SIMULATOR_REPO" "$SIMULATOR_REPO_DIR"'
@@ -96,7 +96,7 @@ Preparation:
     - |
       cd "$CI_PROJECT_DIR"
       touch benchmark_variables.env
-      for var in BENCHMARK_ID BENCHMARK_UID CB_RUNNER_ACCOUNT CB_RUNNER_PARTITION CB_COMPUTE_PROJECT CB_DATA_PROJECT CB_DEPENDENCIES USER_DATA_DIR BENCHMARKS_DIR CB_SIMULATOR_REPO CB_SIMULATOR_BRANCH SIMULATOR_REPO_DIR JUBE_RESULTS_DIR RESULTS_REPO_URL RESULTS_BRANCH RESULTS_PATH SIMULATOR_BUILD_DIR CONFIG_FILE_PATH MODELS_DIR OUTPUT_DIR RESULTS_DIR simulator_git_commit_hash ; do
+      for var in BENCHMARK_ID BENCHMARK_UID CB_RUNNER_ACCOUNT CB_RUNNER_PARTITION CB_DEPENDENCIES USER_DATA_DIR BENCHMARKS_DIR CB_SIMULATOR_REPO CB_SIMULATOR_BRANCH SIMULATOR_REPO_DIR JUBE_RESULTS_DIR RESULTS_REPO_URL RESULTS_BRANCH RESULTS_PATH SIMULATOR_BUILD_DIR CONFIG_FILE_PATH MODELS_DIR OUTPUT_DIR RESULTS_DIR simulator_git_commit_hash ; do
       # RESULTS_REPO_TOKEN
       if [ ! -z "${!var+x}" ]; then
           echo "${var}=${!var}" >> "$CI_PROJECT_DIR/benchmark_variables.env"
@@ -132,7 +132,7 @@ Build:
     - 'printenv '
     - 'cd "${SIMULATOR_BUILD_DIR}"'
     - |
-      BUILD_INSTRUCTIONS=$(python3 -c "import yaml; f = open('$CONFIG_FILE_PATH', 'r'); print(' && '.join(yaml.safe_load(f)['software_parameters'].get('build_instructions', [])));f.close()")
+      BUILD_INSTRUCTIONS=$(python3 -c "from ruamel.yaml import YAML; yaml = YAML(typ='safe'); f = open('$CONFIG_FILE_PATH', 'r'); print(' && '.join(yaml.load(f)['software_parameters'].get('build_instructions', [])));f.close()")
     - 'echo $BUILD_INSTRUCTIONS'
     - 'eval $BUILD_INSTRUCTIONS'
     - 'cd "${SIMULATOR_REPO_DIR}"'
@@ -143,7 +143,7 @@ Build:
     - |
       cd "$CI_PROJECT_DIR"
       touch benchmark_variables.env
-      for var in BENCHMARK_ID BENCHMARK_UID CB_RUNNER_ACCOUNT CB_RUNNER_PARTITION CB_COMPUTE_PROJECT CB_DATA_PROJECT CB_DEPENDENCIES USER_DATA_DIR BENCHMARKS_DIR CB_SIMULATOR_REPO CB_SIMULATOR_BRANCH SIMULATOR_REPO_DIR JUBE_RESULTS_DIR RESULTS_REPO_URL RESULTS_BRANCH RESULTS_PATH SIMULATOR_BUILD_DIR CONFIG_FILE_PATH MODELS_DIR OUTPUT_DIR RESULTS_DIR simulator_git_commit_hash ; do
+      for var in BENCHMARK_ID BENCHMARK_UID CB_RUNNER_ACCOUNT CB_RUNNER_PARTITION CB_DEPENDENCIES USER_DATA_DIR BENCHMARKS_DIR CB_SIMULATOR_REPO CB_SIMULATOR_BRANCH SIMULATOR_REPO_DIR JUBE_RESULTS_DIR RESULTS_REPO_URL RESULTS_BRANCH RESULTS_PATH SIMULATOR_BUILD_DIR CONFIG_FILE_PATH MODELS_DIR OUTPUT_DIR RESULTS_DIR simulator_git_commit_hash ; do
       # RESULTS_REPO_TOKEN
       if [ ! -z "${!var+x}" ]; then
           echo "${var}=${!var}" >> "$CI_PROJECT_DIR/benchmark_variables.env"
@@ -181,7 +181,7 @@ Benchmarking:
     # Load the simulator
     - 'cd "${SIMULATOR_BUILD_DIR}"'
     - |
-      INSTALL_INSTRUCTIONS=$(python3 -c "import yaml; f = open('$CONFIG_FILE_PATH', 'r'); print(' && '.join(yaml.safe_load(f)['software_parameters'].get('install_instructions', [])));f.close()")
+      INSTALL_INSTRUCTIONS=$(python3 -c "from ruamel.yaml import YAML; yaml = YAML(typ='safe'); f = open('$CONFIG_FILE_PATH', 'r'); print(' && '.join(yaml.load(f)['software_parameters'].get('install_instructions', [])));f.close()")
     - 'echo $INSTALL_INSTRUCTIONS'
     - 'eval $INSTALL_INSTRUCTIONS'
     # Wait until all other jube benchmarks have been started until the JUBE_BENCHMARK_ID of this subpipeline
@@ -262,7 +262,7 @@ Benchmarking:
     - |
       cd "$CI_PROJECT_DIR"
       touch benchmark_variables.env
-      for var in BENCHMARK_ID BENCHMARK_UID CB_RUNNER_ACCOUNT CB_RUNNER_PARTITION CB_COMPUTE_PROJECT CB_DATA_PROJECT CB_DEPENDENCIES USER_DATA_DIR BENCHMARKS_DIR CB_SIMULATOR_REPO CB_SIMULATOR_BRANCH SIMULATOR_REPO_DIR JUBE_RESULTS_DIR RESULTS_REPO_URL RESULTS_BRANCH RESULTS_PATH SIMULATOR_BUILD_DIR CONFIG_FILE_PATH MODELS_DIR OUTPUT_DIR RESULTS_DIR simulator_git_commit_hash ; do
+      for var in BENCHMARK_ID BENCHMARK_UID CB_RUNNER_ACCOUNT CB_RUNNER_PARTITION CB_DEPENDENCIES USER_DATA_DIR BENCHMARKS_DIR CB_SIMULATOR_REPO CB_SIMULATOR_BRANCH SIMULATOR_REPO_DIR JUBE_RESULTS_DIR RESULTS_REPO_URL RESULTS_BRANCH RESULTS_PATH SIMULATOR_BUILD_DIR CONFIG_FILE_PATH MODELS_DIR OUTPUT_DIR RESULTS_DIR simulator_git_commit_hash ; do
       # RESULTS_REPO_TOKEN
       if [ ! -z "${!var+x}" ]; then
           echo "${var}=${!var}" >> "$CI_PROJECT_DIR/benchmark_variables.env"

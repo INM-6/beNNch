@@ -22,8 +22,11 @@ import sys
 import os
 import copy
 
-import yaml
-yaml.add_representer(str, lambda dumper, data: dumper.represent_scalar('tag:yaml.org,2002:str', data, style='"'))
+from ruamel.yaml import YAML
+yaml = YAML(typ='safe')
+yaml.default_flow_style = False
+yaml.preserve_quotes = True
+yaml.default_style = '"'
 
 COLOR_WARNING = '\033[93m'
 COLOR_FAIL = '\033[91m'
@@ -50,15 +53,15 @@ if not os.path.exists(config_output_dir):
     os.makedirs(config_output_dir)
 
 with open(jube_template_path, 'r') as template_file:
-    jube_benchmark_template = yaml.safe_load(template_file)
+    jube_benchmark_template = yaml.load(template_file)
     jube_benchmark_template["outpath"] = jube_results_dir
 
 
 with open(config_path, 'r') as config_file:
-    config = yaml.safe_load(config_file)
+    config = yaml.load(config_file)
 
 with open(os.path.join(machine_config_dir, machine + '.yml'), 'r') as machine_config_file:
-            machine_config = yaml.safe_load(machine_config_file)
+            machine_config = yaml.load(machine_config_file)
 
 benchmark_config = config["benchmarks"][model_name]
 if machine not in benchmark_config["machine_parameters"]:
@@ -78,7 +81,7 @@ all_metrics = metrics + metrics_sum
 metrics_out = {"metrics_mean": metrics, "metrics_sum": metrics_sum}
 metrics_out_path = os.path.join(config_output_dir, f"cb_{model_name}_{machine}_metrics.yml")
 with open(metrics_out_path, 'w') as metrics_outfile:
-    yaml.dump(metrics_out, metrics_outfile, default_flow_style=False)
+    yaml.dump(metrics_out, metrics_outfile)
 
 # Name
 jube_benchmark["name"] = model_name
@@ -202,4 +205,4 @@ jube_benchmark["result"]["table"]["column"] = benchmark_config.get("params_rec",
 
 # Write jube benchmark file
 with open(os.path.join(benchmark_output_dir, f"cb_{model_name}_{machine}.yml"), 'w') as jube_outfile:
-    yaml.dump(jube_benchmark, jube_outfile, default_flow_style=False)
+    yaml.dump(jube_benchmark, jube_outfile)

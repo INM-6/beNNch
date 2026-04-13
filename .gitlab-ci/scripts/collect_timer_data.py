@@ -25,11 +25,13 @@ import os
 import sys
 
 import json
-import yaml
-yaml.add_representer(str, lambda dumper, data: dumper.represent_scalar('tag:yaml.org,2002:str', data, style='"'))
+from ruamel.yaml import YAML
 import numpy as np
 import pandas as pd
 
+yaml = YAML(typ='safe')
+yaml.preserve_quotes = True
+yaml.default_style = '"'
 
 model_config_path = sys.argv[1]  # path to model config file
 workpackage_path = sys.argv[2]   # path to workpackage files
@@ -37,7 +39,7 @@ log_path = sys.argv[3]           # path to logfiles
 
 
 with open(model_config_path) as model_config_file:
-    config = yaml.safe_load(model_config_file)
+    config = yaml.load(model_config_file)
 
 metrics = config["metrics_mean"]
 metrics_sum = config["metrics_sum"]
