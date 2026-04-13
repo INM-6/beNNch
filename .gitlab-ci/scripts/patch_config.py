@@ -35,16 +35,18 @@ def patch_element(config, key, value):
         if type(config[key]) != type(value):
             raise ValueError()
         if type(value) == list:
-            for v in value:
-                if type(v) == dict and "name" in v:
-                    for i, val in enumerate(config[key]):
-                        if val.get("name", "") == v["name"]:
-                            config[key][i] = v
-                            break
-                    else:
-                        config[key].append(v)
-                elif v not in config[key]:
-                    config[key].append(v)
+            if len(value) > 0 and type(value[0]) == dict:
+                for v in value:
+                    assert type(v) == dict, "Configuration files do not allow lists with mixed child types (e.g. scalar and dict)"
+                    if "name" in v:
+                        for i, val in enumerate(config[key]):
+                            if val.get("name", "") == v["name"]:
+                                config[key][i] = v
+                                break
+                        else:
+                            config[key].append(v)
+            else:
+                config[key] = value
         elif type(value) == dict:
             for k, v in value.items():
                 patch_element(config[key], k, v)
