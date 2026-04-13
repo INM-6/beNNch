@@ -14,9 +14,12 @@ if [ -x "${SCRIPTS_DIR:-.}/token_removal.sh" ]; then
 fi
 cd "$OUTPATH/000000";
 
+declare -a extrafiles
+extrafiles+=( *.xml )
+[ -d "result" ] && extrafiles+=( result )
 for job in 0*; do
     ID=$(uuidgen);
-    if tar -czf "${ID}.tgz" "$job" *.xml; then
+    if tar -czf "${ID}.tgz" "$job" "${extrafiles[@]}"; then
         echo "$job stored as ${ID}.tgz";
     else
         echo "$job packing failed";
