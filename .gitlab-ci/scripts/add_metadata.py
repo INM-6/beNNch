@@ -19,8 +19,10 @@ import subprocess
 
 import json
 import numpy as np
-import yaml
-yaml.add_representer(str, lambda dumper, data: dumper.represent_scalar('tag:yaml.org,2002:str', data, style='"'))
+from ruamel.yaml import YAML
+yaml = YAML(typ='safe')
+yaml.preserve_quotes = True
+yaml.default_style = '"'
 
 
 result_file_path = sys.argv[1]
@@ -34,7 +36,7 @@ with open(cpu_info) as f:
         subprocess.run(['git', 'annex', 'metadata', result_file_path, '--set', f'{key}="{value.replace(" ", ";")}"'])
 
 with open(config_file, 'r') as config_file:
-    config = yaml.safe_load(config_file)
+    config = yaml.load(config_file)
 
 # TODO: Some parameters might not have concrete values, but instead either depend on other parameters or are based on python.
 #  Instead of naively adding the value here, extract the actual values from jube somehow.

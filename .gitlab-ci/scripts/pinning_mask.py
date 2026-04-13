@@ -1,7 +1,5 @@
 import sys
-import yaml
 import os
-yaml.add_representer(str, lambda dumper, data: dumper.represent_scalar('tag:yaml.org,2002:str', data, style='"'))
 
 tasks_per_node = int(sys.argv[1])
 threads_per_task = int(sys.argv[2])

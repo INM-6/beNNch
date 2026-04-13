@@ -5,8 +5,11 @@ import subprocess
 from functools import reduce
 import operator
 
-import yaml
-yaml.add_representer(str, lambda dumper, data: dumper.represent_scalar('tag:yaml.org,2002:str', data, style='"'))
+from ruamel.yaml import YAML
+yaml = YAML(typ='safe')
+yaml.default_flow_style = False
+yaml.preserve_quotes = True
+yaml.default_style = '"'
 
 COLOR_WARNING = '\033[93m'
 COLOR_FAIL = '\033[91m'
@@ -61,7 +64,7 @@ def extend_config(config, level):
     repo_path = os.path.join(tmp_dir, str(level))
     subprocess.run(["git", "clone", "-q", "--depth=1", "--single-branch", "--branch=" + base_repo_branch, base_repo_url, repo_path], stdout=subprocess.DEVNULL)
     with open(os.path.join(repo_path, base_repo_config_path), 'r') as config_file:
-        base_config = yaml.safe_load(config_file)
+        base_config = yaml.load(config_file)
     # Patch dependencies
     if "dependencies" in base_config:
         base_config["dependencies"] = os.path.join(repo_path, base_config["dependencies"])
@@ -77,7 +80,7 @@ config = lower_keys(extend_config({"extends": {"repo": "base", "config_file": co
 
 # Load dependencies
 with open(config["dependencies"], 'r') as dependencies_file:
-    config["dependencies"] = yaml.safe_load(dependencies_file)
+    config["dependencies"] = yaml.load(dependencies_file)
 
 # After patching the configuration using various base configurations, patch the final config using environment variables provided by the user when triggering the pipeline.
 for env_var_key, env_var_value in os.environ.items():
@@ -134,4 +137,4 @@ for model_name, benchmark_config in config["benchmarks"].items():
 
 # Write patched config file
 with open(config_out_path, 'w') as config_outfile:
-    yaml.dump(config, config_outfile, default_flow_style=False)
+    yaml.dump(config, config_outfile)

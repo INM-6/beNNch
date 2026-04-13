@@ -23,8 +23,11 @@ import sys
 import os
 import traceback
 
-import yaml
-yaml.add_representer(str, lambda dumper, data: dumper.represent_scalar('tag:yaml.org,2002:str', data, style='"'))
+from ruamel.yaml import YAML
+yaml = YAML(typ='safe')
+yaml.default_flow_style = False
+yaml.preserve_quotes = True
+yaml.default_style = '"'
 
 pipelines_dir_in = sys.argv[1]
 pipelines_dir_out = sys.argv[2]
@@ -35,21 +38,16 @@ user_model = os.environ["CB_MODELS"]
 print(user_machine)
 
 with open(config_file_path) as config_file:
-    config = yaml.safe_load(config_file)
+    config = yaml.load(config_file)
 
 machine_conf = config["user_config"][user_machine]
-print(machine_conf)
 with open(os.path.join(pipelines_dir_in)) as pipeline_in:
-          pipeline_yml = yaml.safe_load(pipeline_in)
+          pipeline_yml = yaml.load(pipeline_in)
 
-pipeline_yml["variables"]["CB_DATA_PROJECT"] = machine_conf.get('data-project', '')
-pipeline_yml["variables"]["CB_COMPUTE_PROJECT"] = machine_conf.get('compute-project', '')
 pipeline_yml["variables"]["CB_RUNNER_ACCOUNT"] = machine_conf.get('account', '')
 pipeline_yml["variables"]["CB_RUNNER_PARTITION"] = machine_conf.get('partition', '')
-pipeline_yml["variables"]["CB_BUILD_TIME_LIMIT"] = machine_conf.get('build-time-limit', '')
 pipeline_yml["variables"]["CB_PARTITION"] = machine_conf.get('partition', '')
 pipeline_yml["variables"].update(config["dependencies"][user_machine].get("variables", ''))
-print(machine_conf.get('partition', ''))
 
 # get the desired simulator version
 pipeline_yml["variables"]["CB_SIMULATOR_REPO"] = config["software_parameters"]["simulator_repo_url"]
@@ -59,6 +57,5 @@ pipeline_yml["variables"]["CB_SIMULATOR_BRANCH"] = config["software_parameters"]
 pipeline_yml["variables"]["PIP_LIST"] = config["dependencies"][user_machine].get("variables", dict()).get("PIP_LIST", '')
 pipeline_yml["variables"]["MODULE_LIST"] = config["dependencies"][user_machine].get("variables", dict()).get("MODULE_LIST", '')
 
-print(os.path.join(pipelines_dir_out, user_machine + ".yml"))
 with open(os.path.join(pipelines_dir_out), 'w') as pipeline_out:
-          yaml.dump(pipeline_yml, pipeline_out, default_flow_style=False)
+          yaml.dump(pipeline_yml, pipeline_out)

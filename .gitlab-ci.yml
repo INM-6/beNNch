@@ -92,7 +92,6 @@ variables:
     value: "/work/datasets/bennch-datadump"
   FF_SCRIPT_SECTIONS: "true"    # see https://docs.gitlab.com/runner/configuration/feature-flags.html#available-feature-flags
   FF_TIMESTAMPS: "true"
-  #FF_ENABLE_JOB_CLEANUP: "true"  # project directory will be deleted at the end of each job
 
 # Only run pipelines manually triggered from the web
 workflow:
@@ -117,7 +116,7 @@ Validate Input:
         fi
       done
     - 'apk update && apk add git util-linux'
-    - 'python -m pip install pyyaml'
+    - 'python -m pip install ruamel.yaml'
     - 'mkdir "$CI_PROJECT_DIR/tmp"'
     - 'python "$CI_PROJECT_DIR/.gitlab-ci/scripts/patch_config.py" "$CI_PROJECT_DIR/tmp" "$CI_PROJECT_DIR/config.yml" "$CONFIG_REPO" "$CONFIG_BRANCH" "$CONFIG_PATH"'
     - 'rm -rf $CI_PROJECT_DIR/tmp'
