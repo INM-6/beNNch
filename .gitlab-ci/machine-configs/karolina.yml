@@ -17,8 +17,8 @@
     - 'eval TEMP_DIR="$TEMP_DIR"'
     - 'export PYTHONNOUSERSITE=1'
     - '. /mnt/proj3/dd-24-83/ebrains-spack-builds-external-MPI-only/activate_env.sh'
-    - 'python -m venv --system-site-packages benchmarking-env'
-    - 'source benchmarking-env/bin/activate'
+    - 'python -m venv --system-site-packages "$CI_PROJECT_DIR"/benchmarking-env'
+    - 'source "$CI_PROJECT_DIR"/benchmarking-env/bin/activate'
     - 'export PATH="$(pwd):$PATH"'
   timeout: "2 hours 15 minutes"
   variables:
@@ -36,8 +36,8 @@
     - 'eval TEMP_DIR="$TEMP_DIR"'
     - 'export PYTHONNOUSERSITE=1'
     - '. /mnt/proj3/dd-24-83/ebrains-spack-builds-external-MPI-only/activate_env.sh'
-    - 'python -m venv --system-site-packages benchmarking-env'
-    - 'source benchmarking-env/bin/activate'
+    - 'python -m venv --system-site-packages "$CI_PROJECT_DIR"/benchmarking-env'
+    - 'source "$CI_PROJECT_DIR"/benchmarking-env/bin/activate'
     - 'export PATH="$(pwd):$PATH"'
   timeout: "2 days 30 minutes"
   variables:

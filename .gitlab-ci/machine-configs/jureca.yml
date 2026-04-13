@@ -19,15 +19,15 @@
     - 'module load $MODULE_LIST'
     - 'eval TEMP_DIR="$TEMP_DIR"'
     - 'export PYTHONNOUSERSITE=1'
-    - 'python -m venv --system-site-packages benchmarking-env'
-    - 'source benchmarking-env/bin/activate'
+    - 'python -m venv --system-site-packages "$CI_PROJECT_DIR"/benchmarking-env'
+    - 'source "$CI_PROJECT_DIR"/benchmarking-env/bin/activate'
     - |
       if test -n "$PIP_LIST" -a ! -d "pip-packages"; then
-        benchmarking-env/bin/pip download --no-input $PIP_LIST --dest ./pip-packages
+        "$CI_PROJECT_DIR"/benchmarking-env/bin/pip download --no-input $PIP_LIST --dest ./pip-packages
       fi
     - |
       if [[ -n "$PIP_LIST" ]]; then
-        benchmarking-env/bin/pip install --no-index --no-input --find-links=${CI_PROJECT_DIR}/pip-packages ${CI_PROJECT_DIR}/pip-packages/*
+        "$CI_PROJECT_DIR"/benchmarking-env/bin/pip install --no-index --no-input --find-links=${CI_PROJECT_DIR}/pip-packages ${CI_PROJECT_DIR}/pip-packages/*
       fi
     - 'export PATH="$(pwd):$PATH"'
     - 'pwd'
@@ -50,11 +50,11 @@
     - 'module load $MODULE_LIST'
     - 'eval TEMP_DIR="$TEMP_DIR"'
     - 'export PYTHONNOUSERSITE=1'
-    - 'python -m venv --system-site-packages benchmarking-env'
-    - 'source benchmarking-env/bin/activate'
+    - 'python -m venv --system-site-packages "$CI_PROJECT_DIR"/benchmarking-env'
+    - 'source "$CI_PROJECT_DIR"/benchmarking-env/bin/activate'
     - |
       if [[ -n "$PIP_LIST" ]]; then
-        benchmarking-env/bin/pip install --no-index --find-links=${CI_PROJECT_DIR}/pip-packages ${CI_PROJECT_DIR}/pip-packages/*
+        "$CI_PROJECT_DIR"/benchmarking-env/bin/pip install --no-index --find-links=${CI_PROJECT_DIR}/pip-packages ${CI_PROJECT_DIR}/pip-packages/*
       fi
     - 'export PATH="$(pwd):$PATH"'
     - 'pwd'

@@ -47,6 +47,11 @@ ls -l
 set -exo pipefail
 ulimit -c 0
 
+# this is a dirty fix to load the python environment on systems where Slurm doesn't copy the environment
+# (e.g. Hambach, SuperMUC). This expects the machine configs to create a python environment at exactly this location
+# with this specific name, which we would ideally want to avoid.
+[[ -f "$CI_PROJECT_DIR/benchmarking-env/bin/activate" ]] && source "$CI_PROJECT_DIR"/benchmarking-env/bin/activate
+
 export CPU_BIND_MASK="$(python3 "$CI_PROJECT_DIR/.gitlab-ci/scripts/pinning_mask.py" #NTASKS_PER_NODE# #THREADS_PER_TASK#)"
 
 export OMP_NUM_THREADS=#THREADS_PER_TASK#
