@@ -164,7 +164,7 @@ jube_benchmark["parameterset"].append(
            {"name": "exec_bench",
             "separator": ";",
             "_": """${optional_run_command}
-srun ${extra_srun_flags} --cpus-per-task=${threads_per_task} python ${run_file} ${run_args}
+srun ${extra_srun_flags} --cpus-per-task=${threads_per_task} -n ${tasks_per_node} --nodes=${num_nodes} python ${run_file} ${run_args}
 srun -n 1 --nodes 1 python ${scripts_dir}/collect_timer_data.py ${metrics_path} ${jube_wp_abspath} ${log_path}"""}
     ]
 })
