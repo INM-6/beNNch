@@ -198,9 +198,9 @@ Benchmarking:
       NUM_RETRIES=0
       declare -A retries
       for run in "$JUBE_RESULTS_DIR/$JUBE_BENCHMARK_ID"/*/ ; do
-          retries[$(basename $run)]=0
+          retries[$(basename "$run")]=0
       done
-      while jube status --id=$JUBE_BENCHMARK_ID "$JUBE_RESULTS_DIR" | grep -q "RUNNING" || [[ $NO_FAILURES -ne 0 ]] ; do
+      while jube status --id=$JUBE_BENCHMARK_ID "$JUBE_RESULTS_DIR" | grep -q "RUNNING" || [[ $NUM_FAILURES -ne 0 ]] ; do
         sleep 30
         jube continue --error --id=$JUBE_BENCHMARK_ID --hide-animation "$JUBE_RESULTS_DIR" > /dev/null
         COUNTER=$((COUNTER + 1))
@@ -213,22 +213,23 @@ Benchmarking:
           NUM_FAILURES=0
           jube continue --error --id=$JUBE_BENCHMARK_ID --hide-animation "$JUBE_RESULTS_DIR"
           for run in "$JUBE_RESULTS_DIR/$JUBE_BENCHMARK_ID"/*/ ; do
+            RUN_ID=$(basename "$run")
             if [ -f "$run/work/stdout" ] ; then
-              JOBID=$(grep -e 'Submitted batch job ' -e 'JobId: ' "$run/work/stdout" | head -1 | grep -oP '\d*')
+              JOBID=$(grep -e 'Submitted batch job ' -e 'JobId: ' "$run/work/stdout" | head -1 | grep -oP '\d*' || true)
               if grep -q -E 'terminated due to failure of node|Force Terminated StepId' "$run/work/stderr" ; then
-                if [[ ${retries[$(basename $run)]} -lt NUM_RETRIES ]] ; then
-                  (( ++retries[$(basename $run)] ))
-                  cp "$run/work/stdout" "$run/work/stdout_NodeFailure_${retries[$(basename $run)]}"
-                  cp "$run/work/stderr" "$run/work/stderr_NodeFailure_${retries[$(basename $run)]}"
+                if [[ ${retries["$RUN_ID"]} -lt NUM_RETRIES ]] ; then
+                  (( ++retries["$RUN_ID"] ))
+                  cp "$run/work/stdout" "$run/work/stdout_NodeFailure_${retries["$RUN_ID"]}"
+                  cp "$run/work/stderr" "$run/work/stderr_NodeFailure_${retries["$RUN_ID"]}"
                   rm -f "$run/work/ready" "$run/work/stderr" "$run/work/stdout"
                   cd "$run/work/"
                   sbatch job.slurm
-                  echo "Detected node failure, rerunning job (#${retries[$(basename $run)]})"
+                  echo "Detected node failure, rerunning job (#${retries["$RUN_ID"]})"
                   (( ++NUM_FAILURES ))
                 else
                   touch "$run/work/error"
                 fi
-              elif ! squeue -h --job $JOBID >/dev/null 2>&1 || [ $(squeue -h --job $JOBID | wc -l) = 0 ] ; then
+              elif [[ -n "$JOBID" ]] && { ! squeue -h --job "$JOBID" >/dev/null 2>&1 || [ $(squeue -h --job "$JOBID" | wc -l) -eq 0 ]; }; then
                 touch "$run/work/ready"
               fi
             fi
@@ -303,32 +304,32 @@ Transfer:
     - 'git commit -a -m "add benchmarking data of run ${ANNOTATE_EXPERIMENT_ID}"'
     - 'git annex sync --push --content'
 
-Annotation:
-  stage: annotate
-  trigger:
-    strategy: depend
-    project: 'nest/bennch/annotate'
-    branch: main
-    forward:
-      pipeline_variables: true
-  needs:
-    - job: "Transfer"
-      artifacts: true
-  variables:
-    PARENT_PIPELINE_ID: "$CI_PIPELINE_ID"
+# Annotation:
+#   stage: annotate
+#   trigger:
+#     strategy: depend
+#     project: 'nest/bennch/annotate'
+#     branch: main
+#     forward:
+#       pipeline_variables: true
+#   needs:
+#     - job: "Transfer"
+#       artifacts: true
+#   variables:
+#     PARENT_PIPELINE_ID: "$CI_PIPELINE_ID"
 
-Plotting:
-  stage: plot
-  trigger:
-    strategy: depend
-    project: 'nest/bennch/metadata_plotting'
-    branch: main
-    forward:
-      pipeline_variables: true
-  needs:
-    - job: "Annotation"
-      artifacts: true
-    - job: "Transfer"
-      artifacts: true
-  variables:
-    PARENT_PIPELINE_ID: "$CI_PIPELINE_ID"
+# Plotting:
+#   stage: plot
+#   trigger:
+#     strategy: depend
+#     project: 'nest/bennch/metadata_plotting'
+#     branch: main
+#     forward:
+#       pipeline_variables: true
+#   needs:
+#     - job: "Annotation"
+#       artifacts: true
+#     - job: "Transfer"
+#       artifacts: true
+#   variables:
+#     PARENT_PIPELINE_ID: "$CI_PIPELINE_ID"
