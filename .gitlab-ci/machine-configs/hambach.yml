@@ -92,7 +92,7 @@
     - hambach
 
 variables:
-  CUSTOM_CI_BUILDS_DIR: "/work/users/.jacamar-ci"
-  TEMP_DIR: "/work/users"
+  CUSTOM_CI_BUILDS_DIR: "/work/scratch/.jacamar-ci"
+  TEMP_DIR: "/work/scratch"
   extra_srun_flags: "--mpi=pmix"
   extra_sbatch_flags: ""
