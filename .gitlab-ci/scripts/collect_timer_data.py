@@ -97,7 +97,7 @@ cpu_info = [element.strip().replace(' ', '').replace('(', '').replace(')', '')
 
 cpu_info_dict = {}
 for element in cpu_info:
-    key, value = element.split(':')
+    key, value = element.split(':', 1)
     cpu_info_dict[key] = value
 
 with open(os.path.join(workpackage_path, 'cpu.json'), 'w') as f:
