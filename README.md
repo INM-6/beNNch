@@ -1,50 +1,7 @@
-# beNNch 2.0 — continuous benchmarking of neuronal network simulations
+# CI-beNNch — continuous benchmarking of neuronal network simulations
 
-> **Status: released snapshot, no longer under development.**
-> This repository is the **public-facing** home of beNNch. Version 2.0 is a complete,
-> from-scratch reimplementation of beNNch 1.x developed at the Jülich Supercomputing Centre
-> from 2022 onwards. It shares **no code and no commit history** with the 1.x line, which
-> remains available at tag [`v1.1`](../../releases/tag/v1.1).
->
-> Active development has moved to a successor tool, which will be released as **beNNch 3.0**.
-> Neither the 1.x nor the 2.x line receives further changes.
-
-## What you can and cannot do with this repository
-
-Please read this before cloning — it is the honest scope of what is published here.
-
-beNNch 2.0 executes benchmarks as CI pipelines on HPC systems at the Jülich Supercomputing
-Centre. The pipeline definitions in this repository target **GitLab CI with
-[Jacamar CI](https://gitlab.com/ecp-ci/jacamar-ci) runners** attached to JSC compute
-resources. Those runners live in a **private GitLab instance**
-(`gitlab.jsc.fz-juelich.de`) that is not publicly reachable, and the benchmark jobs require a
-JSC compute-time allocation.
-
-Concretely:
-
-| | |
-|---|---|
-| **Read, cite, inspect, and reuse the design** | ✅ Yes — that is what this repository is for |
-| **Reuse individual components** (JUBE configurations, model templating, plotting) | ✅ Yes, adapted to your own site |
-| **Run the full CI pipeline as published** | ❌ Not without the private JSC GitLab, its Jacamar runners, and a JSC allocation |
-
-If you want to run continuous benchmarking on **your own** infrastructure, the 2.0 pipeline
-is a reference to adapt rather than a turnkey deployment. Porting it means replacing the
-GitLab CI layer and the machine configurations with equivalents for your site and scheduler.
-
-## Version history
-
-| Version | Date | What it is |
-|---|---|---|
-| `v1.0` | 2022-03 | Original beNNch, as described in Albers et al. (2022) |
-| `v1.1` | 2023-10 | Final state of the 1.x line; development ceased |
-| `v2.0.0` | 2026-08 | Independent from-scratch reimplementation (this snapshot) |
-| 3.0 | planned | Successor tool; supersedes both lines |
-
-The `v1.1` tag captures the last commit of the original implementation, which was never
-released at the time. The commit history of both lines is present in this repository: 2.0's
-history is grafted onto 1.x's so that every contributor to either line remains credited,
-**not** because the two share any code.
+> This repository is the **public-facing** home of CI-beNNch. It was developed to execute benchmarks as CI pipelines on HPC systems at the Jülich Supercomputing Centre. The pipeline definitions in this repository target GitLab CI with [Jacamar CI](https://gitlab.com/ecp-ci/jacamar-ci) runners attached to JSC compute resources. Those runners live in a private GitLab instance (`gitlab.jsc.fz-juelich.de`) that is not publicly reachable without an JSC account, and the benchmark jobs require a JSC compute-time allocation.
+> If you want to run continuous benchmarking on **your own** infrastructure, our code serves as a reference.
 
 ## How to cite
 
@@ -60,15 +17,11 @@ name the release and this repository.
 
 ## License
 
-GNU General Public License v3.0 — see [LICENSE](LICENSE). The 1.x line is released under the
-same license.
+GNU General Public License v3.0 — see [LICENSE](LICENSE).
 
 ---
 
 # Documentation
-
-*The sections below are the 2.0 documentation as it stood at the end of development. Some
-subsections were never completed; they are published unchanged rather than silently dropped.*
 
 ## Benchmark configuration
 
@@ -177,16 +130,3 @@ following structure:
 - `jube_results/000000/000000_bench` — all files required for a specific job, with template
   parameters replaced by the actual values for that parameter combination, plus any output
   data, logs and files created during the job.
-
-## Pipeline configuration
-
-*The following subsections were never written. They are listed here because their absence is
-part of the state of the 2.0 documentation, and because 3.0 is where the gap will be closed.*
-
-### Adding a new machine
-
-Not documented.
-
-### Adding a new runner type
-
-Not documented.
