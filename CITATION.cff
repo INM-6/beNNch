@@ -1,0 +1,210 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite both the software itself and the preferred citation below."
+title: beNNch
+abstract: >-
+  beNNch is a modular framework for performance benchmarking of neuronal network
+  simulations. Version 1.x provides a workflow for reproducible, comparable
+  benchmarks of simulation engines such as NEST. Version 2.0 ("CI-beNNch")
+  restructures the framework around continuous benchmarking: it takes a
+  declarative benchmark configuration from a researcher, generates a GitLab CI
+  pipeline from it, and executes the resulting benchmark jobs autonomously on
+  HPC systems.
+type: software
+license: GPL-3.0-or-later
+version: "2.0.1"
+date-released: "2026-08-12"
+repository-code: "https://github.com/INM-6/beNNch"
+url: "https://inm-6.github.io/beNNch"
+keywords:
+  - benchmarking
+  - continuous benchmarking
+  - continuous integration
+  - high-performance computing
+  - neuronal network simulation
+  - computational neuroscience
+  - NEST simulator
+  - reproducibility
+  - performance engineering
+  - research software engineering
+
+identifiers:
+  - type: doi
+    value: "10.5281/zenodo.6092768"
+    description: Concept DOI of the beNNch 1.x record (all 1.x versions)
+  - type: doi
+    value: "10.48550/arXiv.2604.15919"
+    description: Preprint describing version 2.0 (CI-beNNch)
+  - type: doi
+    value: "10.3389/fninf.2022.837549"
+    description: Peer-reviewed publication describing version 1.0
+
+authors:
+  - family-names: Vogelsang
+    given-names: Jan
+    orcid: "https://orcid.org/0000-0003-2336-6630"
+    affiliation: "Institute for Advanced Simulation (IAS-6), Jülich Research Centre, Jülich, Germany"
+  - family-names: Lober
+    given-names: Melissa
+    orcid: "https://orcid.org/0000-0002-1833-5170"
+    affiliation: "Institute for Advanced Simulation (IAS-6), Jülich Research Centre, Jülich, Germany"
+  - family-names: Schöfmann
+    given-names: Catherine Mia
+    orcid: "https://orcid.org/0009-0000-3077-649X"
+    affiliation: "Institute for Advanced Simulation (IAS-6), Jülich Research Centre, Jülich, Germany"
+  - family-names: Villamar
+    given-names: José
+    orcid: "https://orcid.org/0009-0007-8791-7100"
+    affiliation: "Institute for Advanced Simulation (IAS-6), Jülich Research Centre, Jülich, Germany"
+  - family-names: Terhorst
+    given-names: Dennis
+    orcid: "https://orcid.org/0000-0001-8165-2921"
+    affiliation: "Institute for Advanced Simulation (IAS-6), Jülich Research Centre, Jülich, Germany"
+  - family-names: Senk
+    given-names: Johanna
+    orcid: "https://orcid.org/0000-0002-6304-062X"
+    affiliation: "Institute for Advanced Simulation (IAS-6), Jülich Research Centre, Jülich, Germany"
+  - family-names: Plesser
+    given-names: Hans Ekkehard
+    orcid: "https://orcid.org/0000-0001-7843-5993"
+    affiliation: "Faculty of Science and Technology, Norwegian University of Life Sciences, Ås, Norway"
+  - family-names: Diesmann
+    given-names: Markus
+    orcid: "https://orcid.org/0000-0002-2308-5727"
+    affiliation: "Institute for Advanced Simulation (IAS-6), Jülich Research Centre, Jülich, Germany"
+  - family-names: Kunkel
+    given-names: Susanne
+    orcid: "https://orcid.org/0000-0001-8986-534X"
+    affiliation: "Faculty of Science and Technology, Norwegian University of Life Sciences, Ås, Norway"
+  - family-names: Kurth
+    given-names: Anno C.
+    orcid: "https://orcid.org/0000-0002-9557-1003"
+    affiliation: "Institute for Advanced Simulation (IAS-6), Jülich Research Centre, Jülich, Germany"
+  - family-names: Albers
+    given-names: Jasper
+    orcid: "https://orcid.org/0000-0002-3828-5895"
+    affiliation: "Institute for Advanced Simulation (IAS-6), Jülich Research Centre, Jülich, Germany"
+  - family-names: Pronold
+    given-names: Jari
+    orcid: "https://orcid.org/0000-0003-4992-1030"
+    affiliation: "Institute for Advanced Simulation (IAS-6), Jülich Research Centre, Jülich, Germany"
+  - family-names: Vennemo
+    given-names: Stine Brekke
+    orcid: "https://orcid.org/0000-0003-0669-7411"
+    affiliation: "Faculty of Science and Technology, Norwegian University of Life Sciences, Ås, Norway"
+  - family-names: Haghighi Mood
+    given-names: Kaveh
+    orcid: "https://orcid.org/0000-0002-8578-4961"
+    affiliation: "Jülich Supercomputing Centre, Jülich Research Centre, Jülich, Germany"
+  - family-names: Patronis
+    given-names: Alexander
+    affiliation: "Jülich Supercomputing Centre, Jülich Research Centre, Jülich, Germany"
+  - family-names: Jordan
+    given-names: Jakob
+    orcid: "https://orcid.org/0000-0003-3438-5001"
+    affiliation: "Department of Physiology, University of Bern, Bern, Switzerland"
+  - family-names: Tetzlaff
+    given-names: Tom
+    orcid: "https://orcid.org/0000-0001-5794-5425"
+    affiliation: "Institute for Advanced Simulation (IAS-6), Jülich Research Centre, Jülich, Germany"
+  - family-names: Theinen
+    given-names: Silas
+    affiliation: "RWTH Aachen University, Aachen, Germany"
+  - family-names: Inangu
+    given-names: Alp
+    orcid: "https://orcid.org/0009-0007-2379-210X"
+    affiliation: "RWTH Aachen University, Aachen, Germany"
+  - family-names: Van Dael
+    given-names: Lies
+    affiliation: "Jülich Research Centre, Jülich, Germany"
+  - family-names: Tiddia
+    given-names: Gianmarco
+    orcid: "https://orcid.org/0000-0001-7524-0285"
+    affiliation: "Istituto Nazionale di Fisica Nucleare, Sezione di Cagliari, Cagliari, Italy"
+  - family-names: Mohamed
+    given-names: Riham
+
+preferred-citation:
+  type: article
+  title: "Continuous benchmarking: Keeping pace with an evolving ecosystem of models and technologies"
+  year: 2026
+  month: 4
+  doi: "10.48550/arXiv.2604.15919"
+  url: "https://arxiv.org/abs/2604.15919"
+  notes: "Preprint, arXiv:2604.15919"
+  authors:
+    - family-names: Vogelsang
+      given-names: Jan
+      orcid: "https://orcid.org/0000-0003-2336-6630"
+    - family-names: Lober
+      given-names: Melissa
+      orcid: "https://orcid.org/0000-0002-1833-5170"
+    - family-names: Schöfmann
+      given-names: Catherine Mia
+      orcid: "https://orcid.org/0009-0000-3077-649X"
+    - family-names: Villamar
+      given-names: José
+      orcid: "https://orcid.org/0009-0007-8791-7100"
+    - family-names: Terhorst
+      given-names: Dennis
+      orcid: "https://orcid.org/0000-0001-8165-2921"
+    - family-names: Senk
+      given-names: Johanna
+      orcid: "https://orcid.org/0000-0002-6304-062X"
+    - family-names: Plesser
+      given-names: Hans Ekkehard
+      orcid: "https://orcid.org/0000-0001-7843-5993"
+    - family-names: Diesmann
+      given-names: Markus
+      orcid: "https://orcid.org/0000-0002-2308-5727"
+    - family-names: Kunkel
+      given-names: Susanne
+      orcid: "https://orcid.org/0000-0001-8986-534X"
+    - family-names: Kurth
+      given-names: Anno C.
+      orcid: "https://orcid.org/0000-0002-9557-1003"
+
+references:
+  - type: article
+    title: "A Modular Workflow for Performance Benchmarking of Neuronal Network Simulations"
+    journal: "Frontiers in Neuroinformatics"
+    volume: 16
+    year: 2022
+    month: 5
+    doi: "10.3389/fninf.2022.837549"
+    notes: "Describes beNNch 1.0; article number 837549"
+    authors:
+      - family-names: Albers
+        given-names: Jasper
+        orcid: "https://orcid.org/0000-0002-3828-5895"
+      - family-names: Pronold
+        given-names: Jari
+        orcid: "https://orcid.org/0000-0003-4992-1030"
+      - family-names: Kurth
+        given-names: Anno Christopher
+        orcid: "https://orcid.org/0000-0002-9557-1003"
+      - family-names: Vennemo
+        given-names: Stine Brekke
+        orcid: "https://orcid.org/0000-0003-0669-7411"
+      - family-names: Haghighi Mood
+        given-names: Kaveh
+        orcid: "https://orcid.org/0000-0002-8578-4961"
+      - family-names: Patronis
+        given-names: Alexander
+      - family-names: Terhorst
+        given-names: Dennis
+        orcid: "https://orcid.org/0000-0001-8165-2921"
+      - family-names: Jordan
+        given-names: Jakob
+        orcid: "https://orcid.org/0000-0003-3438-5001"
+      - family-names: Kunkel
+        given-names: Susanne
+        orcid: "https://orcid.org/0000-0001-8986-534X"
+      - family-names: Tetzlaff
+        given-names: Tom
+        orcid: "https://orcid.org/0000-0001-5794-5425"
+      - family-names: Diesmann
+        given-names: Markus
+        orcid: "https://orcid.org/0000-0002-2308-5727"
+      - family-names: Senk
+        given-names: Johanna
+        orcid: "https://orcid.org/0000-0002-6304-062X"

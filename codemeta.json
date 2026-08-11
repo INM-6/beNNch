@@ -1,0 +1,299 @@
+{
+  "@context": "https://doi.org/10.5063/schema/codemeta-2.0",
+  "@type": "SoftwareSourceCode",
+  "name": "beNNch",
+  "version": "2.0.1",
+  "description": "beNNch is a modular framework for performance benchmarking of neuronal network simulations. Version 1.x provides a workflow for reproducible, comparable benchmarks of simulation engines such as NEST. Version 2.0 (\"CI-beNNch\") restructures the framework around continuous benchmarking: it takes a declarative benchmark configuration from a researcher, generates a GitLab CI pipeline from it, and executes the resulting benchmark jobs autonomously on HPC systems.",
+  "applicationCategory": "Computational Neuroscience",
+  "keywords": [
+    "benchmarking",
+    "continuous benchmarking",
+    "continuous integration",
+    "high-performance computing",
+    "neuronal network simulation",
+    "computational neuroscience",
+    "NEST simulator",
+    "reproducibility",
+    "performance engineering",
+    "research software engineering"
+  ],
+  "license": "https://spdx.org/licenses/GPL-3.0-or-later",
+  "codeRepository": "https://github.com/INM-6/beNNch",
+  "url": "https://inm-6.github.io/beNNch",
+  "readme": "https://github.com/INM-6/beNNch/blob/main/README.md",
+  "issueTracker": "https://github.com/INM-6/beNNch/issues",
+  "identifier": "https://doi.org/10.5281/zenodo.6092768",
+  "datePublished": "2026-08-12",
+  "dateCreated": "2020-01-07",
+  "dateModified": "2026-08-12",
+  "developmentStatus": "https://www.repostatus.org/#active",
+  "programmingLanguage": [
+    "Python",
+    "Shell",
+    "YAML"
+  ],
+  "runtimePlatform": [
+    "GitLab CI",
+    "Slurm",
+    "JUBE"
+  ],
+  "operatingSystem": [
+    "Linux"
+  ],
+  "softwareRequirements": [
+    "GitLab CI with Jacamar CI runners",
+    "Slurm workload manager",
+    "JUBE benchmarking environment",
+    "Python 3"
+  ],
+  "author": [
+    {
+      "@id": "https://orcid.org/0000-0003-2336-6630",
+      "@type": "Person",
+      "affiliation": {
+        "@type": "Organization",
+        "legalName": "Institute for Advanced Simulation (IAS-6), Jülich Research Centre, Jülich, Germany"
+      },
+      "familyName": "Vogelsang",
+      "givenName": "Jan"
+    },
+    {
+      "@id": "https://orcid.org/0000-0002-1833-5170",
+      "@type": "Person",
+      "affiliation": {
+        "@type": "Organization",
+        "legalName": "Institute for Advanced Simulation (IAS-6), Jülich Research Centre, Jülich, Germany"
+      },
+      "familyName": "Lober",
+      "givenName": "Melissa"
+    },
+    {
+      "@id": "https://orcid.org/0009-0000-3077-649X",
+      "@type": "Person",
+      "affiliation": {
+        "@type": "Organization",
+        "legalName": "Institute for Advanced Simulation (IAS-6), Jülich Research Centre, Jülich, Germany"
+      },
+      "familyName": "Schöfmann",
+      "givenName": "Catherine Mia"
+    },
+    {
+      "@id": "https://orcid.org/0009-0007-8791-7100",
+      "@type": "Person",
+      "affiliation": {
+        "@type": "Organization",
+        "legalName": "Institute for Advanced Simulation (IAS-6), Jülich Research Centre, Jülich, Germany"
+      },
+      "familyName": "Villamar",
+      "givenName": "José"
+    },
+    {
+      "@id": "https://orcid.org/0000-0001-8165-2921",
+      "@type": "Person",
+      "affiliation": {
+        "@type": "Organization",
+        "legalName": "Institute for Advanced Simulation (IAS-6), Jülich Research Centre, Jülich, Germany"
+      },
+      "familyName": "Terhorst",
+      "givenName": "Dennis"
+    },
+    {
+      "@id": "https://orcid.org/0000-0002-6304-062X",
+      "@type": "Person",
+      "affiliation": {
+        "@type": "Organization",
+        "legalName": "Institute for Advanced Simulation (IAS-6), Jülich Research Centre, Jülich, Germany"
+      },
+      "familyName": "Senk",
+      "givenName": "Johanna"
+    },
+    {
+      "@id": "https://orcid.org/0000-0001-7843-5993",
+      "@type": "Person",
+      "affiliation": {
+        "@type": "Organization",
+        "legalName": "Faculty of Science and Technology, Norwegian University of Life Sciences, Ås, Norway"
+      },
+      "familyName": "Plesser",
+      "givenName": "Hans Ekkehard"
+    },
+    {
+      "@id": "https://orcid.org/0000-0002-2308-5727",
+      "@type": "Person",
+      "affiliation": {
+        "@type": "Organization",
+        "legalName": "Institute for Advanced Simulation (IAS-6), Jülich Research Centre, Jülich, Germany"
+      },
+      "familyName": "Diesmann",
+      "givenName": "Markus"
+    },
+    {
+      "@id": "https://orcid.org/0000-0001-8986-534X",
+      "@type": "Person",
+      "affiliation": {
+        "@type": "Organization",
+        "legalName": "Faculty of Science and Technology, Norwegian University of Life Sciences, Ås, Norway"
+      },
+      "familyName": "Kunkel",
+      "givenName": "Susanne"
+    },
+    {
+      "@id": "https://orcid.org/0000-0002-9557-1003",
+      "@type": "Person",
+      "affiliation": {
+        "@type": "Organization",
+        "legalName": "Institute for Advanced Simulation (IAS-6), Jülich Research Centre, Jülich, Germany"
+      },
+      "familyName": "Kurth",
+      "givenName": "Anno C."
+    },
+    {
+      "@id": "https://orcid.org/0000-0002-3828-5895",
+      "@type": "Person",
+      "affiliation": {
+        "@type": "Organization",
+        "legalName": "Institute for Advanced Simulation (IAS-6), Jülich Research Centre, Jülich, Germany"
+      },
+      "familyName": "Albers",
+      "givenName": "Jasper"
+    },
+    {
+      "@id": "https://orcid.org/0000-0003-4992-1030",
+      "@type": "Person",
+      "affiliation": {
+        "@type": "Organization",
+        "legalName": "Institute for Advanced Simulation (IAS-6), Jülich Research Centre, Jülich, Germany"
+      },
+      "familyName": "Pronold",
+      "givenName": "Jari"
+    },
+    {
+      "@id": "https://orcid.org/0000-0003-0669-7411",
+      "@type": "Person",
+      "affiliation": {
+        "@type": "Organization",
+        "legalName": "Faculty of Science and Technology, Norwegian University of Life Sciences, Ås, Norway"
+      },
+      "familyName": "Vennemo",
+      "givenName": "Stine Brekke"
+    },
+    {
+      "@id": "https://orcid.org/0000-0002-8578-4961",
+      "@type": "Person",
+      "affiliation": {
+        "@type": "Organization",
+        "legalName": "Jülich Supercomputing Centre, Jülich Research Centre, Jülich, Germany"
+      },
+      "familyName": "Haghighi Mood",
+      "givenName": "Kaveh"
+    },
+    {
+      "@type": "Person",
+      "affiliation": {
+        "@type": "Organization",
+        "legalName": "Jülich Supercomputing Centre, Jülich Research Centre, Jülich, Germany"
+      },
+      "familyName": "Patronis",
+      "givenName": "Alexander"
+    },
+    {
+      "@id": "https://orcid.org/0000-0003-3438-5001",
+      "@type": "Person",
+      "affiliation": {
+        "@type": "Organization",
+        "legalName": "Department of Physiology, University of Bern, Bern, Switzerland"
+      },
+      "familyName": "Jordan",
+      "givenName": "Jakob"
+    },
+    {
+      "@id": "https://orcid.org/0000-0001-5794-5425",
+      "@type": "Person",
+      "affiliation": {
+        "@type": "Organization",
+        "legalName": "Institute for Advanced Simulation (IAS-6), Jülich Research Centre, Jülich, Germany"
+      },
+      "familyName": "Tetzlaff",
+      "givenName": "Tom"
+    },
+    {
+      "@type": "Person",
+      "affiliation": {
+        "@type": "Organization",
+        "legalName": "RWTH Aachen University, Aachen, Germany"
+      },
+      "familyName": "Theinen",
+      "givenName": "Silas"
+    },
+    {
+      "@id": "https://orcid.org/0009-0007-2379-210X",
+      "@type": "Person",
+      "affiliation": {
+        "@type": "Organization",
+        "legalName": "RWTH Aachen University, Aachen, Germany"
+      },
+      "familyName": "Inangu",
+      "givenName": "Alp"
+    },
+    {
+      "@type": "Person",
+      "affiliation": {
+        "@type": "Organization",
+        "legalName": "Jülich Research Centre, Jülich, Germany"
+      },
+      "familyName": "Van Dael",
+      "givenName": "Lies"
+    },
+    {
+      "@id": "https://orcid.org/0000-0001-7524-0285",
+      "@type": "Person",
+      "affiliation": {
+        "@type": "Organization",
+        "legalName": "Istituto Nazionale di Fisica Nucleare, Sezione di Cagliari, Cagliari, Italy"
+      },
+      "familyName": "Tiddia",
+      "givenName": "Gianmarco"
+    },
+    {
+      "@type": "Person",
+      "familyName": "Mohamed",
+      "givenName": "Riham"
+    }
+  ],
+  "maintainer": {
+    "@id": "https://orcid.org/0000-0003-2336-6630",
+    "@type": "Person",
+    "familyName": "Vogelsang",
+    "givenName": "Jan"
+  },
+  "copyrightHolder": {
+    "@type": "Organization",
+    "name": "Forschungszentrum Jülich GmbH"
+  },
+  "producer": {
+    "@type": "Organization",
+    "name": "Institute for Advanced Simulation (IAS-6), Jülich Research Centre",
+    "url": "https://www.fz-juelich.de/en/ias/ias-6"
+  },
+  "referencePublication": [
+    {
+      "@type": "ScholarlyArticle",
+      "@id": "https://doi.org/10.48550/arXiv.2604.15919",
+      "name": "Continuous benchmarking: Keeping pace with an evolving ecosystem of models and technologies",
+      "datePublished": "2026-04-17",
+      "description": "Preprint describing version 2.0 (CI-beNNch)"
+    },
+    {
+      "@type": "ScholarlyArticle",
+      "@id": "https://doi.org/10.3389/fninf.2022.837549",
+      "name": "A Modular Workflow for Performance Benchmarking of Neuronal Network Simulations",
+      "datePublished": "2022-05-11",
+      "description": "Peer-reviewed publication describing version 1.0"
+    }
+  ],
+  "relatedLink": [
+    "https://arxiv.org/abs/2604.15919",
+    "https://doi.org/10.3389/fninf.2022.837549",
+    "https://inm-6.github.io/beNNch"
+  ]
+}

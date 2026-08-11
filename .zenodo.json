@@ -1,0 +1,143 @@
+{
+  "upload_type": "software",
+  "title": "beNNch: modular and continuous benchmarking of neuronal network simulations",
+  "description": "beNNch is a modular framework for performance benchmarking of neuronal network simulations. Version 1.x provides a workflow for reproducible, comparable benchmarks of simulation engines such as NEST. Version 2.0 (\"CI-beNNch\") restructures the framework around continuous benchmarking: it takes a declarative benchmark configuration from a researcher, generates a GitLab CI pipeline from it, and executes the resulting benchmark jobs autonomously on HPC systems.",
+  "creators": [
+    {
+      "affiliation": "Institute for Advanced Simulation (IAS-6), Jülich Research Centre, Jülich, Germany",
+      "name": "Vogelsang, Jan",
+      "orcid": "0000-0003-2336-6630"
+    },
+    {
+      "affiliation": "Institute for Advanced Simulation (IAS-6), Jülich Research Centre, Jülich, Germany",
+      "name": "Lober, Melissa",
+      "orcid": "0000-0002-1833-5170"
+    },
+    {
+      "affiliation": "Institute for Advanced Simulation (IAS-6), Jülich Research Centre, Jülich, Germany",
+      "name": "Schöfmann, Catherine Mia",
+      "orcid": "0009-0000-3077-649X"
+    },
+    {
+      "affiliation": "Institute for Advanced Simulation (IAS-6), Jülich Research Centre, Jülich, Germany",
+      "name": "Villamar, José",
+      "orcid": "0009-0007-8791-7100"
+    },
+    {
+      "affiliation": "Institute for Advanced Simulation (IAS-6), Jülich Research Centre, Jülich, Germany",
+      "name": "Terhorst, Dennis",
+      "orcid": "0000-0001-8165-2921"
+    },
+    {
+      "affiliation": "Institute for Advanced Simulation (IAS-6), Jülich Research Centre, Jülich, Germany",
+      "name": "Senk, Johanna",
+      "orcid": "0000-0002-6304-062X"
+    },
+    {
+      "affiliation": "Faculty of Science and Technology, Norwegian University of Life Sciences, Ås, Norway",
+      "name": "Plesser, Hans Ekkehard",
+      "orcid": "0000-0001-7843-5993"
+    },
+    {
+      "affiliation": "Institute for Advanced Simulation (IAS-6), Jülich Research Centre, Jülich, Germany",
+      "name": "Diesmann, Markus",
+      "orcid": "0000-0002-2308-5727"
+    },
+    {
+      "affiliation": "Faculty of Science and Technology, Norwegian University of Life Sciences, Ås, Norway",
+      "name": "Kunkel, Susanne",
+      "orcid": "0000-0001-8986-534X"
+    },
+    {
+      "affiliation": "Institute for Advanced Simulation (IAS-6), Jülich Research Centre, Jülich, Germany",
+      "name": "Kurth, Anno C.",
+      "orcid": "0000-0002-9557-1003"
+    },
+    {
+      "affiliation": "Institute for Advanced Simulation (IAS-6), Jülich Research Centre, Jülich, Germany",
+      "name": "Albers, Jasper",
+      "orcid": "0000-0002-3828-5895"
+    },
+    {
+      "affiliation": "Institute for Advanced Simulation (IAS-6), Jülich Research Centre, Jülich, Germany",
+      "name": "Pronold, Jari",
+      "orcid": "0000-0003-4992-1030"
+    },
+    {
+      "affiliation": "Faculty of Science and Technology, Norwegian University of Life Sciences, Ås, Norway",
+      "name": "Vennemo, Stine Brekke",
+      "orcid": "0000-0003-0669-7411"
+    },
+    {
+      "affiliation": "Jülich Supercomputing Centre, Jülich Research Centre, Jülich, Germany",
+      "name": "Haghighi Mood, Kaveh",
+      "orcid": "0000-0002-8578-4961"
+    },
+    {
+      "affiliation": "Jülich Supercomputing Centre, Jülich Research Centre, Jülich, Germany",
+      "name": "Patronis, Alexander"
+    },
+    {
+      "affiliation": "Department of Physiology, University of Bern, Bern, Switzerland",
+      "name": "Jordan, Jakob",
+      "orcid": "0000-0003-3438-5001"
+    },
+    {
+      "affiliation": "Institute for Advanced Simulation (IAS-6), Jülich Research Centre, Jülich, Germany",
+      "name": "Tetzlaff, Tom",
+      "orcid": "0000-0001-5794-5425"
+    },
+    {
+      "affiliation": "RWTH Aachen University, Aachen, Germany",
+      "name": "Theinen, Silas"
+    },
+    {
+      "affiliation": "RWTH Aachen University, Aachen, Germany",
+      "name": "Inangu, Alp",
+      "orcid": "0009-0007-2379-210X"
+    },
+    {
+      "affiliation": "Jülich Research Centre, Jülich, Germany",
+      "name": "Van Dael, Lies"
+    },
+    {
+      "affiliation": "Istituto Nazionale di Fisica Nucleare, Sezione di Cagliari, Cagliari, Italy",
+      "name": "Tiddia, Gianmarco",
+      "orcid": "0000-0001-7524-0285"
+    },
+    {
+      "name": "Mohamed, Riham"
+    }
+  ],
+  "keywords": [
+    "benchmarking",
+    "continuous benchmarking",
+    "continuous integration",
+    "high-performance computing",
+    "neuronal network simulation",
+    "computational neuroscience",
+    "NEST simulator",
+    "reproducibility",
+    "performance engineering",
+    "research software engineering"
+  ],
+  "license": "gpl-3.0-or-later",
+  "related_identifiers": [
+    {
+      "relation": "isNewVersionOf",
+      "identifier": "10.5281/zenodo.6092768",
+      "resource_type": "software"
+    },
+    {
+      "relation": "isDescribedBy",
+      "identifier": "10.48550/arXiv.2604.15919",
+      "resource_type": "publication-preprint"
+    },
+    {
+      "relation": "isDescribedBy",
+      "identifier": "10.3389/fninf.2022.837549",
+      "resource_type": "publication-article"
+    }
+  ],
+  "access_right": "open"
+}
