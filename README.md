@@ -7,12 +7,12 @@
 
 There is a preprint available:
 
-> Vogelsang, J. _et al._ (2026). Continuous benchmarking: Keeping pace with an evolving ecosystem of models and technologies. arXiv preprint arXiv:2604.15919
-> doi> [10.48550/arXiv.2604.15919](https://doi.org/10.48550/arXiv.2604.15919)
+> Vogelsang, J. _et al._ (2026). Continuous benchmarking: Keeping pace with an evolving ecosystem of models and technologies. arXiv preprint arXiv:2604.15919  
+> doi: [10.48550/arXiv.2604.15919](https://doi.org/10.48550/arXiv.2604.15919)
 
 For the original workflow (beNNch 1.0), please cite:
 
-> Albers J, Pronold J, Kurth AC, Vennemo SB, Haghighi Mood K, Patronis A, Terhorst D, Jordan J, Kunkel S, Tetzlaff T, Diesmann M and Senk J (2022) A Modular Workflow for Performance Benchmarking of Neuronal Network Simulations. *Front. Neuroinform.* 16:837549.
+> Albers J, Pronold J, Kurth AC, Vennemo SB, Haghighi Mood K, Patronis A, Terhorst D, Jordan J, Kunkel S, Tetzlaff T, Diesmann M and Senk J (2022) A Modular Workflow for Performance Benchmarking of Neuronal Network Simulations. *Front. Neuroinform.* 16:837549.  
 > doi: [10.3389/fninf.2022.837549](https://doi.org/10.3389/fninf.2022.837549)
 
 
